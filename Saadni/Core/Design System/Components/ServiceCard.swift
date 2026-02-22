@@ -34,7 +34,7 @@ struct ServiceCard: View {
             
             // Overlay Gradient
             LinearGradient(
-                colors: [.black.opacity(0.8), .transparent],
+                colors: [.black.opacity(0.8), .black.opacity(0)],
                 startPoint: .bottom,
                 endPoint: .center
             )
@@ -63,9 +63,6 @@ struct ServiceCard: View {
     }
 }
 
-extension Color {
-    static let transparent = Color.black.opacity(0)
-}
 
 #Preview {
     ZStack {
