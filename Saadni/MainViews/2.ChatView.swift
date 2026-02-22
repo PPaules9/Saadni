@@ -61,5 +61,4 @@ struct ChatView: View {
 
 #Preview {
     ChatView()
-        .preferredColorScheme(.dark)
 }

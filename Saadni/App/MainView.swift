@@ -6,9 +6,8 @@
 //
 
 import SwiftUI
-import Foundation
 
-struct ContentView: View {
+struct MainView: View {
  
  var body: some View {
   TabView {
@@ -18,9 +17,15 @@ struct ContentView: View {
     }
    }
    
-   Tab("Chat", systemImage: "bubble.left.fill") {
+   Tab("Chat", systemImage: "text.bubble.fill") {
     NavigationStack{
      ChatView()
+    }
+   }
+   
+   Tab("Add", systemImage: "plus") {
+    NavigationStack{
+     AddService()
     }
    }
    
@@ -39,10 +44,10 @@ struct ContentView: View {
    
    
   }
-  .tint(.green) // Green accent color
+  .tint(Colors.swiftUIColor(.textPrimary))
  }
 }
 
 #Preview {
- ContentView()
+ MainView()
 }
