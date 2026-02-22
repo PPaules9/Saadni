@@ -32,10 +32,10 @@ struct ChatView: View {
                         )
                     
                     VStack(alignment: .leading) {
-                        Text("Alessandro Bortoluzzi")
+                        Text("Pavly Hanna")
                             .font(.headline)
                             .foregroundStyle(.white)
-                        Text("Joined 6 February 2026")
+                        Text("Joined 6 June 2026")
                             .font(.caption)
                             .foregroundStyle(.gray)
                     }

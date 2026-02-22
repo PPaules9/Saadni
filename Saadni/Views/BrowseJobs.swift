@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HomeView: View {
+struct BrowseJobs: View {
     @State private var searchText = ""
     
     var body: some View {
@@ -20,41 +20,14 @@ struct HomeView: View {
                         Text("Welcome back,")
                             .font(.subheadline)
                             .foregroundStyle(.gray)
-                        Text("pavly")
+                        Text("Pavly")
                             .font(.largeTitle)
                             .fontWeight(.bold)
                             .foregroundStyle(.white)
+                            
                     }
                     .padding(.top)
                     
-                    // Your Services (Empty State)
-                    VStack(alignment: .leading, spacing: 10) {
-                        HStack {
-                            Text("Your services")
-                                .font(.title2)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.gray)
-                            
-                            Image(systemName: "plus.circle.fill")
-                                .foregroundStyle(Color.green)
-                                .font(.title2)
-                        }
-                        
-                        // Empty State Content
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("You haven't created any service yet.")
-                            HStack(spacing: 0) {
-                                Text("Create one clicking on the ")
-                                Image(systemName: "plus.circle.fill")
-                                    .foregroundStyle(.gray)
-                                Text(" button.")
-                            }
-                        }
-                        .font(.body)
-                        .foregroundStyle(.gray)
-                        .padding(.top, 5)
-                    }
-                    .padding(.vertical)
                     
                     // Search Bar
                     HStack {
@@ -102,6 +75,6 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    BrowseJobs()
         .preferredColorScheme(.dark)
 }

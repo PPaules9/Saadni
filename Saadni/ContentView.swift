@@ -8,42 +8,50 @@
 import SwiftUI
 
 struct ContentView: View {
-    
-    init() {
-        // Customize Tab Bar Appearance for Dark Mode
-        let appearance = UITabBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor.black
-        
-        UITabBar.appearance().standardAppearance = appearance
-        UITabBar.appearance().scrollEdgeAppearance = appearance
+ 
+ init() {
+  // Customize Tab Bar Appearance for Dark Mode
+  let appearance = UITabBarAppearance()
+  appearance.configureWithOpaqueBackground()
+  appearance.backgroundColor = UIColor.black
+  
+  UITabBar.appearance().standardAppearance = appearance
+  UITabBar.appearance().scrollEdgeAppearance = appearance
+ }
+ 
+ var body: some View {
+  TabView {
+   
+   Dashboard()
+    .tabItem {
+     Image(systemName: "bubble.left.fill")
+     Text("Dashboard") // Optional
     }
-    
-    var body: some View {
-        TabView {
-            HomeView()
-                .tabItem {
-                    Image(systemName: "magnifyingglass")
-                    Text("Explore") // Optional label, icons are primary in design
-                }
-            
-            ChatView()
-                .tabItem {
-                    Image(systemName: "bubble.left.fill")
-                    Text("Chat") // Optional
-                }
-            
-            ProfileView()
-                .tabItem {
-                    Image(systemName: "person.fill")
-                    Text("Profile") // Optional
-                }
-        }
-        .tint(.green) // Green accent color
+   
+   ChatView()
+    .tabItem {
+     Image(systemName: "bubble.left.fill")
+     Text("Chat") // Optional
     }
+   
+   ProfileView()
+    .tabItem {
+     Image(systemName: "person.fill")
+     Text("Profile") // Optional
+    }
+   BrowseJobs()
+    .tabItem {
+     Image(systemName: "magnifyingglass")
+     Text("Explore") // Optional label, icons are primary in design
+    }
+   
+   
+  }
+  .tint(.green) // Green accent color
+ }
 }
 
 #Preview {
-    ContentView()
-        .preferredColorScheme(.dark)
+ ContentView()
+  .preferredColorScheme(.dark)
 }
