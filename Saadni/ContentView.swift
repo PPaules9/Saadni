@@ -8,17 +8,42 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    init() {
+        // Customize Tab Bar Appearance for Dark Mode
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor.black
+        
+        UITabBar.appearance().standardAppearance = appearance
+        UITabBar.appearance().scrollEdgeAppearance = appearance
+    }
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView {
+            HomeView()
+                .tabItem {
+                    Image(systemName: "magnifyingglass")
+                    Text("Explore") // Optional label, icons are primary in design
+                }
+            
+            ChatView()
+                .tabItem {
+                    Image(systemName: "bubble.left.fill")
+                    Text("Chat") // Optional
+                }
+            
+            ProfileView()
+                .tabItem {
+                    Image(systemName: "person.fill")
+                    Text("Profile") // Optional
+                }
         }
-        .padding()
+        .tint(.green) // Green accent color
     }
 }
 
 #Preview {
     ContentView()
+        .preferredColorScheme(.dark)
 }
