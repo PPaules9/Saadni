@@ -1,0 +1,63 @@
+# ── Xcode ────────────────────────────────────────────────
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+DerivedData/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+# ── Build Artifacts ──────────────────────────────────────
+build/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# ── Swift Package Manager ────────────────────────────────
+.build/
+.swiftpm/
+Packages/
+Package.resolved
+
+# ── CocoaPods (optional — uncomment if not checking in Pods)
+# Pods/
+# *.xcworkspace
+
+# ── Carthage ─────────────────────────────────────────────
+Carthage/Build/
+
+# ── Fastlane ─────────────────────────────────────────────
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# ── macOS System Files ────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# ── Environment & Secrets ────────────────────────────────
+.env
+.env.local
+*.plist.secret
+Secrets/
+Config/Secrets.xcconfig
+
+# ── IDE & Editor Configs ──────────────────────────────────
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Playgrounds ───────────────────────────────────────────
+timeline.xctimeline
+playground.xcworkspace
