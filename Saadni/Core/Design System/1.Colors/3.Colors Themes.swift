@@ -25,6 +25,12 @@ struct ColorPalette {
   switch (theme, semantic, isDarkMode) {
    
    // Text colors
+  case (.default, .textMain, false):
+   return .textPrimary
+  case(.default, .textMain, true):
+   return .surfaceWhite
+   
+   
   case (.default, .textPrimary, false):
    return .surfaceWhite
   case(.default, .textPrimary, true):
