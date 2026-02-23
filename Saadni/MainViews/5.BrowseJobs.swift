@@ -14,9 +14,9 @@ struct BrowseJobs: View {
   ScrollView {
     VStack(spacing: 15) {
      ForEach(Service.mocks) { service in
-      NavigationLink(value: service) {
-       ServiceCard(service: service)
-      }
+//      NavigationLink(value: service) {
+//       ServiceCard(service: service)
+//      }
      }
    }
    .padding()
