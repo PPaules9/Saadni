@@ -26,9 +26,9 @@ struct ColorPalette {
    
    // Text colors
   case (.default, .textPrimary, false):
-   return .textPrimary
-  case(.default, .textPrimary, true):
    return .surfaceWhite
+  case(.default, .textPrimary, true):
+   return .textPrimary
    
   case (.default, .textSecondary, false):
    return .textSecondary

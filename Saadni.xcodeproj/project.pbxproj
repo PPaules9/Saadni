@@ -12,7 +12,7 @@
 
 /* Begin PBXFileReference section */
 		2264A02C2F4C6C110004B2B4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		228B2C7E2F36048800A4441B /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Library/Mobile Documents/com~apple~CloudDocs/Developer/My Apps/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
+		2264A09A2F4C75730004B2B4 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Saadni.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -39,6 +39,7 @@
 			children = (
 				2264A02C2F4C6C110004B2B4 /* README.md */,
 				228B2C802F36048800A4441B /* Saadni */,
+				2264A09A2F4C75730004B2B4 /* Saadni.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -64,7 +65,7 @@
 			packageProductDependencies = (
 			);
 			productName = Saadni;
-			productReference = 228B2C7E2F36048800A4441B /* Saadni.app */;
+			productReference = 2264A09A2F4C75730004B2B4 /* Saadni.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
