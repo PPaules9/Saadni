@@ -14,7 +14,6 @@ enum InputState {
  case filled
 }
 extension InputState {
- //TODO: - To be changed to DesignSystemColors
  var borderColor: Color {
   switch self {
   case .inactive:
@@ -26,6 +25,7 @@ extension InputState {
   }
  }
 }
+
 extension InputState{
  var textWeight: Font.Weight{
   switch self {
@@ -34,15 +34,16 @@ extension InputState{
   case .active:
    return .bold
   case .filled:
-   return .bold
+   return .regular
   }
  }
 }
 
 // MARK: - Basic TextField Component
-struct MovieTextField: View {
- var title: String
- var placeholder: String
+struct BrandTextField: View {
+ let hasTitle: Bool
+ let title: String
+ let placeholder: String
  @Binding var text: String
  @FocusState private var isFocused: Bool
  
@@ -54,20 +55,18 @@ struct MovieTextField: View {
  
  var body: some View {
   VStack(alignment: .leading, spacing: 8) {
-   Text(title)
-    .font(.custom("Mulish-Regular", size: 10))
-    .fontWeight(.regular)
-    .tracking(0.05)
-    .frame(height: 18)
-   //TODO: - To be changed to DesignSystemColors
-    .foregroundStyle(.black)
+   if hasTitle{
+    Text(title)
+     .font(Font.caption2)
+     .fontDesign(.rounded)
+     .foregroundStyle(Colors.swiftUIColor(.textMain))
+   }
    
    TextField(isFocused ? "" : placeholder , text: $text)
     .focused($isFocused)
-    .font(.custom("Mulish-Regular", size: 12))
+    .font(Font.caption)
+    .fontDesign(.rounded)
     .fontWeight(state.textWeight)
-    .tracking(0.05)
-    .frame(height: 18)
     .padding(16)
     .overlay(
      RoundedRectangle(cornerRadius: 100)
@@ -81,8 +80,10 @@ struct MovieTextField: View {
  }
 }
 
+
 // MARK: - Password Input Component
-struct MoviePasswordField: View {
+struct BrandPasswordField: View {
+ let hasTitle: Bool
  let title: String
  let placeholder: String
  @Binding var text: String
@@ -97,13 +98,12 @@ struct MoviePasswordField: View {
  
  var body: some View {
   VStack(alignment: .leading, spacing: 8) {
-   Text(title)
-    .font(.custom("Mulish-Regular", size: 10))
-    .fontWeight(.regular)
-    .tracking(0.05)
-    .frame(height: 18)
-   //TODO: - To be changed to DesignSystemColors
-    .foregroundStyle(.black)
+   if hasTitle{
+    Text(title)
+     .font(.caption2)
+     .fontDesign(.rounded)
+     .foregroundStyle(Colors.swiftUIColor(.textMain))
+   }
    
    HStack{
     Group {
@@ -114,10 +114,10 @@ struct MoviePasswordField: View {
      }
     }
     .focused($isFocused)
-    .font(.custom("Mulish-Regular", size: 12))
+    .font(Font.caption)
+    .fontDesign(.rounded)
     .fontWeight(state.textWeight)
-    .tracking(0.05)
-    .frame(height: 20)
+    .frame(height: 18)
     .padding(16)
     .onSubmit {
      isFocused = false
@@ -128,10 +128,19 @@ struct MoviePasswordField: View {
     Button{
      showPassword.toggle()
     } label: {
-     Image("eye-slash")
-      .resizable()
-      .frame(width: 18, height: 18)
-      .padding(.trailing, 17)
+     if showPassword{
+      Image(systemName: "eye.slash")
+       .resizable()
+       .frame(width: 18, height: 12)
+       .padding(.trailing, 17)
+       .foregroundStyle(Colors.swiftUIColor(.textMain))
+     } else {
+      Image(systemName: "eye")
+       .resizable()
+       .frame(width: 18, height: 12)
+       .padding(.trailing, 17)
+       .foregroundStyle(Colors.swiftUIColor(.textMain))
+     }
     }
    }
    .overlay(
@@ -144,7 +153,7 @@ struct MoviePasswordField: View {
 }
 
 // MARK: - Search Input Field
-struct MovieSearchField: View {
+struct BrandSearchField: View {
  let placeholder: String
  @Binding var text: String
  @FocusState private var isFocused: Bool
@@ -158,15 +167,16 @@ struct MovieSearchField: View {
  
  var body: some View {
   HStack{
-   Image("search-normal")
+   Image(systemName: "magnifyingglass")
     .resizable()
     .frame(width: 18, height: 18)
-   
+    .foregroundStyle(Colors.swiftUIColor(.textMain))
+
    TextField(placeholder, text: $text)
     .focused($isFocused)
-    .font(.custom("Mulish-Regular", size: 12))
+    .font(.caption2)
+    .fontDesign(.rounded)
     .fontWeight(state.textWeight)
-    .tracking(0.05)
     .frame(height: 20)
     .padding(.leading, 8)
     .onSubmit {
@@ -178,9 +188,11 @@ struct MovieSearchField: View {
    Button{
     onSettings?()
    } label: {
-    Image("setting-5")
+    Image(systemName: "slider.horizontal.3")
      .resizable()
      .frame(width: 18, height: 18)
+     .foregroundStyle(Colors.swiftUIColor(.textMain))
+
    }
   }
   .padding(16)
@@ -194,7 +206,7 @@ struct MovieSearchField: View {
 }
 
 // MARK: - Numerical Input Field
-struct MovieNumericalField: View {
+struct BrandNumericalField: View {
  let placeholder: String = "-"
  @Binding var number: Int
  @FocusState private var isFocused: Bool
@@ -225,7 +237,8 @@ struct MovieNumericalField: View {
     .keyboardType(.numberPad)
     .focused($isFocused)
     .multilineTextAlignment(.center)
-    .font(.custom("Mulish-Regular", size: 20))
+    .fontDesign(.rounded)
+    .font(.system(size: 20))
     .fontWeight(state.textWeight)
    
   }
@@ -236,7 +249,8 @@ struct MovieNumericalField: View {
 }
 
 // MARK: - TextEditor Field
-struct MovieTextEditorField: View {
+struct BrandTextEditor: View {
+ let hasTitle: Bool
  let title: String
  let placeholder: String
  @Binding var text: String
@@ -250,20 +264,21 @@ struct MovieTextEditorField: View {
  
  var body: some View {
   VStack(alignment: .leading, spacing: 8) {
-   Text(title)
-    .font(.custom("Mulish-Regular", size: 10))
-    .fontWeight(.regular)
-    .tracking(0.05)
-    .frame(height: 18)
-    .foregroundStyle(.black) //To BE Changed To DesignSystemColors
+   if hasTitle {
+    Text(title)
+     .font(.caption2)
+     .fontDesign(.rounded)
+     .fontWeight(.regular)
+     .foregroundStyle(Colors.swiftUIColor(.textMain))
+   }
    
    ZStack(alignment: .topLeading) {
     if text.isEmpty {
      Text(placeholder)
-      .font(.custom("Mulish-Regular", size: 12))
+      .font(.caption2)
+      .fontDesign(.rounded)
       .fontWeight(.regular)
-      .tracking(0.05)
-      .foregroundStyle(Color.gray)
+      .foregroundStyle(Colors.swiftUIColor(.textSecondary))
       .padding(.top, 8)
       .padding(.leading, 5)
     }
@@ -271,9 +286,9 @@ struct MovieTextEditorField: View {
     TextEditor(text: $text)
      .focused($isFocused)
      .scrollContentBackground(.hidden)
-     .font(.custom("Mulish-Regular", size: 12))
+     .font(.caption2)
+     .fontDesign(.rounded)
      .fontWeight(state.textWeight)
-     .tracking(0.05)
      .frame(minHeight: 132, alignment: .top)
    }
    .padding(16)
@@ -290,40 +305,22 @@ struct MovieTextEditorField: View {
 // MARK: - Preview All Inbut Components
 #Preview {
  ScrollView{
-  MovieTextField(
-   title: "Basic TextField",
-   placeholder: "Example",
-   text: .constant("")
-  )
+  BrandTextField( hasTitle: false, title: "Basic TextField", placeholder: "Example", text: .constant("") )
+  BrandTextField( hasTitle: true, title: "TextField with content", placeholder: "", text: .constant("Content") )
   
-  MovieTextField(
-   title: "TextField with content",
-   placeholder: "",
-   text: .constant("Content")
-  )
+  BrandPasswordField(hasTitle: true, title: "Basic Password Field", placeholder: "Password", text: .constant("") )
+  BrandPasswordField(hasTitle: false, title: "Dummy Password Input", placeholder: "Empty", text: .constant("dummyPassword") )
   
-  MoviePasswordField(
-   title: "Basic Password Field",
-   placeholder: "Password",
-   text: .constant("")
-  )
-  
-  MoviePasswordField(
-   title: "Dummy Password Input",
-   placeholder: "Empty",
-   text: .constant("dummyPassword")
-  )
-  
-  MovieSearchField(placeholder: "Search....", text: .constant(""))
-  MovieSearchField(placeholder: "Search....", text: .constant("Deadpool"))
+  BrandSearchField(placeholder: "Search....", text: .constant(""))
+  BrandSearchField(placeholder: "Search....", text: .constant("Deadpool"))
   
   HStack(alignment: .center, spacing: 52){
-   MovieNumericalField(number: .constant(0))
-   MovieNumericalField(number: .constant(19))
-   MovieNumericalField(number: .constant(4))
+   BrandNumericalField(number: .constant(0))
+   BrandNumericalField(number: .constant(19))
+   BrandNumericalField(number: .constant(4))
   }
   
-  MovieTextEditorField(title: "Basic TextEditor", placeholder: "Type here..." , text: .constant(""))
-  MovieTextEditorField(title: "TextEditor With Content", placeholder: "Type here...", text: .constant("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
+  BrandTextEditor(hasTitle: true, title: "Basic TextEditor", placeholder: "Type here..." , text: .constant(""))
+  BrandTextEditor(hasTitle: true, title: "TextEditor With Content", placeholder: "Type here...", text: .constant("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
  }
 }

@@ -14,6 +14,7 @@ public enum SemanticColor {
  // Text colors
  case textPrimary
  case textSecondary
+ case textMain
  
  // Background colors
  case backgroundColor
