@@ -1,6 +1,6 @@
-# Saadni 🤝
+# Sa3dni - ساعدني 🤝
 
-**Saadni** (Arabic for "Help Me") is a friendly, community-driven application that connects people who need a quick hand with locals who are ready to step in and help. 
+**Sa3dni** (Arabic for "Help Me") is a friendly, community-driven application that connects people who need a quick hand with locals who are ready to step in and help. 
 
 Whether you are someone who needs an extra set of hands moving furniture, a busy parent looking for cleaning assistance, or a small local business needing someone to run a quick errand, Saadni makes finding help effortless. You can easily post a short job, set your own upfront budget, and broadcast it to your neighborhood.
 

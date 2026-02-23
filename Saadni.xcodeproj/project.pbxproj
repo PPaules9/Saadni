@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2264A02D2F4C6C110004B2B4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2264A02C2F4C6C110004B2B4 /* README.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		228B2C7E2F36048800A4441B /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Saadni.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2264A02C2F4C6C110004B2B4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		228B2C7E2F36048800A4441B /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Library/Mobile Documents/com~apple~CloudDocs/Developer/My Apps/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -32,17 +37,9 @@
 		228B2C752F36048800A4441B = {
 			isa = PBXGroup;
 			children = (
+				2264A02C2F4C6C110004B2B4 /* README.md */,
 				228B2C802F36048800A4441B /* Saadni */,
-				228B2C7F2F36048800A4441B /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		228B2C7F2F36048800A4441B /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				228B2C7E2F36048800A4441B /* Saadni.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,7 +92,7 @@
 			mainGroup = 228B2C752F36048800A4441B;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 228B2C7F2F36048800A4441B /* Products */;
+			productRefGroup = 228B2C752F36048800A4441B;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -109,6 +106,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2264A02D2F4C6C110004B2B4 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
