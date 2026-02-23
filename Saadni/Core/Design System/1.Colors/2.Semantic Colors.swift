@@ -17,7 +17,7 @@ public enum SemanticColor {
  case textMain
  
  // Background colors
- case backgroundColor
+ case appBackground
  case buttonBackground
  
  // Border colors

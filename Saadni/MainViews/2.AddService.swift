@@ -1,5 +1,5 @@
 //
-//  Dashboard.swift
+//  AddService.swift
 //  Saadni
 //
 //  Created by Pavly Paules on 22/02/2026.
@@ -9,41 +9,45 @@ import SwiftUI
 
 struct AddService: View {
  var body: some View {
-  NavigationStack{
-   VStack{
-    Image("")
-     .resizable()
-     .scaledToFit()
-     .frame(width: 300, height: 300)
-     .padding()
-    
-    
+  ZStack{
+   Color(Colors.swiftUIColor(.appBackground))
+    .ignoresSafeArea()
    
-   }
-   .navigationTitle("Add Service")
-   .navigationBarTitleDisplayMode(.inline)
-   .toolbar{
-    ToolbarItem(placement: .topBarLeading) {
-     Button("Close") {
-      
-     }
+   
+   NavigationStack{
+    VStack{
+     Image("")
+      .resizable()
+      .scaledToFit()
+      .frame(width: 300, height: 300)
+      .padding()
+     
+     
+     
     }
-    
-    ToolbarItem(placement: .topBarTrailing) {
-     Button{
-      
-     } label: {
-      Text("Publish")
-      .tint(.green)
+    .navigationTitle("Add Service")
+    .navigationBarTitleDisplayMode(.inline)
+    .toolbar{
+     ToolbarItem(placement: .topBarLeading) {
+      Button("Close") {
+       
+      }
      }
+     
+     ToolbarItem(placement: .topBarTrailing) {
+      Button{
+       
+      } label: {
+       Text("Publish")
+        .tint(.green)
+      }
+     }
+     
     }
-    
-    
    }
   }
  }
 }
-
 #Preview {
  AddService()
 }

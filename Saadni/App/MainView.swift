@@ -44,7 +44,8 @@ struct MainView: View {
    
    
   }
-  .tint(Colors.swiftUIColor(.textPrimary))
+  .tint(.accent)
+  .background(Colors.swiftUIColor(.appBackground))
  }
 }
 
