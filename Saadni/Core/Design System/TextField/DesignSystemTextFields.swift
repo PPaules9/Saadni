@@ -20,7 +20,7 @@ extension InputState {
   case .inactive:
    return .gray.opacity(0.3)
   case .active:
-   return .blue
+   return .accent
   case .filled:
    return .gray.opacity(0.3)
   }

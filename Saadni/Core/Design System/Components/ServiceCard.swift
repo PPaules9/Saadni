@@ -8,68 +8,80 @@
 import SwiftUI
 
 struct ServiceCard: View {
-    let service: Service
-    
-    var body: some View {
-        ZStack(alignment: .bottom) {
-            // Background Image
-            Group {
-                if service.isSystemImage {
-                    ZStack {
-                        Color(.systemGray6)
-                        Image(systemName: service.imageName)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .padding(40)
-                            .foregroundStyle(.gray.opacity(0.5))
-                    }
-                } else {
-                    Image(service.imageName)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                }
-            }
-            .frame(height: 200)
-            .frame(maxWidth: .infinity)
-            
-            // Overlay Gradient
-            LinearGradient(
-                colors: [.black.opacity(0.8), .black.opacity(0)],
-                startPoint: .bottom,
-                endPoint: .center
-            )
-            
-            // Content
-            HStack(alignment: .bottom) {
-                Text(service.title)
-                    .font(.headline)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.white)
-                
-                Spacer()
-                
-                Text(service.price)
-                    .font(.headline)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.white)
-            }
-            .padding()
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 15))
-        .overlay(
-            RoundedRectangle(cornerRadius: 15)
-                .stroke(Color.white.opacity(0.1), lineWidth: 1)
-        )
+ let title: String
+ let hasPhoto: Bool
+ let imageName: String
+ let price: String
+ let locationName: String
+ 
+ var body: some View {
+  ZStack() {
+   // Background Image
+   Group {
+    if !hasPhoto {
+     ZStack {
+      Color(.systemGray6)
+      Image(systemName: imageName)
+       .resizable()
+       .aspectRatio(contentMode: .fit)
+       .padding(40)
+       .foregroundStyle(.accent)
+     }
+    } else {
+     Image(imageName)
+      .resizable()
+      .aspectRatio(contentMode: .fill)
     }
+   }
+   .frame(height: 210)
+   .frame(maxWidth: .infinity)
+   
+   // Overlay Gradient
+   LinearGradient(
+    colors: [.black.opacity(0.8), .black.opacity(0)],
+    startPoint: .bottom,
+    endPoint: .center
+   )
+   
+   VStack{
+    HStack(spacing: 5) {
+     Spacer()
+     Image(systemName: "mappin.and.ellipse")
+     Text(locationName)
+    }
+    .font(.caption2)
+    .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+    .padding()
+    
+    Spacer()
+    
+    HStack(alignment: .bottom) {
+     Text(title)
+      .font(.title3)
+      .fontWeight(.bold)
+      .foregroundStyle(.white)
+     
+     Spacer()
+     
+     Text(price)
+      .font(.title3)
+      .fontWeight(.bold)
+      .foregroundStyle(.white)
+    }
+    .padding()
+   }
+
+  }
+  .clipShape(RoundedRectangle(cornerRadius: 15))
+  .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 15))
+  .padding()
+  
+ }
 }
 
 
 #Preview {
-    ZStack {
-        Color.black.ignoresSafeArea()
-        VStack {
-            ServiceCard(service: Service.mocks[0])
-                .padding()
-        }
-    }
+ ScrollView {
+   ServiceCard(title: "Help Cleaning", hasPhoto: false, imageName: "washer", price: "250 EGP", locationName: "Cairo, Egypt")
+  }
 }
