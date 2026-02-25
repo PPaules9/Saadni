@@ -23,9 +23,9 @@ struct MainView: View {
     }
    }
    
-   Tab("Add", systemImage: "plus") {
+   Tab("My Jobs", systemImage: "bag.fill") {
     NavigationStack{
-     AddService()
+     MyJobs()
     }
    }
    

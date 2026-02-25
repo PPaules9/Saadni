@@ -1,23 +1,23 @@
 {
   "fill" : {
-    "automatic-gradient" : "display-p3:0.16333,0.15552,0.15942,1.00000"
+    "solid" : "display-p3:0.06522,0.06777,0.07746,1.00000"
   },
   "groups" : [
     {
       "layers" : [
         {
           "fill" : {
-            "solid" : "display-p3:0.48633,0.72949,0.50977,1.00000"
+            "solid" : "display-p3:0.21569,0.52157,0.49020,1.00000"
           },
-          "image-name" : "Gemini_Generated_Image_fm2locfm2locfm2l.png",
-          "name" : "Gemini_Generated_Image_fm2locfm2locfm2l",
+          "image-name" : "ChatGPT Image Feb 23, 2026 at 09_55_52 PM.png",
+          "name" : "ChatGPT Image Feb 23, 2026 at 09_55_52 PM",
           "position-specializations" : [
             {
               "idiom" : "square",
               "value" : {
-                "scale" : 0.6,
+                "scale" : 1.05,
                 "translation-in-points" : [
-                  0,
+                  8.399999999999977,
                   0
                 ]
               }
