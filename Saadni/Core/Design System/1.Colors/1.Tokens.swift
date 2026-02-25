@@ -40,7 +40,7 @@ enum ColorToken {
   case .backgroundLight:   return "E8F2EE"
   case .backgroundDark:   return "#050C0C"
    
-  case .primary:        return "#3DB562"
+  case .primary:        return "#37857D"
   case .primaryDark:     return "#2A8A47"
   case .surfaceWhite:    return "#FEFEFE"
   }

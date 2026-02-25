@@ -32,7 +32,7 @@ extension InputState{
   case .inactive:
    return .regular
   case .active:
-   return .bold
+   return .regular
   case .filled:
    return .regular
   }
@@ -57,7 +57,7 @@ struct BrandTextField: View {
   VStack(alignment: .leading, spacing: 8) {
    if hasTitle{
     Text(title)
-     .font(Font.caption2)
+     .font(Font.caption)
      .fontDesign(.rounded)
      .foregroundStyle(Colors.swiftUIColor(.textMain))
    }
@@ -76,7 +76,6 @@ struct BrandTextField: View {
      isFocused = false
     }
   }
-  .padding(16)
  }
 }
 
@@ -148,7 +147,6 @@ struct BrandPasswordField: View {
      .stroke(state.borderColor, lineWidth: 1)
    )
   }
-  .padding(16)
  }
 }
 
@@ -200,8 +198,7 @@ struct BrandSearchField: View {
    RoundedRectangle(cornerRadius: 100)
     .stroke(state.borderColor, lineWidth: 1)
   )
-  .padding(.top, 16)
-  .padding(.horizontal, 16)
+
  }
 }
 
@@ -210,7 +207,7 @@ struct BrandNumericalField: View {
  let placeholder: String = "-"
  @Binding var number: Int
  @FocusState private var isFocused: Bool
- 
+ let width: Int
  private var state: InputState {
   if isFocused { return .active }
   if number != 0 { return .filled }
@@ -225,13 +222,15 @@ struct BrandNumericalField: View {
  }
  
  var body: some View {
+  
   ZStack {
-   Circle()
+   RoundedRectangle(cornerRadius: 20)
     .fill(.clear)
     .overlay(
-     Circle()
+     RoundedRectangle(cornerRadius: 20)
       .stroke(state.borderColor, lineWidth: 1)
     )
+   
    
    TextField(placeholder, value: $number, formatter: numberFormatter)
     .keyboardType(.numberPad)
@@ -242,9 +241,8 @@ struct BrandNumericalField: View {
     .fontWeight(state.textWeight)
    
   }
-  .frame(width: 51, height: 52)
-  .padding(.horizontal, 20)
-  .padding(.vertical, 12)
+  .frame(width: CGFloat(width), height: 52)
+
  }
 }
 
@@ -297,7 +295,6 @@ struct BrandTextEditor: View {
      .stroke(state.borderColor, lineWidth: 1)
    )
   }
-  .padding(16)
  }
 }
 
@@ -314,13 +311,13 @@ struct BrandTextEditor: View {
   BrandSearchField(placeholder: "Search....", text: .constant(""))
   BrandSearchField(placeholder: "Search....", text: .constant("Deadpool"))
   
-  HStack(alignment: .center, spacing: 52){
-   BrandNumericalField(number: .constant(0))
-   BrandNumericalField(number: .constant(19))
-   BrandNumericalField(number: .constant(4))
+  HStack(alignment: .center, spacing: 10){
+   BrandNumericalField(number: .constant(0), width: 60)
+   BrandNumericalField(number: .constant(19), width: 10)
   }
   
   BrandTextEditor(hasTitle: true, title: "Basic TextEditor", placeholder: "Type here..." , text: .constant(""))
   BrandTextEditor(hasTitle: true, title: "TextEditor With Content", placeholder: "Type here...", text: .constant("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
  }
+ .padding(16)
 }

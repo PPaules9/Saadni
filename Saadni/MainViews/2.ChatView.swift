@@ -19,7 +19,7 @@ struct ChatView: View {
      
      Text("Start a conversation on the\nservice page clicking the chat icon")
       .multilineTextAlignment(.center)
-      .foregroundStyle(.gray)
+      .foregroundStyle(Colors.swiftUIColor(.textSecondary))
       .padding()
      
      // Mock Chat Item Preview (as seen in screenshot design)
@@ -28,29 +28,29 @@ struct ChatView: View {
        .resizable()
        .aspectRatio(contentMode: .fill)
        .frame(width: 50, height: 50)
-       .background(Color.gray)
+       .background(Color(.systemGray5))
        .clipShape(RoundedRectangle(cornerRadius: 10))
        .overlay(
         Image(systemName: "person.fill")
-         .foregroundStyle(.white)
+         .foregroundStyle(Colors.swiftUIColor(.textMain))
        )
       
       VStack(alignment: .leading) {
        Text("Pavly Hanna")
         .font(.headline)
-        .foregroundStyle(.white)
+        .foregroundStyle(Colors.swiftUIColor(.textMain))
        Text("Joined 6 June 2026")
         .font(.caption)
-        .foregroundStyle(.gray)
+        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
       }
       
       Spacer()
       
       Image(systemName: "bubble.left.fill")
-       .foregroundStyle(.green)
+       .foregroundStyle(.accent)
      }
      .padding()
-     .background(Color(.systemGray6).opacity(0.3))
+     .background(Colors.swiftUIColor(.textPrimary))
      .clipShape(RoundedRectangle(cornerRadius: 20))
      .padding(.horizontal)
      
