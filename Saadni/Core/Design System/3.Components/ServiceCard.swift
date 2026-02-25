@@ -74,7 +74,6 @@ struct ServiceCard: View {
   }
   .clipShape(RoundedRectangle(cornerRadius: 15))
   .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 15))
-  .padding()
   
  }
 }

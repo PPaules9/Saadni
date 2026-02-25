@@ -57,7 +57,6 @@ struct ChatView: View {
      Spacer()
     }
     .navigationTitle("Chats")
-    .navigationBarTitleDisplayMode(.inline)
    }
   }
  }

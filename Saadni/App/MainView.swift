@@ -13,7 +13,7 @@ struct MainView: View {
   TabView {
    Tab("Dashboard", systemImage: "house") {
     NavigationStack{
-     Dashboard()
+     DashboardView()
     }
    }
    

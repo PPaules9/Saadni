@@ -161,8 +161,3 @@ struct ServiceDetailView: View {
  }
 }
 
-#Preview {
- NavigationStack {
-  ServiceDetailView(service: Service.mocks[0])
- }
-}
