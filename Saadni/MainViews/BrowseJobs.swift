@@ -95,6 +95,7 @@ struct FlexibleJobs: View {
    }
    .padding()
    .searchable(text: $searchText, prompt: "Browse Flexible Jobs....")
+   .scrollIndicators(.hidden)
   }
  }
 }
@@ -112,6 +113,7 @@ struct ShiftJobs: View {
    }
    .padding()
    .searchable(text: $searchText, prompt: "Browse Shifts....")
+   .scrollIndicators(.hidden)
   }
  }
 }

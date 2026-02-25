@@ -171,6 +171,7 @@ struct ProfileView: View {
         .frame(height: 20)
      }
     }
+    .scrollIndicators(.hidden)
     .navigationTitle("Profile")
     .toolbar{
      ToolbarItem(placement: .topBarTrailing) {
