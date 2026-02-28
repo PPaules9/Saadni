@@ -122,7 +122,7 @@ struct AppliedTabView: View {
      .foregroundStyle(.gray)
    }
 
-   BrandButton("Browse jobs", hasIcon: false, icon: "") {
+   BrandButton("Browse jobs", hasIcon: false, icon: "", secondary: false) {
 
    }
    Spacer()

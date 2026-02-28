@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xcodebuild -scheme Saadni -configuration Debug)",
+      "Bash(xcodebuild clean:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(python3:*)",
+      "Bash(find:*)"
+    ]
+  }
+}

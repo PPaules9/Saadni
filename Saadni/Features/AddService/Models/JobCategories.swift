@@ -7,12 +7,13 @@
 
 import Foundation
 
-enum JobType {
- case flexibleJobs
- case shift
+enum JobType: String, Codable {
+ case flexibleJobs = "flexibleJobs"
+ case shift = "shift"
 }
 
-enum FlexibleJobCategory: String, CaseIterable {
+
+enum FlexibleJobCategory: String, CaseIterable, Codable {
  // Cleaning
  case helpCleaning = "Help Cleaning"
 
@@ -55,7 +56,7 @@ enum FlexibleJobCategory: String, CaseIterable {
 
 
 
-enum ShiftCategory: String, CaseIterable {
+enum ShiftCategory: String, CaseIterable, Codable {
  // Food & Beverage
  case barista = "Barista"
  case waiter = "Waiter"
@@ -85,9 +86,3 @@ enum ShiftCategory: String, CaseIterable {
  case fitnessTrainer = "Fitness Trainer"
 }
 
-struct Shift: Identifiable, Hashable {
- let id = UUID()
- let name: String
- let requirments: String
- let time: String
-}

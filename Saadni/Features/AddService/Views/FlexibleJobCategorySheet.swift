@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct FlexibleJobCategorySheet: View {
- @Binding var selectedJobPath: String
- @Binding var jobType: JobType?
+ @Bindable var viewModel: AddServiceViewModel
  @Environment(\.dismiss) var dismiss
+ var parentDismiss: DismissAction? = nil
  @State private var showCustomInput: Bool = false
  @State private var customJobName: String = ""
  
@@ -39,9 +39,10 @@ struct FlexibleJobCategorySheet: View {
        .background(Colors.swiftUIColor(.textPrimary))
        .cornerRadius(30)
        .onTapGesture {
-        selectedJobPath = "Flexible: \(category.rawValue)"
-        jobType = nil
+        viewModel.selectedFlexibleCategory = category
+        viewModel.selectedJobPath = "Flexible: \(category.rawValue)"
         dismiss()
+        parentDismiss?()
        }
       }
       
@@ -72,8 +73,7 @@ struct FlexibleJobCategorySheet: View {
    .sheet(isPresented: $showCustomInput) {
     CustomJobInputSheet(
      customJobName: $customJobName,
-     selectedJobPath: $selectedJobPath,
-     jobType: $jobType,
+     viewModel: viewModel,
      isPresented: $showCustomInput,
      dismissParent: { dismiss() },
      jobTypeLabel: "Flexible"
@@ -83,8 +83,9 @@ struct FlexibleJobCategorySheet: View {
    .toolbar{
     ToolbarItem(placement: .navigationBarTrailing) {
      Button("Cancel") {
-      jobType = nil
+      viewModel.jobType = nil
       dismiss()
+      parentDismiss?()
      }
     }
    }
@@ -93,8 +94,5 @@ struct FlexibleJobCategorySheet: View {
 }
 
 #Preview {
- FlexibleJobCategorySheet(
-  selectedJobPath: .constant(""),
-  jobType: .constant(.flexibleJobs)
- )
+ FlexibleJobCategorySheet(viewModel: AddServiceViewModel())
 }

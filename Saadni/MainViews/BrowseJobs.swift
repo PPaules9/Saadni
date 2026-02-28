@@ -84,13 +84,39 @@ struct BrowseJobTabButton: View {
 
 struct FlexibleJobs: View {
  @State private var searchText = ""
- 
+ @Environment(ServicesStore.self) var servicesStore
+
+ var filteredServices: [FlexibleJobService] {
+  if searchText.isEmpty {
+   return servicesStore.getAllFlexibleJobs()
+  }
+  return servicesStore.getAllFlexibleJobs().filter {
+   $0.title.localizedCaseInsensitiveContains(searchText) ||
+   $0.description.localizedCaseInsensitiveContains(searchText) ||
+   $0.location.name.localizedCaseInsensitiveContains(searchText)
+  }
+ }
+
  var body: some View {
   NavigationStack{
    ScrollView(){
-    VStack(spacing: 14){
-     ServiceCard(title: "Washing", hasPhoto: false, imageName: "washer", price: "250 EGP", locationName: "Cairo, Egypt")
-     ServiceCard(title: "Help Cleaning House Before Ramdan", hasPhoto: false, imageName: "hands.sparkles", price: "600 EGP", locationName: "ElRehab, Cairo")
+    if filteredServices.isEmpty {
+     VStack(spacing: 12) {
+      Image(systemName: "briefcase.circle")
+       .font(.system(size: 48))
+       .foregroundStyle(.gray)
+      Text("No Flexible Jobs Yet")
+       .font(.headline)
+       .foregroundStyle(.gray)
+     }
+     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+     .padding()
+    } else {
+     VStack(spacing: 14){
+      ForEach(filteredServices, id: \.id) { service in
+       ServiceCard(serviceData: .flexibleJob(service))
+      }
+     }
     }
    }
    .padding()
@@ -102,13 +128,40 @@ struct FlexibleJobs: View {
 
 struct ShiftJobs: View {
  @State private var searchText = ""
+ @Environment(ServicesStore.self) var servicesStore
+
+ var filteredServices: [ShiftService] {
+  if searchText.isEmpty {
+   return servicesStore.getAllShifts()
+  }
+  return servicesStore.getAllShifts().filter {
+   $0.title.localizedCaseInsensitiveContains(searchText) ||
+   $0.description.localizedCaseInsensitiveContains(searchText) ||
+   $0.location.name.localizedCaseInsensitiveContains(searchText) ||
+   $0.shiftName.localizedCaseInsensitiveContains(searchText)
+  }
+ }
+
  var body: some View {
   NavigationStack{
    ScrollView(){
-    VStack(spacing: 14){
-     ServiceCard(title: "Barista Shift at Starbucks", hasPhoto: false, imageName: "mug.fill", price: "400 EGP/Hour", locationName: "Helioples, Egypt")
-     ServiceCard(title: "Cashier Shift at Al Ahram Mall", hasPhoto: false, imageName: "creditcard", price: "3000 EGP", locationName: "Cairo")
-     ServiceCard(title: "ChillOut El Rehab Benzene Shift", hasPhoto: false, imageName: "hexagon.fill", price: "1000 EGP", locationName: "Rehab, Cairo")
+    if filteredServices.isEmpty {
+     VStack(spacing: 12) {
+      Image(systemName: "briefcase.circle")
+       .font(.system(size: 48))
+       .foregroundStyle(.gray)
+      Text("No Shift Jobs Yet")
+       .font(.headline)
+       .foregroundStyle(.gray)
+     }
+     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+     .padding()
+    } else {
+     VStack(spacing: 14){
+      ForEach(filteredServices, id: \.id) { service in
+       ServiceCard(serviceData: .shift(service))
+      }
+     }
     }
    }
    .padding()

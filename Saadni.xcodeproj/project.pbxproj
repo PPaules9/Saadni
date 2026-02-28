@@ -7,18 +7,115 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2236A16E2F50949000A7A19F /* DesignSystemButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A13C2F50949000A7A19F /* DesignSystemButtons.swift */; };
+		2236A16F2F50949000A7A19F /* Colors Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A13E2F50949000A7A19F /* Colors Themes.swift */; };
+		2236A1702F50949000A7A19F /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A13F2F50949000A7A19F /* Provider.swift */; };
+		2236A1712F50949000A7A19F /* Semantic Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1402F50949000A7A19F /* Semantic Colors.swift */; };
+		2236A1722F50949000A7A19F /* Tokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1412F50949000A7A19F /* Tokens.swift */; };
+		2236A1732F50949000A7A19F /* ServiceCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1432F50949000A7A19F /* ServiceCard.swift */; };
+		2236A1742F50949000A7A19F /* DesignSystemTextFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1452F50949000A7A19F /* DesignSystemTextFields.swift */; };
+		2236A1752F50949000A7A19F /* FlexibleJobService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A14C2F50949000A7A19F /* FlexibleJobService.swift */; };
+		2236A1762F50949000A7A19F /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A14D2F50949000A7A19F /* ImagePicker.swift */; };
+		2236A1772F50949000A7A19F /* JobCategories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A14E2F50949000A7A19F /* JobCategories.swift */; };
+		2236A1782F50949000A7A19F /* ServiceImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A14F2F50949000A7A19F /* ServiceImage.swift */; };
+		2236A1792F50949000A7A19F /* ServiceLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1502F50949000A7A19F /* ServiceLocation.swift */; };
+		2236A17A2F50949000A7A19F /* ServiceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1512F50949000A7A19F /* ServiceStatus.swift */; };
+		2236A17B2F50949000A7A19F /* ShiftSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1522F50949000A7A19F /* ShiftSchedule.swift */; };
+		2236A17C2F50949000A7A19F /* ShiftService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1532F50949000A7A19F /* ShiftService.swift */; };
+		2236A17D2F50949000A7A19F /* AddService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1552F50949000A7A19F /* AddService.swift */; };
+		2236A17E2F50949000A7A19F /* AddShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1562F50949000A7A19F /* AddShift.swift */; };
+		2236A17F2F50949000A7A19F /* CustomJobInputSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1572F50949000A7A19F /* CustomJobInputSheet.swift */; };
+		2236A1802F50949000A7A19F /* FlexibleJobCategorySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1582F50949000A7A19F /* FlexibleJobCategorySheet.swift */; };
+		2236A1812F50949000A7A19F /* Image Picker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1592F50949000A7A19F /* Image Picker.swift */; };
+		2236A1822F50949000A7A19F /* JobCategorySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A15A2F50949000A7A19F /* JobCategorySheet.swift */; };
+		2236A1832F50949000A7A19F /* JobTypeSelectionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A15B2F50949000A7A19F /* JobTypeSelectionSheet.swift */; };
+		2236A1842F50949000A7A19F /* MapSelectionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A15C2F50949000A7A19F /* MapSelectionSheet.swift */; };
+		2236A1852F50949000A7A19F /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A15F2F50949000A7A19F /* Service.swift */; };
+		2236A1862F50949000A7A19F /* ServiceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1612F50949000A7A19F /* ServiceDetailView.swift */; };
+		2236A1872F50949000A7A19F /* BrowseJobs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1652F50949000A7A19F /* BrowseJobs.swift */; };
+		2236A1882F50949000A7A19F /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1662F50949000A7A19F /* ChatView.swift */; };
+		2236A1892F50949000A7A19F /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1672F50949000A7A19F /* DashboardView.swift */; };
+		2236A18A2F50949000A7A19F /* MyJobs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1682F50949000A7A19F /* MyJobs.swift */; };
+		2236A18B2F50949000A7A19F /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1692F50949000A7A19F /* ProfileView.swift */; };
+		2236A18C2F50949000A7A19F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2236A1482F50949000A7A19F /* Assets.xcassets */; };
+		2236A18D2F50949000A7A19F /* Saadni.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2236A1492F50949000A7A19F /* Saadni.icon */; };
+		2236A1902F509C0100A7A19F /* AddServiceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A18F2F509C0100A7A19F /* AddServiceViewModel.swift */; };
+		2236A19A2F50ADED00A7A19F /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 2236A1992F50ADED00A7A19F /* FirebaseAuth */; };
+		2236A19C2F50ADED00A7A19F /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2236A19B2F50ADED00A7A19F /* FirebaseCore */; };
+		2236A19E2F50ADED00A7A19F /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 2236A19D2F50ADED00A7A19F /* FirebaseDatabase */; };
+		2236A1A02F50ADED00A7A19F /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 2236A19F2F50ADED00A7A19F /* FirebaseFirestore */; };
+		2236A1A22F50ADED00A7A19F /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 2236A1A12F50ADED00A7A19F /* FirebaseMessaging */; };
+		2236A1A42F50ADED00A7A19F /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 2236A1A32F50ADED00A7A19F /* FirebaseRemoteConfig */; };
+		2236A1A62F50ADED00A7A19F /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 2236A1A52F50ADED00A7A19F /* FirebaseStorage */; };
+		2236A1B22F5321E300A7A19F /* ApplicationsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1B02F5321E300A7A19F /* ApplicationsStore.swift */; };
+		2236A1B32F5321E300A7A19F /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1AE2F5321E300A7A19F /* User.swift */; };
+		2236A1B42F5321E300A7A19F /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1A72F5321E300A7A19F /* AuthenticationManager.swift */; };
+		2236A1B52F5321E300A7A19F /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1AB2F5321E300A7A19F /* StorageService.swift */; };
+		2236A1B62F5321E300A7A19F /* JobApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1AD2F5321E300A7A19F /* JobApplication.swift */; };
+		2236A1B72F5321E300A7A19F /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1AA2F5321E300A7A19F /* FirestoreService.swift */; };
+		2236A1B82F5321E300A7A19F /* FirestoreSchema.md in Resources */ = {isa = PBXBuildFile; fileRef = 2236A1A92F5321E300A7A19F /* FirestoreSchema.md */; };
+		2236A1BA2F53220400A7A19F /* ApplicationBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1B92F53220400A7A19F /* ApplicationBadge.swift */; };
+		2236A1BC2F53222600A7A19F /* ApplySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1BB2F53222600A7A19F /* ApplySheet.swift */; };
+		2236A1C02F53223A00A7A19F /* ApplicationsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1BD2F53223A00A7A19F /* ApplicationsList.swift */; };
+		2236A1D32F53281E00A7A19F /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1D02F53281E00A7A19F /* AuthenticationView.swift */; };
 		2264A02D2F4C6C110004B2B4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2264A02C2F4C6C110004B2B4 /* README.md */; };
+		22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2236A13C2F50949000A7A19F /* DesignSystemButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemButtons.swift; sourceTree = "<group>"; };
+		2236A13E2F50949000A7A19F /* Colors Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Colors Themes.swift"; sourceTree = "<group>"; };
+		2236A13F2F50949000A7A19F /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
+		2236A1402F50949000A7A19F /* Semantic Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Semantic Colors.swift"; sourceTree = "<group>"; };
+		2236A1412F50949000A7A19F /* Tokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tokens.swift; sourceTree = "<group>"; };
+		2236A1432F50949000A7A19F /* ServiceCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCard.swift; sourceTree = "<group>"; };
+		2236A1452F50949000A7A19F /* DesignSystemTextFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemTextFields.swift; sourceTree = "<group>"; };
+		2236A1482F50949000A7A19F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2236A1492F50949000A7A19F /* Saadni.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Saadni.icon; sourceTree = "<group>"; };
+		2236A14C2F50949000A7A19F /* FlexibleJobService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlexibleJobService.swift; sourceTree = "<group>"; };
+		2236A14D2F50949000A7A19F /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		2236A14E2F50949000A7A19F /* JobCategories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCategories.swift; sourceTree = "<group>"; };
+		2236A14F2F50949000A7A19F /* ServiceImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceImage.swift; sourceTree = "<group>"; };
+		2236A1502F50949000A7A19F /* ServiceLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocation.swift; sourceTree = "<group>"; };
+		2236A1512F50949000A7A19F /* ServiceStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceStatus.swift; sourceTree = "<group>"; };
+		2236A1522F50949000A7A19F /* ShiftSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftSchedule.swift; sourceTree = "<group>"; };
+		2236A1532F50949000A7A19F /* ShiftService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftService.swift; sourceTree = "<group>"; };
+		2236A1552F50949000A7A19F /* AddService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddService.swift; sourceTree = "<group>"; };
+		2236A1562F50949000A7A19F /* AddShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShift.swift; sourceTree = "<group>"; };
+		2236A1572F50949000A7A19F /* CustomJobInputSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomJobInputSheet.swift; sourceTree = "<group>"; };
+		2236A1582F50949000A7A19F /* FlexibleJobCategorySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlexibleJobCategorySheet.swift; sourceTree = "<group>"; };
+		2236A1592F50949000A7A19F /* Image Picker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image Picker.swift"; sourceTree = "<group>"; };
+		2236A15A2F50949000A7A19F /* JobCategorySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCategorySheet.swift; sourceTree = "<group>"; };
+		2236A15B2F50949000A7A19F /* JobTypeSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobTypeSelectionSheet.swift; sourceTree = "<group>"; };
+		2236A15C2F50949000A7A19F /* MapSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapSelectionSheet.swift; sourceTree = "<group>"; };
+		2236A15F2F50949000A7A19F /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
+		2236A1612F50949000A7A19F /* ServiceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceDetailView.swift; sourceTree = "<group>"; };
+		2236A1652F50949000A7A19F /* BrowseJobs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseJobs.swift; sourceTree = "<group>"; };
+		2236A1662F50949000A7A19F /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		2236A1672F50949000A7A19F /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		2236A1682F50949000A7A19F /* MyJobs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyJobs.swift; sourceTree = "<group>"; };
+		2236A1692F50949000A7A19F /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		2236A18F2F509C0100A7A19F /* AddServiceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddServiceViewModel.swift; sourceTree = "<group>"; };
+		2236A1A72F5321E300A7A19F /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
+		2236A1A92F5321E300A7A19F /* FirestoreSchema.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = FirestoreSchema.md; sourceTree = "<group>"; };
+		2236A1AA2F5321E300A7A19F /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
+		2236A1AB2F5321E300A7A19F /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		2236A1AD2F5321E300A7A19F /* JobApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobApplication.swift; sourceTree = "<group>"; };
+		2236A1AE2F5321E300A7A19F /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		2236A1B02F5321E300A7A19F /* ApplicationsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationsStore.swift; sourceTree = "<group>"; };
+		2236A1B92F53220400A7A19F /* ApplicationBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationBadge.swift; sourceTree = "<group>"; };
+		2236A1BB2F53222600A7A19F /* ApplySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplySheet.swift; sourceTree = "<group>"; };
+		2236A1BD2F53223A00A7A19F /* ApplicationsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationsList.swift; sourceTree = "<group>"; };
+		2236A1CB2F5327E600A7A19F /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Library/Mobile Documents/com~apple~CloudDocs/Developer/My Apps/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
+		2236A1D02F53281E00A7A19F /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		2264A02C2F4C6C110004B2B4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		2264A21E2F4F521A0004B2B4 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Library/Mobile Documents/com~apple~CloudDocs/Developer/My Apps/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
+		22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		228B2C802F36048800A4441B /* Saadni */ = {
+		2236A1932F509C1D00A7A19F /* App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Saadni;
+			path = App;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -28,18 +125,278 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2236A19E2F50ADED00A7A19F /* FirebaseDatabase in Frameworks */,
+				2236A1A02F50ADED00A7A19F /* FirebaseFirestore in Frameworks */,
+				2236A1A22F50ADED00A7A19F /* FirebaseMessaging in Frameworks */,
+				2236A1A42F50ADED00A7A19F /* FirebaseRemoteConfig in Frameworks */,
+				2236A1A62F50ADED00A7A19F /* FirebaseStorage in Frameworks */,
+				2236A19C2F50ADED00A7A19F /* FirebaseCore in Frameworks */,
+				2236A19A2F50ADED00A7A19F /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2236A13D2F50949000A7A19F /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				2236A13C2F50949000A7A19F /* DesignSystemButtons.swift */,
+				905C90391D5A4536ABC14678 /* Views */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
+		2236A1422F50949000A7A19F /* Colors */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1412F50949000A7A19F /* Tokens.swift */,
+				2236A1402F50949000A7A19F /* Semantic Colors.swift */,
+				2236A13E2F50949000A7A19F /* Colors Themes.swift */,
+				2236A13F2F50949000A7A19F /* Provider.swift */,
+			);
+			path = Colors;
+			sourceTree = "<group>";
+		};
+		2236A1442F50949000A7A19F /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1B92F53220400A7A19F /* ApplicationBadge.swift */,
+				2236A1432F50949000A7A19F /* ServiceCard.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		2236A1462F50949000A7A19F /* TextField */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1452F50949000A7A19F /* DesignSystemTextFields.swift */,
+			);
+			path = TextField;
+			sourceTree = "<group>";
+		};
+		2236A1472F50949000A7A19F /* Design System */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1422F50949000A7A19F /* Colors */,
+				2236A13D2F50949000A7A19F /* Buttons */,
+				2236A1442F50949000A7A19F /* Components */,
+				2236A1462F50949000A7A19F /* TextField */,
+			);
+			path = "Design System";
+			sourceTree = "<group>";
+		};
+		2236A14A2F50949000A7A19F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */,
+				2236A1482F50949000A7A19F /* Assets.xcassets */,
+				2236A1492F50949000A7A19F /* Saadni.icon */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		2236A14B2F50949000A7A19F /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1472F50949000A7A19F /* Design System */,
+				2236A14A2F50949000A7A19F /* Resources */,
+				2236A1A82F5321E300A7A19F /* Authentication */,
+				2236A1AC2F5321E300A7A19F /* Firebase */,
+				2236A1AF2F5321E300A7A19F /* Models */,
+				2236A1B12F5321E300A7A19F /* Stores */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		2236A1542F50949000A7A19F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				2236A14E2F50949000A7A19F /* JobCategories.swift */,
+				2236A14C2F50949000A7A19F /* FlexibleJobService.swift */,
+				2236A14F2F50949000A7A19F /* ServiceImage.swift */,
+				2236A1502F50949000A7A19F /* ServiceLocation.swift */,
+				2236A1512F50949000A7A19F /* ServiceStatus.swift */,
+				2236A1522F50949000A7A19F /* ShiftSchedule.swift */,
+				2236A1532F50949000A7A19F /* ShiftService.swift */,
+				2236A14D2F50949000A7A19F /* ImagePicker.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		2236A15D2F50949000A7A19F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1552F50949000A7A19F /* AddService.swift */,
+				2236A1562F50949000A7A19F /* AddShift.swift */,
+				2236A1572F50949000A7A19F /* CustomJobInputSheet.swift */,
+				2236A1582F50949000A7A19F /* FlexibleJobCategorySheet.swift */,
+				2236A1592F50949000A7A19F /* Image Picker.swift */,
+				2236A15A2F50949000A7A19F /* JobCategorySheet.swift */,
+				2236A15B2F50949000A7A19F /* JobTypeSelectionSheet.swift */,
+				2236A15C2F50949000A7A19F /* MapSelectionSheet.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2236A15E2F50949000A7A19F /* AddService */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1542F50949000A7A19F /* Models */,
+				2236A18E2F509BF800A7A19F /* ViewModel */,
+				2236A15D2F50949000A7A19F /* Views */,
+			);
+			path = AddService;
+			sourceTree = "<group>";
+		};
+		2236A1602F50949000A7A19F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				2236A15F2F50949000A7A19F /* Service.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		2236A1622F50949000A7A19F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1BB2F53222600A7A19F /* ApplySheet.swift */,
+				2236A1612F50949000A7A19F /* ServiceDetailView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2236A1632F50949000A7A19F /* ServiceDetail */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1602F50949000A7A19F /* Models */,
+				2236A1622F50949000A7A19F /* Views */,
+			);
+			path = ServiceDetail;
+			sourceTree = "<group>";
+		};
+		2236A1642F50949000A7A19F /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				2236A15E2F50949000A7A19F /* AddService */,
+				2236A1632F50949000A7A19F /* ServiceDetail */,
+				2236A1BF2F53223A00A7A19F /* Applications */,
+				2236A1D22F53281E00A7A19F /* Authentication */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		2236A16A2F50949000A7A19F /* MainViews */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1672F50949000A7A19F /* DashboardView.swift */,
+				2236A1662F50949000A7A19F /* ChatView.swift */,
+				2236A1682F50949000A7A19F /* MyJobs.swift */,
+				2236A1692F50949000A7A19F /* ProfileView.swift */,
+				2236A1652F50949000A7A19F /* BrowseJobs.swift */,
+			);
+			path = MainViews;
+			sourceTree = "<group>";
+		};
+		2236A16B2F50949000A7A19F /* Saadni */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1932F509C1D00A7A19F /* App */,
+				2236A14B2F50949000A7A19F /* Core */,
+				2236A1642F50949000A7A19F /* Features */,
+				2236A16A2F50949000A7A19F /* MainViews */,
+			);
+			path = Saadni;
+			sourceTree = "<group>";
+		};
+		2236A18E2F509BF800A7A19F /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				2236A18F2F509C0100A7A19F /* AddServiceViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		2236A1A82F5321E300A7A19F /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1A72F5321E300A7A19F /* AuthenticationManager.swift */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
+		2236A1AC2F5321E300A7A19F /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1A92F5321E300A7A19F /* FirestoreSchema.md */,
+				2236A1AA2F5321E300A7A19F /* FirestoreService.swift */,
+				2236A1AB2F5321E300A7A19F /* StorageService.swift */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		2236A1AF2F5321E300A7A19F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1AD2F5321E300A7A19F /* JobApplication.swift */,
+				2236A1AE2F5321E300A7A19F /* User.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		2236A1B12F5321E300A7A19F /* Stores */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1B02F5321E300A7A19F /* ApplicationsStore.swift */,
+			);
+			path = Stores;
+			sourceTree = "<group>";
+		};
+		2236A1BE2F53223A00A7A19F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1BD2F53223A00A7A19F /* ApplicationsList.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2236A1BF2F53223A00A7A19F /* Applications */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1BE2F53223A00A7A19F /* Views */,
+			);
+			path = Applications;
+			sourceTree = "<group>";
+		};
+		2236A1D12F53281E00A7A19F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1D02F53281E00A7A19F /* AuthenticationView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2236A1D22F53281E00A7A19F /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				2236A1D12F53281E00A7A19F /* Views */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
 		228B2C752F36048800A4441B = {
 			isa = PBXGroup;
 			children = (
 				2264A02C2F4C6C110004B2B4 /* README.md */,
-				228B2C802F36048800A4441B /* Saadni */,
+				2236A16B2F50949000A7A19F /* Saadni */,
 			);
+			sourceTree = "<group>";
+		};
+		905C90391D5A4536ABC14678 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -58,13 +415,20 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				228B2C802F36048800A4441B /* Saadni */,
+				2236A1932F509C1D00A7A19F /* App */,
 			);
 			name = Saadni;
 			packageProductDependencies = (
+				2236A1992F50ADED00A7A19F /* FirebaseAuth */,
+				2236A19B2F50ADED00A7A19F /* FirebaseCore */,
+				2236A19D2F50ADED00A7A19F /* FirebaseDatabase */,
+				2236A19F2F50ADED00A7A19F /* FirebaseFirestore */,
+				2236A1A12F50ADED00A7A19F /* FirebaseMessaging */,
+				2236A1A32F50ADED00A7A19F /* FirebaseRemoteConfig */,
+				2236A1A52F50ADED00A7A19F /* FirebaseStorage */,
 			);
 			productName = Saadni;
-			productReference = 2264A21E2F4F521A0004B2B4 /* Saadni.app */;
+			productReference = 2236A1CB2F5327E600A7A19F /* Saadni.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -91,6 +455,9 @@
 			);
 			mainGroup = 228B2C752F36048800A4441B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				2236A1982F50ADED00A7A19F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 228B2C752F36048800A4441B;
 			projectDirPath = "";
@@ -106,6 +473,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2236A18C2F50949000A7A19F /* Assets.xcassets in Resources */,
+				2236A18D2F50949000A7A19F /* Saadni.icon in Resources */,
+				22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */,
+				2236A1B82F5321E300A7A19F /* FirestoreSchema.md in Resources */,
 				2264A02D2F4C6C110004B2B4 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -117,6 +488,47 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2236A16E2F50949000A7A19F /* DesignSystemButtons.swift in Sources */,
+				2236A16F2F50949000A7A19F /* Colors Themes.swift in Sources */,
+				2236A1702F50949000A7A19F /* Provider.swift in Sources */,
+				2236A1712F50949000A7A19F /* Semantic Colors.swift in Sources */,
+				2236A1902F509C0100A7A19F /* AddServiceViewModel.swift in Sources */,
+				2236A1722F50949000A7A19F /* Tokens.swift in Sources */,
+				2236A1732F50949000A7A19F /* ServiceCard.swift in Sources */,
+				2236A1742F50949000A7A19F /* DesignSystemTextFields.swift in Sources */,
+				2236A1752F50949000A7A19F /* FlexibleJobService.swift in Sources */,
+				2236A1762F50949000A7A19F /* ImagePicker.swift in Sources */,
+				2236A1772F50949000A7A19F /* JobCategories.swift in Sources */,
+				2236A1782F50949000A7A19F /* ServiceImage.swift in Sources */,
+				2236A1792F50949000A7A19F /* ServiceLocation.swift in Sources */,
+				2236A1B22F5321E300A7A19F /* ApplicationsStore.swift in Sources */,
+				2236A1BA2F53220400A7A19F /* ApplicationBadge.swift in Sources */,
+				2236A1B32F5321E300A7A19F /* User.swift in Sources */,
+				2236A1B42F5321E300A7A19F /* AuthenticationManager.swift in Sources */,
+				2236A1B52F5321E300A7A19F /* StorageService.swift in Sources */,
+				2236A1C02F53223A00A7A19F /* ApplicationsList.swift in Sources */,
+				2236A1B62F5321E300A7A19F /* JobApplication.swift in Sources */,
+				2236A1B72F5321E300A7A19F /* FirestoreService.swift in Sources */,
+				2236A17A2F50949000A7A19F /* ServiceStatus.swift in Sources */,
+				2236A17B2F50949000A7A19F /* ShiftSchedule.swift in Sources */,
+				2236A17C2F50949000A7A19F /* ShiftService.swift in Sources */,
+				2236A17D2F50949000A7A19F /* AddService.swift in Sources */,
+				2236A17E2F50949000A7A19F /* AddShift.swift in Sources */,
+				2236A17F2F50949000A7A19F /* CustomJobInputSheet.swift in Sources */,
+				2236A1BC2F53222600A7A19F /* ApplySheet.swift in Sources */,
+				2236A1802F50949000A7A19F /* FlexibleJobCategorySheet.swift in Sources */,
+				2236A1812F50949000A7A19F /* Image Picker.swift in Sources */,
+				2236A1822F50949000A7A19F /* JobCategorySheet.swift in Sources */,
+				2236A1D32F53281E00A7A19F /* AuthenticationView.swift in Sources */,
+				2236A1832F50949000A7A19F /* JobTypeSelectionSheet.swift in Sources */,
+				2236A1842F50949000A7A19F /* MapSelectionSheet.swift in Sources */,
+				2236A1852F50949000A7A19F /* Service.swift in Sources */,
+				2236A1862F50949000A7A19F /* ServiceDetailView.swift in Sources */,
+				2236A1872F50949000A7A19F /* BrowseJobs.swift in Sources */,
+				2236A1882F50949000A7A19F /* ChatView.swift in Sources */,
+				2236A1892F50949000A7A19F /* DashboardView.swift in Sources */,
+				2236A18A2F50949000A7A19F /* MyJobs.swift in Sources */,
+				2236A18B2F50949000A7A19F /* ProfileView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,6 +756,55 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2236A1982F50ADED00A7A19F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2236A1992F50ADED00A7A19F /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2236A1982F50ADED00A7A19F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		2236A19B2F50ADED00A7A19F /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2236A1982F50ADED00A7A19F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		2236A19D2F50ADED00A7A19F /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2236A1982F50ADED00A7A19F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		2236A19F2F50ADED00A7A19F /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2236A1982F50ADED00A7A19F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		2236A1A12F50ADED00A7A19F /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2236A1982F50ADED00A7A19F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+		2236A1A32F50ADED00A7A19F /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2236A1982F50ADED00A7A19F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
+		};
+		2236A1A52F50ADED00A7A19F /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2236A1982F50ADED00A7A19F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 228B2C762F36048800A4441B /* Project object */;
 }

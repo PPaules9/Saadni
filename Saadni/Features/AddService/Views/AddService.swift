@@ -11,26 +11,8 @@ import CoreLocation
 
 struct AddService: View {
  @Environment(\.dismiss) var dismiss
- @State private var title: String = ""
- @State private var price: String = ""
- @State private var position: String = ""
- @State private var description: String = ""
- @State private var selectedImage: UIImage?
- @State private var showImagePicker: Bool = false
- @State private var showMapSheet: Bool = false
- @State private var mapPosition: MapCameraPosition = .region(
-  MKCoordinateRegion(
-   center: CLLocationCoordinate2D(latitude: 26.8206, longitude: 30.8025),
-   span: MKCoordinateSpan(latitudeDelta: 15, longitudeDelta: 15)
-  )
- )
- @State private var selectedLocation: CLLocationCoordinate2D?
- @State private var selectedLocationName: String = ""
-
- // Job Selection States
- @State private var jobType: JobType? = nil
- @State private var selectedJobPath: String = ""
- @State private var showJobTypeSheet: Bool = false
+ @Environment(ServicesStore.self) var servicesStore
+ @State private var viewModel = AddServiceViewModel()
  
  var body: some View {
   ZStack {
@@ -42,7 +24,7 @@ struct AddService: View {
      VStack(spacing: 0) {
       // Image Picker Section
       Group {
-       if let image = selectedImage {
+       if let image = viewModel.selectedImage {
         Image(uiImage: image)
          .resizable()
          .scaledToFill()
@@ -66,7 +48,7 @@ struct AddService: View {
       .frame(height: 200)
       .padding()
       .onTapGesture {
-       showImagePicker = true
+       viewModel.showImagePicker = true
       }
       
       // Form Fields
@@ -77,7 +59,7 @@ struct AddService: View {
          hasTitle: false,
          title: "Title",
          placeholder: "Title",
-         text: $title
+         text: $viewModel.title
         )
         .frame(maxWidth: .infinity)
         
@@ -85,7 +67,7 @@ struct AddService: View {
          hasTitle: false,
          title: "Price",
          placeholder: "Price",
-         text: $price
+         text: $viewModel.price
         )
         .keyboardType(.numberPad)
         .frame(maxWidth: 100)
@@ -103,16 +85,16 @@ struct AddService: View {
        .padding(.horizontal, 20)
 
        // Job Type Selection Button
-       Button(action: { showJobTypeSheet = true }) {
+       Button(action: { viewModel.showJobTypeSheet = true }) {
         HStack {
-         Text(selectedJobPath.isEmpty ? "Select Job Type" : selectedJobPath)
-          .foregroundStyle(selectedJobPath.isEmpty ? Colors.swiftUIColor(.textSecondary) : Colors.swiftUIColor(.textMain))
+         Text(viewModel.jobTypeDisplayName)
+          .foregroundStyle(viewModel.jobType == nil ? Colors.swiftUIColor(.textSecondary) : Colors.swiftUIColor(.textMain))
          Spacer()
          Image(systemName: "chevron.right")
           .foregroundStyle(.gray)
         }
         .padding(16)
-        .background(selectedJobPath.isEmpty ? Colors.swiftUIColor(.textPrimary) : Color.clear)
+        .background(viewModel.jobType == nil ? Colors.swiftUIColor(.textPrimary) : Color.clear)
         .overlay(
          RoundedRectangle(cornerRadius: 100)
           .fill(Color.clear)
@@ -128,13 +110,13 @@ struct AddService: View {
         hasTitle: false,
         title: "Location",
         placeholder: "Location",
-        text: $position
+        text: $viewModel.selectedLocationName
        )
        .padding(.horizontal, 20)
        
        // MapView
        ZStack(alignment: .bottomTrailing) {
-        Map(position: $mapPosition)
+        Map(position: $viewModel.mapPosition)
          .mapStyle(.standard)
          .clipShape(RoundedRectangle(cornerRadius: 24))
 
@@ -150,7 +132,7 @@ struct AddService: View {
        .padding(.horizontal, 20)
        .padding(.vertical, 8)
        .onTapGesture {
-        showMapSheet = true
+        viewModel.showMapSheet = true
        }
        
        // Description Field
@@ -158,57 +140,91 @@ struct AddService: View {
         hasTitle: false,
         title: "Description",
         placeholder: "Description",
-        text: $description
+        text: $viewModel.description
        )
        .padding(.horizontal, 20)
        .padding(.top, 8)
       }
      }
+     
+     VStack(spacing: 16){
+      BrandButton("Publish", hasIcon: true, icon: "list.bullet.rectangle.portrait", secondary: false) {
+
+        if viewModel.jobType == .flexibleJobs,
+           let category = viewModel.selectedFlexibleCategory {
+         if let service = viewModel.createFlexibleJobService(category: category) {
+          print("✅ Created Flexible Job: \(service.title)")
+          servicesStore.addFlexibleJob(service)
+          dismiss()
+         }
+        } else if viewModel.jobType == .shift {
+         if let service = viewModel.createShiftService() {
+          print("✅ Created Shift: \(service.shiftName)")
+          servicesStore.addShift(service)
+          dismiss()
+         }
+        }
+       }
+       .disabled(!viewModel.isFormValid)  // ← Disable if form invalid!
+
+       
+       
+     
+      BrandButton("Draft", hasIcon: true, icon: "archivebox", secondary: true) {
+       if viewModel.jobType == .flexibleJobs,
+          let category = viewModel.selectedFlexibleCategory {
+        if let service = viewModel.createFlexibleJobDraft(category: category) {
+         print("✅ Saved Flexible Job Draft: \(service.title)")
+         servicesStore.addFlexibleJob(service)
+         dismiss()
+        }
+       } else if viewModel.jobType == .shift {
+        if let service = viewModel.createShiftDraft() {
+         print("✅ Saved Shift Draft: \(service.shiftName)")
+         servicesStore.addShift(service)
+         dismiss()
+        }
+       }
+      }
+     }
+     .padding()
     }
     .padding(.bottom)
     .navigationTitle("Add Service")
     .navigationBarTitleDisplayMode(.inline)
-    .toolbar {
-     ToolbarItem(placement: .topBarTrailing) {
-      BrandButton("Publish", hasIcon: false, icon: "") {
-       // Publish action
-      }
 
-     }
-    }
    }
   }
-  .sheet(isPresented: $showImagePicker) {
-   ImagePickerSheet(selectedImage: $selectedImage)
+  .sheet(isPresented: $viewModel.showImagePicker) {
+   ImagePickerSheet(selectedImage: $viewModel.selectedImage)
     .presentationDetents([.fraction(0.3), .fraction(0.55)])
   }
  
   // Step 1 Sheet: Job Type Selection
-  .sheet(isPresented: $showJobTypeSheet) {
+  .sheet(isPresented: $viewModel.showJobTypeSheet) {
    JobTypeSelectionSheet(
-    showSheet: $showJobTypeSheet,
-    jobType: $jobType
+    showSheet: $viewModel.showJobTypeSheet,
+    jobType: $viewModel.jobType
    )
    .presentationDetents([.fraction(0.25)])
-  }
-  // Step 2 Sheet: Job Category Selection
-  .sheet(isPresented: .constant(jobType != nil)) {
-   if let jobType = jobType {
-    JobCategorySheet(
-     jobType: jobType,
-     selectedJobPath: $selectedJobPath,
-     jobType_: $jobType
-    )
+   .onDisappear {
+    if viewModel.jobType != nil {
+     viewModel.showJobCategorySheet = true
+    }
    }
   }
+  // Step 2 Sheet: Job Category Selection
+  .sheet(isPresented: $viewModel.showJobCategorySheet) {
+   JobCategorySheet(viewModel: viewModel)
+  }
   
   
-  .sheet(isPresented: $showMapSheet) {
+  .sheet(isPresented: $viewModel.showMapSheet) {
    MapSelectionSheet(
-    mapPosition: $mapPosition,
-    selectedLocation: $selectedLocation,
-    selectedLocationName: $selectedLocationName,
-    position: $position
+    mapPosition: $viewModel.mapPosition,
+    selectedLocation: $viewModel.selectedLocation,
+    selectedLocationName: $viewModel.selectedLocationName,
+    position: $viewModel.selectedLocationName
    )
   }
   
