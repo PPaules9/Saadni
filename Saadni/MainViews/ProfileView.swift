@@ -175,7 +175,7 @@ struct ProfileView: View {
     .navigationTitle("Profile")
     .toolbar{
      ToolbarItem(placement: .topBarTrailing) {
-      BrandButton("Add Service", hasIcon: false, icon: "") {
+      BrandButton("Add Service", hasIcon: false, icon: "", secondary: false) {
        addService = true
       }
      }

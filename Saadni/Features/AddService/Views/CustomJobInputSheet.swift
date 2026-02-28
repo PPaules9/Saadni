@@ -9,8 +9,7 @@ import SwiftUI
 
 struct CustomJobInputSheet: View {
  @Binding var customJobName: String
- @Binding var selectedJobPath: String
- @Binding var jobType: JobType?
+ @Bindable var viewModel: AddServiceViewModel
  @Binding var isPresented: Bool
  let dismissParent: () -> Void
  let jobTypeLabel: String
@@ -39,8 +38,7 @@ struct CustomJobInputSheet: View {
 
      Button(action: {
       if !customJobName.trimmingCharacters(in: .whitespaces).isEmpty {
-       selectedJobPath = "\(jobTypeLabel): \(customJobName)"
-       jobType = nil
+       viewModel.selectedJobPath = "\(jobTypeLabel): \(customJobName)"
        isPresented = false
        dismissParent()
       }
@@ -66,8 +64,7 @@ struct CustomJobInputSheet: View {
 #Preview {
  CustomJobInputSheet(
   customJobName: .constant(""),
-  selectedJobPath: .constant(""),
-  jobType: .constant(.flexibleJobs),
+  viewModel: AddServiceViewModel(),
   isPresented: .constant(true),
   dismissParent: {},
   jobTypeLabel: "Flexible"

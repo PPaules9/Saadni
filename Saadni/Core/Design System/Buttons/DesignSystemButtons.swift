@@ -39,46 +39,82 @@ struct BrandButton: View {
  let isDisabled: Bool
  let hasIcon: Bool
  let icon: String
+ let secondary: Bool
  let action: () -> Void
  
- init( _ title: String, size: ButtonSize = .medium, isDisabled: Bool = false, hasIcon: Bool, icon: String, action: @escaping () -> Void ){
+ init( _ title: String, size: ButtonSize = .medium, isDisabled: Bool = false, hasIcon: Bool, icon: String, secondary: Bool, action: @escaping () -> Void ){
   self.title = title
   self.size = size
   self.isDisabled = isDisabled
   self.hasIcon = hasIcon
   self.icon = icon
+  self.secondary = secondary
   self.action = action
  }
  
  var body: some View {
-  Button(action: action) {
-   HStack(spacing: 8){
-    Spacer()
-    if hasIcon {
-     Image(systemName: icon)
-      .font(.system(size: 16, weight: .semibold))
-      .foregroundStyle(Colors.swiftUIColor(.textPrimary))
-
+ 
+   if secondary {
+    Button(action: action) {
+     HStack(spacing: 8){
+      Spacer()
+      if hasIcon {
+       Image(systemName: icon)
+        .font(.system(size: 12, weight: .semibold))
+        .foregroundStyle(.accent)
+      }
+      Text(title)
+       .font(.system(size: size.fontSize, weight: .semibold))
+       .frame(height: size.height)
+       .contentShape(Rectangle())
+       .foregroundStyle(.accent)
+      Spacer()
+     }
+     .frame(maxWidth: .infinity)
+     .disabled(isDisabled)
+     .opacity(isDisabled ? 0.5 : 1.0)
     }
-    Text(title)
-     .font(.system(size: size.fontSize, weight: .semibold))
-     .frame(height: size.height)
-     .contentShape(Rectangle())
-     .foregroundStyle(Colors.swiftUIColor(.textPrimary))
-    Spacer()
+    .overlay(
+     RoundedRectangle(cornerRadius: 35)
+      .strokeBorder(.accent, lineWidth: 1)
+//      .strokeBorder(Color.clear)
+    )
+    .glassEffect(.regular)
+
+   } else {
+    Button(action: action) {
+    HStack(spacing: 8){
+     Spacer()
+     if hasIcon {
+      Image(systemName: icon)
+       .font(.system(size: 12, weight: .semibold))
+       .foregroundStyle(Colors.swiftUIColor(.textPrimary))
+      
+     }
+     Text(title)
+      .font(.system(size: size.fontSize, weight: .semibold))
+      .frame(height: size.height)
+      .contentShape(Rectangle())
+      .foregroundStyle(Colors.swiftUIColor(.textPrimary))
+     Spacer()
+    }
+    .frame(maxWidth: .infinity)
+    .disabled(isDisabled)
+    .opacity(isDisabled ? 0.5 : 1.0)
+
    }
-   .frame(maxWidth: .infinity)
+    .glassEffect(.regular.tint(.accent))
   }
-  .disabled(isDisabled)
-  .opacity(isDisabled ? 0.5 : 1.0)
-  .glassEffect(.regular.tint(.accent))
  }
 }
 
 
 #Preview {
- BrandButton("Publish", hasIcon: false, icon: "") {
+ BrandButton("Publish", hasIcon: false, icon: "", secondary: false) {
   // Publish action
  }
-
+ BrandButton("Publish", hasIcon: true, icon: "trash", secondary: true) {
+  // Publish action
+ }
+ 
 }

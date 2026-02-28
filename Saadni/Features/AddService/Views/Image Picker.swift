@@ -85,12 +85,12 @@ struct ImagePickerSheet: View {
    VStack(alignment: .leading, spacing: 8){
     // Camera button
     if UIImagePickerController.isSourceTypeAvailable(.camera) {
-     BrandButton("Take a Photo", hasIcon: true, icon: "camera.fill") {
+     BrandButton("Take a Photo", hasIcon: true, icon: "camera.fill", secondary: false) {
       selectedSource = .camera
      }
     }
     
-    BrandButton("Choose from Library", hasIcon: true, icon: "photo.fill") {
+    BrandButton("Choose from Library", hasIcon: true, icon: "photo.fill", secondary: false) {
      selectedSource = .photoLibrary
      
     }

@@ -8,25 +8,12 @@
 import SwiftUI
 
 struct AddShift: View {
- @Binding var selectedJobPath: String
- @Binding var jobType: JobType?
+ @Bindable var viewModel: AddServiceViewModel
  @Environment(\.dismiss) var dismiss
-
- @State private var shiftName: String = ""
- @State private var selectedCategory: ShiftCategory? = .barista
- @State private var customCategoryName: String = ""
- @State private var useCustomCategory: Bool = false
- @State private var startTime: Date = Date()
- @State private var endTime: Date = Date().addingTimeInterval(3600 * 8)
- @State private var startDate: Date = Date()
- @State private var isRepeated: Bool = false
- @State private var selectedDates: Set<Date> = []
- @State private var repeatEndDate: Date = Date().addingTimeInterval(86400 * 26)
- @State private var description: String = ""
- @State private var showCalendar: Bool = false
+ var parentDismiss: DismissAction? = nil
 
  var repeatedDatesCount: Int {
-  selectedDates.count
+  viewModel.selectedDates.count
  }
 
  var canAddMoreDates: Bool {
@@ -43,12 +30,12 @@ struct AddShift: View {
        Text("Shift Name")
         .font(.subheadline)
         .bold()
-       
+
        BrandTextField(
         hasTitle: false,
         title: "Name",
         placeholder: "e.g., Morning Shift",
-        text: $shiftName
+        text: $viewModel.shiftName
        )
       }
       
@@ -61,27 +48,27 @@ struct AddShift: View {
        Menu {
         ForEach(ShiftCategory.allCases, id: \.self) { category in
          Button(action: {
-          selectedCategory = category
-          useCustomCategory = false
+          viewModel.selectedCategory = category
+          viewModel.useCustomCategory = false
          }) {
           HStack {
            Text(category.rawValue)
-           if !useCustomCategory && selectedCategory == category {
+           if !viewModel.useCustomCategory && viewModel.selectedCategory == category {
             Image(systemName: "checkmark")
              .foregroundStyle(.accent)
            }
           }
          }
         }
-        
+
         Divider()
-        
+
         Button(action: {
-         useCustomCategory = true
+         viewModel.useCustomCategory = true
         }) {
          HStack {
           Text("Custom Category")
-          if useCustomCategory {
+          if viewModel.useCustomCategory {
            Image(systemName: "checkmark")
             .foregroundStyle(.accent)
           }
@@ -89,7 +76,7 @@ struct AddShift: View {
         }
        } label: {
         HStack {
-         Text(useCustomCategory ? customCategoryName.isEmpty ? "Enter custom..." : customCategoryName : selectedCategory?.rawValue ?? "Select Category")
+         Text(viewModel.useCustomCategory ? viewModel.customCategoryName.isEmpty ? "Enter custom..." : viewModel.customCategoryName : viewModel.selectedCategory?.rawValue ?? "Select Category")
           .foregroundStyle(.primary)
          Spacer()
          Image(systemName: "chevron.down")
@@ -104,13 +91,13 @@ struct AddShift: View {
           .stroke(.gray.opacity(0.3), lineWidth: 1)
         )
        }
-       
-       if useCustomCategory {
+
+       if viewModel.useCustomCategory {
         BrandTextField(
          hasTitle: false,
          title: "Custom Category",
          placeholder: "Enter shift category",
-         text: $customCategoryName
+         text: $viewModel.customCategoryName
         )
        }
       }
@@ -121,29 +108,29 @@ struct AddShift: View {
         Text("This Shift Will Be On")
          .font(.subheadline)
          .bold()
-        
+
         Spacer()
-        
+
         DatePicker(
          "",
-         selection: $startDate,
+         selection: $viewModel.startDate,
          displayedComponents: .date
         )
         .labelsHidden()
         .padding(8)
         .background(Colors.swiftUIColor(.textPrimary))
         .cornerRadius(32)
-        
+
        }
        HStack{
         VStack{
          Text("Starting From")
           .font(.subheadline)
           .bold()
-         
+
          DatePicker(
           "",
-          selection: $startTime,
+          selection: $viewModel.startTime,
           displayedComponents: .hourAndMinute
          )
          .labelsHidden()
@@ -151,18 +138,18 @@ struct AddShift: View {
          .background(Colors.swiftUIColor(.textPrimary))
          .cornerRadius(32)
         }
-        
+
         Spacer()
-        
+
         // End Time
         VStack(alignment: .leading, spacing: 8) {
          Text("End Time")
           .font(.subheadline)
           .bold()
-         
+
          DatePicker(
           "End Time",
-          selection: $endTime,
+          selection: $viewModel.endTime,
           displayedComponents: .hourAndMinute
          )
          .labelsHidden()
@@ -186,21 +173,21 @@ struct AddShift: View {
 
         Spacer()
 
-        Toggle("", isOn: $isRepeated)
+        Toggle("", isOn: $viewModel.isRepeated)
          .tint(.accent)
        }
 
-       if isRepeated {
+       if viewModel.isRepeated {
         VStack(alignment: .leading, spacing: 12) {
          HStack {
           if canAddMoreDates {
-           
+
           } else {
            Text("Limit reached")
             .font(.caption)
             .foregroundStyle(.accent)
           }
-          
+
           Spacer()
           Text("Selected days: \(repeatedDatesCount)/26")
            .font(.caption)
@@ -209,9 +196,9 @@ struct AddShift: View {
 
          // Calendar Preview
          CalendarPickerView(
-          selectedDates: $selectedDates,
+          selectedDates: $viewModel.selectedDates,
           maxDates: 26,
-          startDate: startDate
+          startDate: viewModel.startDate
          )
 
 
@@ -232,7 +219,7 @@ struct AddShift: View {
         hasTitle: false,
         title: "Description",
         placeholder: "Add any details about this shift",
-        text: $description
+        text: $viewModel.description
        )
       }
      }
@@ -243,8 +230,9 @@ struct AddShift: View {
 
     HStack(spacing: 12) {
      Button(action: {
-      jobType = nil
+      viewModel.jobType = nil
       dismiss()
+      parentDismiss?()
      }) {
       Text("Cancel")
        .frame(maxWidth: .infinity)
@@ -255,24 +243,24 @@ struct AddShift: View {
      }
 
      Button(action: {
-      let isValid = !shiftName.trimmingCharacters(in: .whitespaces).isEmpty &&
-                    (useCustomCategory ? !customCategoryName.trimmingCharacters(in: .whitespaces).isEmpty : selectedCategory != nil)
+      let isValid = !viewModel.shiftName.trimmingCharacters(in: .whitespaces).isEmpty &&
+                    (viewModel.useCustomCategory ? !viewModel.customCategoryName.trimmingCharacters(in: .whitespaces).isEmpty : viewModel.selectedCategory != nil)
 
       if isValid {
        let dateFormatter = DateFormatter()
        dateFormatter.dateFormat = "hh:mm a"
-       let startTimeStr = dateFormatter.string(from: startTime)
-       let endTimeStr = dateFormatter.string(from: endTime)
+       let startTimeStr = dateFormatter.string(from: viewModel.startTime)
+       let endTimeStr = dateFormatter.string(from: viewModel.endTime)
 
        let dateOnlyFormatter = DateFormatter()
        dateOnlyFormatter.dateFormat = "d MMM yyyy"
-       let startDateStr = dateOnlyFormatter.string(from: startDate)
+       let startDateStr = dateOnlyFormatter.string(from: viewModel.startDate)
 
-       let categoryName = useCustomCategory ? customCategoryName : (selectedCategory?.rawValue ?? "Unknown")
-       let repeatInfo = isRepeated ? " (Repeats: \(repeatedDatesCount) days)" : ""
-       selectedJobPath = "Shift: \(shiftName) - \(categoryName) - \(startTimeStr) to \(endTimeStr) - \(startDateStr)\(repeatInfo)"
-       jobType = nil
+       let categoryName = viewModel.useCustomCategory ? viewModel.customCategoryName : (viewModel.selectedCategory?.rawValue ?? "Unknown")
+       let repeatInfo = viewModel.isRepeated ? " (Repeats: \(repeatedDatesCount) days)" : ""
+       viewModel.selectedJobPath = "Shift: \(viewModel.shiftName) - \(categoryName) - \(startTimeStr) to \(endTimeStr) - \(startDateStr)\(repeatInfo)"
        dismiss()
+       parentDismiss?()
       }
      }) {
       Text("Confirm")
@@ -282,8 +270,8 @@ struct AddShift: View {
        .cornerRadius(100)
        .foregroundStyle(.white)
      }
-     .disabled(shiftName.trimmingCharacters(in: .whitespaces).isEmpty ||
-               (useCustomCategory && customCategoryName.trimmingCharacters(in: .whitespaces).isEmpty))
+     .disabled(viewModel.shiftName.trimmingCharacters(in: .whitespaces).isEmpty ||
+               (viewModel.useCustomCategory && viewModel.customCategoryName.trimmingCharacters(in: .whitespaces).isEmpty))
     }
     .padding(20)
    }
@@ -371,9 +359,6 @@ struct CalendarPickerView: View {
 }
 
 #Preview {
- AddShift(
-  selectedJobPath: .constant(""),
-  jobType: .constant(.shift)
- )
+ AddShift(viewModel: AddServiceViewModel())
 }
  
