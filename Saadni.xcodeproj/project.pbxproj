@@ -53,7 +53,6 @@
 		2236A1B52F5321E300A7A19F /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1AB2F5321E300A7A19F /* StorageService.swift */; };
 		2236A1B62F5321E300A7A19F /* JobApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1AD2F5321E300A7A19F /* JobApplication.swift */; };
 		2236A1B72F5321E300A7A19F /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1AA2F5321E300A7A19F /* FirestoreService.swift */; };
-		2236A1B82F5321E300A7A19F /* FirestoreSchema.md in Resources */ = {isa = PBXBuildFile; fileRef = 2236A1A92F5321E300A7A19F /* FirestoreSchema.md */; };
 		2236A1BA2F53220400A7A19F /* ApplicationBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1B92F53220400A7A19F /* ApplicationBadge.swift */; };
 		2236A1BC2F53222600A7A19F /* ApplySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1BB2F53222600A7A19F /* ApplySheet.swift */; };
 		2236A1C02F53223A00A7A19F /* ApplicationsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1BD2F53223A00A7A19F /* ApplicationsList.swift */; };
@@ -97,7 +96,6 @@
 		2236A1692F50949000A7A19F /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		2236A18F2F509C0100A7A19F /* AddServiceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddServiceViewModel.swift; sourceTree = "<group>"; };
 		2236A1A72F5321E300A7A19F /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
-		2236A1A92F5321E300A7A19F /* FirestoreSchema.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = FirestoreSchema.md; sourceTree = "<group>"; };
 		2236A1AA2F5321E300A7A19F /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
 		2236A1AB2F5321E300A7A19F /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		2236A1AD2F5321E300A7A19F /* JobApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobApplication.swift; sourceTree = "<group>"; };
@@ -106,10 +104,10 @@
 		2236A1B92F53220400A7A19F /* ApplicationBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationBadge.swift; sourceTree = "<group>"; };
 		2236A1BB2F53222600A7A19F /* ApplySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplySheet.swift; sourceTree = "<group>"; };
 		2236A1BD2F53223A00A7A19F /* ApplicationsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationsList.swift; sourceTree = "<group>"; };
-		2236A1CB2F5327E600A7A19F /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Library/Mobile Documents/com~apple~CloudDocs/Developer/My Apps/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
 		2236A1D02F53281E00A7A19F /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		2264A02C2F4C6C110004B2B4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		22D6C2C02F5360560071BAC9 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Library/Mobile Documents/com~apple~CloudDocs/Developer/My Apps/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -142,7 +140,6 @@
 			isa = PBXGroup;
 			children = (
 				2236A13C2F50949000A7A19F /* DesignSystemButtons.swift */,
-				905C90391D5A4536ABC14678 /* Views */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -328,7 +325,6 @@
 		2236A1AC2F5321E300A7A19F /* Firebase */ = {
 			isa = PBXGroup;
 			children = (
-				2236A1A92F5321E300A7A19F /* FirestoreSchema.md */,
 				2236A1AA2F5321E300A7A19F /* FirestoreService.swift */,
 				2236A1AB2F5321E300A7A19F /* StorageService.swift */,
 			);
@@ -392,13 +388,6 @@
 			);
 			sourceTree = "<group>";
 		};
-		905C90391D5A4536ABC14678 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -428,7 +417,7 @@
 				2236A1A52F50ADED00A7A19F /* FirebaseStorage */,
 			);
 			productName = Saadni;
-			productReference = 2236A1CB2F5327E600A7A19F /* Saadni.app */;
+			productReference = 22D6C2C02F5360560071BAC9 /* Saadni.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -476,7 +465,6 @@
 				2236A18C2F50949000A7A19F /* Assets.xcassets in Resources */,
 				2236A18D2F50949000A7A19F /* Saadni.icon in Resources */,
 				22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */,
-				2236A1B82F5321E300A7A19F /* FirestoreSchema.md in Resources */,
 				2264A02D2F4C6C110004B2B4 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
