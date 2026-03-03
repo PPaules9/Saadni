@@ -11,7 +11,7 @@ enum AuthenticationState {
 @Observable
 class AuthenticationManager {
     // MARK: - State
-    var authState: AuthenticationState = .unauthenticated
+    var authState: AuthenticationState = .authenticating
     var errorMessage: String?
 
     private var authStateHandle: AuthStateDidChangeListenerHandle?
@@ -55,13 +55,20 @@ class AuthenticationManager {
             guard let self = self else { return }
 
             if let firebaseUser = firebaseUser {
-                // User is signed in
-                let user = User(from: firebaseUser)
-                self.authState = .authenticated(user)
-
-                // Update user in Firestore (will implement in Phase 2)
+                // User is signed in - try to fetch from Firestore first
                 Task {
-                    await self.updateUserInFirestore(user)
+                    if let existingUser = try? await FirestoreService.shared.fetchUser(id: firebaseUser.uid) {
+                        await MainActor.run {
+                            self.authState = .authenticated(existingUser)
+                        }
+                    } else {
+                        // New user - create with default roles
+                        let user = User(from: firebaseUser)
+                        await MainActor.run {
+                            self.authState = .authenticated(user)
+                        }
+                        await self.updateUserInFirestore(user)
+                    }
                 }
             } else {
                 // User is signed out
@@ -140,9 +147,13 @@ class AuthenticationManager {
         authState = .unauthenticated
     }
 
-    // MARK: - Firestore Integration (stub for Phase 2)
+    // MARK: - Firestore Integration
     private func updateUserInFirestore(_ user: User) async {
-        // Will implement in Phase 2
-        print("📝 User \(user.id) would be saved to Firestore")
+        do {
+            try await FirestoreService.shared.saveUser(user)
+            print("✅ User \(user.id) saved to Firestore")
+        } catch {
+            print("❌ Failed to save user to Firestore: \(error.localizedDescription)")
+        }
     }
 }

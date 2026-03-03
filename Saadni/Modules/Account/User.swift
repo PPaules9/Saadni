@@ -36,8 +36,8 @@ struct User: Codable, Identifiable, Hashable {
         self.phoneNumber = firebaseUser.phoneNumber
         self.createdAt = firebaseUser.metadata.creationDate ?? Date()
         self.lastLoginAt = Date()
-        self.isServiceProvider = true
-        self.isJobSeeker = true
+        self.isServiceProvider = false
+        self.isJobSeeker = false
         self.totalJobsPosted = 0
         self.totalJobsCompleted = 0
         self.rating = nil

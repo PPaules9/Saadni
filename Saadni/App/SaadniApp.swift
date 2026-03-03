@@ -12,18 +12,20 @@ import FirebaseCore
 
 @main
 struct SaadniApp: App {
-
+ 
  @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
  @State private var servicesStore = ServicesStore()
  @State private var authManager = AuthenticationManager()
  @State private var applicationsStore = ApplicationsStore()
-
+ @State private var appStateManager = AppStateManager()
+ 
  var body: some Scene {
   WindowGroup {
    MainView()
     .environment(servicesStore)
     .environment(authManager)
     .environment(applicationsStore)
+    .environment(appStateManager)
     .onChange(of: authManager.currentUserId) { oldValue, newValue in
      if let userId = newValue {
       applicationsStore.setupListeners(userId: userId)
@@ -34,8 +36,6 @@ struct SaadniApp: App {
   }
  }
 }
-
-
 
 
 class AppDelegate: NSObject, UIApplicationDelegate {

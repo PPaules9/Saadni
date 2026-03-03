@@ -36,11 +36,6 @@ struct BrowseJobs: View {
       }
       
       // Underline indicator
-      HStack(spacing: 0) {
-       tabUnderlineIndicator(isSelected: selectedTab == .flexibleJobs)
-       tabUnderlineIndicator(isSelected: selectedTab == .shift)
-      }
-      .frame(height: 2)
      }
      
      // Tab Content
@@ -54,7 +49,6 @@ struct BrowseJobs: View {
      }
      .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
     }
-    .navigationTitle("Jobs Feed")
    }
   }
  }

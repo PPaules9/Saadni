@@ -11,9 +11,10 @@ import CoreLocation
 
 struct AddService: View {
  @Environment(\.dismiss) var dismiss
+ @Environment(AuthenticationManager.self) var authManager
  @Environment(ServicesStore.self) var servicesStore
  @State private var viewModel = AddServiceViewModel()
- 
+
  var body: some View {
   ZStack {
    Color(Colors.swiftUIColor(.appBackground))
@@ -154,18 +155,18 @@ struct AddService: View {
            let category = viewModel.selectedFlexibleCategory {
          if let service = viewModel.createFlexibleJobService(category: category) {
           print("✅ Created Flexible Job: \(service.title)")
-          servicesStore.addFlexibleJob(service)
+          servicesStore.addFlexibleJob(service, image: viewModel.selectedImage)
           dismiss()
          }
         } else if viewModel.jobType == .shift {
          if let service = viewModel.createShiftService() {
           print("✅ Created Shift: \(service.shiftName)")
-          servicesStore.addShift(service)
+          servicesStore.addShift(service, image: viewModel.selectedImage)
           dismiss()
          }
         }
        }
-       .disabled(!viewModel.isFormValid)  // ← Disable if form invalid!
+       .disabled(!viewModel.isFormValid)
 
        
        
@@ -175,13 +176,13 @@ struct AddService: View {
           let category = viewModel.selectedFlexibleCategory {
         if let service = viewModel.createFlexibleJobDraft(category: category) {
          print("✅ Saved Flexible Job Draft: \(service.title)")
-         servicesStore.addFlexibleJob(service)
+         servicesStore.addFlexibleJob(service, image: viewModel.selectedImage)
          dismiss()
         }
        } else if viewModel.jobType == .shift {
         if let service = viewModel.createShiftDraft() {
          print("✅ Saved Shift Draft: \(service.shiftName)")
-         servicesStore.addShift(service)
+         servicesStore.addShift(service, image: viewModel.selectedImage)
          dismiss()
         }
        }
@@ -194,6 +195,9 @@ struct AddService: View {
     .navigationBarTitleDisplayMode(.inline)
 
    }
+  }
+  .onAppear {
+   viewModel.currentUserId = authManager.currentUserId
   }
   .sheet(isPresented: $viewModel.showImagePicker) {
    ImagePickerSheet(selectedImage: $viewModel.selectedImage)

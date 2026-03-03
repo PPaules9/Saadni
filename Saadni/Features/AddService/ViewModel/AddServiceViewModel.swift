@@ -8,6 +8,7 @@
 
 import SwiftUI
 import MapKit
+import FirebaseFirestore
 
 @Observable
 class AddServiceViewModel {
@@ -19,7 +20,8 @@ class AddServiceViewModel {
  var selectedLocation: CLLocationCoordinate2D?
  var selectedLocationName: String = ""
  var jobType: JobType? = nil
- 
+ var currentUserId: String?
+
  // MARK: - Shift Properties
  var shiftName: String = ""
  var selectedCategory: ShiftCategory? = .barista
@@ -30,11 +32,11 @@ class AddServiceViewModel {
  var startDate: Date = Date()
  var isRepeated: Bool = false
  var selectedDates: Set<Date> = []
- 
+
  // MARK: - Flexible Job Properties
  var selectedFlexibleCategory: FlexibleJobCategory? = nil
 
- 
+
  // MARK: - UI State
  var showImagePicker: Bool = false
  var showMapSheet: Bool = false
@@ -76,10 +78,9 @@ class AddServiceViewModel {
  
  func createFlexibleJobService(category: FlexibleJobCategory) -> FlexibleJobService? {
   guard isFormValid else { return nil }
-  
-  guard let priceValue = Double(price)
-  else { return nil }
-  
+  guard let priceValue = Double(price) else { return nil }
+  guard let providerId = currentUserId else { return nil }
+
   let serviceLocation = ServiceLocation(
    name: selectedLocationName,
    coordinate: selectedLocation
@@ -90,7 +91,7 @@ class AddServiceViewModel {
    remoteURL: nil,
    localImage: selectedImage
   )
-  
+
   return FlexibleJobService(
    id: UUID().uuidString,
    title: title,
@@ -99,7 +100,7 @@ class AddServiceViewModel {
    description: description,
    image: serviceImage,
    createdAt: Date(),
-   providerId: "temp_provider_123",
+   providerId: providerId,
    providerName: nil,
    providerImageURL: nil,
    status: .published,
@@ -111,37 +112,36 @@ class AddServiceViewModel {
  func createShiftService() -> ShiftService? {
   // Step 1: Validation
   guard isFormValid else { return nil }
-
-  // Step 2: Convert price to Double
   guard let priceValue = Double(price) else { return nil }
+  guard let providerId = currentUserId else { return nil }
 
-  // Step 3: Create ServiceLocation (same as flexible job)
+  // Step 2: Create ServiceLocation
   let serviceLocation = ServiceLocation(
    name: selectedLocationName,
    coordinate: selectedLocation
   )
 
-  // Step 4: Create ServiceImage (same as flexible job)
+  // Step 3: Create ServiceImage
   let serviceImage = ServiceImage(
    localId: UUID().uuidString,
    remoteURL: nil,
    localImage: selectedImage
   )
 
-  // Step 5: Create ShiftSchedule - NEW!
+  // Step 4: Create ShiftSchedule
   let shiftSchedule = ShiftSchedule(
    startDate: startDate,
    startTime: startTime,
    endTime: endTime,
    isRepeated: isRepeated,
-   repeatDates: Array(selectedDates) // Convert Set<Date> to [Date]
+   repeatDates: Array(selectedDates)
   )
 
-  // Step 6: Determine category vs customCategory
+  // Step 5: Determine category vs customCategory
   let finalCategory: ShiftCategory? = useCustomCategory ? nil : selectedCategory
   let finalCustomCategory: String? = useCustomCategory ? customCategoryName : nil
 
-  // Step 7: Create and return ShiftService
+  // Step 6: Create and return ShiftService
   return ShiftService(
    id: UUID().uuidString,
    title: title,
@@ -150,7 +150,7 @@ class AddServiceViewModel {
    description: description,
    image: serviceImage,
    createdAt: Date(),
-   providerId: "temp_provider_123",
+   providerId: providerId,
    providerName: nil,
    providerImageURL: nil,
    status: .published,
@@ -164,8 +164,8 @@ class AddServiceViewModel {
 
  // MARK: - Draft Methods
  func createFlexibleJobDraft(category: FlexibleJobCategory) -> FlexibleJobService? {
-  guard let priceValue = Double(price), !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-  else { return nil }
+  guard let priceValue = Double(price), !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+  guard let providerId = currentUserId else { return nil }
 
   let serviceLocation = ServiceLocation(
    name: selectedLocationName,
@@ -186,7 +186,7 @@ class AddServiceViewModel {
    description: description,
    image: serviceImage,
    createdAt: Date(),
-   providerId: "temp_provider_123",
+   providerId: providerId,
    providerName: nil,
    providerImageURL: nil,
    status: .draft,
@@ -196,8 +196,8 @@ class AddServiceViewModel {
  }
 
  func createShiftDraft() -> ShiftService? {
-  guard let priceValue = Double(price), !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-  else { return nil }
+  guard let priceValue = Double(price), !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+  guard let providerId = currentUserId else { return nil }
 
   let serviceLocation = ServiceLocation(
    name: selectedLocationName,
@@ -229,7 +229,7 @@ class AddServiceViewModel {
    description: description,
    image: serviceImage,
    createdAt: Date(),
-   providerId: "temp_provider_123",
+   providerId: providerId,
    providerName: nil,
    providerImageURL: nil,
    status: .draft,
@@ -317,13 +317,25 @@ class ServicesStore {
             }
     }
 
-    // MARK: - Add Services (with Firestore)
+    // MARK: - Add Services (with Image Upload)
 
-    func addFlexibleJob(_ service: FlexibleJobService) {
+    func addFlexibleJob(_ service: FlexibleJobService, image: UIImage?) {
         Task {
             do {
+                var serviceData = service.toFirestore()
+
+                // Upload image if provided
+                if let image = image {
+                    let imageURL = try await StorageService.shared.uploadServiceImage(image, serviceId: service.id)
+                    // Update image data with remote URL
+                    if var imageDict = serviceData["image"] as? [String: Any] {
+                        imageDict["remoteURL"] = imageURL
+                        serviceData["image"] = imageDict
+                    }
+                }
+
                 let docRef = db.collection("services").document(service.id)
-                try await docRef.setData(service.toFirestore())
+                try await docRef.setData(serviceData)
                 print("✅ Flexible job added to Firestore: \(service.id)")
             } catch {
                 print("❌ Error adding flexible job: \(error)")
@@ -331,11 +343,23 @@ class ServicesStore {
         }
     }
 
-    func addShift(_ service: ShiftService) {
+    func addShift(_ service: ShiftService, image: UIImage?) {
         Task {
             do {
+                var serviceData = service.toFirestore()
+
+                // Upload image if provided
+                if let image = image {
+                    let imageURL = try await StorageService.shared.uploadServiceImage(image, serviceId: service.id)
+                    // Update image data with remote URL
+                    if var imageDict = serviceData["image"] as? [String: Any] {
+                        imageDict["remoteURL"] = imageURL
+                        serviceData["image"] = imageDict
+                    }
+                }
+
                 let docRef = db.collection("services").document(service.id)
-                try await docRef.setData(service.toFirestore())
+                try await docRef.setData(serviceData)
                 print("✅ Shift added to Firestore: \(service.id)")
             } catch {
                 print("❌ Error adding shift: \(error)")

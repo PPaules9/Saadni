@@ -6,62 +6,47 @@
 //
 
 import SwiftUI
-// Imports are provided by module (same target)
 
 struct MainView: View {
  @Environment(AuthenticationManager.self) var authManager
-
+ @Environment(AppStateManager.self) var appStateManager
+ 
  var body: some View {
   Group {
    switch authManager.authState {
-   case .unauthenticated, .authenticating:
-    AuthenticationView()
-   case .authenticated:
-    authenticatedContent
+   case .authenticating:
+    ProgressView()
+     .tint(.accent)
+   case .unauthenticated:
+    if appStateManager.hasSeenOnboarding {
+     AuthenticationView()
+    } else {
+     OnboardingView()
+    }
+   case .authenticated(let user):
+    if appStateManager.hasSelectedRole {
+     authenticatedContent(for: user)
+    } else {
+     RoleSelectionView()
+    }
    }
   }
  }
-
- private var authenticatedContent: some View {
-  TabView {
-   Tab("Dashboard", systemImage: "house") {
-    NavigationStack{
-     DashboardView()
-    }
-   }
-
-   Tab("Chat", systemImage: "text.bubble.fill") {
-    NavigationStack{
-     ChatView()
-    }
-   }
-
-   Tab("My Jobs", systemImage: "bag.fill") {
-    NavigationStack{
-     MyJobs()
-    }
-   }
-
-
-   Tab("Profile", systemImage: "person.fill") {
-    NavigationStack{
-     ProfileView()
-    }
-   }
-
-   Tab(role: .search){
-    NavigationStack{
-     BrowseJobs()
-    }
-   }
-
-
+ 
+ @ViewBuilder
+ private func authenticatedContent(for user: User) -> some View {
+  if user.isJobSeeker {
+   NeedJobView()
+  } else if user.isServiceProvider {
+   NeedHelpView()
+  } else {
+   NeedJobView()
   }
-  .tint(.accent)
-  .background(Colors.swiftUIColor(.appBackground))
  }
 }
 
 #Preview {
  MainView()
+  .environment(AuthenticationManager())
+  .environment(AppStateManager())
 }
