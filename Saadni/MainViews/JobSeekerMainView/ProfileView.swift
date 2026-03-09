@@ -126,12 +126,14 @@ struct ProfileView: View {
          icon: "door.left.hand.open",
          title: "Log Out",
          action: {
-          do {
-           try authManager.signOut()
-           appStateManager.resetOnboarding()
-           appStateManager.resetRoleSelection()
-          } catch {
-           print("Logout error: \(error)")
+          Task {
+           do {
+            try authManager.signOut()
+            try await appStateManager.resetOnboarding()
+            try await appStateManager.resetRoleSelection()
+           } catch {
+            print("Logout error: \(error)")
+           }
           }
          }
         )

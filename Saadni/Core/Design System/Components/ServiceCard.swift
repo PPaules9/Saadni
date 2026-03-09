@@ -161,7 +161,7 @@ struct ServiceCard: View {
       providerImageURL: nil,
       status: .published,
       isFeatured: false,
-      category: .helpCleaning
+      category: .homeCleaning
      )
     )
    )

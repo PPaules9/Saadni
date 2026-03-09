@@ -85,8 +85,10 @@ struct OnboardingView: View {
    }
   } else {
    // Tell AppStateManager that user completed onboarding
-   appStateManager.completeOnboarding()
-   // MainView will automatically update because AppStateManager is @Observable
+   Task {
+    try await appStateManager.completeOnboarding()
+    // MainView will automatically update because AppStateManager is @Observable
+   }
   }
  }
 }

@@ -66,7 +66,7 @@ struct FlexibleJobService: Codable, Hashable, Identifiable {
     // MARK: - Flexible Job Specific
 
     /// Category of flexible job
-    var category: FlexibleJobCategory
+    var category: ServiceCategoryType
     
     // MARK: - Initializers
     
@@ -77,7 +77,7 @@ struct FlexibleJobService: Codable, Hashable, Identifiable {
         location: ServiceLocation,
         description: String,
         image: ServiceImage,
-        category: FlexibleJobCategory,
+        category: ServiceCategoryType,
         providerId: String,
         status: ServiceStatus = .draft
     ) {
@@ -112,7 +112,7 @@ struct FlexibleJobService: Codable, Hashable, Identifiable {
         providerImageURL: String?,
         status: ServiceStatus,
         isFeatured: Bool,
-        category: FlexibleJobCategory,
+        category: ServiceCategoryType,
         applicationCount: Int = 0
     ) {
         self.id = id
@@ -205,7 +205,7 @@ extension FlexibleJobService {
               let status = ServiceStatus(rawValue: statusRaw),
               let isFeatured = data["isFeatured"] as? Bool,
               let categoryRaw = data["category"] as? String,
-              let category = FlexibleJobCategory(rawValue: categoryRaw),
+              let category = ServiceCategoryType(rawValue: categoryRaw),
               let locationData = data["location"] as? [String: Any],
               let locationName = locationData["name"] as? String
         else {
@@ -260,7 +260,7 @@ extension FlexibleJobService {
         ),
         description: "Need help cleaning a 2-bedroom apartment. Should take about 3 hours.",
         image: ServiceImage(),
-        category: .helpCleaning,
+        category: .homeCleaning,
         providerId: "user123"
     )
     

@@ -94,10 +94,12 @@ struct RoleSelectionView: View {
                 // Save to Firestore
                 try await FirestoreService.shared.saveUser(updatedUser)
 
-                // Update local auth state and complete role selection
+                // Complete role selection (persists state)
+                try await appStateManager.completeRoleSelection()
+
+                // Update local auth state on main thread
                 await MainActor.run {
                     authManager.authState = .authenticated(updatedUser)
-                    appStateManager.completeRoleSelection()
                     isUpdating = false
                 }
             } catch {

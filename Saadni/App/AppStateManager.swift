@@ -1,46 +1,62 @@
 import Foundation
 import Observation
+import os
 
 @Observable
 class AppStateManager {
     private(set) var hasSeenOnboarding: Bool = false
     private(set) var hasSelectedRole: Bool = false
 
-    init() {
+    // Dependency injection
+    private let persistence: PersistenceProvider
+
+    // For debugging
+    private let logger: Logger
+
+    init(
+        persistence: PersistenceProvider = UserDefaultsProvider(),
+        logger: Logger = Logger(subsystem: "com.saadni.app", category: "AppState")
+    ) {
+        self.persistence = persistence
+        self.logger = logger
         loadState()
     }
 
-    // MARK: - Load State from Disk
     private func loadState() {
-        hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
-        hasSelectedRole = UserDefaults.standard.bool(forKey: "hasSelectedRole")
+        do {
+            hasSeenOnboarding = persistence.load(StateKeys.hasSeenOnboarding)
+            hasSelectedRole = persistence.load(StateKeys.hasSelectedRole)
+            logger.log("✅ State loaded successfully")
+        } catch {
+            logger.error("❌ Failed to load state: \(error, privacy: .public)")
+            // Graceful fallback: use defaults (already set above)
+        }
     }
 
-    // MARK: - Onboarding
-    func completeOnboarding() {
+    func completeOnboarding() async throws {
         hasSeenOnboarding = true
-        saveState()
+        try await saveState()
+        logger.info("👤 Onboarding completed")
     }
 
-    func resetOnboarding() {
+    func resetOnboarding() async throws {
         hasSeenOnboarding = false
-        saveState()
+        try await saveState()
     }
 
-    // MARK: - Role Selection
-    func completeRoleSelection() {
+    func completeRoleSelection() async throws {
         hasSelectedRole = true
-        saveState()
+        try await saveState()
     }
 
-    func resetRoleSelection() {
+    func resetRoleSelection() async throws {
         hasSelectedRole = false
-        saveState()
+        try await saveState()
     }
 
-    // MARK: - Save State to Disk
-    private func saveState() {
-        UserDefaults.standard.set(hasSeenOnboarding, forKey: "hasSeenOnboarding")
-        UserDefaults.standard.set(hasSelectedRole, forKey: "hasSelectedRole")
+    private func saveState() async throws {
+        try await persistence.save(hasSeenOnboarding, for: StateKeys.hasSeenOnboarding)
+        try await persistence.save(hasSelectedRole, for: StateKeys.hasSelectedRole)
+        logger.debug("💾 State persisted")
     }
 }

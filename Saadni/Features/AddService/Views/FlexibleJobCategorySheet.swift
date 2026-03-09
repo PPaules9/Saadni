@@ -22,7 +22,7 @@ struct FlexibleJobCategorySheet: View {
       columns: [.init(.flexible()), .init(.flexible())],
       spacing: 16
      ) {
-      ForEach(FlexibleJobCategory.allCases, id: \.self) { category in
+      ForEach(ServiceCategoryType.allCases, id: \.self) { category in
        VStack(spacing: 8) {
         Image(systemName: category.icon)
          .font(.system(size: 32))

@@ -34,7 +34,7 @@ class AddServiceViewModel {
  var selectedDates: Set<Date> = []
 
  // MARK: - Flexible Job Properties
- var selectedFlexibleCategory: FlexibleJobCategory? = nil
+ var selectedFlexibleCategory: ServiceCategoryType? = nil
 
 
  // MARK: - UI State
@@ -76,7 +76,7 @@ class AddServiceViewModel {
  }
 
  
- func createFlexibleJobService(category: FlexibleJobCategory) -> FlexibleJobService? {
+ func createFlexibleJobService(category: ServiceCategoryType) -> FlexibleJobService? {
   guard isFormValid else { return nil }
   guard let priceValue = Double(price) else { return nil }
   guard let providerId = currentUserId else { return nil }
@@ -163,7 +163,7 @@ class AddServiceViewModel {
  }
 
  // MARK: - Draft Methods
- func createFlexibleJobDraft(category: FlexibleJobCategory) -> FlexibleJobService? {
+ func createFlexibleJobDraft(category: ServiceCategoryType) -> FlexibleJobService? {
   guard let priceValue = Double(price), !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
   guard let providerId = currentUserId else { return nil }
 

@@ -58,6 +58,8 @@
 		2236A1C02F53223A00A7A19F /* ApplicationsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1BD2F53223A00A7A19F /* ApplicationsList.swift */; };
 		2236A1D32F53281E00A7A19F /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A1D02F53281E00A7A19F /* AuthenticationView.swift */; };
 		2264A02D2F4C6C110004B2B4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2264A02C2F4C6C110004B2B4 /* README.md */; };
+		22B999FF2F5F1A8A00B3E070 /* StateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B999FE2F5F1A8A00B3E070 /* StateKey.swift */; };
+		22B99A022F5F1B0D00B3E070 /* PersistenceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B99A012F5F1B0D00B3E070 /* PersistenceProvider.swift */; };
 		22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */; };
 		22FD35F52F55F5CE00AF3127 /* LaunchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD35F32F55F5CE00AF3127 /* LaunchScreen.swift */; };
 		22FD36CC2F56F64D00AF3127 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36CB2F56F64D00AF3127 /* OnboardingView.swift */; };
@@ -69,6 +71,18 @@
 		22FD36DD2F57168300AF3127 /* SaadniApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36D92F57168300AF3127 /* SaadniApp.swift */; };
 		22FD36E02F5717F800AF3127 /* PublishedJobs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36DF2F5717F800AF3127 /* PublishedJobs.swift */; };
 		22FD36E22F571CE800AF3127 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36E12F571CE800AF3127 /* HomeView.swift */; };
+		22FD36E92F573A7600AF3127 /* ServiceCategoryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36E52F573A7600AF3127 /* ServiceCategoryCard.swift */; };
+		22FD36EA2F573A7600AF3127 /* CategoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36E32F573A7600AF3127 /* CategoryDetailView.swift */; };
+		22FD36EB2F573A7600AF3127 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36E42F573A7600AF3127 /* SectionHeader.swift */; };
+		22FD36EC2F573A7600AF3127 /* ServiceCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36E72F573A7600AF3127 /* ServiceCategory.swift */; };
+		22FD36F42F57418600AF3127 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36ED2F57418600AF3127 /* ConfettiView.swift */; };
+		22FD36F52F57418600AF3127 /* CreateJobSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36EE2F57418600AF3127 /* CreateJobSheet.swift */; };
+		22FD36F62F57418600AF3127 /* CreateJobTab4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36F22F57418600AF3127 /* CreateJobTab4.swift */; };
+		22FD36F72F57418600AF3127 /* CreateJobTab1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36EF2F57418600AF3127 /* CreateJobTab1.swift */; };
+		22FD36F82F57418600AF3127 /* CreateJobTab3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36F12F57418600AF3127 /* CreateJobTab3.swift */; };
+		22FD36F92F57418600AF3127 /* CreateJobTab5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36F32F57418600AF3127 /* CreateJobTab5.swift */; };
+		22FD36FA2F57418600AF3127 /* CreateJobTab2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36F02F57418600AF3127 /* CreateJobTab2.swift */; };
+		22FD36FC2F5741B200AF3127 /* CreateJobViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36FB2F5741B200AF3127 /* CreateJobViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -116,8 +130,10 @@
 		2236A1BD2F53223A00A7A19F /* ApplicationsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationsList.swift; sourceTree = "<group>"; };
 		2236A1D02F53281E00A7A19F /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		2264A02C2F4C6C110004B2B4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		22B999FE2F5F1A8A00B3E070 /* StateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateKey.swift; sourceTree = "<group>"; };
+		22B99A012F5F1B0D00B3E070 /* PersistenceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceProvider.swift; sourceTree = "<group>"; };
 		22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		22FD35EC2F55D1A500AF3127 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Library/Mobile Documents/com~apple~CloudDocs/Developer/My Apps/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
+		22E8A32D2F5ED2A9004F99F2 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Library/Mobile Documents/com~apple~CloudDocs/Developer/My Apps/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
 		22FD35F32F55F5CE00AF3127 /* LaunchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreen.swift; sourceTree = "<group>"; };
 		22FD36CB2F56F64D00AF3127 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		22FD36CF2F5714F900AF3127 /* NeedJobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeedJobView.swift; sourceTree = "<group>"; };
@@ -128,6 +144,18 @@
 		22FD36D92F57168300AF3127 /* SaadniApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaadniApp.swift; sourceTree = "<group>"; };
 		22FD36DF2F5717F800AF3127 /* PublishedJobs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishedJobs.swift; sourceTree = "<group>"; };
 		22FD36E12F571CE800AF3127 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		22FD36E32F573A7600AF3127 /* CategoryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryDetailView.swift; sourceTree = "<group>"; };
+		22FD36E42F573A7600AF3127 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
+		22FD36E52F573A7600AF3127 /* ServiceCategoryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCategoryCard.swift; sourceTree = "<group>"; };
+		22FD36E72F573A7600AF3127 /* ServiceCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCategory.swift; sourceTree = "<group>"; };
+		22FD36ED2F57418600AF3127 /* ConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiView.swift; sourceTree = "<group>"; };
+		22FD36EE2F57418600AF3127 /* CreateJobSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobSheet.swift; sourceTree = "<group>"; };
+		22FD36EF2F57418600AF3127 /* CreateJobTab1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobTab1.swift; sourceTree = "<group>"; };
+		22FD36F02F57418600AF3127 /* CreateJobTab2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobTab2.swift; sourceTree = "<group>"; };
+		22FD36F12F57418600AF3127 /* CreateJobTab3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobTab3.swift; sourceTree = "<group>"; };
+		22FD36F22F57418600AF3127 /* CreateJobTab4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobTab4.swift; sourceTree = "<group>"; };
+		22FD36F32F57418600AF3127 /* CreateJobTab5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobTab5.swift; sourceTree = "<group>"; };
+		22FD36FB2F5741B200AF3127 /* CreateJobViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,6 +236,7 @@
 		2236A14B2F50949000A7A19F /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				22B999FD2F5F1A7B00B3E070 /* Constants */,
 				2236A1472F50949000A7A19F /* Design System */,
 				2236A14A2F50949000A7A19F /* Resources */,
 			);
@@ -385,6 +414,22 @@
 			);
 			sourceTree = "<group>";
 		};
+		22B999FD2F5F1A7B00B3E070 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				22B999FE2F5F1A8A00B3E070 /* StateKey.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		22B99A002F5F1AF700B3E070 /* AppState */ = {
+			isa = PBXGroup;
+			children = (
+				22B99A012F5F1B0D00B3E070 /* PersistenceProvider.swift */,
+			);
+			path = AppState;
+			sourceTree = "<group>";
+		};
 		22FD35F42F55F5CE00AF3127 /* LaunchScreen */ = {
 			isa = PBXGroup;
 			children = (
@@ -396,6 +441,7 @@
 		22FD35F62F56E83E00AF3127 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				22B99A002F5F1AF700B3E070 /* AppState */,
 				2236A1A82F5321E300A7A19F /* Authentication */,
 				2236A1AC2F5321E300A7A19F /* Firebase */,
 				2236A1AF2F5321E300A7A19F /* Account */,
@@ -450,11 +496,39 @@
 		22FD36DE2F5716A800AF3127 /* ServiceProvider */ = {
 			isa = PBXGroup;
 			children = (
+				22FD36E62F573A7600AF3127 /* Components */,
+				22FD36E82F573A7600AF3127 /* Models */,
 				2236A1552F50949000A7A19F /* AddService.swift */,
 				22FD36DF2F5717F800AF3127 /* PublishedJobs.swift */,
+				22FD36E32F573A7600AF3127 /* CategoryDetailView.swift */,
 				22FD36E12F571CE800AF3127 /* HomeView.swift */,
 			);
 			path = ServiceProvider;
+			sourceTree = "<group>";
+		};
+		22FD36E62F573A7600AF3127 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				22FD36ED2F57418600AF3127 /* ConfettiView.swift */,
+				22FD36EE2F57418600AF3127 /* CreateJobSheet.swift */,
+				22FD36EF2F57418600AF3127 /* CreateJobTab1.swift */,
+				22FD36F02F57418600AF3127 /* CreateJobTab2.swift */,
+				22FD36F12F57418600AF3127 /* CreateJobTab3.swift */,
+				22FD36F22F57418600AF3127 /* CreateJobTab4.swift */,
+				22FD36F32F57418600AF3127 /* CreateJobTab5.swift */,
+				22FD36E42F573A7600AF3127 /* SectionHeader.swift */,
+				22FD36E52F573A7600AF3127 /* ServiceCategoryCard.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		22FD36E82F573A7600AF3127 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				22FD36FB2F5741B200AF3127 /* CreateJobViewModel.swift */,
+				22FD36E72F573A7600AF3127 /* ServiceCategory.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -483,7 +557,7 @@
 				2236A1A52F50ADED00A7A19F /* FirebaseStorage */,
 			);
 			productName = Saadni;
-			productReference = 22FD35EC2F55D1A500AF3127 /* Saadni.app */;
+			productReference = 22E8A32D2F5ED2A9004F99F2 /* Saadni.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -559,12 +633,24 @@
 				2236A1772F50949000A7A19F /* JobCategories.swift in Sources */,
 				2236A1782F50949000A7A19F /* ServiceImage.swift in Sources */,
 				2236A1792F50949000A7A19F /* ServiceLocation.swift in Sources */,
+				22FD36FC2F5741B200AF3127 /* CreateJobViewModel.swift in Sources */,
 				2236A1B22F5321E300A7A19F /* ApplicationsStore.swift in Sources */,
 				2236A1BA2F53220400A7A19F /* ApplicationBadge.swift in Sources */,
 				2236A1B32F5321E300A7A19F /* User.swift in Sources */,
 				2236A1B42F5321E300A7A19F /* AuthenticationManager.swift in Sources */,
 				2236A1B52F5321E300A7A19F /* StorageService.swift in Sources */,
+				22FD36F42F57418600AF3127 /* ConfettiView.swift in Sources */,
+				22FD36F52F57418600AF3127 /* CreateJobSheet.swift in Sources */,
+				22FD36F62F57418600AF3127 /* CreateJobTab4.swift in Sources */,
+				22FD36F72F57418600AF3127 /* CreateJobTab1.swift in Sources */,
+				22FD36F82F57418600AF3127 /* CreateJobTab3.swift in Sources */,
+				22FD36F92F57418600AF3127 /* CreateJobTab5.swift in Sources */,
+				22FD36FA2F57418600AF3127 /* CreateJobTab2.swift in Sources */,
 				2236A1C02F53223A00A7A19F /* ApplicationsList.swift in Sources */,
+				22FD36E92F573A7600AF3127 /* ServiceCategoryCard.swift in Sources */,
+				22FD36EA2F573A7600AF3127 /* CategoryDetailView.swift in Sources */,
+				22FD36EB2F573A7600AF3127 /* SectionHeader.swift in Sources */,
+				22FD36EC2F573A7600AF3127 /* ServiceCategory.swift in Sources */,
 				2236A1B62F5321E300A7A19F /* JobApplication.swift in Sources */,
 				2236A1B72F5321E300A7A19F /* FirestoreService.swift in Sources */,
 				2236A17A2F50949000A7A19F /* ServiceStatus.swift in Sources */,
@@ -585,6 +671,7 @@
 				2236A1822F50949000A7A19F /* JobCategorySheet.swift in Sources */,
 				2236A1D32F53281E00A7A19F /* AuthenticationView.swift in Sources */,
 				2236A1832F50949000A7A19F /* JobTypeSelectionSheet.swift in Sources */,
+				22B99A022F5F1B0D00B3E070 /* PersistenceProvider.swift in Sources */,
 				2236A1842F50949000A7A19F /* MapSelectionSheet.swift in Sources */,
 				2236A1852F50949000A7A19F /* Service.swift in Sources */,
 				2236A1862F50949000A7A19F /* ServiceDetailView.swift in Sources */,
@@ -592,6 +679,7 @@
 				2236A1882F50949000A7A19F /* ChatView.swift in Sources */,
 				2236A1892F50949000A7A19F /* DashboardView.swift in Sources */,
 				2236A18A2F50949000A7A19F /* AppliedJobsView.swift in Sources */,
+				22B999FF2F5F1A8A00B3E070 /* StateKey.swift in Sources */,
 				2236A18B2F50949000A7A19F /* ProfileView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
