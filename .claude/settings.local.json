@@ -1,9 +1,9 @@
 {
   "permissions": {
     "allow": [
+      "Bash(tree:*)",
       "Bash(xcodebuild:*)",
-      "Bash(git checkout:*)",
-      "Bash(git rm:*)"
+      "Bash(git add:*)"
     ]
   }
 }

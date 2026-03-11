@@ -1,200 +1,241 @@
+//
+//  ApplicationsStore.swift
+//  Saadni
+//
+//  Created by Pavly Paules on 06/03/2026.
+//
+
 import Foundation
 import FirebaseFirestore
-import Observation
 
 @Observable
 class ApplicationsStore {
-    // MARK: - State
-    var myApplications: [JobApplication] = []       // Applications I submitted
-    var receivedApplications: [JobApplication] = [] // Applications to my services
+ // MARK: - State
+ var myApplications: [JobApplication] = []       // Applications I submitted
+ var receivedApplications: [JobApplication] = [] // Applications to my services
 
-    private var myApplicationsListener: ListenerRegistration?
-    private var receivedApplicationsListener: ListenerRegistration?
-    private var db: Firestore {
-        return Firestore.firestore()
+ private var myApplicationsListener: ListenerRegistration?
+ private var receivedApplicationsListeners: [ListenerRegistration] = []
+ private let db = Firestore.firestore()
+
+ // Reference to ServicesStore to check service ownership
+ var servicesStore: ServicesStore?
+
+ // MARK: - Initialization
+ init() {}
+
+ deinit {
+  stopListening()
+ }
+
+ // MARK: - Setup Listeners
+
+ func setupListeners(userId: String) {
+  stopListening()
+
+  // Listen to applications I submitted
+  myApplicationsListener = db.collection("applications")
+   .whereField("applicantId", isEqualTo: userId)
+   .order(by: "appliedAt", descending: true)
+   .addSnapshotListener { [weak self] snapshot, error in
+    guard let self = self else { return }
+
+    if let error = error {
+     print("❌ Error fetching my applications: \(error)")
+     return
     }
 
-    // MARK: - Initialization
-    init() {}
+    guard let documents = snapshot?.documents else { return }
 
-    deinit {
-        stopListening()
+    let decoder = Firestore.Decoder()
+    self.myApplications = documents.compactMap { doc in
+     try? decoder.decode(JobApplication.self, from: doc.data())
     }
 
-    // MARK: - Setup Listeners
+    print("✅ Loaded \(self.myApplications.count) my applications")
+   }
 
-    func setupListeners(userId: String) {
-        stopListening()
+  // Listen to applications received on my services
+  Task {
+   await self.setupReceivedApplicationsListener(userId: userId)
+  }
+ }
 
-        // Listen to applications I submitted
-        myApplicationsListener = db.collection("applications")
-            .whereField("applicantId", isEqualTo: userId)
-            .order(by: "appliedAt", descending: true)
-            .addSnapshotListener { [weak self] snapshot, error in
-                guard let self = self else { return }
+ private func setupReceivedApplicationsListener(userId: String) async {
+  // Get all service IDs created by this user
+  do {
+   let servicesSnapshot = try await db.collection("services")
+    .whereField("providerId", isEqualTo: userId)
+    .getDocuments()
 
-                if let error = error {
-                    print("❌ Error fetching my applications: \(error)")
-                    return
-                }
+   let serviceIds = servicesSnapshot.documents.map { $0.documentID }
 
-                guard let documents = snapshot?.documents else { return }
+   if serviceIds.isEmpty {
+    print("📝 User has no services, no applications to receive")
+    return
+   }
 
-                let decoder = Firestore.Decoder()
-                self.myApplications = documents.compactMap { doc in
-                    try? decoder.decode(JobApplication.self, from: doc.data())
-                }
+   // Handle >10 services by chunking into batches of 10
+   // Firestore "in" queries support max 10 items per query
+   let chunks = stride(from: 0, to: serviceIds.count, by: 10).map { startIndex in
+    Array(serviceIds[startIndex..<min(startIndex + 10, serviceIds.count)])
+   }
 
-                print("✅ Loaded \(self.myApplications.count) my applications")
-            }
+   print("ℹ️ Setting up \(chunks.count) listener(s) for \(serviceIds.count) services")
 
-        // Listen to applications received on my services
-        Task {
-            await self.setupReceivedApplicationsListener(userId: userId)
-        }
-    }
+   // Set up a listener for each chunk
+   for (index, serviceIdChunk) in chunks.enumerated() {
+    let listener = db.collection("applications")
+     .whereField("serviceId", in: serviceIdChunk)
+     .order(by: "appliedAt", descending: true)
+     .addSnapshotListener { [weak self] snapshot, error in
+      guard let self = self else { return }
 
-    private func setupReceivedApplicationsListener(userId: String) async {
-        // Get all service IDs created by this user
-        do {
-            let servicesSnapshot = try await db.collection("services")
-                .whereField("providerId", isEqualTo: userId)
-                .getDocuments()
+      if let error = error {
+       print("❌ Error fetching received applications (chunk \(index)): \(error)")
+       return
+      }
 
-            let serviceIds = servicesSnapshot.documents.map { $0.documentID }
+      guard let documents = snapshot?.documents else { return }
 
-            if serviceIds.isEmpty {
-                print("📝 User has no services, no applications to receive")
-                return
-            }
+      let decoder = Firestore.Decoder()
+      let applications = documents.compactMap { doc in
+       try? decoder.decode(JobApplication.self, from: doc.data())
+      }
 
-            // Listen to applications for these services
-            // Note: Firestore "in" queries support max 10 items
-            // For production, you'd need to handle pagination
-            let limitedServiceIds = Array(serviceIds.prefix(10))
+      // Merge with existing applications, avoiding duplicates
+      let existingIds = Set(self.receivedApplications.map { $0.id })
+      let newApplications = applications.filter { !existingIds.contains($0.id) }
 
-            receivedApplicationsListener = db.collection("applications")
-                .whereField("serviceId", in: limitedServiceIds)
-                .order(by: "appliedAt", descending: true)
-                .addSnapshotListener { [weak self] snapshot, error in
-                    guard let self = self else { return }
+      self.receivedApplications.append(contentsOf: newApplications)
+      self.receivedApplications.sort { $0.appliedAt > $1.appliedAt }
 
-                    if let error = error {
-                        print("❌ Error fetching received applications: \(error)")
-                        return
-                    }
+      print("✅ Loaded applications for service chunk \(index + 1)/\(chunks.count)")
+     }
 
-                    guard let documents = snapshot?.documents else { return }
+    receivedApplicationsListeners.append(listener)
+   }
 
-                    let decoder = Firestore.Decoder()
-                    self.receivedApplications = documents.compactMap { doc in
-                        try? decoder.decode(JobApplication.self, from: doc.data())
-                    }
+   print("✅ Set up \(receivedApplicationsListeners.count) listener(s) for received applications")
+  } catch {
+   print("❌ Error setting up received applications listener: \(error)")
+  }
+ }
 
-                    print("✅ Loaded \(self.receivedApplications.count) received applications")
-                }
-        } catch {
-            print("❌ Error setting up received applications listener: \(error)")
-        }
-    }
+ // MARK: - Stop Listening
 
-    func stopListening() {
-        myApplicationsListener?.remove()
-        receivedApplicationsListener?.remove()
-    }
+ func stopListening() {
+  myApplicationsListener?.remove()
+  receivedApplicationsListeners.forEach { $0.remove() }
+  receivedApplicationsListeners.removeAll()
+ }
 
-    // MARK: - Submit Application
+ // MARK: - Validation
 
-    func submitApplication(
-        serviceId: String,
-        applicantId: String,
-        applicantName: String,
-        applicantPhotoURL: String?,
-        coverMessage: String? = nil
-    ) async throws {
-        // Check if already applied
-        let existingApplication = myApplications.first { $0.serviceId == serviceId }
-        if existingApplication != nil {
-            throw NSError(domain: "ApplicationsStore", code: 2,
-                         userInfo: [NSLocalizedDescriptionKey: "You have already applied to this job"])
-        }
+ /// Check if a user can apply to a service
+ func canApply(to serviceId: String, userId: String) -> Bool {
+  // User cannot apply to their own service
+  if let service = servicesStore?.services.first(where: { $0.id == serviceId }) {
+   return service.providerId != userId
+  }
+  return true  // If service not found locally, allow (will fail on backend if needed)
+ }
 
-        // Create application
-        let application = JobApplication(
-            serviceId: serviceId,
-            applicantId: applicantId,
-            applicantName: applicantName,
-            applicantPhotoURL: applicantPhotoURL,
-            coverMessage: coverMessage
-        )
+ // MARK: - Submit Application
 
-        let encoder = Firestore.Encoder()
-        let data = try encoder.encode(application)
+ func submitApplication(
+  serviceId: String,
+  applicantId: String,
+  applicantName: String,
+  applicantPhotoURL: String?,
+  coverMessage: String? = nil
+ ) async throws {
+  // Check if user is applying to their own service
+  guard canApply(to: serviceId, userId: applicantId) else {
+   throw NSError(domain: "ApplicationsStore", code: 1,
+                 userInfo: [NSLocalizedDescriptionKey: "You cannot apply to your own service"])
+  }
 
-        // Save to Firestore
-        try await db.collection("applications").document(application.id).setData(data)
+  // Check if already applied
+  let existingApplication = myApplications.first { $0.serviceId == serviceId && $0.status != .withdrawn }
+  if existingApplication != nil {
+   throw NSError(domain: "ApplicationsStore", code: 2,
+                 userInfo: [NSLocalizedDescriptionKey: "You have already applied to this job"])
+  }
 
-        // Increment application count on service
-        try await db.collection("services").document(serviceId).updateData([
-            "applicationCount": FieldValue.increment(Int64(1))
-        ])
+  // Create application
+  let application = JobApplication(
+   serviceId: serviceId,
+   applicantId: applicantId,
+   applicantName: applicantName,
+   applicantPhotoURL: applicantPhotoURL,
+   coverMessage: coverMessage
+  )
 
-        print("✅ Application submitted: \(application.id)")
-    }
+  // Save to Firestore using FirestoreService
+  try await FirestoreService.shared.saveApplication(application)
 
-    // MARK: - Update Application Status
+  // Increment application count on service
+  try await db.collection("services").document(serviceId).updateData([
+   "applicationCount": FieldValue.increment(Int64(1))
+  ])
 
-    func updateApplicationStatus(
-        applicationId: String,
-        newStatus: JobApplicationStatus,
-        responseMessage: String? = nil
-    ) async throws {
-        var updateData: [String: Any] = [
-            "status": newStatus.rawValue,
-            "respondedAt": Timestamp(date: Date())
-        ]
+  print("✅ Application submitted: \(application.id)")
+ }
 
-        if let responseMessage = responseMessage {
-            updateData["responseMessage"] = responseMessage
-        }
+ // MARK: - Update Application Status
 
-        try await db.collection("applications").document(applicationId).updateData(updateData)
-        print("✅ Application status updated: \(applicationId) -> \(newStatus.rawValue)")
-    }
+ func updateApplicationStatus(
+  applicationId: String,
+  newStatus: JobApplicationStatus,
+  responseMessage: String? = nil
+ ) async throws {
+  var updateData: [String: Any] = [
+   "status": newStatus.rawValue,
+   "respondedAt": Timestamp(date: Date())
+  ]
 
-    // MARK: - Withdraw Application
+  if let responseMessage = responseMessage {
+   updateData["responseMessage"] = responseMessage
+  }
 
-    func withdrawApplication(applicationId: String) async throws {
-        let application = myApplications.first { $0.id == applicationId }
-        guard let application = application else {
-            throw NSError(domain: "ApplicationsStore", code: 3,
-                         userInfo: [NSLocalizedDescriptionKey: "Application not found"])
-        }
+  try await db.collection("applications").document(applicationId).updateData(updateData)
+  print("✅ Application status updated: \(applicationId) -> \(newStatus.rawValue)")
+ }
 
-        // Update status to withdrawn
-        try await updateApplicationStatus(applicationId: applicationId, newStatus: .withdrawn)
+ // MARK: - Withdraw Application
 
-        // Decrement application count
-        try await db.collection("services").document(application.serviceId).updateData([
-            "applicationCount": FieldValue.increment(Int64(-1))
-        ])
-    }
+ func withdrawApplication(applicationId: String) async throws {
+  let application = myApplications.first { $0.id == applicationId }
+  guard let application = application else {
+   throw NSError(domain: "ApplicationsStore", code: 3,
+                 userInfo: [NSLocalizedDescriptionKey: "Application not found"])
+  }
 
-    // MARK: - Check if Applied
+  // Update status to withdrawn
+  try await updateApplicationStatus(applicationId: applicationId, newStatus: .withdrawn)
 
-    func hasApplied(to serviceId: String) -> Bool {
-        return myApplications.contains { $0.serviceId == serviceId && $0.status != .withdrawn }
-    }
+  // Decrement application count
+  try await db.collection("services").document(application.serviceId).updateData([
+   "applicationCount": FieldValue.increment(Int64(-1))
+  ])
+ }
 
-    // MARK: - Get Applications for Service
+ // MARK: - Check if Applied
 
-    func getApplications(for serviceId: String) -> [JobApplication] {
-        return receivedApplications.filter { $0.serviceId == serviceId }
-    }
+ func hasApplied(to serviceId: String) -> Bool {
+  return myApplications.contains { $0.serviceId == serviceId && $0.status != .withdrawn }
+ }
 
-    // MARK: - Get Application Count
+ // MARK: - Get Applications for Service
 
-    func getApplicationCount(for serviceId: String) -> Int {
-        return receivedApplications.filter { $0.serviceId == serviceId }.count
-    }
+ func getApplications(for serviceId: String) -> [JobApplication] {
+  return receivedApplications.filter { $0.serviceId == serviceId }
+ }
+
+ // MARK: - Get Application Count
+
+ func getApplicationCount(for serviceId: String) -> Int {
+  return receivedApplications.filter { $0.serviceId == serviceId }.count
+ }
 }

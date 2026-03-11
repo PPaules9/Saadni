@@ -7,76 +7,8 @@
 
 import SwiftUI
 
-enum ServiceDetailData {
-    case flexibleJob(FlexibleJobService)
-    case shift(ShiftService)
-
-    var title: String {
-        switch self {
-        case .flexibleJob(let service): return service.title
-        case .shift(let service): return service.title
-        }
-    }
-
-    var price: String {
-        switch self {
-        case .flexibleJob(let service): return "\(service.price) EGP"
-        case .shift(let service): return "\(service.price) EGP"
-        }
-    }
-
-    var location: String {
-        switch self {
-        case .flexibleJob(let service): return service.location.name
-        case .shift(let service): return service.location.name
-        }
-    }
-
-    var description: String {
-        switch self {
-        case .flexibleJob(let service): return service.description
-        case .shift(let service): return service.description
-        }
-    }
-
-    var createdAt: Date {
-        switch self {
-        case .flexibleJob(let service): return service.createdAt
-        case .shift(let service): return service.createdAt
-        }
-    }
-
-    var image: ServiceImage {
-        switch self {
-        case .flexibleJob(let service): return service.image
-        case .shift(let service): return service.image
-        }
-    }
-
-    var providerName: String {
-        switch self {
-        case .flexibleJob(let service): return service.providerName ?? "Unknown"
-        case .shift(let service): return service.providerName ?? "Unknown"
-        }
-    }
-
-    var jobType: JobType {
-        switch self {
-        case .flexibleJob: return .flexibleJobs
-        case .shift: return .shift
-        }
-    }
-
-    var isShift: Bool {
-        switch self {
-        case .shift: return true
-        case .flexibleJob: return false
-        }
-    }
-}
-
 struct ServiceDetailView: View {
-    let serviceData: ServiceDetailData
+    let service: JobService
     @Environment(\.dismiss) var dismiss
     @Environment(AuthenticationManager.self) var authManager
     @Environment(ApplicationsStore.self) var applicationsStore
@@ -89,7 +21,7 @@ struct ServiceDetailView: View {
             VStack(alignment: .leading, spacing: 20) {
 
                 // Header Image
-                if let uiImage = serviceData.image.localImage {
+                if let uiImage = service.image.localImage {
                     Image(uiImage: uiImage)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -110,16 +42,16 @@ struct ServiceDetailView: View {
 
                 // Info Row
                 HStack {
-                    Text(formatDate(serviceData.createdAt))
+                    Text(formatDate(service.createdAt))
                         .foregroundStyle(.gray)
                     Text("|")
                         .foregroundStyle(.gray)
-                    Text(serviceData.location)
+                    Text(service.location.name)
                         .foregroundStyle(.gray)
 
                     Spacer()
 
-                    Text(serviceData.price)
+                    Text(service.formattedPrice)
                         .font(.title3)
                         .fontWeight(.bold)
                         .foregroundStyle(.green)
@@ -128,46 +60,47 @@ struct ServiceDetailView: View {
 
                 // Title & Description
                 VStack(alignment: .leading, spacing: 10) {
-                    Text(serviceData.title)
+                    Text(service.title)
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .foregroundStyle(.white)
 
-                    Text(serviceData.description)
+                    Text(service.description)
                         .font(.body)
                         .foregroundStyle(.gray)
                 }
 
                 // Service Type Badge
                 HStack {
-                    Text(serviceData.isShift ? "Shift" : "Flexible Job")
+                    Text(service.jobType == .shift ? "Shift" : "Flexible Job")
                         .font(.caption)
                         .fontWeight(.bold)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
-                        .background(serviceData.isShift ? Color.blue.opacity(0.3) : Color.green.opacity(0.3))
+                        .background(service.jobType == .shift ? Color.blue.opacity(0.3) : Color.green.opacity(0.3))
                         .cornerRadius(8)
-                        .foregroundStyle(serviceData.isShift ? .blue : .green)
+                        .foregroundStyle(service.jobType == .shift ? .blue : .green)
 
                     Spacer()
                 }
 
                 // Shift-specific details
-                if serviceData.isShift,
-                   case .shift(let shift) = serviceData {
+                if service.jobType == .shift, let schedule = service.schedule {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Shift Details")
                             .font(.headline)
                             .foregroundStyle(.white)
 
                         VStack(alignment: .leading, spacing: 8) {
-                            DetailRow(label: "Shift Name", value: shift.shiftName)
-                            DetailRow(label: "Category", value: shift.categoryDisplayName)
-                            DetailRow(label: "Date", value: formatDate(shift.schedule.startDate))
-                            DetailRow(label: "Time", value: "\(formatTime(shift.schedule.startTime)) - \(formatTime(shift.schedule.endTime))")
+                            if let shiftName = service.shiftName {
+                                DetailRow(label: "Shift Name", value: shiftName)
+                            }
+                            DetailRow(label: "Category", value: service.categoryDisplayName)
+                            DetailRow(label: "Date", value: formatDate(schedule.startDate))
+                            DetailRow(label: "Time", value: "\(formatTime(schedule.startTime)) - \(formatTime(schedule.endTime))")
 
-                            if shift.schedule.isRepeated {
-                                DetailRow(label: "Repeat", value: "Yes (\(shift.schedule.repeatDates.count) days)")
+                            if schedule.isRepeated {
+                                DetailRow(label: "Repeat", value: "Yes (\(schedule.repeatDates.count) days)")
                             }
                         }
                         .padding()
@@ -193,7 +126,7 @@ struct ServiceDetailView: View {
                         Image(systemName: "map.fill")
                             .font(.largeTitle)
                             .foregroundStyle(.gray)
-                        Text(serviceData.location)
+                        Text(service.location.name)
                             .font(.title)
                             .fontWeight(.bold)
                             .foregroundStyle(.white)
@@ -232,7 +165,7 @@ struct ServiceDetailView: View {
                         .clipShape(Circle())
 
                     VStack(alignment: .leading) {
-                        Text(serviceData.providerName)
+                        Text(service.providerName ?? "Unknown")
                             .font(.headline)
                             .foregroundStyle(.white)
                         Text("Joined 6 February 2026")
@@ -333,41 +266,20 @@ struct ServiceDetailView: View {
 
     private var isOwnService: Bool {
         guard let currentUserId = authManager.currentUserId else { return false }
-
-        switch serviceData {
-        case .flexibleJob(let service):
-            return service.providerId == currentUserId
-        case .shift(let service):
-            return service.providerId == currentUserId
-        }
+        return service.providerId == currentUserId
     }
 
     private var hasAlreadyApplied: Bool {
-        let serviceId: String
-        switch serviceData {
-        case .flexibleJob(let service): serviceId = service.id
-        case .shift(let service): serviceId = service.id
-        }
-
-        return applicationsStore.hasApplied(to: serviceId)
-    }
-
-    private var serviceInfo: (id: String, title: String) {
-        switch serviceData {
-        case .flexibleJob(let service):
-            return (id: service.id, title: service.title)
-        case .shift(let service):
-            return (id: service.id, title: service.title)
-        }
+        return applicationsStore.hasApplied(to: service.id)
     }
 
     private var applySheetContent: some View {
-        ApplySheet(serviceTitle: serviceInfo.title, serviceId: serviceInfo.id)
+        ApplySheet(serviceTitle: service.title, serviceId: service.id)
     }
 
     private var applicationsListContent: some View {
         NavigationStack {
-            ApplicationsList(serviceId: serviceInfo.id, serviceTitle: serviceInfo.title)
+            ApplicationsList(serviceId: service.id, serviceTitle: service.title)
         }
     }
 
@@ -403,22 +315,14 @@ struct DetailRow: View {
 #Preview {
     NavigationStack {
         ServiceDetailView(
-            serviceData: .flexibleJob(
-                FlexibleJobService(
-                    id: "1",
-                    title: "Help Cleaning",
-                    price: 500,
-                    location: ServiceLocation(name: "Cairo, Egypt", coordinate: nil),
-                    description: "Need help cleaning my apartment before guests arrive",
-                    image: ServiceImage(localId: "1", remoteURL: nil, localImage: nil),
-                    createdAt: Date(),
-                    providerId: "provider_1",
-                    providerName: "Ahmed",
-                    providerImageURL: nil,
-                    status: .published,
-                    isFeatured: false,
-                    category: .homeCleaning
-                )
+            service: JobService(
+                title: "Help Cleaning",
+                price: 500,
+                location: ServiceLocation(name: "Cairo, Egypt", coordinate: nil),
+                description: "Need help cleaning my apartment before guests arrive",
+                image: ServiceImage(localId: "1", remoteURL: nil, localImage: nil),
+                category: .homeCleaning,
+                providerId: "provider_1"
             )
         )
     }

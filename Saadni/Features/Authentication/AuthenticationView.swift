@@ -142,5 +142,6 @@ struct AuthenticationView: View {
 
 #Preview {
  AuthenticationView()
-  .environment(AuthenticationManager())
+  .environment(UserCache())
+  .environment(AuthenticationManager(userCache: UserCache()))
 }

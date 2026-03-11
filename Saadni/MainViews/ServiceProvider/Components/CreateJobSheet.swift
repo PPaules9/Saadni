@@ -129,23 +129,18 @@ struct CreateJobSheet: View {
   
   let category = ServiceCategoryType.allCases.first { $0.rawValue == selectedCategory } ?? .homeCleaning
 
-  let service = FlexibleJobService(
-   id: UUID().uuidString,
+  let service = JobService(
    title: viewModel.jobName,
    price: Double(viewModel.price) ?? 0,
    location: serviceLocation,
    description: viewModel.otherDetails,
    image: serviceImage,
-   createdAt: Date(),
+   category: category,
    providerId: authManager.currentUserId ?? "",
-   providerName: nil,
-   providerImageURL: nil,
-   status: .published,
-   isFeatured: false,
-   category: category
+   status: .published
   )
-  
-  servicesStore.addFlexibleJob(service, image: viewModel.selectedImage)
+
+  servicesStore.addService(service, image: viewModel.selectedImage)
   
   withAnimation {
    viewModel.showConfetti = true
@@ -155,6 +150,7 @@ struct CreateJobSheet: View {
 
 #Preview {
  CreateJobSheet(selectedCategory: "TV Mounting", initialJobName: nil)
-  .environment(AuthenticationManager())
+  .environment(UserCache())
+  .environment(AuthenticationManager(userCache: UserCache()))
   .environment(ServicesStore())
 }

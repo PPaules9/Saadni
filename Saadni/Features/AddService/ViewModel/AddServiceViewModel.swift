@@ -76,7 +76,7 @@ class AddServiceViewModel {
  }
 
  
- func createFlexibleJobService(category: ServiceCategoryType) -> FlexibleJobService? {
+ func createJobService(category: ServiceCategoryType) -> JobService? {
   guard isFormValid else { return nil }
   guard let priceValue = Double(price) else { return nil }
   guard let providerId = currentUserId else { return nil }
@@ -92,24 +92,19 @@ class AddServiceViewModel {
    localImage: selectedImage
   )
 
-  return FlexibleJobService(
-   id: UUID().uuidString,
+  return JobService(
    title: title,
    price: priceValue,
    location: serviceLocation,
    description: description,
    image: serviceImage,
-   createdAt: Date(),
+   category: category,
    providerId: providerId,
-   providerName: nil,
-   providerImageURL: nil,
-   status: .published,
-   isFeatured: false,
-   category: category
+   status: .published
   )
  }
  
- func createShiftService() -> ShiftService? {
+ func createShiftService() -> JobService? {
   // Step 1: Validation
   guard isFormValid else { return nil }
   guard let priceValue = Double(price) else { return nil }
@@ -141,29 +136,24 @@ class AddServiceViewModel {
   let finalCategory: ShiftCategory? = useCustomCategory ? nil : selectedCategory
   let finalCustomCategory: String? = useCustomCategory ? customCategoryName : nil
 
-  // Step 6: Create and return ShiftService
-  return ShiftService(
-   id: UUID().uuidString,
+  // Step 6: Create and return JobService
+  return JobService(
    title: title,
    price: priceValue,
    location: serviceLocation,
    description: description,
    image: serviceImage,
-   createdAt: Date(),
-   providerId: providerId,
-   providerName: nil,
-   providerImageURL: nil,
-   status: .published,
-   isFeatured: false,
    shiftName: shiftName,
-   category: finalCategory,
+   shiftCategory: finalCategory,
    customCategory: finalCustomCategory,
-   schedule: shiftSchedule
+   schedule: shiftSchedule,
+   providerId: providerId,
+   status: .published
   )
  }
 
  // MARK: - Draft Methods
- func createFlexibleJobDraft(category: ServiceCategoryType) -> FlexibleJobService? {
+ func createFlexibleJobDraft(category: ServiceCategoryType) -> JobService? {
   guard let priceValue = Double(price), !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
   guard let providerId = currentUserId else { return nil }
 
@@ -178,24 +168,19 @@ class AddServiceViewModel {
    localImage: selectedImage
   )
 
-  return FlexibleJobService(
-   id: UUID().uuidString,
+  return JobService(
    title: title,
    price: priceValue,
    location: serviceLocation,
    description: description,
    image: serviceImage,
-   createdAt: Date(),
+   category: category,
    providerId: providerId,
-   providerName: nil,
-   providerImageURL: nil,
-   status: .draft,
-   isFeatured: false,
-   category: category
+   status: .draft
   )
  }
 
- func createShiftDraft() -> ShiftService? {
+ func createShiftDraft() -> JobService? {
   guard let priceValue = Double(price), !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
   guard let providerId = currentUserId else { return nil }
 
@@ -221,244 +206,18 @@ class AddServiceViewModel {
   let finalCategory: ShiftCategory? = useCustomCategory ? nil : selectedCategory
   let finalCustomCategory: String? = useCustomCategory ? customCategoryName : nil
 
-  return ShiftService(
-   id: UUID().uuidString,
+  return JobService(
    title: title,
    price: priceValue,
    location: serviceLocation,
    description: description,
    image: serviceImage,
-   createdAt: Date(),
-   providerId: providerId,
-   providerName: nil,
-   providerImageURL: nil,
-   status: .draft,
-   isFeatured: false,
    shiftName: shiftName,
-   category: finalCategory,
+   shiftCategory: finalCategory,
    customCategory: finalCustomCategory,
-   schedule: shiftSchedule
+   schedule: shiftSchedule,
+   providerId: providerId,
+   status: .draft
   )
  }
-}
-
-// MARK: - ServicesStore
-import FirebaseFirestore
-
-@Observable
-class ServicesStore {
-    var flexibleJobs: [FlexibleJobService] = []
-    var shifts: [ShiftService] = []
-
-    private var flexibleJobsListener: ListenerRegistration?
-    private var shiftsListener: ListenerRegistration?
-    private var db: Firestore {
-        return Firestore.firestore()
-    }
-
-    // MARK: - Initialization
-    init() {
-        // Delay Firestore setup to allow Firebase to initialize
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-            self?.setupListeners()
-        }
-    }
-
-    deinit {
-        flexibleJobsListener?.remove()
-        shiftsListener?.remove()
-    }
-
-    // MARK: - Real-time Listeners
-
-    private func setupListeners() {
-        // Listen to flexible jobs
-        flexibleJobsListener = db.collection("services")
-            .whereField("jobType", isEqualTo: "flexibleJobs")
-            .whereField("status", in: ["published", "active"])
-            .order(by: "createdAt", descending: true)
-            .addSnapshotListener { [weak self] snapshot, error in
-                guard let self = self else { return }
-
-                if let error = error {
-                    print("❌ Error fetching flexible jobs: \(error)")
-                    return
-                }
-
-                guard let documents = snapshot?.documents else { return }
-
-                self.flexibleJobs = documents.compactMap { doc in
-                    try? FlexibleJobService.fromFirestore(id: doc.documentID, data: doc.data())
-                }
-
-                print("✅ Loaded \(self.flexibleJobs.count) flexible jobs from Firestore")
-            }
-
-        // Listen to shifts
-        shiftsListener = db.collection("services")
-            .whereField("jobType", isEqualTo: "shift")
-            .whereField("status", in: ["published", "active"])
-            .order(by: "createdAt", descending: true)
-            .addSnapshotListener { [weak self] snapshot, error in
-                guard let self = self else { return }
-
-                if let error = error {
-                    print("❌ Error fetching shifts: \(error)")
-                    return
-                }
-
-                guard let documents = snapshot?.documents else { return }
-
-                self.shifts = documents.compactMap { doc in
-                    try? ShiftService.fromFirestore(id: doc.documentID, data: doc.data())
-                }
-
-                print("✅ Loaded \(self.shifts.count) shifts from Firestore")
-            }
-    }
-
-    // MARK: - Add Services (with Image Upload)
-
-    func addFlexibleJob(_ service: FlexibleJobService, image: UIImage?) {
-        Task {
-            do {
-                var serviceData = service.toFirestore()
-
-                // Upload image if provided
-                if let image = image {
-                    let imageURL = try await StorageService.shared.uploadServiceImage(image, serviceId: service.id)
-                    // Update image data with remote URL
-                    if var imageDict = serviceData["image"] as? [String: Any] {
-                        imageDict["remoteURL"] = imageURL
-                        serviceData["image"] = imageDict
-                    }
-                }
-
-                let docRef = db.collection("services").document(service.id)
-                try await docRef.setData(serviceData)
-                print("✅ Flexible job added to Firestore: \(service.id)")
-            } catch {
-                print("❌ Error adding flexible job: \(error)")
-            }
-        }
-    }
-
-    func addShift(_ service: ShiftService, image: UIImage?) {
-        Task {
-            do {
-                var serviceData = service.toFirestore()
-
-                // Upload image if provided
-                if let image = image {
-                    let imageURL = try await StorageService.shared.uploadServiceImage(image, serviceId: service.id)
-                    // Update image data with remote URL
-                    if var imageDict = serviceData["image"] as? [String: Any] {
-                        imageDict["remoteURL"] = imageURL
-                        serviceData["image"] = imageDict
-                    }
-                }
-
-                let docRef = db.collection("services").document(service.id)
-                try await docRef.setData(serviceData)
-                print("✅ Shift added to Firestore: \(service.id)")
-            } catch {
-                print("❌ Error adding shift: \(error)")
-            }
-        }
-    }
-
-    // MARK: - Get Services (from memory, populated by listeners)
-
-    func getAllFlexibleJobs() -> [FlexibleJobService] {
-        return flexibleJobs
-    }
-
-    func getAllShifts() -> [ShiftService] {
-        return shifts
-    }
-
-    // MARK: - Update Service
-
-    func updateFlexibleJob(_ service: FlexibleJobService) {
-        Task {
-            do {
-                let docRef = db.collection("services").document(service.id)
-                try await docRef.updateData(service.toFirestore())
-                print("✅ Flexible job updated: \(service.id)")
-            } catch {
-                print("❌ Error updating flexible job: \(error)")
-            }
-        }
-    }
-
-    func updateShift(_ service: ShiftService) {
-        Task {
-            do {
-                let docRef = db.collection("services").document(service.id)
-                try await docRef.updateData(service.toFirestore())
-                print("✅ Shift updated: \(service.id)")
-            } catch {
-                print("❌ Error updating shift: \(error)")
-            }
-        }
-    }
-
-    // MARK: - Delete Service
-
-    func removeFlexibleJob(id: String) {
-        Task {
-            do {
-                try await db.collection("services").document(id).delete()
-                print("✅ Flexible job deleted: \(id)")
-            } catch {
-                print("❌ Error deleting flexible job: \(error)")
-            }
-        }
-    }
-
-    func removeShift(id: String) {
-        Task {
-            do {
-                try await db.collection("services").document(id).delete()
-                print("✅ Shift deleted: \(id)")
-            } catch {
-                print("❌ Error deleting shift: \(error)")
-            }
-        }
-    }
-
-    // MARK: - Fetch User's Services (for My Jobs view)
-
-    func fetchUserServices(userId: String) async -> ([FlexibleJobService], [ShiftService]) {
-        var userFlexibleJobs: [FlexibleJobService] = []
-        var userShifts: [ShiftService] = []
-
-        do {
-            // Fetch flexible jobs
-            let flexibleSnapshot = try await db.collection("services")
-                .whereField("providerId", isEqualTo: userId)
-                .whereField("jobType", isEqualTo: "flexibleJobs")
-                .order(by: "createdAt", descending: true)
-                .getDocuments()
-
-            userFlexibleJobs = flexibleSnapshot.documents.compactMap { doc in
-                try? FlexibleJobService.fromFirestore(id: doc.documentID, data: doc.data())
-            }
-
-            // Fetch shifts
-            let shiftsSnapshot = try await db.collection("services")
-                .whereField("providerId", isEqualTo: userId)
-                .whereField("jobType", isEqualTo: "shift")
-                .order(by: "createdAt", descending: true)
-                .getDocuments()
-
-            userShifts = shiftsSnapshot.documents.compactMap { doc in
-                try? ShiftService.fromFirestore(id: doc.documentID, data: doc.data())
-            }
-        } catch {
-            print("❌ Error fetching user services: \(error)")
-        }
-
-        return (userFlexibleJobs, userShifts)
-    }
 }

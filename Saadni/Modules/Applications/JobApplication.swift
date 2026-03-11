@@ -1,3 +1,10 @@
+//
+//  JobApplication.swift
+//  Saadni
+//
+//  Created by Pavly Paules on 06/03/2026.
+//
+
 import Foundation
 
 /// Represents a job application submitted by a user

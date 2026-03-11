@@ -14,6 +14,7 @@ struct ProfileView: View {
  @State private var isSwitching = false
  @Environment(AppStateManager.self) var appStateManager
  @Environment(AuthenticationManager.self) var authManager
+ @Environment(UserCache.self) var userCache
 
  var body: some View {
   ZStack{
@@ -286,26 +287,17 @@ struct ProfileView: View {
   }
 
   Task {
-   do {
-    // Create updated user with switched role
-    var updatedUser = currentUser
-    updatedUser.isJobSeeker = !updatedUser.isJobSeeker
-    updatedUser.isServiceProvider = !updatedUser.isServiceProvider
+   // Create updated user with switched role
+   var updatedUser = currentUser
+   updatedUser.isJobSeeker = !updatedUser.isJobSeeker
+   updatedUser.isServiceProvider = !updatedUser.isServiceProvider
 
-    // Save to Firestore
-    try await FirestoreService.shared.saveUser(updatedUser)
+   // Use UserCache for optimistic update + Firestore sync
+   await userCache.updateUser(updatedUser)
 
-    // Update local auth state
-    await MainActor.run {
-     authManager.authState = .authenticated(updatedUser)
-     isSwitching = false
-    }
-   } catch {
-    await MainActor.run {
-     errorMessage = error.localizedDescription
-     showError = true
-     isSwitching = false
-    }
+   // Update UI state
+   await MainActor.run {
+    isSwitching = false
    }
   }
  }
@@ -346,5 +338,49 @@ struct ProfileMenuRow: View {
 #Preview {
  ProfileView()
   .environment(AppStateManager())
-  .environment(AuthenticationManager())
+  .environment(UserCache())
+  .environment(AuthenticationManager(userCache: UserCache()))
 }
+
+/* Developer Note
+-- Purpose: ProfileView displays the current user's profile and allows them to switch between
+            Job Seeker and Service Provider roles. Modified to use UserCache for role switching.
+
+-- Changes: Updated to integrate UserCache
+            1. Added @Environment(UserCache.self) var userCache
+            2. Updated switchUserType() to use userCache.updateUser() instead of manual Firestore save + authState update
+            3. Optimistic UI: User sees role change instantly (cache updates immediately)
+            4. Background sync: Firestore save happens asynchronously in updateUser()
+            5. Updated #Preview to include UserCache environment
+
+-- Dependencies:
+   - UserCache: For optimistic role updates
+   - AuthenticationManager: For current user data
+   - AppStateManager: For app flow state
+   - FirestoreService: Indirectly (via UserCache)
+
+-- Impact:
+   1. Role switching is now instantaneous from user perspective (optimistic UI)
+   2. Firestore sync happens in background, reducing perceived latency
+   3. Single cache update point ensures all views get new role immediately
+   4. Better error handling potential (could add retry logic in UserCache)
+
+-- Before UserCache:
+   switchUserType() → Save to Firestore → Update authManager.authState → UI updates
+   (Sequential: Firestore latency blocks UI update)
+
+-- After UserCache:
+   switchUserType() → Update cache (instant) → UI updates → Firestore sync (background)
+   (Parallel: UI responds immediately, sync happens in background)
+
+-- User Flow:
+   1. User taps "Switch Role" button
+   2. Animation starts, switchUserType() called
+   3. Updated user created with flipped roles
+   4. userCache.updateUser() called:
+      - Cache updated immediately (currentUser changes, triggers view refresh)
+      - Firestore save queued in background Task
+   5. User sees role change instantly
+   6. Firestore silently syncs in background
+*/
+

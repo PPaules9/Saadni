@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  MainView.swift
 //  Saadni
 //
 //  Created by Pavly Paules on 06/02/2026.
@@ -15,8 +15,7 @@ struct MainView: View {
   Group {
    switch authManager.authState {
    case .authenticating:
-    ProgressView()
-     .tint(.accent)
+    ProgressView().tint(.accent)
    case .unauthenticated:
     if appStateManager.hasSeenOnboarding {
      AuthenticationView()
@@ -47,6 +46,7 @@ struct MainView: View {
 
 #Preview {
  MainView()
-  .environment(AuthenticationManager())
+  .environment(UserCache())
+  .environment(AuthenticationManager(userCache: UserCache()))
   .environment(AppStateManager())
 }

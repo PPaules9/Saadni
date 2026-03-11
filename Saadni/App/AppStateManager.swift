@@ -1,42 +1,32 @@
+//
+//  AppStateManager.swift
+//  Saadni
+//
+//  Created by Pavly Paules on 06/02/2026.
+//
+
+
 import Foundation
-import Observation
-import os
 
 @Observable
 class AppStateManager {
     private(set) var hasSeenOnboarding: Bool = false
     private(set) var hasSelectedRole: Bool = false
 
-    // Dependency injection
-    private let persistence: PersistenceProvider
-
-    // For debugging
-    private let logger: Logger
-
-    init(
-        persistence: PersistenceProvider = UserDefaultsProvider(),
-        logger: Logger = Logger(subsystem: "com.saadni.app", category: "AppState")
-    ) {
-        self.persistence = persistence
-        self.logger = logger
+    init() {
         loadState()
     }
 
     private func loadState() {
-        do {
-            hasSeenOnboarding = persistence.load(StateKeys.hasSeenOnboarding)
-            hasSelectedRole = persistence.load(StateKeys.hasSelectedRole)
-            logger.log("✅ State loaded successfully")
-        } catch {
-            logger.error("❌ Failed to load state: \(error, privacy: .public)")
-            // Graceful fallback: use defaults (already set above)
-        }
+        hasSeenOnboarding = UserDefaults.standard.bool(forKey: StateKeys.hasSeenOnboarding.key)
+        hasSelectedRole = UserDefaults.standard.bool(forKey: StateKeys.hasSelectedRole.key)
+        print("✅ State loaded successfully")
     }
 
     func completeOnboarding() async throws {
         hasSeenOnboarding = true
         try await saveState()
-        logger.info("👤 Onboarding completed")
+        print("👤 Onboarding completed")
     }
 
     func resetOnboarding() async throws {
@@ -55,8 +45,8 @@ class AppStateManager {
     }
 
     private func saveState() async throws {
-        try await persistence.save(hasSeenOnboarding, for: StateKeys.hasSeenOnboarding)
-        try await persistence.save(hasSelectedRole, for: StateKeys.hasSelectedRole)
-        logger.debug("💾 State persisted")
+        UserDefaults.standard.set(hasSeenOnboarding, forKey: StateKeys.hasSeenOnboarding.key)
+        UserDefaults.standard.set(hasSelectedRole, forKey: StateKeys.hasSelectedRole.key)
+        print("💾 State persisted")
     }
 }

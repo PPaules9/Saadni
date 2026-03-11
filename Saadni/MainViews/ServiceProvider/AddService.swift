@@ -124,23 +124,18 @@ struct AddService: View {
             localImage: viewModel.selectedImage
         )
 
-        let service = FlexibleJobService(
-            id: UUID().uuidString,
+        let service = JobService(
             title: viewModel.jobName,
             price: Double(viewModel.price) ?? 0,
             location: serviceLocation,
             description: viewModel.otherDetails,
             image: serviceImage,
-            createdAt: Date(),
+            category: .homeCleaning,
             providerId: authManager.currentUserId ?? "",
-            providerName: nil,
-            providerImageURL: nil,
-            status: .published,
-            isFeatured: false,
-            category: .homeCleaning
+            status: .published
         )
 
-        servicesStore.addFlexibleJob(service, image: viewModel.selectedImage)
+        servicesStore.addService(service, image: viewModel.selectedImage)
 
         withAnimation {
             showConfetti = true
@@ -150,6 +145,7 @@ struct AddService: View {
 
 #Preview {
     AddService()
-        .environment(AuthenticationManager())
+        .environment(UserCache())
+        .environment(AuthenticationManager(userCache: UserCache()))
         .environment(ServicesStore())
 }

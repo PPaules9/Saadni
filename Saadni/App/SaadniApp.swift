@@ -11,18 +11,26 @@ import FirebaseCore
 
 @main
 struct SaadniApp: App {
- 
+
  @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+ @State private var userCache = UserCache()
+ @State private var authManager: AuthenticationManager
  @State private var servicesStore = ServicesStore()
- @State private var authManager = AuthenticationManager()
  @State private var applicationsStore = ApplicationsStore()
  @State private var appStateManager = AppStateManager()
+
+ init() {
+  let cache = UserCache()
+  _userCache = State(initialValue: cache)
+  _authManager = State(initialValue: AuthenticationManager(userCache: cache))
+ }
  
  var body: some Scene {
   WindowGroup {
    MainView()
-    .environment(servicesStore)
+    .environment(userCache)
     .environment(authManager)
+    .environment(servicesStore)
     .environment(applicationsStore)
     .environment(appStateManager)
     .onChange(of: authManager.currentUserId) { oldValue, newValue in
@@ -44,3 +52,4 @@ class AppDelegate: NSObject, UIApplicationDelegate {
   return true
  }
 }
+

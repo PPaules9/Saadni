@@ -19,8 +19,8 @@ struct BrowseJobs: View {
   case alphabetical
  }
 
- var filteredServices: [FlexibleJobService] {
-  var services = servicesStore.getAllFlexibleJobs()
+ var filteredServices: [JobService] {
+  var services = servicesStore.getFlexibleJobs()
 
   if !searchText.isEmpty {
    services = services.filter {
@@ -94,7 +94,7 @@ struct BrowseJobs: View {
       } else {
        VStack(spacing: 14) {
         ForEach(filteredServices, id: \.id) { service in
-         ServiceCard(serviceData: .flexibleJob(service))
+         ServiceCard(service: service)
         }
        }
        .padding()

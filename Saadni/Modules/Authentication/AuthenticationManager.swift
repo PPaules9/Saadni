@@ -1,6 +1,13 @@
+//
+//  AuthenticationManager.swift
+//  Saadni
+//
+//  Created by Pavly Paules on 06/03/2026.
+//
+
 import Foundation
 import FirebaseAuth
-import Observation
+
 
 enum AuthenticationState {
  case unauthenticated
@@ -8,15 +15,15 @@ enum AuthenticationState {
  case authenticated(User)
 }
 
+
 @Observable
 class AuthenticationManager {
- // MARK: - State
  var authState: AuthenticationState = .authenticating
  var errorMessage: String?
- 
+
  private var authStateHandle: AuthStateDidChangeListenerHandle?
+ private let userCache: UserCache
  
- // MARK: - Computed Properties
  var isAuthenticated: Bool {
   if case .authenticated = authState {
    return true
@@ -25,10 +32,7 @@ class AuthenticationManager {
  }
  
  var currentUser: User? {
-  if case .authenticated(let user) = authState {
-   return user
-  }
-  return nil
+  return userCache.currentUser
  }
  
  var currentUserId: String? {
@@ -36,11 +40,9 @@ class AuthenticationManager {
  }
  
  // MARK: - Initialization
- init() {
-  // Delay auth setup to allow Firebase to initialize
-  DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
-   self?.registerAuthStateHandler()
-  }
+ init(userCache: UserCache) {
+  self.userCache = userCache
+  registerAuthStateHandler()
  }
  
  deinit {
@@ -53,13 +55,17 @@ class AuthenticationManager {
  private func registerAuthStateHandler() {
   authStateHandle = Auth.auth().addStateDidChangeListener { [weak self] _, firebaseUser in
    guard let self = self else { return }
-   
+
    if let firebaseUser = firebaseUser {
-    // User is signed in - try to fetch from Firestore first
+    // User is signed in - use UserCache to load user data
     Task {
-     if let existingUser = try? await FirestoreService.shared.fetchUser(id: firebaseUser.uid) {
+     // Load user into cache
+     await self.userCache.loadUser(id: firebaseUser.uid)
+
+     // If user exists in cache, update auth state
+     if let cachedUser = self.userCache.currentUser {
       await MainActor.run {
-       self.authState = .authenticated(existingUser)
+       self.authState = .authenticated(cachedUser)
       }
      } else {
       // New user - create with default roles
@@ -72,6 +78,7 @@ class AuthenticationManager {
     }
    } else {
     // User is signed out
+    self.userCache.clearCache()
     self.authState = .unauthenticated
    }
   }
@@ -83,11 +90,19 @@ class AuthenticationManager {
  func signIn(email: String, password: String) async throws {
   authState = .authenticating
   errorMessage = nil
-  
+
   do {
    let authResult = try await Auth.auth().signIn(withEmail: email, password: password)
    let user = User(from: authResult.user)
-   authState = .authenticated(user)
+
+   // Update cache and auth state
+   await userCache.updateUser(user)
+   await MainActor.run {
+    self.authState = .authenticated(user)
+   }
+
+   // Ensure user exists in Firestore
+   await updateUserInFirestore(user)
   } catch {
    authState = .unauthenticated
    errorMessage = error.localizedDescription
@@ -99,21 +114,25 @@ class AuthenticationManager {
  func signUp(email: String, password: String, displayName: String) async throws {
   authState = .authenticating
   errorMessage = nil
-  
+
   do {
    let authResult = try await Auth.auth().createUser(withEmail: email, password: password)
-   
+
    // Update profile with display name
    let changeRequest = authResult.user.createProfileChangeRequest()
    changeRequest.displayName = displayName
    try await changeRequest.commitChanges()
-   
+
    // Create user object
    var user = User(from: authResult.user)
    user.displayName = displayName
-   
-   authState = .authenticated(user)
-   
+
+   // Update cache and auth state
+   await userCache.updateUser(user)
+   await MainActor.run {
+    self.authState = .authenticated(user)
+   }
+
    // Save to Firestore
    await updateUserInFirestore(user)
   } catch {
@@ -127,12 +146,17 @@ class AuthenticationManager {
  func signInAnonymously() async throws {
   authState = .authenticating
   errorMessage = nil
-  
+
   do {
    let authResult = try await Auth.auth().signInAnonymously()
    let user = User(from: authResult.user)
-   authState = .authenticated(user)
-   
+
+   // Update cache and auth state
+   await userCache.updateUser(user)
+   await MainActor.run {
+    self.authState = .authenticated(user)
+   }
+
    await updateUserInFirestore(user)
   } catch {
    authState = .unauthenticated
@@ -143,6 +167,7 @@ class AuthenticationManager {
  
  /// Sign out
  func signOut() throws {
+  userCache.clearCache()
   try Auth.auth().signOut()
   authState = .unauthenticated
  }
@@ -157,3 +182,4 @@ class AuthenticationManager {
   }
  }
 }
+

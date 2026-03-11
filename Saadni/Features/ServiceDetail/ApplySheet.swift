@@ -149,6 +149,7 @@ struct ApplySheet: View {
 
 #Preview {
  ApplySheet(serviceTitle: "Help me clean", serviceId: "123")
-  .environment(AuthenticationManager())
+  .environment(UserCache())
+  .environment(AuthenticationManager(userCache: UserCache()))
   .environment(ApplicationsStore())
 }
