@@ -59,21 +59,25 @@ class AuthenticationManager {
    if let firebaseUser = firebaseUser {
     // User is signed in - use UserCache to load user data
     Task {
-     // Load user into cache
+     // Try to load existing user from Firestore
      await self.userCache.loadUser(id: firebaseUser.uid)
 
-     // If user exists in cache, update auth state
      if let cachedUser = self.userCache.currentUser {
+      // User exists in Firestore ✅
       await MainActor.run {
        self.authState = .authenticated(cachedUser)
       }
      } else {
-      // New user - create with default roles
+      // New user - create with default values
       let user = User(from: firebaseUser)
+
+      // Optimistic update: cache immediately + save in background
+      await self.userCache.updateUser(user)
+
+      // Update auth state
       await MainActor.run {
        self.authState = .authenticated(user)
       }
-      await self.updateUserInFirestore(user)
      }
     }
    } else {

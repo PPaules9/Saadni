@@ -47,10 +47,14 @@ final class UserCache {
     await MainActor.run {
      self.currentUser = user
     }
-    print("✅ User \(id) cached successfully")
+    print("✅ User \(id) loaded from Firestore")
+   } else {
+    print("ℹ️ User \(id) doesn't exist in Firestore yet (new user)")
+    // Don't set currentUser - let caller decide how to handle new user
    }
   } catch {
-   print("❌ Failed to load user into cache: \(error.localizedDescription)")
+   print("⚠️ Failed to load user from Firestore: \(error.localizedDescription)")
+   // Don't throw - let caller decide how to handle errors
   }
 
   isLoadingUser = false
