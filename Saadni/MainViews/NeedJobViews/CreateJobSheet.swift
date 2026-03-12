@@ -16,7 +16,7 @@ struct CreateJobSheet: View {
  let selectedCategory: String
  let initialJobName: String?
  
- var tabNames = ["Details", "Pictures", "Tools", "Price", "Review"]
+ var tabNames = ["Details", "Pictures", "Tools", "Price", "Schedule", "Review"]
  
  var body: some View {
   ZStack {
@@ -27,7 +27,7 @@ struct CreateJobSheet: View {
     // Progress Indicator
     VStack(spacing: 12) {
      HStack(spacing: 4) {
-      ForEach(0..<5, id: \.self) { index in
+      ForEach(0..<6, id: \.self) { index in
        RoundedRectangle(cornerRadius: 2)
         .fill(index <= viewModel.currentTab ? Color.accent : Color.gray.opacity(0.3))
         .frame(height: 1)
@@ -36,7 +36,7 @@ struct CreateJobSheet: View {
      .padding(.horizontal)
      
      HStack(spacing: 0) {
-      ForEach(0..<5, id: \.self) { index in
+      ForEach(0..<6, id: \.self) { index in
        Text(tabNames[index])
         .font(.caption2)
         .fontWeight(.semibold)
@@ -62,7 +62,9 @@ struct CreateJobSheet: View {
      case 3:
       CreateJobTab4(viewModel: viewModel)
      case 4:
-      CreateJobTab5(viewModel: viewModel, onPublish: {
+      CreateJobTab5(viewModel: viewModel)
+     case 5:
+      CreateJobTab6(viewModel: viewModel, onPublish: {
        Task {
         await publishJob()
        }
@@ -81,7 +83,7 @@ struct CreateJobSheet: View {
       }
      }
      
-     if viewModel.currentTab < 4 {
+     if viewModel.currentTab < 5 {
       BrandButton(
        "Next",
        hasIcon: true,
@@ -139,7 +141,14 @@ struct CreateJobSheet: View {
    description: viewModel.otherDetails,
    image: serviceImage,
    category: category,
-   providerId: authManager.currentUserId ?? ""
+   providerId: authManager.currentUserId ?? "",
+   address: viewModel.address,
+   floor: viewModel.floor,
+   unit: viewModel.unit,
+   someoneAround: viewModel.aroundOption != .noOne,
+   specialTools: viewModel.toolsNeeded == .yes ? viewModel.toolsDescription : nil,
+   serviceDate: viewModel.getServiceDate(),
+   estimatedDurationHours: viewModel.getEstimatedDurationHours()
   )
 
   do {

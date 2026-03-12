@@ -86,6 +86,33 @@ struct JobService: Codable, Hashable, Identifiable {
     /// Whether this service has been archived by the provider
     var isArchived: Bool = false
 
+    // MARK: - Location Details
+
+    /// Street address of the service location
+    var address: String = ""
+
+    /// Floor number (if applicable)
+    var floor: String = ""
+
+    /// Unit/apartment number (if applicable)
+    var unit: String = ""
+
+    // MARK: - Service Requirements
+
+    /// Whether someone will be around during the service
+    var someoneAround: Bool = false
+
+    /// Special tools/equipment needed for the service (optional)
+    var specialTools: String?
+
+    // MARK: - Service Scheduling
+
+    /// When the service should be performed (optional - can be flexible)
+    var serviceDate: Date?
+
+    /// Estimated duration in hours (optional)
+    var estimatedDurationHours: Double?
+
     // MARK: - Initializers
 
     /// Create a service from form data
@@ -97,6 +124,13 @@ struct JobService: Codable, Hashable, Identifiable {
         image: ServiceImage,
         category: ServiceCategoryType,
         providerId: String,
+        address: String = "",
+        floor: String = "",
+        unit: String = "",
+        someoneAround: Bool = false,
+        specialTools: String? = nil,
+        serviceDate: Date? = nil,
+        estimatedDurationHours: Double? = nil,
         status: ServiceStatus = .draft
     ) {
         self.id = UUID().uuidString
@@ -107,6 +141,13 @@ struct JobService: Codable, Hashable, Identifiable {
         self.image = image
         self.category = category
         self.providerId = providerId
+        self.address = address
+        self.floor = floor
+        self.unit = unit
+        self.someoneAround = someoneAround
+        self.specialTools = specialTools
+        self.serviceDate = serviceDate
+        self.estimatedDurationHours = estimatedDurationHours
         self.providerName = nil
         self.providerImageURL = nil
         self.status = status
@@ -130,6 +171,13 @@ struct JobService: Codable, Hashable, Identifiable {
         status: ServiceStatus,
         isFeatured: Bool,
         category: ServiceCategoryType?,
+        address: String = "",
+        floor: String = "",
+        unit: String = "",
+        someoneAround: Bool = false,
+        specialTools: String? = nil,
+        serviceDate: Date? = nil,
+        estimatedDurationHours: Double? = nil,
         applicationCount: Int = 0,
         hiredApplicantId: String? = nil,
         completedAt: Date? = nil,
@@ -148,6 +196,13 @@ struct JobService: Codable, Hashable, Identifiable {
         self.status = status
         self.isFeatured = isFeatured
         self.category = category
+        self.address = address
+        self.floor = floor
+        self.unit = unit
+        self.someoneAround = someoneAround
+        self.specialTools = specialTools
+        self.serviceDate = serviceDate
+        self.estimatedDurationHours = estimatedDurationHours
         self.applicationCount = applicationCount
         self.hiredApplicantId = hiredApplicantId
         self.completedAt = completedAt
@@ -223,6 +278,10 @@ extension JobService {
             "isFeatured": isFeatured,
             "applicationCount": applicationCount,
             "isArchived": isArchived,
+            "address": address,
+            "floor": floor,
+            "unit": unit,
+            "someoneAround": someoneAround,
 
             // Location
             "location": [
@@ -249,6 +308,19 @@ extension JobService {
         // Category
         if let category = category {
             dict["category"] = category.rawValue
+        }
+
+        // Special tools
+        if let specialTools = specialTools {
+            dict["specialTools"] = specialTools
+        }
+
+        // Scheduling
+        if let serviceDate = serviceDate {
+            dict["serviceDate"] = Timestamp(date: serviceDate)
+        }
+        if let estimatedDurationHours = estimatedDurationHours {
+            dict["estimatedDurationHours"] = estimatedDurationHours
         }
 
         // Completion fields
@@ -302,6 +374,14 @@ extension JobService {
         let completedAt = (data["completedAt"] as? Timestamp)?.dateValue()
         let isArchived = data["isArchived"] as? Bool ?? false
 
+        let address = data["address"] as? String ?? ""
+        let floor = data["floor"] as? String ?? ""
+        let unit = data["unit"] as? String ?? ""
+        let someoneAround = data["someoneAround"] as? Bool ?? false
+        let specialTools = data["specialTools"] as? String
+        let serviceDate = (data["serviceDate"] as? Timestamp)?.dateValue()
+        let estimatedDurationHours = data["estimatedDurationHours"] as? Double
+
         return JobService(
             id: id,
             title: title,
@@ -316,6 +396,13 @@ extension JobService {
             status: status,
             isFeatured: isFeatured,
             category: category,
+            address: address,
+            floor: floor,
+            unit: unit,
+            someoneAround: someoneAround,
+            specialTools: specialTools,
+            serviceDate: serviceDate,
+            estimatedDurationHours: estimatedDurationHours,
             applicationCount: applicationCount,
             hiredApplicantId: hiredApplicantId,
             completedAt: completedAt,
@@ -391,6 +478,13 @@ extension JobService {
             status: .published,
             isFeatured: true,
             category: .homeCleaning,
+            address: "123 Main St",
+            floor: "2",
+            unit: "A",
+            someoneAround: true,
+            specialTools: nil,
+            serviceDate: Date(timeIntervalSinceNow: 86400 * 3),
+            estimatedDurationHours: 2.0,
             applicationCount: 5
         ),
         JobService(
@@ -411,6 +505,13 @@ extension JobService {
             status: .published,
             isFeatured: false,
             category: .furnitureAssembly,
+            address: "456 Oak Ave",
+            floor: "3",
+            unit: "B",
+            someoneAround: true,
+            specialTools: "Power drill, Allen keys",
+            serviceDate: Date(timeIntervalSinceNow: 86400 * 7),
+            estimatedDurationHours: 4.0,
             applicationCount: 2
         ),
         JobService(
@@ -431,6 +532,13 @@ extension JobService {
             status: .published,
             isFeatured: false,
             category: .electricalWork,
+            address: "789 Park Rd",
+            floor: "5",
+            unit: "C",
+            someoneAround: false,
+            specialTools: "Electrical testing equipment, cable tester",
+            serviceDate: Date(timeIntervalSinceNow: 86400 * 2),
+            estimatedDurationHours: 6.0,
             applicationCount: 8
         ),
         JobService(
@@ -451,6 +559,13 @@ extension JobService {
             status: .published,
             isFeatured: false,
             category: .plumbing,
+            address: "321 Water St",
+            floor: "1",
+            unit: "D",
+            someoneAround: true,
+            specialTools: "Pipe wrench, plunger, snake",
+            serviceDate: nil,
+            estimatedDurationHours: 1.5,
             applicationCount: 3
         ),
         JobService(
@@ -471,6 +586,13 @@ extension JobService {
             status: .published,
             isFeatured: false,
             category: .babySitting,
+            address: "654 Garden Ln",
+            floor: "2",
+            unit: "E",
+            someoneAround: false,
+            specialTools: nil,
+            serviceDate: Date(timeIntervalSinceNow: 86400 * 5),
+            estimatedDurationHours: 8.0,
             applicationCount: 6
         ),
         JobService(
@@ -491,6 +613,13 @@ extension JobService {
             status: .published,
             isFeatured: false,
             category: .painting,
+            address: "987 Color Ave",
+            floor: "4",
+            unit: "F",
+            someoneAround: true,
+            specialTools: "Paint roller, brush set, drop cloth",
+            serviceDate: Date(timeIntervalSinceNow: 86400 * 10),
+            estimatedDurationHours: 8.0,
             applicationCount: 3
         )
     ]

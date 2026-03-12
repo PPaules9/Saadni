@@ -9,8 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
  @State private var needHelpWith: String = ""
- @State private var selectedCategory: String?
- @State private var showCreateJobSheet: Bool = false
+ @Environment(JobSeekerCoordinator.self) var coordinator
 
  var body: some View {
   ZStack {
@@ -29,8 +28,12 @@ struct HomeView: View {
       .padding()
       .onSubmit {
        if !needHelpWith.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-        selectedCategory = needHelpWith
-        showCreateJobSheet = true
+        // Use coordinator to present sheet
+        coordinator.presentSheet(.createJob(
+         category: needHelpWith,
+         initialJobName: needHelpWith
+        ))
+        needHelpWith = ""
        }
       }
      }
@@ -40,11 +43,6 @@ struct HomeView: View {
    }
    .navigationTitle("I need help with")
    .fontDesign(.monospaced)
-  }
-  .sheet(isPresented: $showCreateJobSheet) {
-   if let category = selectedCategory {
-    CreateJobSheet(selectedCategory: category, initialJobName: category)
-   }
   }
  }
 }

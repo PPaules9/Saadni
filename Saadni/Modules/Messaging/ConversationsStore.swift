@@ -1,0 +1,191 @@
+//
+//  ConversationsStore.swift
+//  Saadni
+//
+//  Created by Pavly Paules on 12/03/2026.
+//
+
+import Foundation
+import FirebaseFirestore
+import SwiftUI
+
+@Observable
+class ConversationsStore {
+    // MARK: - State
+
+    /// All conversations for the current user
+    var conversations: [Conversation] = []
+
+    /// Conversations indexed by other user ID for quick lookup
+    var conversationsByUserId: [String: Conversation] = [:]
+
+    /// Error state
+    var error: String?
+
+    /// Loading state
+    var isLoading: Bool = false
+
+    // MARK: - Private Properties
+
+    private var listener: ListenerRegistration?
+    private let db: Firestore
+
+    init() {
+        self.db = Firestore.firestore()
+    }
+
+    deinit {
+        stopListening()
+    }
+
+    // MARK: - Setup & Teardown
+
+    /// Setup real-time listener for user's conversations
+    func setupListeners(userId: String) {
+        stopListening()
+
+        isLoading = true
+
+        listener = db.collection("conversations")
+            .whereField("participantIds", arrayContains: userId)
+            .order(by: "lastMessageTime", descending: true)
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self = self else { return }
+
+                self.isLoading = false
+
+                if let error = error {
+                    self.error = "❌ Error loading conversations: \(error.localizedDescription)"
+                    print(self.error ?? "")
+                    return
+                }
+
+                guard let documents = snapshot?.documents else { return }
+
+                let fetchedConversations = documents.compactMap { doc in
+                    Conversation.fromFirestore(id: doc.documentID, data: doc.data())
+                }
+
+                self.conversations = fetchedConversations
+
+                // Build index by other user ID
+                self.conversationsByUserId.removeAll()
+                for conversation in fetchedConversations {
+                    if let otherUserId = conversation.otherParticipantId(currentUserId: userId) {
+                        self.conversationsByUserId[otherUserId] = conversation
+                    }
+                }
+
+                print("✅ Loaded \(fetchedConversations.count) conversations")
+            }
+    }
+
+    /// Stop listening for conversations
+    func stopListening() {
+        listener?.remove()
+        listener = nil
+    }
+
+    // MARK: - Conversation Operations
+
+    /// Get or create conversation with another user
+    func getOrCreateConversation(with otherUserId: String, currentUserId: String) async throws -> String {
+        // Check if conversation already exists
+        if let existingConversation = conversationsByUserId[otherUserId] {
+            return existingConversation.id
+        }
+
+        // Create new conversation
+        let conversationId = UUID().uuidString
+        let participantIds = [currentUserId, otherUserId].sorted()
+
+        let conversation = Conversation(
+            id: conversationId,
+            participantIds: participantIds,
+            lastMessage: "",
+            lastMessageTime: Date(),
+            lastMessageSenderId: currentUserId
+        )
+
+        do {
+            try await db.collection("conversations").document(conversationId).setData(conversation.toFirestore())
+            print("✅ Conversation created: \(conversationId)")
+            return conversationId
+        } catch {
+            self.error = "❌ Failed to create conversation: \(error.localizedDescription)"
+            print(self.error ?? "")
+            throw error
+        }
+    }
+
+    /// Update last message in a conversation
+    func updateLastMessage(
+        conversationId: String,
+        message: String,
+        timestamp: Date,
+        senderId: String
+    ) async throws {
+        do {
+            try await db.collection("conversations").document(conversationId).updateData([
+                "lastMessage": message,
+                "lastMessageTime": Timestamp(date: timestamp),
+                "lastMessageSenderId": senderId
+            ])
+            print("✅ Last message updated")
+        } catch {
+            self.error = "❌ Failed to update last message: \(error.localizedDescription)"
+            print(self.error ?? "")
+            throw error
+        }
+    }
+
+    /// Delete a conversation (archives it)
+    func deleteConversation(_ conversationId: String) async throws {
+        do {
+            try await db.collection("conversations").document(conversationId).delete()
+            print("✅ Conversation deleted")
+        } catch {
+            self.error = "❌ Failed to delete conversation: \(error.localizedDescription)"
+            print(self.error ?? "")
+            throw error
+        }
+    }
+
+    // MARK: - Helper Methods
+
+    /// Get conversation with specific user
+    func getConversation(with otherUserId: String) -> Conversation? {
+        return conversationsByUserId[otherUserId]
+    }
+
+    /// Get conversation by ID
+    func getConversationById(_ conversationId: String) -> Conversation? {
+        return conversations.first { $0.id == conversationId }
+    }
+
+    /// Check if conversation exists with user
+    func conversationExists(with otherUserId: String) -> Bool {
+        return conversationsByUserId[otherUserId] != nil
+    }
+
+    /// Search conversations by last message content
+    func searchConversations(_ query: String) -> [Conversation] {
+        guard !query.isEmpty else { return conversations }
+
+        return conversations.filter { conversation in
+            conversation.lastMessage.localizedCaseInsensitiveContains(query)
+        }
+    }
+
+    /// Get unread message count for a conversation
+    func getUnreadCount(for conversationId: String) async throws -> Int {
+        // This would require tracking read receipts in the Conversation model
+        // For now, returning 0
+        return 0
+    }
+
+    /// Sort conversations by most recent
+    var sortedConversations: [Conversation] {
+        return conversations.sorted { $0.lastMessageTime > $1.lastMessageTime }
+    }
+}

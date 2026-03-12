@@ -15,6 +15,7 @@ struct ProfileView: View {
  @Environment(AppStateManager.self) var appStateManager
  @Environment(AuthenticationManager.self) var authManager
  @Environment(UserCache.self) var userCache
+ @Environment(AppCoordinator.self) var appCoordinator
 
  var body: some View {
   ZStack{
@@ -371,6 +372,9 @@ struct ProfileView: View {
 
    // Use UserCache for optimistic update + Firestore sync
    await userCache.updateUser(updatedUser)
+
+   // Trigger coordinator to switch role (will recreate fresh coordinator)
+   appCoordinator.switchUserRole()
 
    // Update UI state
    await MainActor.run {

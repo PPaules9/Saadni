@@ -10,18 +10,20 @@ import SwiftUI
 struct ServiceCard: View {
  let service: JobService
  @Environment(AuthenticationManager.self) var authManager
- 
+ @Environment(JobSeekerCoordinator.self) var jobSeekerCoordinator
+ @Environment(ServiceProviderCoordinator.self) var serviceProviderCoordinator
+
  private var applicationCount: Int {
   return service.applicationCount
  }
- 
+
  private var isOwnService: Bool {
   guard let currentUserId = authManager.currentUserId else { return false }
   return service.providerId == currentUserId
  }
- 
+
  var body: some View {
-  NavigationLink(destination: ServiceDetailView(service: service)) {
+  Button(action: navigateToDetail) {
    ZStack() {
     // Background Image
     Group {
@@ -42,21 +44,21 @@ struct ServiceCard: View {
     }
     .frame(height: 190)
     .frame(maxWidth: .infinity)
-    
+
     // Overlay Gradient
     LinearGradient(
      colors: [.black.opacity(0.8), .black.opacity(0)],
      startPoint: .bottom,
      endPoint: .center
     )
-    
+
     VStack {
      HStack(spacing: 5) {
       // Add application badge for own services
       if isOwnService && applicationCount > 0 {
        ApplicationBadge(count: applicationCount, size: .small)
       }
-      
+
       Spacer()
       Image(systemName: "mappin.and.ellipse")
       Text(service.location.name)
@@ -65,18 +67,18 @@ struct ServiceCard: View {
      .font(.caption2)
      .foregroundStyle(Colors.swiftUIColor(.textSecondary))
      .padding()
-     
+
      Spacer()
-     
+
      HStack(alignment: .bottom) {
       Text(service.title)
        .font(.title3)
        .fontWeight(.bold)
        .foregroundStyle(.white)
        .fontDesign(.monospaced)
-      
+
       Spacer()
-      
+
       Text(service.formattedPrice)
        .font(.title3)
        .fontWeight(.bold)
@@ -85,31 +87,39 @@ struct ServiceCard: View {
      }
      .padding()
     }
-    
+
    }
    .clipShape(RoundedRectangle(cornerRadius: 15))
    .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 15))
+  }
+ }
+
+ private func navigateToDetail() {
+  // Use appropriate coordinator based on context
+  if jobSeekerCoordinator != nil {
+   jobSeekerCoordinator.navigate(to: .serviceDetail(service))
+  } else if serviceProviderCoordinator != nil {
+   serviceProviderCoordinator.navigate(to: .serviceDetail(service))
   }
  }
 }
 
 
 #Preview {
- NavigationStack {
-  ScrollView {
-   ServiceCard(
-    service: JobService(
-     title: "Help Cleaning",
-     price: 250,
-     location: ServiceLocation(name: "Cairo, Egypt", latitude: nil, longitude: nil),
-     description: "Need help cleaning my apartment",
-     image: ServiceImage(),
-     category: .homeCleaning,
-     providerId: "provider_1"
-    )
+ ScrollView {
+  ServiceCard(
+   service: JobService(
+    title: "Help Cleaning",
+    price: 250,
+    location: ServiceLocation(name: "Cairo, Egypt", latitude: nil, longitude: nil),
+    description: "Need help cleaning my apartment",
+    image: ServiceImage(),
+    category: .homeCleaning,
+    providerId: "provider_1"
    )
-  }
-  .environment(UserCache())
-  .environment(AuthenticationManager(userCache: UserCache()))
+  )
  }
+ .environment(UserCache())
+ .environment(AuthenticationManager(userCache: UserCache()))
+ .environment(JobSeekerCoordinator())
 }

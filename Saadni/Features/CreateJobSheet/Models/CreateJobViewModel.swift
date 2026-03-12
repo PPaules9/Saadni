@@ -21,6 +21,21 @@ enum ToolsNeeded: String, CaseIterable {
     case no = "No"
 }
 
+enum ServiceTimeline: String, CaseIterable {
+    case asap = "ASAP"
+    case flexible = "Flexible"
+    case specificDate = "Specific Date"
+}
+
+enum DurationOption: String, CaseIterable {
+    case lessThanHour = "Less than 1 hour"
+    case oneToThree = "1-3 hours"
+    case fourToEight = "4-8 hours"
+    case fullDay = "Full day (8+ hours)"
+    case multipleDays = "Multiple days"
+    case custom = "Custom"
+}
+
 @Observable
 class CreateJobViewModel {
     // MARK: - Tab 1: Job Details & Location
@@ -41,7 +56,13 @@ class CreateJobViewModel {
     // MARK: - Tab 4: Price
     var price: String = ""
 
-    // MARK: - Tab 5: Details
+    // MARK: - Tab 5: Schedule & Duration
+    var serviceTimeline: ServiceTimeline = .flexible
+    var specificDate: Date = Date()
+    var durationOption: DurationOption = .oneToThree
+    var customDurationHours: String = ""
+
+    // MARK: - Tab 6: Details
     var otherDetails: String = ""
 
     // MARK: - Location & Service Properties
@@ -88,13 +109,27 @@ class CreateJobViewModel {
         return true
     }
 
+    var isTab5Valid: Bool {
+        // If specific date is selected, date must be in the future
+        if serviceTimeline == .specificDate {
+            return specificDate > Date()
+        }
+        // If custom duration is selected, must have valid hours
+        if durationOption == .custom {
+            guard let hours = Double(customDurationHours), hours > 0 else { return false }
+            return true
+        }
+        return true
+    }
+
     var isCurrentTabValid: Bool {
         switch currentTab {
         case 0: return isTab1Valid
         case 1: return isTab2Valid
         case 2: return isTab3Valid
         case 3: return isTab4Valid
-        case 4: return true
+        case 4: return isTab5Valid
+        case 5: return true
         default: return false
         }
     }
@@ -110,11 +145,11 @@ class CreateJobViewModel {
 
     // MARK: - Navigation
     func canPublish() -> Bool {
-        return isTab1Valid && isTab2Valid && isTab3Valid && isTab4Valid
+        return isTab1Valid && isTab2Valid && isTab3Valid && isTab4Valid && isTab5Valid
     }
 
     func nextTab() {
-        if currentTab < 4 {
+        if currentTab < 5 {
             currentTab += 1
         }
     }
@@ -123,6 +158,22 @@ class CreateJobViewModel {
         if currentTab > 0 {
             currentTab -= 1
         }
+    }
+
+    // MARK: - Schedule Helpers
+    func getEstimatedDurationHours() -> Double? {
+        switch durationOption {
+        case .lessThanHour: return 0.5
+        case .oneToThree: return 2.0
+        case .fourToEight: return 6.0
+        case .fullDay: return 8.0
+        case .multipleDays: return 24.0
+        case .custom: return Double(customDurationHours)
+        }
+    }
+
+    func getServiceDate() -> Date? {
+        return serviceTimeline == .specificDate ? specificDate : nil
     }
 
     // MARK: - Service Creation
@@ -150,6 +201,13 @@ class CreateJobViewModel {
             image: serviceImage,
             category: category,
             providerId: providerId,
+            address: address,
+            floor: floor,
+            unit: unit,
+            someoneAround: aroundOption != .noOne,
+            specialTools: toolsNeeded == .yes ? toolsDescription : nil,
+            serviceDate: getServiceDate(),
+            estimatedDurationHours: getEstimatedDurationHours(),
             status: .published
         )
     }
@@ -177,6 +235,13 @@ class CreateJobViewModel {
             image: serviceImage,
             category: category,
             providerId: providerId,
+            address: address,
+            floor: floor,
+            unit: unit,
+            someoneAround: aroundOption != .noOne,
+            specialTools: toolsNeeded == .yes ? toolsDescription : nil,
+            serviceDate: getServiceDate(),
+            estimatedDurationHours: getEstimatedDurationHours(),
             status: .draft
         )
     }

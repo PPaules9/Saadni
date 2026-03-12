@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RoleSelectionView: View {
- @Environment(AuthenticationManager.self) var authManager
+ let user: User
  @Environment(AppStateManager.self) var appStateManager
  @Environment(UserCache.self) var userCache
  @State private var isUpdating = false
@@ -79,18 +79,12 @@ struct RoleSelectionView: View {
  }
  
  private func selectRole(isJobSeeker: Bool) {
-  guard let currentUser = authManager.currentUser else {
-   errorMessage = "No user found. Please log in again."
-   showError = true
-   return
-  }
-
   isUpdating = true
 
   Task {
    do {
     // Create updated user with role selection
-    var updatedUser = currentUser
+    var updatedUser = user
     updatedUser.isJobSeeker = isJobSeeker
     updatedUser.isServiceProvider = !isJobSeeker
 
@@ -114,58 +108,4 @@ struct RoleSelectionView: View {
   }
  }
 }
-
-
-#Preview {
- RoleSelectionView()
-  .environment(UserCache())
-  .environment(AuthenticationManager(userCache: UserCache()))
-  .environment(AppStateManager())
-}
-
-/* Developer Note
--- Purpose: RoleSelectionView presents the initial role selection choice to new users
-            (Job Seeker vs Service Provider). Modified to use UserCache for role updates.
-
--- Changes: Updated to integrate UserCache
-            1. Added @Environment(UserCache.self) var userCache
-            2. Updated selectRole() to use userCache.updateUser() instead of manual save + authState update
-            3. Optimistic UI: Selected role is cached immediately, UI appears to respond instantly
-            4. Background sync: Firestore save and appStateManager update happen asynchronously
-            5. Updated #Preview to include UserCache environment
-
--- Dependencies:
-   - UserCache: For optimistic role updates
-   - AuthenticationManager: For current user data
-   - AppStateManager: For marking role selection as complete
-   - FirestoreService: Indirectly (via UserCache)
-
--- Impact:
-   1. Role selection appears instantaneous (optimistic UI via cache)
-   2. Firestore and AppStateManager updates happen in background
-   3. All views immediately reflect selected role (cache reactivity)
-   4. Error handling: If appStateManager.completeRoleSelection() fails, cache still updated
-      (could add rollback logic if needed)
-
--- User Flow:
-   1. New user sees role selection screen
-   2. Taps "Need help" → selectRole(isJobSeeker: true) called
-   3. Updated user created with isJobSeeker=true
-   4. userCache.updateUser() called:
-      - Cache updated immediately (currentUser changes)
-      - Firestore save queued in background
-   5. appStateManager.completeRoleSelection() called (persists "role selected" flag)
-   6. User navigated to main content (MainView routes based on role)
-   7. Firestore silently syncs in background
-
--- Why This Approach:
-   - Optimistic UI makes app feel fast even with network latency
-   - UserCache update triggers instant UI refresh (all views see new role)
-   - Background tasks don't block user interaction
-   - Separation of cache update (instant) from persistence (async)
-
--- Note: appStateManager.completeRoleSelection() is still awaited because
-         it controls navigation routing. UserCache update is independent
-         and triggers view updates via @Observable reactivity.
-*/
 
