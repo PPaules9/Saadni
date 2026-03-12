@@ -79,7 +79,11 @@ struct RoleSelectionView: View {
  }
  
  private func selectRole(isJobSeeker: Bool) {
-  guard let currentUser = authManager.currentUser else { return }
+  guard let currentUser = authManager.currentUser else {
+   errorMessage = "No user found. Please log in again."
+   showError = true
+   return
+  }
 
   isUpdating = true
 

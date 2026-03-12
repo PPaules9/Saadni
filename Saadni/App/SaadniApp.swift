@@ -20,6 +20,9 @@ struct SaadniApp: App {
  @State private var appStateManager = AppStateManager()
 
  init() {
+  // Configure Firebase FIRST before any Firebase-dependent code
+  FirebaseApp.configure()
+
   let cache = UserCache()
   _userCache = State(initialValue: cache)
   _authManager = State(initialValue: AuthenticationManager(userCache: cache))
@@ -33,6 +36,10 @@ struct SaadniApp: App {
     .environment(servicesStore)
     .environment(applicationsStore)
     .environment(appStateManager)
+    .onAppear {
+     // Start listening to services after Firebase is initialized
+     servicesStore.startListening()
+    }
     .onChange(of: authManager.currentUserId) { oldValue, newValue in
      if let userId = newValue {
       applicationsStore.setupListeners(userId: userId)
@@ -46,10 +53,7 @@ struct SaadniApp: App {
 
 
 class AppDelegate: NSObject, UIApplicationDelegate {
- func application(_ application: UIApplication,
-                  didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-  FirebaseApp.configure()
-  return true
- }
+ // Firebase is configured in SaadniApp.init() before AuthenticationManager creation
+ // This empty delegate is kept for future lifecycle hooks if needed
 }
 

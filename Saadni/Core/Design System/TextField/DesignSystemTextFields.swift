@@ -58,14 +58,14 @@ struct BrandTextField: View {
    if hasTitle{
     Text(title)
      .font(Font.caption)
-     .fontDesign(.rounded)
+     .fontDesign(.monospaced)
      .foregroundStyle(Colors.swiftUIColor(.textMain))
    }
    
    TextField(isFocused ? "" : placeholder , text: $text)
     .focused($isFocused)
     .font(Font.caption)
-    .fontDesign(.rounded)
+    .fontDesign(.monospaced)
     .fontWeight(state.textWeight)
     .padding(16)
     .overlay(
@@ -100,7 +100,7 @@ struct BrandPasswordField: View {
    if hasTitle{
     Text(title)
      .font(.caption2)
-     .fontDesign(.rounded)
+     .fontDesign(.monospaced)
      .foregroundStyle(Colors.swiftUIColor(.textMain))
    }
    
@@ -114,7 +114,7 @@ struct BrandPasswordField: View {
     }
     .focused($isFocused)
     .font(Font.caption)
-    .fontDesign(.rounded)
+    .fontDesign(.monospaced)
     .fontWeight(state.textWeight)
     .frame(height: 18)
     .padding(16)
@@ -173,7 +173,7 @@ struct BrandSearchField: View {
    TextField(placeholder, text: $text)
     .focused($isFocused)
     .font(.caption2)
-    .fontDesign(.rounded)
+    .fontDesign(.monospaced)
     .fontWeight(state.textWeight)
     .frame(height: 20)
     .padding(.leading, 8)
@@ -236,7 +236,7 @@ struct BrandNumericalField: View {
     .keyboardType(.numberPad)
     .focused($isFocused)
     .multilineTextAlignment(.center)
-    .fontDesign(.rounded)
+    .fontDesign(.monospaced)
     .font(.system(size: 20))
     .fontWeight(state.textWeight)
    
@@ -265,7 +265,7 @@ struct BrandTextEditor: View {
    if hasTitle {
     Text(title)
      .font(.caption2)
-     .fontDesign(.rounded)
+     .fontDesign(.monospaced)
      .fontWeight(.regular)
      .foregroundStyle(Colors.swiftUIColor(.textMain))
    }
@@ -274,7 +274,7 @@ struct BrandTextEditor: View {
     if text.isEmpty {
      Text(placeholder)
       .font(.caption2)
-      .fontDesign(.rounded)
+      .fontDesign(.monospaced)
       .fontWeight(.regular)
       .foregroundStyle(Colors.swiftUIColor(.textSecondary))
       .padding(.top, 8)
@@ -285,7 +285,7 @@ struct BrandTextEditor: View {
      .focused($isFocused)
      .scrollContentBackground(.hidden)
      .font(.caption2)
-     .fontDesign(.rounded)
+     .fontDesign(.monospaced)
      .fontWeight(state.textWeight)
      .frame(minHeight: 132, alignment: .top)
    }

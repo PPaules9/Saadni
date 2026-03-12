@@ -16,7 +16,10 @@ class ApplicationsStore {
 
  private var myApplicationsListener: ListenerRegistration?
  private var receivedApplicationsListeners: [ListenerRegistration] = []
- private let db = Firestore.firestore()
+
+ private var db: Firestore {
+  Firestore.firestore()
+ }
 
  // Reference to ServicesStore to check service ownership
  var servicesStore: ServicesStore?
@@ -203,6 +206,54 @@ class ApplicationsStore {
   print("✅ Application status updated: \(applicationId) -> \(newStatus.rawValue)")
  }
 
+ // MARK: - Accept Application (with Service Activation)
+
+ func acceptApplication(
+  applicationId: String,
+  serviceId: String,
+  responseMessage: String? = nil
+ ) async throws {
+  // Get the accepted application to extract applicant ID
+  guard let acceptedApplication = receivedApplications.first(where: { $0.id == applicationId }) else {
+   throw NSError(domain: "ApplicationsStore", code: 4,
+                 userInfo: [NSLocalizedDescriptionKey: "Application not found"])
+  }
+
+  // Update application status to accepted
+  try await updateApplicationStatus(
+   applicationId: applicationId,
+   newStatus: .accepted,
+   responseMessage: responseMessage
+  )
+
+  // Mark service as active with hired applicant
+  try await db.collection("services").document(serviceId).updateData([
+   "status": ServiceStatus.active.rawValue,
+   "hiredApplicantId": acceptedApplication.applicantId
+  ])
+
+  print("✅ Service marked as active with hired applicant: \(acceptedApplication.applicantId)")
+
+  // Reject all other pending applications for this service
+  try await rejectOtherApplications(serviceId: serviceId, acceptedId: applicationId)
+ }
+
+ private func rejectOtherApplications(serviceId: String, acceptedId: String) async throws {
+  let pendingApplications = receivedApplications.filter {
+   $0.serviceId == serviceId && $0.id != acceptedId && $0.status == .pending
+  }
+
+  for application in pendingApplications {
+   try await updateApplicationStatus(
+    applicationId: application.id,
+    newStatus: .rejected,
+    responseMessage: "Position has been filled"
+   )
+  }
+
+  print("✅ Rejected \(pendingApplications.count) other applications for service: \(serviceId)")
+ }
+
  // MARK: - Withdraw Application
 
  func withdrawApplication(applicationId: String) async throws {
@@ -237,5 +288,14 @@ class ApplicationsStore {
 
  func getApplicationCount(for serviceId: String) -> Int {
   return receivedApplications.filter { $0.serviceId == serviceId }.count
+ }
+
+ // MARK: - Fetch User Applications (for AppliedJobsView)
+
+ func fetchUserApplications(userId: String) async -> [JobApplication] {
+  // Return applications submitted by this user from the real-time listener
+  // Filter out withdrawn applications
+  let active = myApplications.filter { $0.status != .withdrawn }
+  return active.sorted { $0.appliedAt > $1.appliedAt }
  }
 }

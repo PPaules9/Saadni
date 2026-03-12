@@ -31,7 +31,15 @@ class FirestoreService {
  private var applicationsCollection: CollectionReference {
   db.collection("applications")
  }
- 
+
+ private var reviewsCollection: CollectionReference {
+  db.collection("reviews")
+ }
+
+ private var transactionsCollection: CollectionReference {
+  db.collection("transactions")
+ }
+
  // MARK: - User Operations
  
  func saveUser(_ user: User) async throws {
@@ -80,5 +88,39 @@ class FirestoreService {
   let data = try encoder.encode(application)
   try await applicationsCollection.document(application.id).updateData(data as [AnyHashable: Any])
   print("✅ Application updated: \(application.id)")
+ }
+
+ // MARK: - Review Operations
+
+ func saveReview(_ review: Review) async throws {
+  try await reviewsCollection.document(review.id).setData(review.toFirestore())
+  print("✅ Review saved: \(review.id)")
+ }
+
+ func updateReview(_ review: Review) async throws {
+  try await reviewsCollection.document(review.id).updateData(review.toFirestore())
+  print("✅ Review updated: \(review.id)")
+ }
+
+ func deleteReview(id: String) async throws {
+  try await reviewsCollection.document(id).delete()
+  print("✅ Review deleted: \(id)")
+ }
+
+ // MARK: - Transaction Operations
+
+ func saveTransaction(_ transaction: Transaction) async throws {
+  try await transactionsCollection.document(transaction.id).setData(transaction.toFirestore())
+  print("✅ Transaction saved: \(transaction.id)")
+ }
+
+ func updateTransaction(_ transaction: Transaction) async throws {
+  try await transactionsCollection.document(transaction.id).updateData(transaction.toFirestore())
+  print("✅ Transaction updated: \(transaction.id)")
+ }
+
+ func deleteTransaction(id: String) async throws {
+  try await transactionsCollection.document(id).delete()
+  print("✅ Transaction deleted: \(id)")
  }
 }

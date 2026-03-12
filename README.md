@@ -151,7 +151,7 @@ Data Layer (Firebase, UserDefaults)
 **Feature Modules**
 - Organized by feature, not layer
 - Each feature has Views, ViewModels, Models, Services
-- Example: `Features/AddService/`, `MainViews/JobSeekerMainView/`
+- Example: `MainViews/ServiceProvider/CreateJobSheet/`, `MainViews/JobSeekerMainView/`
 
 **Async/Await Concurrency**
 - All async operations use Swift's modern async/await

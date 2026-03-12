@@ -72,6 +72,7 @@ extension ApplicationBadge {
                 .font(.system(size: size.iconSize))
             Text("NEW")
                 .font(.system(size: size.fontSize, weight: .bold))
+                .fontDesign(.monospaced)
         }
         .foregroundStyle(.white)
         .padding(size.padding)

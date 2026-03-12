@@ -28,6 +28,7 @@ struct RoleOptionCard: View {
       .font(.headline)
       .foregroundStyle(Colors.swiftUIColor(.textMain))
       .multilineTextAlignment(.leading)
+      .fontDesign(.monospaced)
      
     }
     

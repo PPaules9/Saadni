@@ -3,7 +3,19 @@
     "allow": [
       "Bash(tree:*)",
       "Bash(xcodebuild:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nRemove duplicate Service model in favor of JobService\n\n- Deleted Service.swift \\(old minimal UI model\\)\n- All views have been using JobService \\(proper data model with Firestore integration\\)\n- Verified no remaining references to old Service or ApplicationStatus enum\n- Eliminates conceptual duplication: JobService now serves as the single source of truth\n\nCo-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(open:*)",
+      "Bash(xcrun simctl install:*)",
+      "Bash(xcrun simctl launch:*)",
+      "Bash(plutil:*)",
+      "Bash(defaults read:*)",
+      "Bash(find:*)",
+      "Bash(python3:*)",
+      "Bash(grep:*)",
+      "Bash(__NEW_LINE_064e6fca83e89511__ echo \"✅ All files deleted!\")",
+      "Bash(ruby --version:*)",
+      "Bash(sudo gem install:*)"
     ]
   }
 }

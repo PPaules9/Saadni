@@ -10,7 +10,9 @@ import SwiftUI
 struct MainView: View {
  @Environment(AuthenticationManager.self) var authManager
  @Environment(AppStateManager.self) var appStateManager
- 
+ @State private var reviewsStore = ReviewsStore()
+ @State private var walletStore = WalletStore()
+
  var body: some View {
   Group {
    switch authManager.authState {
@@ -36,10 +38,20 @@ struct MainView: View {
  private func authenticatedContent(for user: User) -> some View {
   if user.isJobSeeker {
    NeedJobView()
+    .environment(reviewsStore)
+    .environment(walletStore)
+    .onAppear {
+     reviewsStore.setupListeners(userId: user.id)
+     walletStore.setupListeners(userId: user.id)
+    }
   } else if user.isServiceProvider {
-   NeedHelpView()
-  } else {
-   NeedJobView()
+   NeedWork()
+    .environment(reviewsStore)
+    .environment(walletStore)
+    .onAppear {
+     reviewsStore.setupListeners(userId: user.id)
+     walletStore.setupListeners(userId: user.id)
+    }
   }
  }
 }
@@ -49,4 +61,6 @@ struct MainView: View {
   .environment(UserCache())
   .environment(AuthenticationManager(userCache: UserCache()))
   .environment(AppStateManager())
+  .environment(ReviewsStore())
+  .environment(WalletStore())
 }
