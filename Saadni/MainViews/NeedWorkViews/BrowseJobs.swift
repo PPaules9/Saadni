@@ -79,76 +79,77 @@ struct BrowseJobs: View {
    Color(Colors.swiftUIColor(.appBackground))
     .ignoresSafeArea()
 
-   NavigationStack {
-    VStack(spacing: 0) {
-     ScrollView(.horizontal, showsIndicators: false) {
-      HStack(spacing: 8) {
-       Button(action: { selectedCategory = nil }) {
-        Text("All")
+   VStack(spacing: 0) {
+    ScrollView(.horizontal, showsIndicators: false) {
+     HStack(spacing: 8) {
+      Button(action: { selectedCategory = nil }) {
+       Text("All")
+        .font(.system(size: 14, weight: .semibold))
+        .foregroundStyle(selectedCategory == nil ? .white : .gray)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(selectedCategory == nil ? Color.accentColor : Color.gray.opacity(0.1))
+        .cornerRadius(20)
+      }
+
+      ForEach(ServiceCategoryType.allCases, id: \.self) { category in
+       Button(action: { selectedCategory = category }) {
+        Text(category.rawValue)
          .font(.system(size: 14, weight: .semibold))
-         .foregroundStyle(selectedCategory == nil ? .white : .gray)
+         .foregroundStyle(selectedCategory == category ? .white : .gray)
          .padding(.horizontal, 16)
          .padding(.vertical, 8)
-         .background(selectedCategory == nil ? Color.accentColor : Color.gray.opacity(0.1))
+         .background(selectedCategory == category ? Color.accentColor : Color.gray.opacity(0.1))
          .cornerRadius(20)
        }
-
-       ForEach(ServiceCategoryType.allCases, id: \.self) { category in
-        Button(action: { selectedCategory = category }) {
-         Text(category.rawValue)
-          .font(.system(size: 14, weight: .semibold))
-          .foregroundStyle(selectedCategory == category ? .white : .gray)
-          .padding(.horizontal, 16)
-          .padding(.vertical, 8)
-          .background(selectedCategory == category ? Color.accentColor : Color.gray.opacity(0.1))
-          .cornerRadius(20)
-        }
-       }
       }
-      .padding(.horizontal)
-      .padding(.vertical, 8)
      }
+     .padding(.horizontal)
+     .padding(.vertical, 8)
+    }
 
-     ScrollView {
+    ScrollView {
+     VStack(spacing: 14) {
       if filteredServices.isEmpty {
-       VStack(spacing: 12) {
-        Image(systemName: "briefcase.circle")
+       VStack(spacing: 16) {
+        Image(systemName: "briefcase.slash")
          .font(.system(size: 48))
          .foregroundStyle(.gray)
-        Text("No Jobs Yet")
+        Text("No Jobs Found")
          .font(.headline)
          .foregroundStyle(.gray)
+        Text("Try adjusting your filters")
+         .font(.caption)
+         .foregroundStyle(.gray)
        }
-       .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+       .frame(maxWidth: .infinity, maxHeight: .infinity)
        .padding()
       } else {
-       VStack(spacing: 14) {
-        ForEach(mockServices, id: \.id) { service in
-         ServiceCard(service: service)
-        }
+       ForEach(filteredServices, id: \.id) { service in
+        ServiceCard(service: service)
        }
-       .padding()
       }
      }
-     .scrollIndicators(.hidden)
+     .padding()
     }
-    .searchable(text: $searchText, prompt: "Browse Jobs....")
-    .toolbar {
-     ToolbarItem(placement: .topBarTrailing) {
-      Menu {
-       Button(action: { sortOption = .none }) {
-        Label("No Sort", systemImage: "line.3.horizontal.decrease.circle")
-       }
-       Button(action: { sortOption = .price }) {
-        Label("Sort by Price", systemImage: "dollarsign.circle")
-       }
-       Button(action: { sortOption = .alphabetical }) {
-        Label("Sort A-Z", systemImage: "abc")
-       }
-      } label: {
-       Image(systemName: "line.3.horizontal.decrease.circle.fill")
-        .font(.system(size: 16))
+    .scrollIndicators(.hidden)
+   }
+   .searchable(text: $searchText, prompt: "Browse Jobs....")
+   .toolbar {
+    ToolbarItem(placement: .topBarTrailing) {
+     Menu {
+      Button(action: { sortOption = .none }) {
+       Label("No Sort", systemImage: "line.3.horizontal.decrease.circle")
       }
+      Button(action: { sortOption = .price }) {
+       Label("Sort by Price", systemImage: "dollarsign.circle")
+      }
+      Button(action: { sortOption = .alphabetical }) {
+       Label("Sort A-Z", systemImage: "abc")
+      }
+     } label: {
+      Image(systemName: "line.3.horizontal.decrease.circle.fill")
+       .font(.system(size: 16))
      }
     }
    }
