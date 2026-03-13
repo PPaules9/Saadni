@@ -51,15 +51,15 @@ struct MessageBubble: View {
                         if isFromCurrentUser && message.isRead {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(.caption2)
-                                .foregroundStyle(Color(UIColor(hex: "#37857D")))
+                                .foregroundStyle(Colors.swiftUIColor(.primary))
                         }
                     }
                 }
                 .padding(12)
                 .background(
                     isFromCurrentUser
-                        ? Color(UIColor(hex: "#37857D"))
-                        : Color(UIColor(hex: "#FEFEFE"))
+                        ? Colors.swiftUIColor(.primary)
+                        : Colors.swiftUIColor(.surfaceWhite)
                 )
                 .cornerRadius(16)
 

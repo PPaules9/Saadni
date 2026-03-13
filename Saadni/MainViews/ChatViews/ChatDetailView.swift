@@ -45,12 +45,12 @@ struct ChatDetailView: View {
 
                             HStack(spacing: 4) {
                                 Circle()
-                                    .fill(Color(UIColor(hex: "#37857D")))
+                                    .fill(Colors.swiftUIColor(.primary))
                                     .frame(width: 8, height: 8)
 
                                 Text("Online")
                                     .font(.caption)
-                                    .foregroundStyle(Color(UIColor(hex: "#37857D")))
+                                    .foregroundStyle(Colors.swiftUIColor(.primary))
                             }
                         }
 
@@ -67,7 +67,7 @@ struct ChatDetailView: View {
                     }
                     .padding(16)
                 }
-                .background(Color(UIColor(hex: "#FEFEFE")))
+                .background(Colors.swiftUIColor(.surfaceWhite))
 
                 Divider()
 
@@ -131,7 +131,7 @@ struct ChatDetailView: View {
                             .font(.body)
                             .foregroundStyle(Colors.swiftUIColor(.textMain))
                             .padding(12)
-                            .background(Color(UIColor(hex: "#FEFEFE")))
+                            .background(Colors.swiftUIColor(.surfaceWhite))
                             .cornerRadius(20)
                             .onChange(of: messageText) { oldValue, newValue in
                                 let wasTyping = isTyping
@@ -143,13 +143,13 @@ struct ChatDetailView: View {
 
                         Button(action: sendMessage) {
                             Image(systemName: "paperplane.fill")
-                                .foregroundStyle(messageText.isEmpty ? Colors.swiftUIColor(.textSecondary) : Color(UIColor(hex: "#37857D")))
+                                .foregroundStyle(messageText.isEmpty ? Colors.swiftUIColor(.textSecondary) : Colors.swiftUIColor(.primary))
                         }
                         .disabled(messageText.trimmingCharacters(in: .whitespaces).isEmpty)
                     }
                     .padding(12)
                 }
-                .background(Color(UIColor(hex: "#FEFEFE")))
+                .background(Colors.swiftUIColor(.surfaceWhite))
             }
         }
         .navigationTitle("Chat")

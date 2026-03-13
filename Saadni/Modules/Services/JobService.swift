@@ -483,7 +483,7 @@ extension JobService {
             unit: "A",
             someoneAround: true,
             specialTools: nil,
-            serviceDate: Date(timeIntervalSinceNow: 86400 * 3),
+            serviceDate: Date(timeIntervalSinceNow: AppConstants.Time.secondsPerDay * 3),
             estimatedDurationHours: 2.0,
             applicationCount: 5
         ),
@@ -498,7 +498,7 @@ extension JobService {
             ),
             description: "Expert furniture assembly for IKEA and other brands.",
             image: ServiceImage(localId: nil, remoteURL: nil),
-            createdAt: Date(timeIntervalSinceNow: -86400),
+            createdAt: Date(timeIntervalSinceNow: -AppConstants.Time.secondsPerDay),
             providerId: "provider-2",
             providerName: "Fatima Khalil",
             providerImageURL: nil,
@@ -510,7 +510,7 @@ extension JobService {
             unit: "B",
             someoneAround: true,
             specialTools: "Power drill, Allen keys",
-            serviceDate: Date(timeIntervalSinceNow: 86400 * 7),
+            serviceDate: Date(timeIntervalSinceNow: AppConstants.Time.secondsPerDay * 7),
             estimatedDurationHours: 4.0,
             applicationCount: 2
         ),
@@ -537,7 +537,7 @@ extension JobService {
             unit: "C",
             someoneAround: false,
             specialTools: "Electrical testing equipment, cable tester",
-            serviceDate: Date(timeIntervalSinceNow: 86400 * 2),
+            serviceDate: Date(timeIntervalSinceNow: AppConstants.Time.secondsPerDay * 2),
             estimatedDurationHours: 6.0,
             applicationCount: 8
         ),
@@ -591,7 +591,7 @@ extension JobService {
             unit: "E",
             someoneAround: false,
             specialTools: nil,
-            serviceDate: Date(timeIntervalSinceNow: 86400 * 5),
+            serviceDate: Date(timeIntervalSinceNow: AppConstants.Time.secondsPerDay * 5),
             estimatedDurationHours: 8.0,
             applicationCount: 6
         ),
@@ -618,7 +618,7 @@ extension JobService {
             unit: "F",
             someoneAround: true,
             specialTools: "Paint roller, brush set, drop cloth",
-            serviceDate: Date(timeIntervalSinceNow: 86400 * 10),
+            serviceDate: Date(timeIntervalSinceNow: AppConstants.Time.secondsPerDay * 10),
             estimatedDurationHours: 8.0,
             applicationCount: 3
         )

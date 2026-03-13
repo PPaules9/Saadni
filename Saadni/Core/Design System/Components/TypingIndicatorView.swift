@@ -27,7 +27,7 @@ struct TypingIndicatorView: View {
             }
         }
         .padding(12)
-        .background(Color(UIColor(hex: "#FEFEFE")))
+        .background(Colors.swiftUIColor(.surfaceWhite))
         .cornerRadius(16)
         .onAppear {
             isAnimating = true

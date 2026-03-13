@@ -59,7 +59,7 @@ struct ChatListView: View {
                                 NavigationLink(destination: ChatDetailView(conversation: conversation)) {
                                     ConversationRow(conversation: conversation)
                                 }
-                                .listRowBackground(Color(UIColor(hex: "#FEFEFE")))
+                                .listRowBackground(Colors.swiftUIColor(.surfaceWhite))
                                 .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
                             }
                         }
@@ -98,7 +98,7 @@ struct SearchBar: View {
             }
         }
         .padding(12)
-        .background(Color(UIColor(hex: "#FEFEFE")))
+        .background(Colors.swiftUIColor(.surfaceWhite))
         .cornerRadius(12)
     }
 }
@@ -113,11 +113,11 @@ struct ConversationRow: View {
             HStack(spacing: 12) {
                 // Avatar placeholder
                 Circle()
-                    .fill(Color(UIColor(hex: "#37857D")))
+                    .fill(Colors.swiftUIColor(.primary))
                     .frame(width: 48, height: 48)
                     .overlay(
                         Image(systemName: "person.fill")
-                            .foregroundStyle(Color(UIColor(hex: "#FEFEFE")))
+                            .foregroundStyle(Colors.swiftUIColor(.surfaceWhite))
                     )
 
                 VStack(alignment: .leading, spacing: 4) {
@@ -142,7 +142,7 @@ struct ConversationRow: View {
                     // Unread indicator (optional)
                     if conversation.id.count > 5 {
                         Circle()
-                            .fill(Color(UIColor(hex: "#37857D")))
+                            .fill(Colors.swiftUIColor(.primary))
                             .frame(width: 10, height: 10)
                     }
                 }

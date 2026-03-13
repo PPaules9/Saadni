@@ -332,7 +332,7 @@ extension User {
  
  /// Account age in days
  var accountAgeDays: Int {
-  return Int(Date().timeIntervalSince(createdAt) / 86400)
+  return Int(Date().timeIntervalSince(createdAt) / AppConstants.Time.secondsPerDay)
  }
  
  /// Human-readable last login time
@@ -366,7 +366,7 @@ extension User {
  /// Days until premium expires
  var daysUntilPremiumExpires: Int? {
   guard let expiresAt = premiumExpiresAt else { return nil }
-  return Int(expiresAt.timeIntervalSince(Date()) / 86400)
+  return Int(expiresAt.timeIntervalSince(Date()) / AppConstants.Time.secondsPerDay)
  }
  
  /// Premium status display
