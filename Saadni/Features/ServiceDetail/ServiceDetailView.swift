@@ -13,7 +13,7 @@ struct ServiceDetailView: View {
  @Environment(AuthenticationManager.self) var authManager
  @Environment(ApplicationsStore.self) var applicationsStore
  @Environment(ServicesStore.self) var servicesStore
- // @Environment(WalletStore.self) var walletStore // TODO: Fix WalletStore
+ @Environment(WalletStore.self) var walletStore
 
  @State private var showingApplySheet = false
  @State private var showingApplications = false
@@ -250,7 +250,7 @@ struct ServiceDetailView: View {
   .sheet(isPresented: $showingCompletionView) {
    ServiceCompletionView(service: service)
     .environment(servicesStore)
-    // .environment(walletStore) // TODO: Fix WalletStore
+    .environment(walletStore)
   }
 
  }
@@ -312,5 +312,5 @@ struct DetailRow: View {
  .environment(UserCache())
  .environment(AuthenticationManager(userCache: UserCache()))
  .environment(ServicesStore())
- // .environment(WalletStore()) // TODO: Fix WalletStore
+ .environment(WalletStore())
 }

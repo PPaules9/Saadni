@@ -14,7 +14,7 @@ struct MainView: View {
  @Environment(MessagesStore.self) var messagesStore
  @Environment(ConversationsStore.self) var conversationsStore
  @State private var reviewsStore = ReviewsStore()
- // @State private var walletStore = WalletStore() // TODO: Fix WalletStore not in pbxproj
+ @State private var walletStore = WalletStore()
  @State private var appCoordinator: AppCoordinator?
 
  var body: some View {
@@ -81,22 +81,22 @@ struct MainView: View {
   if user.isJobSeeker {
    NeedJobView()
     .environment(reviewsStore)
-    // .environment(walletStore) // TODO: Fix WalletStore
+    .environment(walletStore)
     .environment(messagesStore)
     .environment(conversationsStore)
     .onAppear {
      reviewsStore.setupListeners(userId: user.id)
-     // walletStore.setupListeners(userId: user.id) // TODO: Fix WalletStore
+     walletStore.setupListeners(userId: user.id)
     }
   } else if user.isServiceProvider {
    NeedWork()
     .environment(reviewsStore)
-    // .environment(walletStore) // TODO: Fix WalletStore
+    .environment(walletStore)
     .environment(messagesStore)
     .environment(conversationsStore)
     .onAppear {
      reviewsStore.setupListeners(userId: user.id)
-     // walletStore.setupListeners(userId: user.id) // TODO: Fix WalletStore
+     walletStore.setupListeners(userId: user.id)
     }
   }
  }
@@ -108,5 +108,5 @@ struct MainView: View {
   .environment(AuthenticationManager(userCache: UserCache()))
   .environment(AppStateManager())
   .environment(ReviewsStore())
-  // .environment(WalletStore()) // TODO: Fix WalletStore
+  .environment(WalletStore())
 }

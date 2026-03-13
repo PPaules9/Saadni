@@ -96,6 +96,9 @@
 		224422462F643ADC00241E1C /* BrandNumericalField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244223D2F643ADC00241E1C /* BrandNumericalField.swift */; };
 		224422472F643ADC00241E1C /* BrandTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422402F643ADC00241E1C /* BrandTextEditor.swift */; };
 		224422482F643ADC00241E1C /* BrandTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422412F643ADC00241E1C /* BrandTextField.swift */; };
+		2244224C2F643FE000241E1C /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422492F643FE000241E1C /* Transaction.swift */; };
+		2244224D2F643FE000241E1C /* WalletStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244224A2F643FE000241E1C /* WalletStore.swift */; };
+		2244224F2F643FF100241E1C /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244224E2F643FF100241E1C /* AppConstants.swift */; };
 		2264A02D2F4C6C110004B2B4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2264A02C2F4C6C110004B2B4 /* README.md */; };
 		22B999FF2F5F1A8A00B3E070 /* StateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B999FE2F5F1A8A00B3E070 /* StateKey.swift */; };
 		22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */; };
@@ -207,6 +210,9 @@
 		224422402F643ADC00241E1C /* BrandTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandTextEditor.swift; sourceTree = "<group>"; };
 		224422412F643ADC00241E1C /* BrandTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandTextField.swift; sourceTree = "<group>"; };
 		224422422F643ADC00241E1C /* InputState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputState.swift; sourceTree = "<group>"; };
+		224422492F643FE000241E1C /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		2244224A2F643FE000241E1C /* WalletStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletStore.swift; sourceTree = "<group>"; };
+		2244224E2F643FF100241E1C /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
 		2264A02C2F4C6C110004B2B4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		22B999FE2F5F1A8A00B3E070 /* StateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateKey.swift; sourceTree = "<group>"; };
 		22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -523,6 +529,15 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		2244224B2F643FE000241E1C /* Wallet */ = {
+			isa = PBXGroup;
+			children = (
+				224422492F643FE000241E1C /* Transaction.swift */,
+				2244224A2F643FE000241E1C /* WalletStore.swift */,
+			);
+			path = Wallet;
+			sourceTree = "<group>";
+		};
 		228B2C752F36048800A4441B = {
 			isa = PBXGroup;
 			children = (
@@ -535,6 +550,7 @@
 		22B999FD2F5F1A7B00B3E070 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
+				2244224E2F643FF100241E1C /* AppConstants.swift */,
 				22B999FE2F5F1A8A00B3E070 /* StateKey.swift */,
 			);
 			path = Constants;
@@ -551,6 +567,7 @@
 		22FD35F62F56E83E00AF3127 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				2244224B2F643FE000241E1C /* Wallet */,
 				224422052F634EBE00241E1C /* Messaging */,
 				224421D52F63368D00241E1C /* Reviews */,
 				2236A1AF2F5321E300A7A19F /* Account */,
@@ -777,6 +794,8 @@
 				2244222F2F6439AD00241E1C /* UserValueObjects.swift in Sources */,
 				224422302F6439AD00241E1C /* User+Permissions.swift in Sources */,
 				224421D62F63368D00241E1C /* Review.swift in Sources */,
+				2244224C2F643FE000241E1C /* Transaction.swift in Sources */,
+				2244224D2F643FE000241E1C /* WalletStore.swift in Sources */,
 				224421D72F63368D00241E1C /* ReviewsStore.swift in Sources */,
 				2236A1B52F5321E300A7A19F /* StorageService.swift in Sources */,
 				22FD36F42F57418600AF3127 /* ConfettiView.swift in Sources */,
@@ -802,6 +821,7 @@
 				22FD36F92F57418600AF3127 /* CreateJobTab5.swift in Sources */,
 				2244220C2F634EFC00241E1C /* ConversationsStore.swift in Sources */,
 				22FD36FA2F57418600AF3127 /* CreateJobTab2.swift in Sources */,
+				2244224F2F643FF100241E1C /* AppConstants.swift in Sources */,
 				22FD36EB2F573A7600AF3127 /* SectionHeader.swift in Sources */,
 				224421F72F633AEA00241E1C /* SubmitReviewSheet.swift in Sources */,
 				22FD36EC2F573A7600AF3127 /* ServiceCategory.swift in Sources */,
