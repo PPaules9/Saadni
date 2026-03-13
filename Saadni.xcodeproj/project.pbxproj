@@ -82,6 +82,10 @@
 		224422262F64397F00241E1C /* ServiceActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422242F64397F00241E1C /* ServiceActivity.swift */; };
 		224422272F64397F00241E1C /* JobService+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422212F64397F00241E1C /* JobService+Formatting.swift */; };
 		224422282F64397F00241E1C /* JobService+SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422222F64397F00241E1C /* JobService+SampleData.swift */; };
+		2244222D2F6439AD00241E1C /* User+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422292F6439AD00241E1C /* User+Formatting.swift */; };
+		2244222E2F6439AD00241E1C /* UserScoreCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244222B2F6439AD00241E1C /* UserScoreCalculator.swift */; };
+		2244222F2F6439AD00241E1C /* UserValueObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244222C2F6439AD00241E1C /* UserValueObjects.swift */; };
+		224422302F6439AD00241E1C /* User+Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244222A2F6439AD00241E1C /* User+Permissions.swift */; };
 		2264A02D2F4C6C110004B2B4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2264A02C2F4C6C110004B2B4 /* README.md */; };
 		22B999FF2F5F1A8A00B3E070 /* StateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B999FE2F5F1A8A00B3E070 /* StateKey.swift */; };
 		22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */; };
@@ -179,6 +183,10 @@
 		224422222F64397F00241E1C /* JobService+SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobService+SampleData.swift"; sourceTree = "<group>"; };
 		224422232F64397F00241E1C /* JobServiceFirestoreMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobServiceFirestoreMapper.swift; sourceTree = "<group>"; };
 		224422242F64397F00241E1C /* ServiceActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceActivity.swift; sourceTree = "<group>"; };
+		224422292F6439AD00241E1C /* User+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+Formatting.swift"; sourceTree = "<group>"; };
+		2244222A2F6439AD00241E1C /* User+Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+Permissions.swift"; sourceTree = "<group>"; };
+		2244222B2F6439AD00241E1C /* UserScoreCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserScoreCalculator.swift; sourceTree = "<group>"; };
+		2244222C2F6439AD00241E1C /* UserValueObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserValueObjects.swift; sourceTree = "<group>"; };
 		2264A02C2F4C6C110004B2B4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		22B999FE2F5F1A8A00B3E070 /* StateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateKey.swift; sourceTree = "<group>"; };
 		22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -374,6 +382,10 @@
 		2236A1AF2F5321E300A7A19F /* Account */ = {
 			isa = PBXGroup;
 			children = (
+				224422292F6439AD00241E1C /* User+Formatting.swift */,
+				2244222A2F6439AD00241E1C /* User+Permissions.swift */,
+				2244222B2F6439AD00241E1C /* UserScoreCalculator.swift */,
+				2244222C2F6439AD00241E1C /* UserValueObjects.swift */,
 				2236A1AE2F5321E300A7A19F /* User.swift */,
 				224421B42F61DE9D00241E1C /* UserCache.swift */,
 			);
@@ -715,6 +727,10 @@
 				2236A1B32F5321E300A7A19F /* User.swift in Sources */,
 				2236A1B42F5321E300A7A19F /* AuthenticationManager.swift in Sources */,
 				224421C72F6304BB00241E1C /* WalletSheet.swift in Sources */,
+				2244222D2F6439AD00241E1C /* User+Formatting.swift in Sources */,
+				2244222E2F6439AD00241E1C /* UserScoreCalculator.swift in Sources */,
+				2244222F2F6439AD00241E1C /* UserValueObjects.swift in Sources */,
+				224422302F6439AD00241E1C /* User+Permissions.swift in Sources */,
 				224421D62F63368D00241E1C /* Review.swift in Sources */,
 				224421D72F63368D00241E1C /* ReviewsStore.swift in Sources */,
 				2236A1B52F5321E300A7A19F /* StorageService.swift in Sources */,
