@@ -90,6 +90,12 @@
 		2244223A2F643AB700241E1C /* WorkManagementSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422342F643AB700241E1C /* WorkManagementSection.swift */; };
 		2244223B2F643AB700241E1C /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422322F643AB700241E1C /* ProfileHeaderView.swift */; };
 		2244223C2F643AB700241E1C /* RoleSwitcherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422332F643AB700241E1C /* RoleSwitcherView.swift */; };
+		224422432F643ADC00241E1C /* InputState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422422F643ADC00241E1C /* InputState.swift */; };
+		224422442F643ADC00241E1C /* BrandPasswordField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244223E2F643ADC00241E1C /* BrandPasswordField.swift */; };
+		224422452F643ADC00241E1C /* BrandSearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244223F2F643ADC00241E1C /* BrandSearchField.swift */; };
+		224422462F643ADC00241E1C /* BrandNumericalField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244223D2F643ADC00241E1C /* BrandNumericalField.swift */; };
+		224422472F643ADC00241E1C /* BrandTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422402F643ADC00241E1C /* BrandTextEditor.swift */; };
+		224422482F643ADC00241E1C /* BrandTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422412F643ADC00241E1C /* BrandTextField.swift */; };
 		2264A02D2F4C6C110004B2B4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2264A02C2F4C6C110004B2B4 /* README.md */; };
 		22B999FF2F5F1A8A00B3E070 /* StateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B999FE2F5F1A8A00B3E070 /* StateKey.swift */; };
 		22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */; };
@@ -195,6 +201,12 @@
 		224422332F643AB700241E1C /* RoleSwitcherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleSwitcherView.swift; sourceTree = "<group>"; };
 		224422342F643AB700241E1C /* WorkManagementSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkManagementSection.swift; sourceTree = "<group>"; };
 		224422362F643AB700241E1C /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		2244223D2F643ADC00241E1C /* BrandNumericalField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandNumericalField.swift; sourceTree = "<group>"; };
+		2244223E2F643ADC00241E1C /* BrandPasswordField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandPasswordField.swift; sourceTree = "<group>"; };
+		2244223F2F643ADC00241E1C /* BrandSearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandSearchField.swift; sourceTree = "<group>"; };
+		224422402F643ADC00241E1C /* BrandTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandTextEditor.swift; sourceTree = "<group>"; };
+		224422412F643ADC00241E1C /* BrandTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandTextField.swift; sourceTree = "<group>"; };
+		224422422F643ADC00241E1C /* InputState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputState.swift; sourceTree = "<group>"; };
 		2264A02C2F4C6C110004B2B4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		22B999FE2F5F1A8A00B3E070 /* StateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateKey.swift; sourceTree = "<group>"; };
 		22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -282,6 +294,12 @@
 		2236A1462F50949000A7A19F /* TextField */ = {
 			isa = PBXGroup;
 			children = (
+				2244223D2F643ADC00241E1C /* BrandNumericalField.swift */,
+				2244223E2F643ADC00241E1C /* BrandPasswordField.swift */,
+				2244223F2F643ADC00241E1C /* BrandSearchField.swift */,
+				224422402F643ADC00241E1C /* BrandTextEditor.swift */,
+				224422412F643ADC00241E1C /* BrandTextField.swift */,
+				224422422F643ADC00241E1C /* InputState.swift */,
 				2236A1452F50949000A7A19F /* DesignSystemTextFields.swift */,
 			);
 			path = TextField;
@@ -775,6 +793,12 @@
 				224422122F634FE100241E1C /* TypingIndicatorView.swift in Sources */,
 				22FD36F72F57418600AF3127 /* CreateJobTab1.swift in Sources */,
 				22FD36F82F57418600AF3127 /* CreateJobTab3.swift in Sources */,
+				224422432F643ADC00241E1C /* InputState.swift in Sources */,
+				224422442F643ADC00241E1C /* BrandPasswordField.swift in Sources */,
+				224422452F643ADC00241E1C /* BrandSearchField.swift in Sources */,
+				224422462F643ADC00241E1C /* BrandNumericalField.swift in Sources */,
+				224422472F643ADC00241E1C /* BrandTextEditor.swift in Sources */,
+				224422482F643ADC00241E1C /* BrandTextField.swift in Sources */,
 				22FD36F92F57418600AF3127 /* CreateJobTab5.swift in Sources */,
 				2244220C2F634EFC00241E1C /* ConversationsStore.swift in Sources */,
 				22FD36FA2F57418600AF3127 /* CreateJobTab2.swift in Sources */,
