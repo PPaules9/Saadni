@@ -49,7 +49,7 @@ extension User {
 
     /// Account age in days
     var accountAgeDays: Int {
-        return Int(Date().timeIntervalSince(createdAt) / AppConstants.Time.secondsPerDay)
+        return Int(Date().timeIntervalSince(createdAt) / 86400) /* secondsPerDay */
     }
 
     /// Human-readable last login time

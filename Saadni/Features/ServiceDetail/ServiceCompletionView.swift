@@ -12,7 +12,7 @@ struct ServiceCompletionView: View {
 
     @Environment(\.dismiss) var dismiss
     @Environment(ServicesStore.self) var servicesStore
-    @Environment(WalletStore.self) var walletStore
+    // @Environment(WalletStore.self) var walletStore // TODO: Fix WalletStore
     @Environment(AuthenticationManager.self) var authManager
 
     @State private var isCompleting: Bool = false
@@ -157,12 +157,13 @@ struct ServiceCompletionView: View {
                              userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])
             }
 
-            try await walletStore.createEarningTransaction(
-                userId: userId,
-                amount: service.price,
-                serviceId: service.id,
-                serviceName: service.title
-            )
+            // TODO: walletStore.createEarningTransaction - waiting for WalletStore to be in pbxproj
+            // try await walletStore.createEarningTransaction(
+            //     userId: userId,
+            //     amount: service.price,
+            //     serviceId: service.id,
+            //     serviceName: service.title
+            // )
 
             dismiss()
         } catch {
@@ -176,6 +177,6 @@ struct ServiceCompletionView: View {
 #Preview {
     ServiceCompletionView(service: JobService.sampleData[0])
         .environment(ServicesStore())
-        .environment(WalletStore())
+        // .environment(WalletStore()) // TODO: Fix WalletStore
         .environment(AuthenticationManager(userCache: UserCache()))
 }

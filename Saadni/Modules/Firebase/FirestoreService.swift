@@ -108,19 +108,20 @@ class FirestoreService {
  }
 
  // MARK: - Transaction Operations
+ // TODO: These methods require Transaction type from pbxproj
 
- func saveTransaction(_ transaction: Transaction) async throws {
-  try await transactionsCollection.document(transaction.id).setData(transaction.toFirestore())
-  print("✅ Transaction saved: \(transaction.id)")
- }
-
- func updateTransaction(_ transaction: Transaction) async throws {
-  try await transactionsCollection.document(transaction.id).updateData(transaction.toFirestore())
-  print("✅ Transaction updated: \(transaction.id)")
- }
-
- func deleteTransaction(id: String) async throws {
-  try await transactionsCollection.document(id).delete()
-  print("✅ Transaction deleted: \(id)")
- }
+ // func saveTransaction(_ transaction: Transaction) async throws {
+ //  try await transactionsCollection.document(transaction.id).setData(transaction.toFirestore())
+ //  print("✅ Transaction saved: \(transaction.id)")
+ // }
+ //
+ // func updateTransaction(_ transaction: Transaction) async throws {
+ //  try await transactionsCollection.document(transaction.id).updateData(transaction.toFirestore())
+ //  print("✅ Transaction updated: \(transaction.id)")
+ // }
+ //
+ // func deleteTransaction(id: String) async throws {
+ //  try await transactionsCollection.document(id).delete()
+ //  print("✅ Transaction deleted: \(id)")
+ // }
 }

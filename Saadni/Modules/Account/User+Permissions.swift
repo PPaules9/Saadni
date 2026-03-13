@@ -45,7 +45,7 @@ extension User {
     /// Days until premium expires
     var daysUntilPremiumExpires: Int? {
         guard let expiresAt = premiumExpiresAt else { return nil }
-        return Int(expiresAt.timeIntervalSince(Date()) / AppConstants.Time.secondsPerDay)
+        return Int(expiresAt.timeIntervalSince(Date()) / 86400) /* secondsPerDay */
     }
 
     /// Whether user has auto-reply enabled
