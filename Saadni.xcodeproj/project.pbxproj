@@ -78,6 +78,10 @@
 		2244221E2F63523F00241E1C /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422182F63523F00241E1C /* AppCoordinator.swift */; };
 		2244221F2F63523F00241E1C /* NavigationDestinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244221A2F63523F00241E1C /* NavigationDestinations.swift */; };
 		224422202F63523F00241E1C /* ServiceProviderCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244221B2F63523F00241E1C /* ServiceProviderCoordinator.swift */; };
+		224422252F64397F00241E1C /* JobServiceFirestoreMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422232F64397F00241E1C /* JobServiceFirestoreMapper.swift */; };
+		224422262F64397F00241E1C /* ServiceActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422242F64397F00241E1C /* ServiceActivity.swift */; };
+		224422272F64397F00241E1C /* JobService+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422212F64397F00241E1C /* JobService+Formatting.swift */; };
+		224422282F64397F00241E1C /* JobService+SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422222F64397F00241E1C /* JobService+SampleData.swift */; };
 		2264A02D2F4C6C110004B2B4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2264A02C2F4C6C110004B2B4 /* README.md */; };
 		22B999FF2F5F1A8A00B3E070 /* StateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B999FE2F5F1A8A00B3E070 /* StateKey.swift */; };
 		22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */; };
@@ -171,6 +175,10 @@
 		224422192F63523F00241E1C /* JobSeekerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobSeekerCoordinator.swift; sourceTree = "<group>"; };
 		2244221A2F63523F00241E1C /* NavigationDestinations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationDestinations.swift; sourceTree = "<group>"; };
 		2244221B2F63523F00241E1C /* ServiceProviderCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderCoordinator.swift; sourceTree = "<group>"; };
+		224422212F64397F00241E1C /* JobService+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobService+Formatting.swift"; sourceTree = "<group>"; };
+		224422222F64397F00241E1C /* JobService+SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobService+SampleData.swift"; sourceTree = "<group>"; };
+		224422232F64397F00241E1C /* JobServiceFirestoreMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobServiceFirestoreMapper.swift; sourceTree = "<group>"; };
+		224422242F64397F00241E1C /* ServiceActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceActivity.swift; sourceTree = "<group>"; };
 		2264A02C2F4C6C110004B2B4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		22B999FE2F5F1A8A00B3E070 /* StateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateKey.swift; sourceTree = "<group>"; };
 		22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -499,6 +507,10 @@
 		22FD35F72F56E8B600AF3127 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				224422212F64397F00241E1C /* JobService+Formatting.swift */,
+				224422222F64397F00241E1C /* JobService+SampleData.swift */,
+				224422232F64397F00241E1C /* JobServiceFirestoreMapper.swift */,
+				224422242F64397F00241E1C /* ServiceActivity.swift */,
 				224421B22F61DDA400241E1C /* JobService.swift */,
 				224421AE2F6066E800241E1C /* ServicesStore.swift */,
 			);
@@ -676,6 +688,10 @@
 				224422062F634EBE00241E1C /* TypingIndicator.swift in Sources */,
 				224422072F634EBE00241E1C /* Conversation.swift in Sources */,
 				224422082F634EBE00241E1C /* Message.swift in Sources */,
+				224422252F64397F00241E1C /* JobServiceFirestoreMapper.swift in Sources */,
+				224422262F64397F00241E1C /* ServiceActivity.swift in Sources */,
+				224422272F64397F00241E1C /* JobService+Formatting.swift in Sources */,
+				224422282F64397F00241E1C /* JobService+SampleData.swift in Sources */,
 				224422162F63500B00241E1C /* ChatDetailView.swift in Sources */,
 				224422172F63500B00241E1C /* ChatListView.swift in Sources */,
 				224421EA2F63393F00241E1C /* StarRatingPicker.swift in Sources */,
