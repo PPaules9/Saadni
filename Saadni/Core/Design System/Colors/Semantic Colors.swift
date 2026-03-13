@@ -15,14 +15,19 @@ public enum SemanticColor {
  case textPrimary
  case textSecondary
  case textMain
- 
+
  // Background colors
  case appBackground
  case buttonBackground
- 
+ case surfaceWhite
+
  // Border colors
  case borderPrimary
  case borderError
  case borderWarning
+
+ // Brand colors
+ case primary
+ case primaryDark
 
 }

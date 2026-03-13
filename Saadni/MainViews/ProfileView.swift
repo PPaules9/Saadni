@@ -80,9 +80,11 @@ struct ProfileView: View {
 }
 
 #Preview {
-    ProfileView()
+    let userCache = UserCache()
+    let authManager = AuthenticationManager(userCache: userCache)
+    return ProfileView()
         .environment(AppStateManager())
-        .environment(UserCache())
-        .environment(AuthenticationManager(userCache: UserCache()))
-        .environment(AppCoordinator(jobSeekerCoordinator: JobSeekerCoordinator(), serviceProviderCoordinator: ServiceProviderCoordinator()))
+        .environment(userCache)
+        .environment(authManager)
+        .environment(AppCoordinator(authManager: authManager, userCache: userCache))
 }

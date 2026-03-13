@@ -8,6 +8,7 @@
 import Foundation
 
 // MARK: - Mock Data
+// Note: AppConstants is imported implicitly through the module
 
 extension JobService {
     /// Sample activities for Recent Activity section

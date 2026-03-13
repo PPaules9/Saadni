@@ -52,6 +52,20 @@ struct ColorPalette {
   case (.default, .buttonBackground, true):
    return .primaryDark
    
+  case (.default, .primary, false):
+   return .primary
+  case (.default, .primary, true):
+   return .primary
+
+  case (.default, .primaryDark, false):
+   return .primaryDark
+  case (.default, .primaryDark, true):
+   return .primaryDark
+
+  case (.default, .surfaceWhite, false):
+   return .surfaceWhite
+  case (.default, .surfaceWhite, true):
+   return .surfaceWhite
    
   case (.default, .borderPrimary, false):
    return .textPrimary
