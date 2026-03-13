@@ -50,8 +50,6 @@
 		224421C72F6304BB00241E1C /* WalletSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224421C62F6304BB00241E1C /* WalletSheet.swift */; };
 		224421C92F63079B00241E1C /* HomeActivityCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224421C82F63079B00241E1C /* HomeActivityCard.swift */; };
 		224421CE2F63226D00241E1C /* CarouselCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224421CD2F63226D00241E1C /* CarouselCard.swift */; };
-		224421D12F63366F00241E1C /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224421CF2F63366F00241E1C /* Transaction.swift */; };
-		224421D22F63366F00241E1C /* WalletStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224421D02F63366F00241E1C /* WalletStore.swift */; };
 		224421D62F63368D00241E1C /* Review.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224421D32F63368D00241E1C /* Review.swift */; };
 		224421D72F63368D00241E1C /* ReviewsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224421D42F63368D00241E1C /* ReviewsStore.swift */; };
 		224421D92F6337CC00241E1C /* ServiceCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224421D82F6337CC00241E1C /* ServiceCompletionView.swift */; };
@@ -142,8 +140,6 @@
 		224421C62F6304BB00241E1C /* WalletSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSheet.swift; sourceTree = "<group>"; };
 		224421C82F63079B00241E1C /* HomeActivityCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeActivityCard.swift; sourceTree = "<group>"; };
 		224421CD2F63226D00241E1C /* CarouselCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselCard.swift; sourceTree = "<group>"; };
-		224421CF2F63366F00241E1C /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
-		224421D02F63366F00241E1C /* WalletStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletStore.swift; sourceTree = "<group>"; };
 		224421D32F63368D00241E1C /* Review.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Review.swift; sourceTree = "<group>"; };
 		224421D42F63368D00241E1C /* ReviewsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsStore.swift; sourceTree = "<group>"; };
 		224421D82F6337CC00241E1C /* ServiceCompletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCompletionView.swift; sourceTree = "<group>"; };
@@ -397,8 +393,6 @@
 		224421C52F6304B200241E1C /* WalletView */ = {
 			isa = PBXGroup;
 			children = (
-				224421CF2F63366F00241E1C /* Transaction.swift */,
-				224421D02F63366F00241E1C /* WalletStore.swift */,
 				224421C62F6304BB00241E1C /* WalletSheet.swift */,
 			);
 			path = WalletView;
@@ -709,8 +703,6 @@
 				224421D72F63368D00241E1C /* ReviewsStore.swift in Sources */,
 				2236A1B52F5321E300A7A19F /* StorageService.swift in Sources */,
 				22FD36F42F57418600AF3127 /* ConfettiView.swift in Sources */,
-				224421D12F63366F00241E1C /* Transaction.swift in Sources */,
-				224421D22F63366F00241E1C /* WalletStore.swift in Sources */,
 				22FD36F52F57418600AF3127 /* CreateJobSheet.swift in Sources */,
 				224421B52F61DE9D00241E1C /* UserCache.swift in Sources */,
 				224422012F634D8400241E1C /* CreateJobTab6.swift in Sources */,
