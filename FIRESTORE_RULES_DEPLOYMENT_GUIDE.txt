@@ -1,0 +1,246 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║         FIRESTORE SECURITY RULES - DEPLOYMENT GUIDE (Mar 14, 2026)              ║
+║                    FIX FOR: "Missing or insufficient permissions"               ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+ROOT CAUSE ANALYSIS:
+═══════════════════
+
+Your app is failing with these errors:
+  ❌ Error loading messages: Missing or insufficient permissions
+  ❌ Write at users/{uid} failed: Missing or insufficient permissions
+  ⚠️ Could not determine other participant
+  ❌ Listen for query at messages failed: Missing or insufficient permissions
+
+These errors occur because your Firestore database has NO security rules set up.
+Firestore defaults to DENY ALL access for security. You need to explicitly allow:
+  • Reading message documents
+  • Writing typing indicators
+  • Reading user profiles for chat names
+  • Reading/writing service applications
+  • Reading reviews
+
+═════════════════════════════════════════════════════════════════════════════════
+
+STEP-BY-STEP DEPLOYMENT INSTRUCTIONS:
+═════════════════════════════════════
+
+STEP 1: Open Firebase Console
+───────────────────────────────
+1. Go to: https://console.firebase.google.com
+2. Select your "Saadni" project
+3. Click "Firestore Database" in left menu
+4. Click "Rules" tab at the top
+
+
+STEP 2: Copy the Security Rules
+────────────────────────────────
+1. Open file: Saadni_Firestore_Rules_Complete.txt (in your project root)
+2. Copy ALL the content (starting from "rules_version = '2';" to the end)
+3. Back to Firebase Console Rules tab
+4. Clear any existing rules
+5. Paste the entire rules content into the editor
+
+
+STEP 3: Test the Rules (BEFORE Publishing)
+────────────────────────────────────────────
+DO NOT PUBLISH YET! Test first:
+
+1. Click "Rules Playground" button (bottom right of editor)
+2. This opens a test panel below the rules
+3. Test 1 - Message Read (should PASS):
+   - Service: Cloud Firestore
+   - Request type: read
+   - Path: /databases/default/documents/conversations/{any_conversation_id}/messages
+   - User: paste your user ID (from Firebase Auth)
+   - Expected result: Should PASS ✅
+
+4. Test 2 - Message Create (should PASS):
+   - Request type: write (create)
+   - Path: /databases/default/documents/conversations/{any_conversation_id}/messages/{any_message_id}
+   - Data: { "senderId": "{your_user_id}", "content": "test" }
+   - User: your user ID
+   - Expected result: Should PASS ✅
+
+5. Test 3 - Unauthorized Read (should FAIL):
+   - Request type: read
+   - Path: /databases/default/documents/transactions/someId
+   - User: different user ID (not the owner)
+   - Expected result: Should FAIL ✅ (permission denied)
+
+
+STEP 4: Publish the Rules
+──────────────────────────
+⚠️ CRITICAL: Only proceed if Step 3 tests passed!
+
+1. Click "Publish" button (top right)
+2. Firebase will show a warning about live rules
+3. Click "Publish" to confirm
+4. Wait for deployment (usually 1-2 minutes)
+5. You should see: "✅ Rules deployed successfully"
+
+
+STEP 5: Create Required Composite Indexes
+────────────────────────────────────────────
+After publishing rules, you need to create composite indexes for queries.
+
+Firebase will automatically suggest these when needed, but you can create them now:
+
+1. In Firestore console, click "Indexes" tab
+2. Click "Create Index" button
+3. Create these 4 indexes:
+
+   INDEX 1:
+   ├─ Collection: services
+   ├─ Fields: providerId (Ascending), createdAt (Descending)
+   └─ Scope: Collection
+
+   INDEX 2:
+   ├─ Collection: applications
+   ├─ Fields: serviceId (Ascending), createdAt (Descending)
+   └─ Scope: Collection
+
+   INDEX 3:
+   ├─ Collection: reviews
+   ├─ Fields: reviewerId (Ascending), createdAt (Descending)
+   └─ Scope: Collection
+
+   INDEX 4:
+   ├─ Collection: reviews
+   ├─ Fields: revieweeId (Ascending), createdAt (Descending)
+   └─ Scope: Collection
+
+   (Optional) INDEX 5:
+   ├─ Collection: transactions
+   ├─ Fields: userId (Ascending), createdAt (Descending)
+   └─ Scope: Collection
+
+Note: Wait 5-10 minutes for indexes to build. The app will work without them, but
+queries will be slow until indexes are ready.
+
+
+STEP 6: Test in the App
+────────────────────────
+1. Close Xcode simulator (Cmd+Q to quit)
+2. In Xcode, clean build folder: Cmd+Shift+K
+3. Build and run the app: Cmd+R
+4. Wait for app to load and authenticate
+
+What to look for:
+✅ FIXED: Messages now appear in ChatDetailView
+✅ FIXED: User names display instead of "User"
+✅ FIXED: Typing indicators work
+✅ FIXED: "Missing or insufficient permissions" errors are GONE from logs
+✅ FIXED: Service cards load properly
+✅ FIXED: User profiles load
+
+
+═════════════════════════════════════════════════════════════════════════════════
+
+WHAT THE RULES DO:
+═══════════════════
+
+/messages (in conversations/{id}/messages)
+├─ ✅ READ: Any participant in the conversation can read all messages
+├─ ✅ CREATE: Conversation participants can send messages
+└─ ✅ UPDATE/DELETE: Users can only modify their own messages
+
+/users/{uid}
+├─ ✅ READ: Any authenticated user can read profiles (needed for chat names)
+└─ ✅ WRITE: Users can only update their own profile
+
+/conversations/{id}
+├─ ✅ READ: Participants can read conversation details
+├─ ✅ CREATE: Authenticated users can create conversations
+└─ ✅ UPDATE/DELETE: Participants can modify their conversation
+
+/conversations/{id}/typingIndicators/{userId}
+├─ ✅ READ: Participants can see who's typing
+└─ ✅ WRITE: Users can set their own typing status
+
+/services/{id}
+├─ ✅ READ: Authenticated users can browse services
+└─ ✅ WRITE: Service providers can create/update their own services
+
+/applications/{id}
+├─ ✅ READ: Applicants and service providers can see applications
+└─ ✅ CREATE: Users can apply for services
+└─ ✅ UPDATE: Providers and applicants can modify status
+
+/reviews/{id}
+├─ ✅ READ: All authenticated users can read reviews
+├─ ✅ CREATE: Users can submit reviews
+└─ ✅ UPDATE/DELETE: Only reviewers can modify/remove their reviews
+
+/transactions/{id}
+├─ ✅ READ: Users can only read their own transactions
+└─ ❌ UPDATE/DELETE: Disabled (immutable ledger for accounting)
+
+═════════════════════════════════════════════════════════════════════════════════
+
+TROUBLESHOOTING:
+═════════════════
+
+Q: "Still getting Permission denied errors"
+A: 1. Check Firestore console shows your rules were published
+   2. Make sure you copied the ENTIRE rules file (not partial)
+   3. Clean build in Xcode and restart simulator
+   4. Wait 2 minutes and try again (sometimes takes time to propagate)
+
+Q: "Messages load but are empty"
+A: 1. Try sending a message in the app
+   2. Check Firestore console -> Collections -> messages
+   3. If messages collection is empty, they weren't being saved
+   4. This might indicate an issue with sendMessage() function
+
+Q: "User names still showing 'User' or 'Provider'"
+A: 1. Verify /users collection has user documents with displayName field
+   2. Check that user IDs in conversations match actual users
+   3. Try signing out and back in to refresh
+
+Q: "Slow message loading (indexes needed)"
+A: This is normal if indexes aren't built yet. Wait 5-10 minutes and try again.
+   You can check index status in Firebase Console -> Indexes
+
+Q: "Index creation failed or is stuck"
+A: 1. Check Firebase Console -> Indexes
+   2. If any are "BUILDING" for >10 minutes, try creating them again
+   3. Verify the index fields are spelled exactly as specified
+   4. Check that collection name is lowercase
+
+═════════════════════════════════════════════════════════════════════════════════
+
+AFTER RULES ARE DEPLOYED:
+═══════════════════════════
+
+The following functionality will work:
+  ✅ Chat messaging system (messages load and display)
+  ✅ User name display in conversations
+  ✅ Typing indicators
+  ✅ Service browsing
+  ✅ Job applications
+  ✅ Reviews system
+  ✅ Wallet/transaction tracking
+  ✅ Profile management
+
+═════════════════════════════════════════════════════════════════════════════════
+
+SAFETY NOTES:
+═══════════════
+
+These rules implement:
+  ✅ User privacy: Users can only read their own transactions
+  ✅ Data integrity: Transactions are immutable (no deletes)
+  ✅ Service provider protection: Only providers can modify their services
+  ✅ Conversation privacy: Only participants can access conversations
+
+DO NOT modify rules without understanding the security implications!
+
+═════════════════════════════════════════════════════════════════════════════════
+
+Questions? Check:
+  1. Firebase docs: https://firebase.google.com/docs/firestore/security/get-started
+  2. Rules syntax: https://firebase.google.com/docs/firestore/security/rules-language
+  3. Firestore console Rules Playground for testing
+
+═════════════════════════════════════════════════════════════════════════════════

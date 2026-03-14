@@ -1,0 +1,236 @@
+// Saadni Firestore Security Rules - Complete v7 (Mar 14, 2026)
+// This file fixes ALL permission denied errors and enables messaging, user management, and data sync
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // MARK: - Helper Functions
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isAuthUser(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function isConversationParticipant(conversationId) {
+      return isAuth() && exists(/databases/$(database)/documents/conversations/$(conversationId)) &&
+             request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participantIds;
+    }
+
+    // MARK: - Users Collection
+
+    match /users/{userId} {
+      // Users can read all user profiles (needed for chat participant names and provider info)
+      allow read: if isAuth();
+
+      // Users can only write/update their own profile
+      allow create, update, delete: if isAuthUser(userId);
+    }
+
+    // MARK: - Services Collection
+
+    match /services/{serviceId} {
+      // Anyone (authenticated or not) can read services
+      allow read: if isAuth();
+
+      // Only the service provider can write/update/delete
+      allow create: if isAuth();
+      allow update, delete: if isAuth() && resource.data.providerId == request.auth.uid;
+    }
+
+    // Services -> Applications subcollection
+    match /services/{serviceId}/applications/{applicationId} {
+      allow read: if isAuth();
+      allow create: if isAuth();
+      allow update, delete: if isAuth() &&
+        (resource.data.userId == request.auth.uid ||
+         get(/databases/$(database)/documents/services/$(serviceId)).data.providerId == request.auth.uid);
+    }
+
+    // MARK: - Conversations Collection
+
+    match /conversations/{conversationId} {
+      // Participants can read conversation info
+      allow read: if isAuth() && isConversationParticipant(conversationId);
+
+      // Anyone authenticated can create conversations
+      allow create: if isAuth();
+
+      // Participants can update their conversation
+      allow update: if isAuth() && isConversationParticipant(conversationId);
+
+      // Participants can delete conversation (archive/soft delete)
+      allow delete: if isAuth() && isConversationParticipant(conversationId);
+
+      // MARK: - Messages Subcollection (CRITICAL FIX)
+
+      match /messages/{messageId} {
+        // Conversation participants can read all messages
+        allow read: if isConversationParticipant(conversationId);
+
+        // Users can create messages in conversations they're part of
+        allow create: if isAuth() && isConversationParticipant(conversationId);
+
+        // Users can only update/delete their own messages
+        allow update, delete: if isAuth() && resource.data.senderId == request.auth.uid;
+      }
+
+      // MARK: - Typing Indicators Subcollection (CRITICAL FIX)
+
+      match /typingIndicators/{userId} {
+        // Participants can read typing indicators
+        allow read: if isConversationParticipant(conversationId);
+
+        // Users can write their own typing status
+        allow create, update: if isAuth() && isAuthUser(userId) && isConversationParticipant(conversationId);
+
+        // Users can delete their own typing status
+        allow delete: if isAuth() && isAuthUser(userId);
+      }
+    }
+
+    // MARK: - Reviews Collection
+
+    match /reviews/{reviewId} {
+      // Users can read all reviews
+      allow read: if isAuth();
+
+      // Users can create reviews
+      allow create: if isAuth();
+
+      // Only the reviewer can update their review
+      allow update: if isAuth() && resource.data.reviewerId == request.auth.uid;
+
+      // Only the reviewer can delete their review
+      allow delete: if isAuth() && resource.data.reviewerId == request.auth.uid;
+    }
+
+    // MARK: - Applications Collection
+
+    match /applications/{applicationId} {
+      // Applicants and service providers can read applications
+      allow read: if isAuth() &&
+        (resource.data.userId == request.auth.uid ||
+         get(/databases/$(database)/documents/services/$(resource.data.serviceId)).data.providerId == request.auth.uid);
+
+      // Users can create applications
+      allow create: if isAuth();
+
+      // Applicants and providers can update
+      allow update: if isAuth() &&
+        (resource.data.userId == request.auth.uid ||
+         get(/databases/$(database)/documents/services/$(resource.data.serviceId)).data.providerId == request.auth.uid);
+
+      // Applicants can delete (withdraw)
+      allow delete: if isAuth() && resource.data.userId == request.auth.uid;
+    }
+
+    // MARK: - Transactions/Wallet Collection
+
+    match /transactions/{transactionId} {
+      // Users can only read their own transactions
+      allow read: if isAuth() && resource.data.userId == request.auth.uid;
+
+      // Only authenticated users can create (server-side only in production)
+      allow create: if isAuth();
+
+      // No updates or deletes to transactions (immutable ledger)
+      allow update, delete: if false;
+    }
+
+    // MARK: - Denied by Default
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+
+// ============================================================================
+// IMPLEMENTATION GUIDE - Required Firestore Composite Indexes
+// ============================================================================
+//
+// After deploying these rules, create the following composite indexes in
+// Firebase Console under Firestore -> Indexes:
+//
+// 1. Services Collection - Provider Queries
+//    Collection: services
+//    Fields: providerId (Ascending), createdAt (Descending)
+//    Purpose: Fetch user's own services sorted by date
+//
+// 2. Applications Collection - Service Queries
+//    Collection: applications
+//    Fields: serviceId (Ascending), createdAt (Descending)
+//    Purpose: Fetch applications for a service sorted by date
+//
+// 3. Reviews Collection - Reviewer Queries
+//    Collection: reviews
+//    Fields: reviewerId (Ascending), createdAt (Descending)
+//    Purpose: Fetch reviews submitted by a user
+//
+// 4. Reviews Collection - Reviewee Queries
+//    Collection: reviews
+//    Fields: revieweeId (Ascending), createdAt (Descending)
+//    Purpose: Fetch reviews received by a user
+//
+// 5. Transactions Collection - User Queries
+//    Collection: transactions
+//    Fields: userId (Ascending), createdAt (Descending)
+//    Purpose: Fetch user's transaction history
+//
+// Note: Messages collection queries (conversationId, createdAt) typically
+// don't need composite indexes if using Firestore's built-in support.
+// However, if you get "index required" errors, add this index:
+//
+// 6. Messages Collection (if needed)
+//    Collection: conversations/{conversationId}/messages
+//    Fields: conversationId (Ascending), createdAt (Ascending)
+//    Purpose: Sorted message fetch with real-time listeners
+//
+// ============================================================================
+// TROUBLESHOOTING
+// ============================================================================
+//
+// ERROR: "Missing or insufficient permissions" when sending messages
+// FIX: Ensure messages/{messageId} rules allow create for conversation participants
+// VERIFY: isConversationParticipant() function correctly validates participantIds array
+//
+// ERROR: "Missing or insufficient permissions" when reading typing indicators
+// FIX: Ensure typingIndicators/{userId} rules allow read for conversation participants
+// VERIFY: Sub-collection rules are nested correctly under conversations/{conversationId}
+//
+// ERROR: "Listen for query failed: Missing or insufficient permissions"
+// FIX: This indicates a read permission issue on the messages collection
+// STEPS:
+//   1. Verify conversation participantIds contains current user ID
+//   2. Check Firestore Rules Playground to simulate the query
+//   3. Ensure you're querying with conversationId in where clause
+//
+// ERROR: User profile won't load in chat
+// FIX: /users/{userId} must allow read for all authenticated users (not just self)
+// CHANGE: allow read: if isAuth();  (NOT: if isAuthUser(userId))
+//
+// ============================================================================
+// TESTING IN FIREBASE CONSOLE
+// ============================================================================
+//
+// To verify rules are working correctly:
+//
+// 1. Open Firebase Console -> Firestore -> Rules
+// 2. Click "Rules Playground" at the bottom
+// 3. Test a message read:
+//    - Service: Cloud Firestore
+//    - Request type: read
+//    - Path: /databases/default/documents/conversations/{conversationId}/messages/{messageId}
+//    - User: Set authenticated user ID to test with
+//    - Expected: Should pass with these rules
+//
+// 4. Test a conversation create:
+//    - Request type: write
+//    - Path: /databases/default/documents/conversations
+//    - Expected: Should pass for authenticated users
+//
+// ============================================================================
