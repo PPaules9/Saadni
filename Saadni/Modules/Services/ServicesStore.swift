@@ -68,7 +68,7 @@ class ServicesStore {
    // ✅ Update the service object with the image URL before saving
    updatedService.image = ServiceImage(
     localId: updatedService.image.localId,
-    remoteURL: imageURL,
+    remoteURL: imageURL.absoluteString,
     localImage: nil  // Clear local image after upload
    )
    print("✅ Image uploaded and service updated: \(service.id)")
@@ -95,9 +95,8 @@ class ServicesStore {
    for serviceId in serviceIds {
     let snapshot = try await db.collection("services").document(serviceId).getDocument()
     do {
-     if let service = try JobService.fromFirestore(id: snapshot.documentID, data: snapshot.data() ?? [:]) {
-      fetchedServices.append(service)
-     }
+     let service = try JobService.fromFirestore(id: snapshot.documentID, data: snapshot.data() ?? [:])
+     fetchedServices.append(service)
     } catch {
      print("⚠️ Failed to decode service \(serviceId): \(error)")
     }

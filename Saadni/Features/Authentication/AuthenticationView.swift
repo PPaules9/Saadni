@@ -123,7 +123,7 @@ struct AuthenticationView: View {
     try await authManager.signUp(
      email: email,
      password: password,
-     displayName: displayName
+     fullName: displayName
     )
    } else {
     try await authManager.signIn(

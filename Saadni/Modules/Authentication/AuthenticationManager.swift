@@ -17,7 +17,7 @@ enum AuthenticationState {
 
 
 @Observable
-class AuthenticationManager {
+class AuthenticationManager: AuthProvider {
  var authState: AuthenticationState = .authenticating
  var errorMessage: String?
 
@@ -117,7 +117,7 @@ class AuthenticationManager {
  }
  
  /// Create account with email and password
- func signUp(email: String, password: String, displayName: String) async throws {
+ func signUp(email: String, password: String, fullName: String) async throws {
   authState = .authenticating
   errorMessage = nil
 
@@ -126,12 +126,12 @@ class AuthenticationManager {
 
    // Update profile with display name
    let changeRequest = authResult.user.createProfileChangeRequest()
-   changeRequest.displayName = displayName
+   changeRequest.displayName = fullName
    try await changeRequest.commitChanges()
 
    // Create user object
    var user = User(from: authResult.user)
-   user.displayName = displayName
+   user.displayName = fullName
 
    // Update cache and auth state
    await userCache.updateUser(user)
@@ -172,15 +172,17 @@ class AuthenticationManager {
  }
  
  /// Sign out
- func signOut() async throws {
+ func signOut() throws {
   userCache.clearCache()
   try Auth.auth().signOut()
   authState = .unauthenticated
 
   // Reset onboarding flag so next user sees fresh flow
   // Role selection state will come from the new User object
-  try await appStateManager.resetForNextUser()
-  print("✅ User signed out and onboarding reset")
+  Task {
+   try await appStateManager.resetForNextUser()
+   print("✅ User signed out and onboarding reset")
+  }
  }
  
  // MARK: - Firestore Integration

@@ -56,7 +56,14 @@ struct MainView: View {
   .environment(container.userCache)
   .environment(container.authManager)
   .environment(container.errorHandler)
-  .alert("Error", isPresented: $container.errorHandler.isPresented) {
+  .alert("Error", isPresented: Binding(
+   get: { container.errorHandler.isPresented },
+   set: { newValue in
+    if !newValue {
+     container.errorHandler.dismiss()
+    }
+   }
+  )) {
    Button("Dismiss") {
     container.errorHandler.dismiss()
    }

@@ -9,14 +9,14 @@ import Foundation
 import FirebaseStorage
 import UIKit
 
-class StorageService {
+class StorageService: StorageProvider {
  static let shared = StorageService()
  private let storage = Storage.storage()
  
  private init() {}
  
  /// Upload service image to Firebase Storage
- func uploadServiceImage(_ image: UIImage, serviceId: String, providerId: String) async throws -> String {
+ func uploadServiceImage(_ image: UIImage, serviceId: String, providerId: String) async throws -> URL {
   // No compression needed - image already compressed in CreateJobSheet
   guard let imageData = image.jpegData(compressionQuality: 1.0) else {
    throw NSError(domain: "StorageService", code: 1,
@@ -26,17 +26,17 @@ class StorageService {
   // Create storage reference - Path must match Firebase rules: services/{providerId}/{allPaths=**}
   let imagePath = "services/\(providerId)/\(serviceId)/image.jpg"
   let storageRef = storage.reference().child(imagePath)
-  
+
   // Upload
   let metadata = StorageMetadata()
   metadata.contentType = "image/jpeg"
-  
+
   let _ = try await storageRef.putDataAsync(imageData, metadata: metadata)
-  
+
   // Get download URL
   let downloadURL = try await storageRef.downloadURL()
   print("✅ Image uploaded to Firebase Storage: \(downloadURL.absoluteString)")
-  return downloadURL.absoluteString
+  return downloadURL
  }
  
  /// Delete service image from Storage

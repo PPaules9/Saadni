@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFirestore
 
 /// Handles all Firestore operations
-class FirestoreService {
+class FirestoreService: FirestoreProvider {
  static let shared = FirestoreService()
  private let db = Firestore.firestore()
 
