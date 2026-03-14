@@ -123,4 +123,89 @@ class FirestoreService {
   try await transactionsCollection.document(id).delete()
   print("✅ Transaction deleted: \(id)")
  }
+
+ // MARK: - Real-Time Listeners
+ /// Creates a listener for all published services (for browse/home views)
+ func listenToServices() -> ListenerRegistration {
+  return servicesCollection
+   .whereField("status", in: ["published", "active"])
+   .order(by: "createdAt", descending: true)
+   .addSnapshotListener { snapshot, error in
+    if let error = error {
+     print("❌ Error listening to services: \(error)")
+    } else if let count = snapshot?.documents.count {
+     print("✅ Services listener updated: \(count) services")
+    }
+   }
+ }
+
+ /// Creates a listener for user's submitted applications
+ func listenToMyApplications(userId: String) -> ListenerRegistration {
+  return applicationsCollection
+   .whereField("applicantId", isEqualTo: userId)
+   .order(by: "appliedAt", descending: true)
+   .addSnapshotListener { snapshot, error in
+    if let error = error {
+     print("❌ Error listening to my applications: \(error)")
+    } else if let count = snapshot?.documents.count {
+     print("✅ My applications listener updated: \(count) applications")
+    }
+   }
+ }
+
+ /// Creates a listener for received applications (on user's services)
+ func listenToReceivedApplications(serviceIds: [String]) -> ListenerRegistration {
+  return applicationsCollection
+   .whereField("serviceId", in: serviceIds)
+   .order(by: "appliedAt", descending: true)
+   .addSnapshotListener { snapshot, error in
+    if let error = error {
+     print("❌ Error listening to received applications: \(error)")
+    } else if let count = snapshot?.documents.count {
+     print("✅ Received applications listener updated: \(count) applications")
+    }
+   }
+ }
+
+ /// Creates a listener for reviews received by user
+ func listenToReceivedReviews(userId: String) -> ListenerRegistration {
+  return reviewsCollection
+   .whereField("revieweeId", isEqualTo: userId)
+   .order(by: "createdAt", descending: true)
+   .addSnapshotListener { snapshot, error in
+    if let error = error {
+     print("❌ Error listening to received reviews: \(error)")
+    } else if let count = snapshot?.documents.count {
+     print("✅ Received reviews listener updated: \(count) reviews")
+    }
+   }
+ }
+
+ /// Creates a listener for reviews submitted by user
+ func listenToSubmittedReviews(userId: String) -> ListenerRegistration {
+  return reviewsCollection
+   .whereField("reviewerId", isEqualTo: userId)
+   .order(by: "createdAt", descending: true)
+   .addSnapshotListener { snapshot, error in
+    if let error = error {
+     print("❌ Error listening to submitted reviews: \(error)")
+    } else if let count = snapshot?.documents.count {
+     print("✅ Submitted reviews listener updated: \(count) reviews")
+    }
+   }
+ }
+
+ /// Creates a listener for user's transactions (wallet)
+ func listenToTransactions(userId: String) -> ListenerRegistration {
+  return transactionsCollection
+   .whereField("userId", isEqualTo: userId)
+   .order(by: "createdAt", descending: true)
+   .addSnapshotListener { snapshot, error in
+    if let error = error {
+     print("❌ Error listening to transactions: \(error)")
+    } else if let count = snapshot?.documents.count {
+     print("✅ Transactions listener updated: \(count) transactions")
+    }
+   }
+ }
 }
