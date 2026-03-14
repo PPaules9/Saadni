@@ -14,6 +14,11 @@ class ApplicationsStore {
  var myApplications: [JobApplication] = []       // Applications I submitted
  var receivedApplications: [JobApplication] = [] // Applications to my services
 
+ // MARK: - Error States
+ var isLoadingApplications: Bool = false
+ var applicationsError: String? = nil
+ var retryApplicationsAction: (() async -> Void)? = nil
+
  private var myApplicationsListener: ListenerRegistration?
  private var receivedApplicationsListeners: [ListenerRegistration] = []
 
@@ -39,6 +44,9 @@ class ApplicationsStore {
  func setupListeners(userId: String) async throws {
   stopListening()
 
+  isLoadingApplications = true
+  applicationsError = nil
+
   // Listen to applications I submitted
   myApplicationsListener = db.collection("applications")
    .whereField("applicantId", isEqualTo: userId)
@@ -47,6 +55,11 @@ class ApplicationsStore {
     guard let self = self else { return }
 
     if let error = error {
+     self.applicationsError = "Failed to load applications. Check your connection."
+     self.isLoadingApplications = false
+     self.retryApplicationsAction = { [weak self] in
+      try? await self?.setupListeners(userId: userId)
+     }
      print("❌ Error fetching my applications: \(error)")
      return
     }
@@ -64,6 +77,7 @@ class ApplicationsStore {
       }
      }
 
+     self.applicationsError = nil
      print("✅ Loaded \(self.myApplications.count) my applications")
     }
    }
@@ -71,6 +85,7 @@ class ApplicationsStore {
   // Listen to applications received on my services
   try await setupReceivedApplicationsListener(userId: userId)
 
+  isLoadingApplications = false
   print("🔄 [ApplicationsStore] Listeners setup for user: \(userId)")
  }
 
@@ -104,6 +119,11 @@ class ApplicationsStore {
      guard let self = self else { return }
 
      if let error = error {
+      self.applicationsError = "Failed to load applications. Check your connection."
+      self.isLoadingApplications = false
+      self.retryApplicationsAction = { [weak self] in
+       try? await self?.setupListeners(userId: userId)
+      }
       print("❌ Error fetching received applications (chunk \(index)): \(error)")
       return
      }

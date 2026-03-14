@@ -11,6 +11,11 @@ import FirebaseFirestore
 class ServicesStore {
  var services: [JobService] = []
 
+ // MARK: - Error States
+ var isLoadingServices: Bool = false
+ var servicesError: String? = nil
+ var retryServicesAction: (() async -> Void)? = nil
+
  private var servicesListener: ListenerRegistration?
 
  private var db: Firestore {
@@ -31,19 +36,27 @@ class ServicesStore {
  
     private func setupListeners() {
         // Listen to all published services
+        isLoadingServices = true
+        servicesError = nil
+
         servicesListener = db.collection("services")
    .whereField("status", in: ["published", "active"])
    .order(by: "createdAt", descending: true)
    .addSnapshotListener { [weak self] snapshot, error in
     guard let self = self else { return }
-    
+
     if let error = error {
+     self.servicesError = "Failed to load services. Check your connection."
+     self.isLoadingServices = false
+     self.retryServicesAction = { [weak self] in
+      await self?.setupListeners()
+     }
      print("❌ Error fetching services: \(error)")
      return
     }
-    
+
     guard let documents = snapshot?.documents else { return }
-    
+
     self.services = documents.compactMap { doc in
      do {
       return try JobService.fromFirestore(id: doc.documentID, data: doc.data())
@@ -52,7 +65,9 @@ class ServicesStore {
       return nil
      }
     }
-    
+
+    self.servicesError = nil
+    self.isLoadingServices = false
     print("✅ Loaded \(self.services.count) services from Firestore")
    }
  }
@@ -101,9 +116,14 @@ class ServicesStore {
      print("⚠️ Failed to decode service \(serviceId): \(error)")
     }
    }
+   servicesError = nil
    print("✅ Fetched \(fetchedServices.count) services by IDs")
    return fetchedServices
   } catch {
+   servicesError = "Failed to load services. Check your connection."
+   retryServicesAction = { [weak self] in
+    _ = await self?.fetchServicesByIds(serviceIds)
+   }
    print("❌ Error fetching services by IDs: \(error)")
    return []
   }
@@ -140,7 +160,13 @@ class ServicesStore {
      return nil
     }
    }
+
+   servicesError = nil
   } catch {
+   servicesError = "Failed to load your services. Check your connection."
+   retryServicesAction = { [weak self] in
+    _ = await self?.fetchUserServices(userId: userId)
+   }
    print("❌ Error fetching user services: \(error)")
   }
 
@@ -235,9 +261,14 @@ class ServicesStore {
     ($0.completedAt ?? Date.distantPast) > ($1.completedAt ?? Date.distantPast)
    }
 
+   servicesError = nil
    print("✅ Fetched \(combined.count) completed services for user: \(userId)")
    return combined
   } catch {
+   servicesError = "Failed to load completed services. Check your connection."
+   retryServicesAction = { [weak self] in
+    _ = await self?.fetchCompletedServices(userId: userId)
+   }
    print("❌ Error fetching completed services: \(error)")
    return []
   }
@@ -262,9 +293,14 @@ class ServicesStore {
     }
    }
 
+   servicesError = nil
    print("✅ Fetched \(archived.count) archived services for user: \(userId)")
    return archived
   } catch {
+   servicesError = "Failed to load archived services. Check your connection."
+   retryServicesAction = { [weak self] in
+    _ = await self?.fetchArchivedServices(userId: userId)
+   }
    print("❌ Error fetching archived services: \(error)")
    return []
   }

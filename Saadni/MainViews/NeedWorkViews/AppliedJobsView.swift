@@ -18,7 +18,12 @@ struct AppliedJobsView: View {
 
     var body: some View {
         NavigationStack {
-            if isLoading {
+            if let error = applicationsStore.applicationsError {
+                ErrorStateView(
+                    message: error,
+                    retryAction: applicationsStore.retryApplicationsAction
+                )
+            } else if applicationsStore.isLoadingApplications || isLoading {
                 VStack {
                     ProgressView()
                         .tint(.white)

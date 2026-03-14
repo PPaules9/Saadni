@@ -15,6 +15,11 @@ class WalletStore {
     var transactions: [Transaction] = []
     var walletBalance: Double = 0.0
 
+    // MARK: - Error States
+    var isLoadingTransactions: Bool = false
+    var transactionsError: String? = nil
+    var retryTransactionsAction: (() async -> Void)? = nil
+
     private var transactionsListener: ListenerRegistration?
 
     private var db: Firestore {
@@ -35,6 +40,9 @@ class WalletStore {
     func setupListeners(userId: String) async throws {
         stopListening()
 
+        isLoadingTransactions = true
+        transactionsError = nil
+
         transactionsListener = db.collection("transactions")
             .whereField("userId", isEqualTo: userId)
             .order(by: "createdAt", descending: true)
@@ -42,6 +50,11 @@ class WalletStore {
                 guard let self = self else { return }
 
                 if let error = error {
+                    self.transactionsError = "Failed to load wallet. Check your connection."
+                    self.isLoadingTransactions = false
+                    self.retryTransactionsAction = { [weak self] in
+                        try? await self?.setupListeners(userId: userId)
+                    }
                     print("❌ Error fetching transactions: \(error)")
                     return
                 }
@@ -61,6 +74,8 @@ class WalletStore {
                     // Calculate balance from all transactions
                     self.walletBalance = self.transactions.reduce(0.0) { $0 + $1.amount }
 
+                    self.transactionsError = nil
+                    self.isLoadingTransactions = false
                     print("✅ Loaded \(self.transactions.count) transactions, balance: EGP \(String(format: "%.2f", self.walletBalance))")
                 }
             }

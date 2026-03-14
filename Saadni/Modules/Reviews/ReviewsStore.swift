@@ -16,6 +16,11 @@ class ReviewsStore {
     var reviewsISubmitted: [Review] = []     // Reviews I wrote
     var serviceReviews: [String: [Review]] = [:]  // Reviews by service ID
 
+    // MARK: - Error States
+    var isLoadingReviews: Bool = false
+    var reviewsError: String? = nil
+    var retryReviewsAction: (() async -> Void)? = nil
+
     private var receivedReviewsListener: ListenerRegistration?
     private var submittedReviewsListener: ListenerRegistration?
 
@@ -37,6 +42,9 @@ class ReviewsStore {
     func setupListeners(userId: String) async throws {
         stopListening()
 
+        isLoadingReviews = true
+        reviewsError = nil
+
         // Setup received reviews listener (async but non-blocking)
         receivedReviewsListener = db.collection("reviews")
             .whereField("revieweeId", isEqualTo: userId)
@@ -45,6 +53,11 @@ class ReviewsStore {
                 guard let self = self else { return }
 
                 if let error = error {
+                    self.reviewsError = "Failed to load reviews. Check your connection."
+                    self.isLoadingReviews = false
+                    self.retryReviewsAction = { [weak self] in
+                        try? await self?.setupListeners(userId: userId)
+                    }
                     print("❌ Error fetching received reviews: \(error)")
                     return
                 }
@@ -72,6 +85,11 @@ class ReviewsStore {
                 guard let self = self else { return }
 
                 if let error = error {
+                    self.reviewsError = "Failed to load reviews. Check your connection."
+                    self.isLoadingReviews = false
+                    self.retryReviewsAction = { [weak self] in
+                        try? await self?.setupListeners(userId: userId)
+                    }
                     print("❌ Error fetching submitted reviews: \(error)")
                     return
                 }
@@ -87,6 +105,9 @@ class ReviewsStore {
                             return nil
                         }
                     }
+
+                    self.reviewsError = nil
+                    self.isLoadingReviews = false
                     print("✅ Loaded \(self.reviewsISubmitted.count) reviews submitted")
                 }
             }

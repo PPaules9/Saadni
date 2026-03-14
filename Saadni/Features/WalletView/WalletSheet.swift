@@ -99,76 +99,124 @@ struct WalletSheet: View {
    )
 
    // Recent Activities Section
-   VStack(alignment: .leading, spacing: 16) {
-    HStack {
-     Text("Recent Activities")
-      .font(.system(size: 20, weight: .bold))
-      .foregroundStyle(.black)
-      .fontDesign(.monospaced)
-      .kerning(-0.5)
+   if let error = walletStore.transactionsError {
+       VStack(spacing: 16) {
+           HStack {
+               Text("Recent Activities")
+                   .font(.system(size: 20, weight: .bold))
+                   .foregroundStyle(.black)
+                   .fontDesign(.monospaced)
+                   .kerning(-0.5)
 
-     Spacer()
+               Spacer()
+           }
+           .padding(.horizontal, 20)
+           .padding(.top, 20)
 
-     Button(action: {}) {
-      Text("View Requests")
-       .font(.caption)
-       .foregroundStyle(.gray)
-       .fontDesign(.monospaced)
-       .kerning(-0.5)
-     }
-    }
-    .padding(.horizontal, 20)
-    .padding(.top, 20)
-
-    // Filter Tabs
-    ScrollView(.horizontal, showsIndicators: false) {
-     HStack(spacing: 8) {
-      ForEach(tabs, id: \.self) { tab in
-       Button(action: { selectedTab = tab }) {
-        Text(tab)
-         .font(.subheadline)
-         .fontWeight(.semibold)
-         .foregroundStyle(selectedTab == tab ? .white : .gray)
-         .fontDesign(.monospaced)
-         .kerning(-0.5)
-         .padding(.horizontal, 16)
-         .padding(.vertical, 8)
-         .background(selectedTab == tab ? Color.black : Color.clear)
-         .cornerRadius(20)
+           ErrorStateView(
+               message: error,
+               retryAction: walletStore.retryTransactionsAction
+           )
+           .padding()
        }
-      }
-     }
-     .padding(.horizontal, 20)
-    }
+       .background(Color.white)
+   } else if walletStore.isLoadingTransactions {
+       VStack(alignment: .leading, spacing: 16) {
+           HStack {
+               Text("Recent Activities")
+                   .font(.system(size: 20, weight: .bold))
+                   .foregroundStyle(.black)
+                   .fontDesign(.monospaced)
+                   .kerning(-0.5)
 
-    // Transactions List
-    VStack(spacing: 12) {
-     if walletStore.transactions.isEmpty {
-      VStack(spacing: 8) {
-       Image(systemName: "list.dash")
-        .font(.system(size: 32))
-        .foregroundStyle(.gray)
-       Text("No transactions yet")
-        .font(.subheadline)
-        .foregroundStyle(.gray)
-      }
-      .frame(maxWidth: .infinity)
-      .padding(20)
-     } else {
-      ForEach(filteredTransactions) { transaction in
-       TransactionRow(
-        title: transaction.description,
-        date: transaction.formattedDate,
-        amount: transaction.formattedAmount,
-        isNegative: transaction.amount < 0
-       )
-      }
-     }
-    }
-    .padding(.horizontal, 20)
-    .padding(.bottom, 20)
+               Spacer()
+           }
+           .padding(.horizontal, 20)
+           .padding(.top, 20)
+
+           VStack {
+               ProgressView()
+                   .tint(.black)
+               Text("Loading transactions...")
+                   .font(.subheadline)
+                   .foregroundStyle(.gray)
+           }
+           .frame(maxWidth: .infinity)
+           .padding(20)
+       }
+       .background(Color.white)
+   } else {
+       VStack(alignment: .leading, spacing: 16) {
+           HStack {
+               Text("Recent Activities")
+                   .font(.system(size: 20, weight: .bold))
+                   .foregroundStyle(.black)
+                   .fontDesign(.monospaced)
+                   .kerning(-0.5)
+
+               Spacer()
+
+               Button(action: {}) {
+                   Text("View Requests")
+                       .font(.caption)
+                       .foregroundStyle(.gray)
+                       .fontDesign(.monospaced)
+                       .kerning(-0.5)
+               }
+           }
+           .padding(.horizontal, 20)
+           .padding(.top, 20)
+
+           // Filter Tabs
+           ScrollView(.horizontal, showsIndicators: false) {
+               HStack(spacing: 8) {
+                   ForEach(tabs, id: \.self) { tab in
+                       Button(action: { selectedTab = tab }) {
+                           Text(tab)
+                               .font(.subheadline)
+                               .fontWeight(.semibold)
+                               .foregroundStyle(selectedTab == tab ? .white : .gray)
+                               .fontDesign(.monospaced)
+                               .kerning(-0.5)
+                               .padding(.horizontal, 16)
+                               .padding(.vertical, 8)
+                               .background(selectedTab == tab ? Color.black : Color.clear)
+                               .cornerRadius(20)
+                       }
+                   }
+               }
+               .padding(.horizontal, 20)
+           }
+
+           // Transactions List
+           VStack(spacing: 12) {
+               if walletStore.transactions.isEmpty {
+                   VStack(spacing: 8) {
+                       Image(systemName: "list.dash")
+                           .font(.system(size: 32))
+                           .foregroundStyle(.gray)
+                       Text("No transactions yet")
+                           .font(.subheadline)
+                           .foregroundStyle(.gray)
+                   }
+                   .frame(maxWidth: .infinity)
+                   .padding(20)
+               } else {
+                   ForEach(filteredTransactions) { transaction in
+                       TransactionRow(
+                           title: transaction.description,
+                           date: transaction.formattedDate,
+                           amount: transaction.formattedAmount,
+                           isNegative: transaction.amount < 0
+                       )
+                   }
+               }
+           }
+           .padding(.horizontal, 20)
+           .padding(.bottom, 20)
+       }
+       .background(Color.white)
    }
-   .background(Color.white)
 
    Spacer()
   }
