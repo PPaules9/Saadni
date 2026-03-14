@@ -41,17 +41,7 @@ struct SaadniApp: App {
       container.applicationsStore.setupListeners(userId: userId)
       container.conversationsStore.setupListeners(userId: userId)
       NotificationService.shared.setCurrentUser(userId)
-
-      // Register FCM token when user authenticates
-      if let fcmToken = Messaging.messaging().fcmToken {
-        Task {
-          do {
-            try await NotificationService.shared.registerDeviceToken(fcmToken, for: userId)
-          } catch {
-            print("❌ Failed to register FCM token: \(error)")
-          }
-        }
-      }
+      // FCM token registration handled by AppDelegate.messaging(_:didReceiveRegistrationToken:)
      } else {
       container.applicationsStore.stopListening()
       container.conversationsStore.stopListening()
