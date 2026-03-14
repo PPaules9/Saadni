@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct ServiceDetailView: View {
  let service: JobService
@@ -23,236 +24,207 @@ struct ServiceDetailView: View {
  @State private var isNavigatingToChat = false
  @State private var chatError: String?
  @State private var isCreatingChat = false
- 
+
  var body: some View {
   ScrollView {
-   VStack(alignment: .leading, spacing: 20) {
-    
-    // Header Image
-    if let uiImage = service.image.localImage {
-     Image(uiImage: uiImage)
-      .resizable()
-      .aspectRatio(contentMode: .fill)
-      .frame(height: 250)
-      .clipShape(RoundedRectangle(cornerRadius: 20))
-    } else {
-     ZStack {
-      Color(.systemGray6)
-      Image(systemName: "briefcase.fill")
-       .resizable()
-       .aspectRatio(contentMode: .fit)
-       .padding(60)
-       .foregroundStyle(.gray.opacity(0.5))
-     }
-     .frame(height: 250)
-     .clipShape(RoundedRectangle(cornerRadius: 20))
-    }
-    
-    // Info Row
-    HStack {
-     Text(formatDate(service.createdAt))
-      .foregroundStyle(.gray)
-     Text("|")
-      .foregroundStyle(.gray)
-     Text(service.location.name)
-      .foregroundStyle(.gray)
-     
-     Spacer()
-     
-     Text(service.formattedPrice)
-      .font(.title3)
-      .fontWeight(.bold)
-      .foregroundStyle(.green)
-    }
-    .font(.subheadline)
-    
-    // Title & Description
-    VStack(alignment: .leading, spacing: 10) {
-     Text(service.title)
-      .font(.largeTitle)
-      .fontWeight(.bold)
-      .foregroundStyle(.white)
-     
-     Text(service.description)
-      .font(.body)
-      .foregroundStyle(.gray)
-    }
-    
-    // Category Badge
-    HStack {
-     Text(service.categoryDisplayName)
-      .font(.caption)
-      .fontWeight(.bold)
-      .padding(.horizontal, 12)
-      .padding(.vertical, 6)
-      .background(Color.green.opacity(0.3))
-      .cornerRadius(8)
-      .foregroundStyle(.green)
-     
-     Spacer()
-    }
-    
-    // Map Placeholder
-    ZStack(alignment: .bottomTrailing) {
-     Color(.systemGray6).opacity(0.2)
-     
-     Path { path in
-      path.move(to: CGPoint(x: 0, y: 50))
-      path.addLine(to: CGPoint(x: 400, y: 150))
-      path.move(to: CGPoint(x: 50, y: 0))
-      path.addLine(to: CGPoint(x: 50, y: 200))
-     }
-     .stroke(Color.gray.opacity(0.3), lineWidth: 2)
-     
-     VStack {
-      Image(systemName: "map.fill")
-       .font(.largeTitle)
-       .foregroundStyle(.gray)
-      Text(service.location.name)
-       .font(.title)
-       .fontWeight(.bold)
-       .foregroundStyle(.white)
-     }
-     .frame(maxWidth: .infinity, maxHeight: .infinity)
-     
-     Button {
-      // Action
-     } label: {
-      HStack {
-       Image(systemName: "map")
-       Text("Get Directions")
-      }
-      .padding(.horizontal, 12)
-      .padding(.vertical, 8)
-      .background(Color(.systemGray6).opacity(0.8))
-      .clipShape(RoundedRectangle(cornerRadius: 8))
-      .foregroundStyle(.white)
-     }
-     .padding()
-    }
-    .frame(height: 200)
-    .clipShape(RoundedRectangle(cornerRadius: 20))
-    .overlay(
-     RoundedRectangle(cornerRadius: 20)
-      .stroke(Color.white.opacity(0.1), lineWidth: 1)
-    )
-    
-    // Provider Info
-    HStack {
-     Image(systemName: "person.circle.fill")
-      .resizable()
-      .frame(width: 50, height: 50)
-      .foregroundStyle(.gray)
-      .background(Color(.systemGray6).opacity(0.3))
-      .clipShape(Circle())
-     
-     VStack(alignment: .leading) {
-      Text(service.providerName ?? "Unknown")
-       .font(.headline)
-       .foregroundStyle(.white)
-      Text("Joined 6 February 2026")
-       .font(.caption)
-       .foregroundStyle(.gray)
-     }
-     
-     Spacer()
-     
-     if !isOwnService {
-      Button {
-       startChatWithProvider()
-      } label: {
-       Image(systemName: "bubble.left.fill")
-        .font(.title2)
+   VStack(alignment: .leading, spacing: 0) {
+    // MARK: - Header Image
+    ServiceImageSection(service: service)
+     .frame(height: 280)
+
+    VStack(alignment: .leading, spacing: 24) {
+     // MARK: - Service Title & Price
+     VStack(alignment: .leading, spacing: 8) {
+      Text(service.title)
+       .font(.system(size: 28, weight: .bold))
+       .foregroundStyle(Colors.swiftUIColor(.textMain))
+
+      HStack(spacing: 12) {
+       Text(service.formattedPrice)
+        .font(.system(size: 24, weight: .bold))
         .foregroundStyle(.green)
-      }
-     }
-    }
-    .padding()
-    
-    // Action Buttons Section
-    VStack(spacing: 12) {
-     // Apply Button
-     if !isOwnService {
-      if hasAlreadyApplied {
-       // Show "Applied" state
-       HStack {
-        Image(systemName: "checkmark.circle.fill")
-        Text("Applied")
-         .fontWeight(.semibold)
-       }
-       .font(.headline)
-       .foregroundStyle(.white)
-       .frame(maxWidth: .infinity)
-       .frame(height: 56)
-       .background(Color.green.opacity(0.3))
-       .cornerRadius(16)
-       .overlay(
-        RoundedRectangle(cornerRadius: 16)
-         .strokeBorder(Color.green, lineWidth: 2)
-       )
-      } else {
-       BrandButton(
-        "Apply Now",
-        size: .large,
-        isDisabled: false,
-        hasIcon: true,
-        icon: "hand.raised.fill",
-        secondary: false
-       ) {
-        showingApplySheet = true
-       }
-      }
-     }
-     
-     // Mark as Completed Button (for active services by provider)
-     if isOwnService && service.status == .active {
-      BrandButton(
-       "Mark as Completed",
-       size: .large,
-       isDisabled: false,
-       hasIcon: true,
-       icon: "checkmark.circle.fill",
-       secondary: false
-      ) {
-       showingCompletionView = true
+
+       Divider()
+        .frame(height: 24)
+
+       Text(service.categoryDisplayName)
+        .font(.caption)
+        .fontWeight(.semibold)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(Color.accent.opacity(0.15))
+        .cornerRadius(8)
+        .foregroundStyle(.accent)
+
+       Spacer()
       }
      }
 
-     // Chat/View Applications Button
-     BrandButton(
-      isOwnService ? "View Applications" : "Chat with Owner",
-      size: .large,
-      isDisabled: isCreatingChat,
-      hasIcon: true,
-      icon: isOwnService ? "person.3.fill" : "bubble.left.fill",
-      secondary: true
-     ) {
-      if isOwnService {
-       showingApplications = true
-      } else {
-       startChatWithProvider()
+     // MARK: - Service Details Grid
+     VStack(spacing: 16) {
+      // Location
+      DetailItem(
+       icon: "location.fill",
+       label: "Location",
+       value: service.location.name
+      )
+
+      // Duration
+      if let hours = service.estimatedDurationHours {
+       DetailItem(
+        icon: "clock.fill",
+        label: "Duration",
+        value: String(format: "%.0f hours", hours)
+       )
+      }
+
+      // Status
+      DetailItem(
+       icon: "checkmark.circle.fill",
+       label: "Status",
+       value: service.status.rawValue.capitalized
+      )
+
+      // Created Date
+      DetailItem(
+       icon: "calendar",
+       label: "Posted",
+       value: formatDate(service.createdAt)
+      )
+     }
+     .padding(16)
+     .background(Colors.swiftUIColor(.surfaceWhite))
+     .cornerRadius(12)
+
+     // MARK: - Description
+     VStack(alignment: .leading, spacing: 8) {
+      Text("About This Job")
+       .font(.headline)
+       .foregroundStyle(Colors.swiftUIColor(.textMain))
+
+      Text(service.description)
+       .font(.body)
+       .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+       .lineSpacing(2)
+     }
+
+     // MARK: - Service Requirements
+     if let tools = service.specialTools, !tools.isEmpty {
+      VStack(alignment: .leading, spacing: 8) {
+       Text("Tools & Equipment Needed")
+        .font(.headline)
+        .foregroundStyle(Colors.swiftUIColor(.textMain))
+
+       Text(tools)
+        .font(.body)
+        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+        .padding(12)
+        .background(Colors.swiftUIColor(.surfaceWhite))
+        .cornerRadius(8)
       }
      }
+
+     // Someone Around
+     if service.someoneAround {
+      HStack(spacing: 12) {
+       Image(systemName: "person.fill")
+        .foregroundStyle(.accent)
+        .font(.title3)
+
+       VStack(alignment: .leading, spacing: 2) {
+        Text("Someone Will Be Around")
+         .font(.headline)
+         .foregroundStyle(Colors.swiftUIColor(.textMain))
+        Text("The client will be present during the service")
+         .font(.caption)
+         .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+       }
+
+       Spacer()
+      }
+      .padding(12)
+      .background(Colors.swiftUIColor(.surfaceWhite))
+      .cornerRadius(8)
+     }
+
+     // MARK: - Provider Section
+     ProviderSection(service: service, startChatAction: startChatWithProvider)
+
+     // MARK: - Action Buttons
+     VStack(spacing: 12) {
+      if !isOwnService {
+       if hasAlreadyApplied {
+        Button(action: {}) {
+         HStack(spacing: 8) {
+          Image(systemName: "checkmark.circle.fill")
+          Text("Already Applied")
+           .fontWeight(.semibold)
+         }
+         .frame(maxWidth: .infinity)
+         .frame(height: 56)
+         .foregroundStyle(.white)
+         .background(Color.accent.opacity(0.3))
+         .cornerRadius(12)
+         .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Color.accent, lineWidth: 1))
+        }
+        .disabled(true)
+       } else {
+        BrandButton(
+         "Apply Now",
+         size: .large,
+         isDisabled: false,
+         hasIcon: true,
+         icon: "hand.raised.fill",
+         secondary: false
+        ) {
+         showingApplySheet = true
+        }
+       }
+      }
+
+      if isOwnService && service.status == .active {
+       BrandButton(
+        "Mark as Completed",
+        size: .large,
+        isDisabled: false,
+        hasIcon: true,
+        icon: "checkmark.circle.fill",
+        secondary: false
+       ) {
+        showingCompletionView = true
+       }
+      }
+
+      BrandButton(
+       isOwnService ? "View Applications" : "Contact Provider",
+       size: .large,
+       isDisabled: isCreatingChat,
+       hasIcon: true,
+       icon: isOwnService ? "person.3.fill" : "bubble.left.fill",
+       secondary: true
+      ) {
+       if isOwnService {
+        showingApplications = true
+       } else {
+        startChatWithProvider()
+       }
+      }
+     }
+     .padding(.top, 8)
     }
-    .padding(.horizontal)
-    .padding(.vertical, 20)
-    
+    .padding(20)
    }
-   .padding()
   }
   .background(Colors.swiftUIColor(.appBackground))
-  .toolbarRole(.editor)
+  .navigationBarTitleDisplayMode(.inline)
   .toolbar {
    ToolbarItem(placement: .topBarTrailing) {
-    Button {
-     // Favorite
-    } label: {
+    Button(action: {}) {
      Image(systemName: "heart")
       .foregroundStyle(.red)
     }
    }
   }
-  .navigationBarBackButtonHidden(false)
   .sheet(isPresented: $showingCompletionView) {
    ServiceCompletionView(service: service)
     .environment(servicesStore)
@@ -266,48 +238,37 @@ struct ServiceDetailView: View {
      .environment(MessagesStore())
    }
   }
-
  }
- 
+
  private var isOwnService: Bool {
   guard let currentUserId = authManager.currentUserId else { return false }
   return service.providerId == currentUserId
  }
- 
+
  private var hasAlreadyApplied: Bool {
   return applicationsStore.hasApplied(to: service.id)
  }
 
- // MARK: - Chat Functions
-
  private func startChatWithProvider() {
-  guard let currentUserId = authManager.currentUserId else {
-   chatError = "❌ Not authenticated"
-   return
-  }
+  guard let currentUserId = authManager.currentUserId else { return }
 
   isCreatingChat = true
 
   Task {
    do {
-    // Create or get existing conversation with provider
     let conversationId = try await conversationsStore.getOrCreateConversation(
      with: service.providerId,
      currentUserId: currentUserId
     )
 
-    // Update UI on main thread
     await MainActor.run {
      selectedConversationId = conversationId
      isNavigatingToChat = true
      isCreatingChat = false
-     print("✅ Chat opened for service: \(service.title)")
     }
    } catch {
     await MainActor.run {
-     chatError = "❌ Failed to start chat: \(error.localizedDescription)"
      isCreatingChat = false
-     print("❌ Chat error: \(error.localizedDescription)")
     }
    }
   }
@@ -318,27 +279,110 @@ struct ServiceDetailView: View {
   formatter.dateFormat = "MMM d, yyyy"
   return formatter.string(from: date)
  }
- 
- private func formatTime(_ date: Date) -> String {
-  let formatter = DateFormatter()
-  formatter.dateFormat = "h:mm a"
-  return formatter.string(from: date)
+}
+
+// MARK: - Service Image Section with Remote Loading
+struct ServiceImageSection: View {
+ let service: JobService
+
+ var body: some View {
+  ZStack {
+   // Background while loading
+   Color(.systemGray6)
+
+   // Try to load remote image first, fallback to local
+   if let remoteURL = service.image.remoteURL, !remoteURL.isEmpty {
+    KFImage(URL(string: remoteURL))
+     .resizable()
+     .placeholder {
+      ProgressView()
+       .tint(.accent)
+     }
+     .aspectRatio(contentMode: .fill)
+     .ignoresSafeArea()
+   } else if let localImage = service.image.localImage {
+    Image(uiImage: localImage)
+     .resizable()
+     .aspectRatio(contentMode: .fill)
+     .ignoresSafeArea()
+   } else {
+    VStack(spacing: 12) {
+     Image(systemName: "briefcase.fill")
+      .font(.system(size: 48))
+      .foregroundStyle(.gray.opacity(0.5))
+     Text("No Image")
+      .font(.subheadline)
+      .foregroundStyle(.gray)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+   }
+  }
+  .clipped()
  }
 }
 
-struct DetailRow: View {
+// MARK: - Detail Item Component
+struct DetailItem: View {
+ let icon: String
  let label: String
  let value: String
- 
+
  var body: some View {
-  HStack {
-   Text(label)
-    .foregroundStyle(.gray)
+  HStack(spacing: 12) {
+   Image(systemName: icon)
+    .foregroundStyle(.accent)
+    .font(.title3)
+    .frame(width: 24)
+
+   VStack(alignment: .leading, spacing: 2) {
+    Text(label)
+     .font(.caption)
+     .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+    Text(value)
+     .font(.headline)
+     .foregroundStyle(Colors.swiftUIColor(.textMain))
+   }
+
    Spacer()
-   Text(value)
-    .foregroundStyle(.white)
-    .fontWeight(.semibold)
   }
+ }
+}
+
+// MARK: - Provider Section
+struct ProviderSection: View {
+ let service: JobService
+ var startChatAction: () -> Void
+
+ var body: some View {
+  HStack(spacing: 12) {
+   Image(systemName: "person.circle.fill")
+    .resizable()
+    .frame(width: 48, height: 48)
+    .foregroundStyle(.accent.opacity(0.3))
+
+   VStack(alignment: .leading, spacing: 2) {
+    Text(service.providerName ?? "Provider")
+     .font(.headline)
+     .foregroundStyle(Colors.swiftUIColor(.textMain))
+    Text("Service Provider")
+     .font(.caption)
+     .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+   }
+
+   Spacer()
+
+   Button(action: startChatAction) {
+    Image(systemName: "message.fill")
+     .foregroundStyle(.accent)
+     .font(.title3)
+     .padding(8)
+     .background(Color.accent.opacity(0.15))
+     .cornerRadius(8)
+   }
+  }
+  .padding(12)
+  .background(Colors.swiftUIColor(.surfaceWhite))
+  .cornerRadius(12)
  }
 }
 
@@ -346,13 +390,16 @@ struct DetailRow: View {
  NavigationStack {
   ServiceDetailView(
    service: JobService(
-    title: "Help Cleaning",
+    title: "Professional House Cleaning",
     price: 500,
     location: ServiceLocation(name: "Cairo, Egypt", latitude: nil, longitude: nil),
-    description: "Need help cleaning my apartment before guests arrive",
+    description: "Comprehensive house cleaning service including deep cleaning, dusting, mopping, and sanitizing all areas of your home.",
     image: ServiceImage(),
     category: .homeCleaning,
-    providerId: "provider_1"
+    providerId: "provider_1",
+    someoneAround: true,
+    specialTools: "Vacuum cleaner, mop, cleaning supplies provided",
+    estimatedDurationHours: 8
    )
   )
  }
