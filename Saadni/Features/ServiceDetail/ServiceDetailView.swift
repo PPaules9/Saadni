@@ -14,10 +14,15 @@ struct ServiceDetailView: View {
  @Environment(ApplicationsStore.self) var applicationsStore
  @Environment(ServicesStore.self) var servicesStore
  @Environment(WalletStore.self) var walletStore
+ @Environment(ConversationsStore.self) var conversationsStore
 
  @State private var showingApplySheet = false
  @State private var showingApplications = false
  @State private var showingCompletionView = false
+ @State private var selectedConversationId: String?
+ @State private var isNavigatingToChat = false
+ @State private var chatError: String?
+ @State private var isCreatingChat = false
  
  var body: some View {
   ScrollView {
@@ -152,12 +157,14 @@ struct ServiceDetailView: View {
      
      Spacer()
      
-     Button {
-      // Chat Action
-     } label: {
-      Image(systemName: "bubble.left.fill")
-       .font(.title2)
-       .foregroundStyle(.green)
+     if !isOwnService {
+      Button {
+       startChatWithProvider()
+      } label: {
+       Image(systemName: "bubble.left.fill")
+        .font(.title2)
+        .foregroundStyle(.green)
+      }
      }
     }
     .padding()
@@ -215,7 +222,7 @@ struct ServiceDetailView: View {
      BrandButton(
       isOwnService ? "View Applications" : "Chat with Owner",
       size: .large,
-      isDisabled: false,
+      isDisabled: isCreatingChat,
       hasIcon: true,
       icon: isOwnService ? "person.3.fill" : "bubble.left.fill",
       secondary: true
@@ -223,8 +230,7 @@ struct ServiceDetailView: View {
       if isOwnService {
        showingApplications = true
       } else {
-       // Navigate to chat (Phase 7)
-       print("📝 Chat feature coming soon")
+       startChatWithProvider()
       }
      }
     }
@@ -252,6 +258,14 @@ struct ServiceDetailView: View {
     .environment(servicesStore)
     .environment(walletStore)
   }
+  .navigationDestination(isPresented: $isNavigatingToChat) {
+   if let conversationId = selectedConversationId,
+      let conversation = conversationsStore.getConversationById(conversationId) {
+    ChatDetailView(conversation: conversation)
+     .environment(conversationsStore)
+     .environment(MessagesStore())
+   }
+  }
 
  }
  
@@ -263,8 +277,42 @@ struct ServiceDetailView: View {
  private var hasAlreadyApplied: Bool {
   return applicationsStore.hasApplied(to: service.id)
  }
- 
- 
+
+ // MARK: - Chat Functions
+
+ private func startChatWithProvider() {
+  guard let currentUserId = authManager.currentUserId else {
+   chatError = "❌ Not authenticated"
+   return
+  }
+
+  isCreatingChat = true
+
+  Task {
+   do {
+    // Create or get existing conversation with provider
+    let conversationId = try await conversationsStore.getOrCreateConversation(
+     with: service.providerId,
+     currentUserId: currentUserId
+    )
+
+    // Update UI on main thread
+    await MainActor.run {
+     selectedConversationId = conversationId
+     isNavigatingToChat = true
+     isCreatingChat = false
+     print("✅ Chat opened for service: \(service.title)")
+    }
+   } catch {
+    await MainActor.run {
+     chatError = "❌ Failed to start chat: \(error.localizedDescription)"
+     isCreatingChat = false
+     print("❌ Chat error: \(error.localizedDescription)")
+    }
+   }
+  }
+ }
+
  private func formatDate(_ date: Date) -> String {
   let formatter = DateFormatter()
   formatter.dateFormat = "MMM d, yyyy"
@@ -313,4 +361,6 @@ struct DetailRow: View {
  .environment(AuthenticationManager(userCache: UserCache()))
  .environment(ServicesStore())
  .environment(WalletStore())
+ .environment(ConversationsStore())
+ .environment(MessagesStore())
 }

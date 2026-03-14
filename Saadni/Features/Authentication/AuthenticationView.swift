@@ -117,7 +117,7 @@ struct AuthenticationView: View {
  
  private func handleAuthentication() async {
   isLoading = true
-  
+
   do {
    if isSignUp {
     try await authManager.signUp(
@@ -131,10 +131,11 @@ struct AuthenticationView: View {
      password: password
     )
    }
+   // Authentication successful - MainView will detect the state change
   } catch {
    print("Authentication failed: \(error)")
   }
-  
+
   isLoading = false
  }
 }

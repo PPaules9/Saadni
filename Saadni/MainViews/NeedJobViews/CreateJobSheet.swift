@@ -13,6 +13,7 @@ struct CreateJobSheet: View {
  @Environment(AuthenticationManager.self) var authManager
  @Environment(ServicesStore.self) var servicesStore
  @State private var viewModel = CreateJobViewModel()
+ @State private var showErrorAlert = false
  let selectedCategory: String
  let initialJobName: String?
  
@@ -65,9 +66,7 @@ struct CreateJobSheet: View {
       CreateJobTab5(viewModel: viewModel)
      case 5:
       CreateJobTab6(viewModel: viewModel, onPublish: {
-       Task {
-        await publishJob()
-       }
+       viewModel.showSummary = true
       })
      default:
       EmptyView()
@@ -75,6 +74,22 @@ struct CreateJobSheet: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     
+    // Validation Error Message
+    if let validationError = viewModel.currentTabValidationError {
+     HStack(spacing: 8) {
+      Image(systemName: "exclamationmark.circle.fill")
+       .foregroundStyle(.red)
+      Text(validationError)
+       .font(.caption)
+       .foregroundStyle(.red)
+      Spacer()
+     }
+     .padding(12)
+     .background(Color.red.opacity(0.1))
+     .cornerRadius(8)
+     .padding()
+    }
+
     // Navigation Buttons
     HStack(spacing: 12) {
      if viewModel.currentTab > 0 {
@@ -82,7 +97,7 @@ struct CreateJobSheet: View {
        viewModel.previousTab()
       }
      }
-     
+
      if viewModel.currentTab < 5 {
       BrandButton(
        "Next",
@@ -111,6 +126,28 @@ struct CreateJobSheet: View {
    ImagePickerSheet(selectedImage: $viewModel.selectedImage)
     .presentationDetents([.fraction(0.4), .fraction(0.6)])
   }
+  .sheet(isPresented: $viewModel.showSummary) {
+   VStack {
+    Text("Job Summary")
+     .font(.title)
+    Text("Preview and publish your job posting")
+    Spacer()
+    Button("Publish") {
+     Task {
+      await publishJob()
+     }
+    }
+    .buttonStyle(.borderedProminent)
+   }
+   .padding()
+  }
+  .alert("Publishing Error", isPresented: $showErrorAlert) {
+   Button("OK") {
+    showErrorAlert = false
+   }
+  } message: {
+   Text(viewModel.publishError ?? "An unknown error occurred")
+  }
   .onAppear {
    if let initialName = initialJobName {
     viewModel.jobName = initialName
@@ -119,17 +156,26 @@ struct CreateJobSheet: View {
  }
  
  private func publishJob() async {
-  guard viewModel.canPublish() else { return }
+  guard viewModel.canPublish() else {
+   viewModel.publishError = "Please complete all required fields"
+   showErrorAlert = true
+   return
+  }
+
+  viewModel.isPublishing = true
 
   let serviceLocation = ServiceLocation(
    name: viewModel.city,
    coordinate: nil
   )
 
+  // Compress image before upload
+  let imageToUpload = viewModel.selectedImage.flatMap { viewModel.compressImage($0, quality: 0.7) } ?? viewModel.selectedImage
+
   let serviceImage = ServiceImage(
    localId: UUID().uuidString,
    remoteURL: nil,
-   localImage: viewModel.selectedImage
+   localImage: imageToUpload
   )
 
   let category = ServiceCategoryType.allCases.first { $0.rawValue == selectedCategory } ?? .homeCleaning
@@ -152,14 +198,19 @@ struct CreateJobSheet: View {
   )
 
   do {
-   try await servicesStore.addService(service, image: viewModel.selectedImage)
+   try await servicesStore.addService(service, image: imageToUpload)
 
    withAnimation {
     viewModel.showConfetti = true
    }
   } catch {
+   let errorMessage = error.localizedDescription.isEmpty ? "Failed to publish job. Please try again." : error.localizedDescription
+   viewModel.publishError = errorMessage
+   showErrorAlert = true
    print("❌ Error publishing service: \(error)")
   }
+
+  viewModel.isPublishing = false
  }
 }
 

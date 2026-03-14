@@ -133,6 +133,7 @@ class MessagesStore {
     func sendMessage(
         to conversationId: String,
         from senderId: String,
+        senderName: String,
         content: String,
         participantIds: [String]
     ) async throws {
@@ -144,6 +145,7 @@ class MessagesStore {
             id: UUID().uuidString,
             conversationId: conversationId,
             senderId: senderId,
+            senderName: senderName,
             content: content,
             createdAt: Date(),
             isRead: false,

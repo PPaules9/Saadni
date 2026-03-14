@@ -18,10 +18,19 @@ struct CreateJobTab4: View {
                     .fontWeight(.semibold)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
+                HStack(spacing: 4) {
+                    Text("Price")
+                        .font(.subheadline)
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                    Text("*")
+                        .foregroundStyle(.red)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
                 HStack(spacing: 12) {
                     BrandTextField(
-                        hasTitle: true,
-                        title: "Price",
+                        hasTitle: false,
+                        title: "",
                         placeholder: "Enter amount",
                         text: $viewModel.price
                     )

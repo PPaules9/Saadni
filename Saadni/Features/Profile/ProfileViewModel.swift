@@ -92,8 +92,7 @@ class ProfileViewModel {
     }
 
     func logout() async throws {
-        try authManager.signOut()
-        try await appStateManager.resetOnboarding()
-        try await appStateManager.resetRoleSelection()
+        // signOut() now handles all cleanup: auth logout + AppState reset
+        try await authManager.signOut()
     }
 }

@@ -10,8 +10,7 @@ import SwiftUI
 struct ServiceCard: View {
  let service: JobService
  @Environment(AuthenticationManager.self) var authManager
- @Environment(JobSeekerCoordinator.self) var jobSeekerCoordinator
- @Environment(ServiceProviderCoordinator.self) var serviceProviderCoordinator
+ @Environment(AppCoordinator.self) var appCoordinator
 
  private var applicationCount: Int {
   return service.applicationCount
@@ -96,10 +95,10 @@ struct ServiceCard: View {
 
  private func navigateToDetail() {
   // Use appropriate coordinator based on context
-  if jobSeekerCoordinator != nil {
-   jobSeekerCoordinator.navigate(to: .serviceDetail(service))
-  } else if serviceProviderCoordinator != nil {
-   serviceProviderCoordinator.navigate(to: .serviceDetail(service))
+  if let coordinator = appCoordinator.jobSeekerCoordinator {
+   coordinator.navigate(to: .serviceDetail(service))
+  } else if let coordinator = appCoordinator.serviceProviderCoordinator {
+   coordinator.navigate(to: .serviceDetail(service))
   }
  }
 }
@@ -121,5 +120,8 @@ struct ServiceCard: View {
  }
  .environment(UserCache())
  .environment(AuthenticationManager(userCache: UserCache()))
- .environment(JobSeekerCoordinator())
+ .environment(AppCoordinator(
+  authManager: AuthenticationManager(userCache: UserCache()),
+  userCache: UserCache()
+ ))
 }

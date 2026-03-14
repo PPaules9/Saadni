@@ -45,10 +45,14 @@ struct CreateJobTab5: View {
                     // Specific Date Picker (conditional)
                     if viewModel.serviceTimeline == .specificDate {
                         VStack(spacing: 8) {
-                            Text("Select Date")
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            HStack(spacing: 4) {
+                                Text("Select Date")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                Text("*")
+                                    .foregroundStyle(.red)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
 
                             DatePicker(
                                 "Service Date",
@@ -99,10 +103,14 @@ struct CreateJobTab5: View {
                     // Custom Duration Input (conditional)
                     if viewModel.durationOption == .custom {
                         VStack(spacing: 8) {
-                            Text("Enter hours")
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            HStack(spacing: 4) {
+                                Text("Enter hours")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                Text("*")
+                                    .foregroundStyle(.red)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
 
                             BrandTextField(
                                 hasTitle: false,

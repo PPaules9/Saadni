@@ -15,22 +15,38 @@ struct CreateJobTab2: View {
             VStack(spacing: 24) {
                 // Picture Section
                 VStack(spacing: 12) {
-                    Text("Post a Picture (if any)")
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    HStack(spacing: 4) {
+                        Text("Post a Picture")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                        Text("*")
+                            .foregroundStyle(.red)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                     ZStack {
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Colors.swiftUIColor(.textPrimary))
+                            .fill(viewModel.selectedImage != nil ? Colors.swiftUIColor(.textPrimary) : Color.red.opacity(0.05))
+                            .strokeBorder(viewModel.selectedImage == nil ? Color.red.opacity(0.5) : Color.clear, lineWidth: 2)
 
                         if let image = viewModel.selectedImage {
-                            Image(uiImage: image)
-                          .resizable()
-                          .scaledToFill()
-                          .frame(maxWidth: .infinity, maxHeight: 200)
-                          .clipped()
-                          .clipShape(RoundedRectangle(cornerRadius: 24))
+                            VStack(alignment: .trailing) {
+                                HStack {
+                                    Spacer()
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.system(size: 24))
+                                        .foregroundStyle(.green)
+                                        .padding(8)
+                                }
+
+                                Spacer()
+
+                                Image(uiImage: image)
+                                  .resizable()
+                                  .scaledToFill()
+                                  .frame(maxWidth: .infinity, maxHeight: 200)
+                                  .clipped()
+                            }
                         } else {
                             VStack(spacing: 12) {
                                 Image(systemName: "camera.fill")

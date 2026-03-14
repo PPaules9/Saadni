@@ -23,25 +23,27 @@ class AuthenticationManager {
 
  private var authStateHandle: AuthStateDidChangeListenerHandle?
  private let userCache: UserCache
- 
+ private let appStateManager: AppStateManager
+
  var isAuthenticated: Bool {
   if case .authenticated = authState {
    return true
   }
   return false
  }
- 
+
  var currentUser: User? {
   return userCache.currentUser
  }
- 
+
  var currentUserId: String? {
   return currentUser?.id
  }
- 
+
  // MARK: - Initialization
- init(userCache: UserCache) {
+ init(userCache: UserCache, appStateManager: AppStateManager? = nil) {
   self.userCache = userCache
+  self.appStateManager = appStateManager ?? AppStateManager()
   registerAuthStateHandler()
  }
  
@@ -170,10 +172,14 @@ class AuthenticationManager {
  }
  
  /// Sign out
- func signOut() throws {
+ func signOut() async throws {
   userCache.clearCache()
   try Auth.auth().signOut()
   authState = .unauthenticated
+
+  // Reset app state so next login shows full flow: Onboarding → Auth → RoleSelection
+  try await appStateManager.resetAllState()
+  print("✅ User signed out and AppState reset")
  }
  
  // MARK: - Firestore Integration

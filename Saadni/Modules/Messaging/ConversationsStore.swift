@@ -89,9 +89,11 @@ class ConversationsStore {
     // MARK: - Conversation Operations
 
     /// Get or create conversation with another user
+    /// Returns existing conversation ID if one exists, otherwise creates new one
     func getOrCreateConversation(with otherUserId: String, currentUserId: String) async throws -> String {
-        // Check if conversation already exists
+        // Check if conversation already exists with this user
         if let existingConversation = conversationsByUserId[otherUserId] {
+            print("✅ Found existing conversation with \(otherUserId): \(existingConversation.id)")
             return existingConversation.id
         }
 

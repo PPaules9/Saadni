@@ -9,6 +9,7 @@ import SwiftUI
 
 struct NeedJobView: View {
  @Environment(AppCoordinator.self) var appCoordinator
+ @Environment(ConversationsStore.self) var conversationsStore
 
  var body: some View {
   if let coordinator = appCoordinator.jobSeekerCoordinator {
@@ -27,10 +28,11 @@ struct NeedJobView: View {
     }
    }
    .sheet(item: Binding(
-    get: { coordinator.activeSheet },
+    get: { coordinator.topSheet },
     set: { _ in coordinator.dismissSheet() }
    )) { sheet in
     sheetContent(for: sheet)
+     .environment(coordinator) // Allow sheet to present another sheet
    }
    .tint(.accent)
    .background(Colors.swiftUIColor(.appBackground))
@@ -74,6 +76,18 @@ struct NeedJobView: View {
    ServiceDetailView(service: service)
   case .categoryDetail(let category):
    Text("Category: \(category.rawValue)") // Placeholder
+  case .chatDetail(let conversationId):
+   if let conversation = conversationsStore.getConversationById(conversationId) {
+    ChatDetailView(conversation: conversation)
+     .environment(conversationsStore)
+     .environment(MessagesStore())
+   } else {
+    // Fallback: conversation not loaded yet
+    ProgressView()
+     .onAppear {
+      // Conversation will load via real-time listener
+     }
+   }
   }
  }
 

@@ -57,7 +57,7 @@ struct ChatListView: View {
                         List {
                             ForEach(filteredConversations) { conversation in
                                 NavigationLink(destination: ChatDetailView(conversation: conversation)) {
-                                    ConversationRow(conversation: conversation)
+                                    ConversationRow(conversation: conversation, currentUserId: authManager.currentUserId ?? "")
                                 }
                                 .listRowBackground(Colors.swiftUIColor(.surfaceWhite))
                                 .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
@@ -107,6 +107,9 @@ struct SearchBar: View {
 
 struct ConversationRow: View {
     let conversation: Conversation
+    let currentUserId: String
+    @State private var otherUserName: String = "User"
+    @State private var isLoadingName = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -121,8 +124,7 @@ struct ConversationRow: View {
                     )
 
                 VStack(alignment: .leading, spacing: 4) {
-                    // User name would go here
-                    Text("User")
+                    Text(otherUserName)
                         .font(.headline)
                         .foregroundStyle(Colors.swiftUIColor(.textMain))
 
@@ -149,6 +151,27 @@ struct ConversationRow: View {
             }
         }
         .padding(12)
+        .onAppear {
+            loadOtherUserName()
+        }
+    }
+
+    private func loadOtherUserName() {
+        guard let otherUserId = conversation.otherParticipantId(currentUserId: currentUserId) else { return }
+
+        isLoadingName = true
+        Task {
+            do {
+                if let user = try await FirestoreService.shared.fetchUser(id: otherUserId) {
+                    await MainActor.run {
+                        otherUserName = user.displayName ?? user.email ?? "User"
+                    }
+                }
+            } catch {
+                print("⚠️ Failed to load user name: \(error)")
+            }
+            isLoadingName = false
+        }
     }
 }
 

@@ -12,6 +12,7 @@ struct Message: Identifiable, Codable {
     let id: String
     let conversationId: String
     let senderId: String
+    let senderName: String
     let content: String
     let createdAt: Date
     var isRead: Bool
@@ -21,6 +22,7 @@ struct Message: Identifiable, Codable {
         case id = "id"
         case conversationId = "conversationId"
         case senderId = "senderId"
+        case senderName = "senderName"
         case content = "content"
         case createdAt = "createdAt"
         case isRead = "isRead"
@@ -34,6 +36,7 @@ struct Message: Identifiable, Codable {
         return [
             "conversationId": conversationId,
             "senderId": senderId,
+            "senderName": senderName,
             "content": content,
             "createdAt": Timestamp(date: createdAt),
             "isRead": isRead,
@@ -54,10 +57,14 @@ struct Message: Identifiable, Codable {
             return nil
         }
 
+        // senderName is optional for backward compatibility
+        let senderName = data["senderName"] as? String ?? "User"
+
         return Message(
             id: id,
             conversationId: conversationId,
             senderId: senderId,
+            senderName: senderName,
             content: content,
             createdAt: createdAtTimestamp.dateValue(),
             isRead: isRead,

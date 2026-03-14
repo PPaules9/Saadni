@@ -8,30 +8,26 @@
 import SwiftUI
 
 struct MainView: View {
- @Environment(AuthenticationManager.self) var authManager
- @Environment(AppStateManager.self) var appStateManager
- @Environment(UserCache.self) var userCache
- @Environment(MessagesStore.self) var messagesStore
- @Environment(ConversationsStore.self) var conversationsStore
+ @Environment(AppContainer.self) var container
  @State private var reviewsStore = ReviewsStore()
  @State private var walletStore = WalletStore()
  @State private var appCoordinator: AppCoordinator?
 
  var body: some View {
   Group {
-   switch authManager.authState {
+   switch container.authManager.authState {
    case .authenticating:
     ProgressView().tint(.accent)
    case .unauthenticated:
-    if appStateManager.hasSeenOnboarding {
+    if container.appStateManager.hasSeenOnboarding {
      AuthenticationView()
     } else {
      OnboardingView()
     }
    case .authenticated:
     // Read live user from currentUser (delegates to userCache)
-    if let user = authManager.currentUser {
-     if appStateManager.hasSelectedRole {
+    if let user = container.authManager.currentUser {
+     if container.appStateManager.hasSelectedRole {
       // Only show content if coordinator is ready
       if let appCoordinator = appCoordinator {
        authenticatedContent(for: user)
@@ -48,25 +44,34 @@ struct MainView: View {
     }
    }
   }
+  .environment(container.appStateManager)
+  .environment(container.userCache)
   .task {
-   // Initialize coordinator on first load
-   if appCoordinator == nil, let user = authManager.currentUser {
+   // Initialize app coordinator on first load
+   if appCoordinator == nil, let user = container.authManager.currentUser {
     let coordinator = AppCoordinator(
-     authManager: authManager,
-     userCache: userCache
+     authManager: container.authManager,
+     userCache: container.userCache
     )
     appCoordinator = coordinator
     coordinator.setupCoordinator(for: user)
    }
   }
-  .onChange(of: authManager.currentUser) { oldUser, newUser in
+  .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("openChat"))) { notification in
+   // Handle notification tap - navigate to chat
+   if let conversationId = notification.object as? String {
+    appCoordinator?.handleChatDeepLink(conversationId: conversationId, conversationsStore: container.conversationsStore)
+    print("🔔 Navigating to conversation: \(conversationId)")
+   }
+  }
+  .onChange(of: container.authManager.currentUser) { oldUser, newUser in
    // When user changes (login or role switch), setup coordinator
    if let user = newUser {
     if appCoordinator == nil {
      // First login - create coordinator
      let coordinator = AppCoordinator(
-      authManager: authManager,
-      userCache: userCache
+      authManager: container.authManager,
+      userCache: container.userCache
      )
      appCoordinator = coordinator
     }
@@ -82,8 +87,11 @@ struct MainView: View {
    NeedJobView()
     .environment(reviewsStore)
     .environment(walletStore)
-    .environment(messagesStore)
-    .environment(conversationsStore)
+    .environment(container.authManager)
+    .environment(container.applicationsStore)
+    .environment(container.servicesStore)
+    .environment(container.messagesStore)
+    .environment(container.conversationsStore)
     .onAppear {
      reviewsStore.setupListeners(userId: user.id)
      walletStore.setupListeners(userId: user.id)
@@ -92,8 +100,11 @@ struct MainView: View {
    NeedWork()
     .environment(reviewsStore)
     .environment(walletStore)
-    .environment(messagesStore)
-    .environment(conversationsStore)
+    .environment(container.authManager)
+    .environment(container.applicationsStore)
+    .environment(container.servicesStore)
+    .environment(container.messagesStore)
+    .environment(container.conversationsStore)
     .onAppear {
      reviewsStore.setupListeners(userId: user.id)
      walletStore.setupListeners(userId: user.id)
@@ -104,9 +115,5 @@ struct MainView: View {
 
 #Preview {
  MainView()
-  .environment(UserCache())
-  .environment(AuthenticationManager(userCache: UserCache()))
-  .environment(AppStateManager())
-  .environment(ReviewsStore())
-  .environment(WalletStore())
+  .environment(AppContainer())
 }

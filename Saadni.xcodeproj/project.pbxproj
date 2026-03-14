@@ -77,6 +77,8 @@
 		2244221E2F63523F00241E1C /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422182F63523F00241E1C /* AppCoordinator.swift */; };
 		2244221F2F63523F00241E1C /* NavigationDestinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244221A2F63523F00241E1C /* NavigationDestinations.swift */; };
 		224422202F63523F00241E1C /* ServiceProviderCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244221B2F63523F00241E1C /* ServiceProviderCoordinator.swift */; };
+		8F42A73AA1AFBF080F823BED /* AuthCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4ECBB5CAAF07DF4D34081C /* AuthCoordinator.swift */; };
+		CE1531E4AD08A0423B3979C2 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DA4D8FE38E6191DE8527BE /* AppError.swift */; };
 		224422252F64397F00241E1C /* JobServiceFirestoreMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422232F64397F00241E1C /* JobServiceFirestoreMapper.swift */; };
 		224422262F64397F00241E1C /* ServiceActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422242F64397F00241E1C /* ServiceActivity.swift */; };
 		224422272F64397F00241E1C /* JobService+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422212F64397F00241E1C /* JobService+Formatting.swift */; };
@@ -100,6 +102,7 @@
 		2244224D2F643FE000241E1C /* WalletStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244224A2F643FE000241E1C /* WalletStore.swift */; };
 		2244224F2F643FF100241E1C /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244224E2F643FF100241E1C /* AppConstants.swift */; };
 		2264A02D2F4C6C110004B2B4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2264A02C2F4C6C110004B2B4 /* README.md */; };
+		226B50092F646C1B00C09676 /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50082F646C1B00C09676 /* AppContainer.swift */; };
 		22B999FF2F5F1A8A00B3E070 /* StateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B999FE2F5F1A8A00B3E070 /* StateKey.swift */; };
 		22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */; };
 		22FD35F52F55F5CE00AF3127 /* LaunchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD35F32F55F5CE00AF3127 /* LaunchScreen.swift */; };
@@ -173,9 +176,7 @@
 		224421FB2F63435300241E1C /* myJobs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myJobs.swift; sourceTree = "<group>"; };
 		224421FC2F633B0000241E1C /* UserReviewsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserReviewsView.swift; sourceTree = "<group>"; };
 		224421FD2F633B0000241E1C /* CompletedServicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedServicesView.swift; sourceTree = "<group>"; };
-		224421FD2F63497500241E1C /* Saadni.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Saadni.entitlements; sourceTree = "<group>"; };
 		224421FE2F63497500241E1C /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Saadni.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		224421FF2F63498900241E1C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		224422002F634D8400241E1C /* CreateJobTab6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobTab6.swift; sourceTree = "<group>"; };
 		224422022F634EBE00241E1C /* Conversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
 		224422032F634EBE00241E1C /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -191,6 +192,8 @@
 		224422192F63523F00241E1C /* JobSeekerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobSeekerCoordinator.swift; sourceTree = "<group>"; };
 		2244221A2F63523F00241E1C /* NavigationDestinations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationDestinations.swift; sourceTree = "<group>"; };
 		2244221B2F63523F00241E1C /* ServiceProviderCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderCoordinator.swift; sourceTree = "<group>"; };
+		2D4ECBB5CAAF07DF4D34081C /* AuthCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCoordinator.swift; sourceTree = "<group>"; };
+		30DA4D8FE38E6191DE8527BE /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		224422212F64397F00241E1C /* JobService+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobService+Formatting.swift"; sourceTree = "<group>"; };
 		224422222F64397F00241E1C /* JobService+SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobService+SampleData.swift"; sourceTree = "<group>"; };
 		224422232F64397F00241E1C /* JobServiceFirestoreMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobServiceFirestoreMapper.swift; sourceTree = "<group>"; };
@@ -214,6 +217,8 @@
 		2244224A2F643FE000241E1C /* WalletStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletStore.swift; sourceTree = "<group>"; };
 		2244224E2F643FF100241E1C /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
 		2264A02C2F4C6C110004B2B4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		226B50072F644BE200C09676 /* Core/Resources/Saadni.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Core/Resources/Saadni.entitlements; sourceTree = "<group>"; };
+		226B50082F646C1B00C09676 /* AppContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainer.swift; sourceTree = "<group>"; };
 		22B999FE2F5F1A8A00B3E070 /* StateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateKey.swift; sourceTree = "<group>"; };
 		22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		22FD35F32F55F5CE00AF3127 /* LaunchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreen.swift; sourceTree = "<group>"; };
@@ -325,6 +330,7 @@
 		2236A14A2F50949000A7A19F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				226B50072F644BE200C09676 /* Core/Resources/Saadni.entitlements */,
 				22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */,
 				2236A1482F50949000A7A19F /* Assets.xcassets */,
 				2236A1492F50949000A7A19F /* Saadni.icon */,
@@ -383,8 +389,6 @@
 		2236A16B2F50949000A7A19F /* Saadni */ = {
 			isa = PBXGroup;
 			children = (
-				224421FF2F63498900241E1C /* Info.plist */,
-				224421FD2F63497500241E1C /* Saadni.entitlements */,
 				22FD36DA2F57168300AF3127 /* App */,
 				22FD35F62F56E83E00AF3127 /* Modules */,
 				2236A14B2F50949000A7A19F /* Core */,
@@ -505,6 +509,8 @@
 				224422192F63523F00241E1C /* JobSeekerCoordinator.swift */,
 				2244221A2F63523F00241E1C /* NavigationDestinations.swift */,
 				2244221B2F63523F00241E1C /* ServiceProviderCoordinator.swift */,
+				2D4ECBB5CAAF07DF4D34081C /* AuthCoordinator.swift */,
+				30DA4D8FE38E6191DE8527BE /* AppError.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -615,6 +621,7 @@
 		22FD36DA2F57168300AF3127 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				226B50082F646C1B00C09676 /* AppContainer.swift */,
 				22FD36D72F57168300AF3127 /* AppStateManager.swift */,
 				22FD36D92F57168300AF3127 /* SaadniApp.swift */,
 				22FD36D82F57168300AF3127 /* MainView.swift */,
@@ -808,6 +815,7 @@
 				224422392F643AB700241E1C /* AccountMenuSection.swift in Sources */,
 				2244223A2F643AB700241E1C /* WorkManagementSection.swift in Sources */,
 				2244223B2F643AB700241E1C /* ProfileHeaderView.swift in Sources */,
+				226B50092F646C1B00C09676 /* AppContainer.swift in Sources */,
 				2244223C2F643AB700241E1C /* RoleSwitcherView.swift in Sources */,
 				224422122F634FE100241E1C /* TypingIndicatorView.swift in Sources */,
 				22FD36F72F57418600AF3127 /* CreateJobTab1.swift in Sources */,
@@ -984,13 +992,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Saadni;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Saadni/Saadni.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Saadni/Core/Resources/Saadni.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VH2NKLHXDK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Saadni/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Saedni - ساعدني";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We would like to take a photo using your camera.";
@@ -1025,13 +1032,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Saadni;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Saadni/Saadni.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Saadni/Core/Resources/Saadni.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VH2NKLHXDK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Saadni/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Saedni - ساعدني";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We would like to take a photo using your camera.";

@@ -79,6 +79,9 @@ class CreateJobViewModel {
     var showConfetti: Bool = false
     var showImagePicker: Bool = false
     var showMapSheet: Bool = false
+    var isPublishing: Bool = false
+    var publishError: String?
+    var showSummary: Bool = false
     var mapPosition: MapCameraPosition = .region(
         MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 26.8206, longitude: 30.8025),
@@ -93,8 +96,28 @@ class CreateJobViewModel {
         !city.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
+    var tab1ValidationError: String? {
+        if jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return "Job name is required"
+        }
+        if address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return "Address is required"
+        }
+        if city.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return "City is required"
+        }
+        return nil
+    }
+
     var isTab2Valid: Bool {
         selectedImage != nil
+    }
+
+    var tab2ValidationError: String? {
+        if selectedImage == nil {
+            return "Please select an image for the job"
+        }
+        return nil
     }
 
     var isTab3Valid: Bool {
@@ -104,9 +127,29 @@ class CreateJobViewModel {
         return true
     }
 
+    var tab3ValidationError: String? {
+        if toolsNeeded == .yes && toolsDescription.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return "Please describe the tools needed"
+        }
+        return nil
+    }
+
     var isTab4Valid: Bool {
         guard let priceValue = Double(price), priceValue > 0 else { return false }
         return true
+    }
+
+    var tab4ValidationError: String? {
+        if price.isEmpty {
+            return "Price is required"
+        }
+        guard let priceValue = Double(price) else {
+            return "Please enter a valid price"
+        }
+        if priceValue <= 0 {
+            return "Price must be greater than 0"
+        }
+        return nil
     }
 
     var isTab5Valid: Bool {
@@ -120,6 +163,23 @@ class CreateJobViewModel {
             return true
         }
         return true
+    }
+
+    var tab5ValidationError: String? {
+        if serviceTimeline == .specificDate {
+            if specificDate <= Date() {
+                return "Please select a future date"
+            }
+        }
+        if durationOption == .custom {
+            if customDurationHours.isEmpty {
+                return "Please enter duration in hours"
+            }
+            guard let hours = Double(customDurationHours), hours > 0 else {
+                return "Please enter a valid duration"
+            }
+        }
+        return nil
     }
 
     var isCurrentTabValid: Bool {
@@ -148,6 +208,18 @@ class CreateJobViewModel {
         return isTab1Valid && isTab2Valid && isTab3Valid && isTab4Valid && isTab5Valid
     }
 
+    var currentTabValidationError: String? {
+        switch currentTab {
+        case 0: return tab1ValidationError
+        case 1: return tab2ValidationError
+        case 2: return tab3ValidationError
+        case 3: return tab4ValidationError
+        case 4: return tab5ValidationError
+        case 5: return nil
+        default: return nil
+        }
+    }
+
     func nextTab() {
         if currentTab < 5 {
             currentTab += 1
@@ -158,6 +230,12 @@ class CreateJobViewModel {
         if currentTab > 0 {
             currentTab -= 1
         }
+    }
+
+    // MARK: - Image Compression
+    func compressImage(_ image: UIImage, quality: CGFloat = 0.7) -> UIImage? {
+        guard let data = image.jpegData(compressionQuality: quality) else { return nil }
+        return UIImage(data: data)
     }
 
     // MARK: - Schedule Helpers

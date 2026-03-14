@@ -15,48 +15,31 @@ import UserNotifications
 struct SaadniApp: App {
 
  @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
- @State private var userCache = UserCache()
- @State private var authManager: AuthenticationManager
- @State private var servicesStore = ServicesStore()
- @State private var applicationsStore = ApplicationsStore()
- @State private var appStateManager = AppStateManager()
- @State private var messagesStore: MessagesStore
- @State private var conversationsStore: ConversationsStore
+ @State private var container: AppContainer
 
  init() {
   // Configure Firebase FIRST before any Firebase-dependent code
   FirebaseApp.configure()
 
-  let cache = UserCache()
-  _userCache = State(initialValue: cache)
-  _authManager = State(initialValue: AuthenticationManager(userCache: cache))
-
-  // Initialize stores AFTER Firebase is configured
-  _messagesStore = State(initialValue: MessagesStore())
-  _conversationsStore = State(initialValue: ConversationsStore())
+  // Initialize container after Firebase is configured
+  _container = State(initialValue: AppContainer())
  }
- 
+
  var body: some Scene {
   WindowGroup {
    MainView()
-    .environment(userCache)
-    .environment(authManager)
-    .environment(servicesStore)
-    .environment(applicationsStore)
-    .environment(appStateManager)
-    .environment(messagesStore)
-    .environment(conversationsStore)
+    .environment(container)
     .onAppear {
      // Start listening to services after Firebase is initialized
-     servicesStore.startListening()
+     container.servicesStore.startListening()
 
      // Request push notification permissions
      setupPushNotifications()
     }
-    .onChange(of: authManager.currentUserId) { oldValue, newValue in
+    .onChange(of: container.authManager.currentUserId) { oldValue, newValue in
      if let userId = newValue {
-      applicationsStore.setupListeners(userId: userId)
-      conversationsStore.setupListeners(userId: userId)
+      container.applicationsStore.setupListeners(userId: userId)
+      container.conversationsStore.setupListeners(userId: userId)
       NotificationService.shared.setCurrentUser(userId)
 
       // Register FCM token when user authenticates
@@ -70,8 +53,8 @@ struct SaadniApp: App {
         }
       }
      } else {
-      applicationsStore.stopListening()
-      conversationsStore.stopListening()
+      container.applicationsStore.stopListening()
+      container.conversationsStore.stopListening()
      }
     }
   }

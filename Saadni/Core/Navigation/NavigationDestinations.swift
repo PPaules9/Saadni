@@ -63,12 +63,14 @@ enum ServiceProviderTab: String, CaseIterable {
 enum JobSeekerDestination: Hashable {
     case serviceDetail(JobService)
     case categoryDetail(ServiceCategoryType)
+    case chatDetail(conversationId: String)
 }
 
 enum ServiceProviderDestination: Hashable {
     case serviceDetail(JobService)
     case applicationsList(serviceId: String, serviceTitle: String)
     case categoryDetail(ServiceCategoryType)
+    case chatDetail(conversationId: String)
 }
 
 // MARK: - Sheet Destinations

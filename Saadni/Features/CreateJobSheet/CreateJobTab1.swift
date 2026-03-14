@@ -40,9 +40,18 @@ struct CreateJobTab1: View {
                 .cornerRadius(12)
 
                 // Job Name
+                HStack(spacing: 4) {
+                    Text("Give it a name?")
+                        .font(.subheadline)
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                    Text("*")
+                        .foregroundStyle(.red)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
                 BrandTextField(
-                    hasTitle: true,
-                    title: "Give it a name?",
+                    hasTitle: false,
+                    title: "",
                     placeholder: "e.g., Mount my 55-inch TV",
                     text: $viewModel.jobName
                 )
@@ -54,9 +63,18 @@ struct CreateJobTab1: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 // Address Fields
+                HStack(spacing: 4) {
+                    Text("Address")
+                        .font(.subheadline)
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                    Text("*")
+                        .foregroundStyle(.red)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
                 BrandTextField(
-                    hasTitle: true,
-                    title: "Address",
+                    hasTitle: false,
+                    title: "",
                     placeholder: "Street address",
                     text: $viewModel.address
                 )
@@ -79,9 +97,18 @@ struct CreateJobTab1: View {
                     .frame(maxWidth: .infinity)
                 }
 
+                HStack(spacing: 4) {
+                    Text("City")
+                        .font(.subheadline)
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                    Text("*")
+                        .foregroundStyle(.red)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
                 BrandTextField(
-                    hasTitle: true,
-                    title: "City",
+                    hasTitle: false,
+                    title: "",
                     placeholder: "City",
                     text: $viewModel.city
                 )

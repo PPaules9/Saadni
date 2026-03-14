@@ -58,7 +58,9 @@ struct OnboardingView: View {
       // Skip button (only show on first two pages)
       if currentPage < 2 {
        BrandButton("Skip", hasIcon: false, icon: "", secondary: true) {
-        currentPage = 2
+        Task {
+         try await appStateManager.completeOnboarding()
+        }
        }
       } else {
        BrandButton("Skip", hasIcon: false, icon: "", secondary: true) {
@@ -87,7 +89,6 @@ struct OnboardingView: View {
    // Tell AppStateManager that user completed onboarding
    Task {
     try await appStateManager.completeOnboarding()
-    // MainView will automatically update because AppStateManager is @Observable
    }
   }
  }

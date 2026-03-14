@@ -1,5 +1,9 @@
 import SwiftUI
 
+// MARK: - App Coordinator (Root Navigation Hub)
+// Routes between JobSeekerCoordinator and ServiceProviderCoordinator based on user role
+// Also handles deep linking and global error presentation
+
 @Observable
 final class AppCoordinator {
     // Child coordinators (one active at a time)
@@ -45,6 +49,17 @@ final class AppCoordinator {
             if let updatedUser = userCache.currentUser {
                 setupCoordinator(for: updatedUser)
             }
+        }
+    }
+
+    // MARK: - Deep Linking
+
+    func handleChatDeepLink(conversationId: String, conversationsStore: ConversationsStore) {
+        // Determine which coordinator is active
+        if let coordinator = jobSeekerCoordinator {
+            coordinator.selectTabAndNavigate(to: .chat, destination: .chatDetail(conversationId: conversationId))
+        } else if let coordinator = serviceProviderCoordinator {
+            coordinator.selectTabAndNavigate(to: .chat, destination: .chatDetail(conversationId: conversationId))
         }
     }
 }

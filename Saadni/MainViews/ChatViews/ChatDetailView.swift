@@ -11,9 +11,12 @@ struct ChatDetailView: View {
     @Environment(MessagesStore.self) var messagesStore
     @Environment(ConversationsStore.self) var conversationsStore
     @Environment(AuthenticationManager.self) var authManager
+    @Environment(UserCache.self) var userCache
     @State private var messageText = ""
     @State private var isTyping = false
     @State private var scrollPosition: String?
+    @State private var otherParticipantName: String = "User"
+    @State private var currentUserName: String = "You"
 
     let conversation: Conversation
 
@@ -39,7 +42,7 @@ struct ChatDetailView: View {
                 VStack(spacing: 8) {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("User")
+                            Text(otherParticipantName)
                                 .font(.headline)
                                 .foregroundStyle(Colors.swiftUIColor(.textMain))
 
@@ -95,7 +98,7 @@ struct ChatDetailView: View {
                                     MessageBubble(
                                         message: message,
                                         isFromCurrentUser: message.isSentByCurrentUser(userId: currentUserId),
-                                        senderName: message.senderId == currentUserId ? nil : "Provider"
+                                        senderName: message.senderId == currentUserId ? nil : message.senderName
                                     )
                                     .id(message.id)
                                 }
@@ -156,6 +159,7 @@ struct ChatDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             setupMessagesListener()
+            loadOtherParticipantInfo()
         }
         .onDisappear {
             messagesStore.stopListener(conversationId: conversation.id)
@@ -173,6 +177,41 @@ struct ChatDetailView: View {
         messagesStore.setupTypingListener(conversationId: conversation.id)
     }
 
+    private func loadOtherParticipantInfo() {
+        // Get the other participant's ID
+        guard let otherUserId = conversation.otherParticipantId(currentUserId: currentUserId) else {
+            print("⚠️ Could not determine other participant")
+            return
+        }
+
+        Task {
+            // Load current user's name
+            if let currentUser = userCache.currentUser {
+                await MainActor.run {
+                    currentUserName = currentUser.displayName ?? currentUser.email ?? "You"
+                }
+            }
+
+            // Fetch other participant's name from Firestore
+            do {
+                if let otherUser = try await FirestoreService.shared.fetchUser(id: otherUserId) {
+                    await MainActor.run {
+                        otherParticipantName = otherUser.displayName ?? otherUser.email ?? "Provider"
+                    }
+                } else {
+                    await MainActor.run {
+                        otherParticipantName = "Provider"
+                    }
+                }
+            } catch {
+                print("⚠️ Failed to fetch other participant info: \(error)")
+                await MainActor.run {
+                    otherParticipantName = "Provider"
+                }
+            }
+        }
+    }
+
     private func sendMessage() {
         let trimmedMessage = messageText.trimmingCharacters(in: .whitespaces)
         guard !trimmedMessage.isEmpty else { return }
@@ -182,6 +221,7 @@ struct ChatDetailView: View {
                 try await messagesStore.sendMessage(
                     to: conversation.id,
                     from: currentUserId,
+                    senderName: currentUserName,
                     content: trimmedMessage,
                     participantIds: conversation.participantIds
                 )
@@ -229,5 +269,6 @@ struct ChatDetailView: View {
         .environment(MessagesStore())
         .environment(ConversationsStore())
         .environment(AuthenticationManager(userCache: UserCache()))
+        .environment(UserCache())
     }
 }

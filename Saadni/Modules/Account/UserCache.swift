@@ -131,6 +131,21 @@ final class UserCache {
   }
  }
  
+ // MARK: - User Lookup
+
+ /// Fetch a user by ID (for displaying other participants in chat, etc)
+ /// Returns cached user if available, otherwise returns nil
+ func getUserById(_ userId: String) -> User? {
+  // If it's the current user, return it
+  if currentUser?.id == userId {
+   return currentUser
+  }
+
+  // For other users, would need a separate cache
+  // For now, return nil and let caller fall back to default name
+  return nil
+ }
+
  deinit {
   stopListening()
  }

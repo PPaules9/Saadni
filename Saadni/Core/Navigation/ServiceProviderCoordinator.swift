@@ -15,8 +15,8 @@ final class ServiceProviderCoordinator: Equatable {
     var profilePath = NavigationPath()
     var searchPath = NavigationPath()
 
-    // Sheet state
-    var activeSheet: SheetDestination?
+    // Sheet state (stack for modal layering)
+    var sheetStack: [SheetDestination] = []
 
     // MARK: - Tab Navigation
 
@@ -40,14 +40,36 @@ final class ServiceProviderCoordinator: Equatable {
         currentPath = NavigationPath()
     }
 
+    // MARK: - Cross-Tab Navigation
+
+    func selectTabAndNavigate(to tab: ServiceProviderTab, destination: ServiceProviderDestination? = nil) {
+        selectedTab = tab
+        if let destination = destination {
+            // Ensure we're operating on the correct path after tab switch
+            DispatchQueue.main.async {
+                self.navigate(to: destination)
+            }
+        }
+    }
+
     // MARK: - Sheet Navigation
 
     func presentSheet(_ sheet: SheetDestination) {
-        activeSheet = sheet
+        sheetStack.append(sheet)
     }
 
     func dismissSheet() {
-        activeSheet = nil
+        if !sheetStack.isEmpty {
+            sheetStack.removeLast()
+        }
+    }
+
+    func dismissAllSheets() {
+        sheetStack.removeAll()
+    }
+
+    var topSheet: SheetDestination? {
+        sheetStack.last
     }
 
     // MARK: - Helpers

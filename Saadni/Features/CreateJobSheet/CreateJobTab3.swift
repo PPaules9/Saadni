@@ -39,10 +39,14 @@ struct CreateJobTab3: View {
 
                 if viewModel.toolsNeeded == .yes {
                     VStack(spacing: 8) {
-                        Text("State the tools needed")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        HStack(spacing: 4) {
+                            Text("State the tools needed")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                            Text("*")
+                                .foregroundStyle(.red)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
                         BrandTextEditor(
                             hasTitle: false,
