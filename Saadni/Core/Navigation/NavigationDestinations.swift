@@ -41,9 +41,9 @@ enum ServiceProviderTab: String, CaseIterable {
         switch self {
         case .home: return "Home"
         case .chat: return "Chat"
-        case .myJobs: return "My Jobs"
-        case .profile: return "Profile"
+        case .myJobs: return "Jobs"
         case .search: return "Search"
+        case .profile: return "Profile"
         }
     }
 

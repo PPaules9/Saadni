@@ -12,6 +12,7 @@ struct CreateJobSheet: View {
  @Environment(\.dismiss) var dismiss
  @Environment(AuthenticationManager.self) var authManager
  @Environment(ServicesStore.self) var servicesStore
+ @Environment(JobSeekerCoordinator.self) var coordinator
  @State private var viewModel = CreateJobViewModel()
  @State private var showErrorAlert = false
  let selectedCategory: String
@@ -116,10 +117,13 @@ struct CreateJobSheet: View {
     .background(Colors.swiftUIColor(.textPrimary))
    }
    
-   if viewModel.showConfetti {
-    ConfettiView(onAnimationComplete: {
-     dismiss()
-    })
+   if viewModel.showSuccessModal {
+    JobPublishedSuccessModal(
+     jobTitle: viewModel.jobName,
+     jobPrice: "EGP \(viewModel.price)",
+     jobImage: viewModel.selectedImage,
+     onComplete: navigateToMyJobs
+    )
    }
   }
   .sheet(isPresented: $viewModel.showImagePicker) {
@@ -127,19 +131,96 @@ struct CreateJobSheet: View {
     .presentationDetents([.fraction(0.4), .fraction(0.6)])
   }
   .sheet(isPresented: $viewModel.showSummary) {
-   VStack {
-    Text("Job Summary")
-     .font(.title)
-    Text("Preview and publish your job posting")
-    Spacer()
-    Button("Publish") {
-     Task {
-      await publishJob()
+   VStack(spacing: 0) {
+    // Header
+    VStack(spacing: 8) {
+     Text("Review Your Job")
+      .font(.headline)
+      .fontWeight(.semibold)
+     Text("Preview and publish your job posting")
+      .font(.caption)
+      .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .padding()
+    .background(Colors.swiftUIColor(.textPrimary))
+
+    // Summary Content
+    ScrollView {
+     VStack(spacing: 16) {
+      if let image = viewModel.selectedImage {
+       Image(uiImage: image)
+        .resizable()
+        .scaledToFill()
+        .frame(height: 180)
+        .cornerRadius(12)
+        .clipped()
+      }
+
+      VStack(alignment: .leading, spacing: 8) {
+       Text("Job Details").font(.subheadline).fontWeight(.semibold).foregroundStyle(Color.accent)
+       VStack(alignment: .leading, spacing: 4) {
+        Text("Job Name").font(.caption2).foregroundStyle(Colors.swiftUIColor(.textSecondary))
+        Text(viewModel.jobName).font(.subheadline).fontWeight(.semibold)
+       }
+       .frame(maxWidth: .infinity, alignment: .leading)
+       .padding(8)
+       .background(Colors.swiftUIColor(.appBackground))
+       .cornerRadius(8)
+      }
+     }
+     .padding()
+    }
+
+    // Progress UI during upload
+    if case .compressing = viewModel.uploadState {
+     VStack(spacing: 8) {
+      ProgressView().tint(.accent)
+      Text("Compressing image...").font(.caption).foregroundStyle(Colors.swiftUIColor(.textSecondary))
+     }
+     .frame(maxWidth: .infinity)
+     .padding()
+     .background(Color.accent.opacity(0.1))
+     .cornerRadius(8)
+     .padding()
+    } else if case .uploading(let progress) = viewModel.uploadState {
+     VStack(spacing: 8) {
+      ProgressView(value: progress).tint(.accent)
+      Text("Uploading image... \(Int(progress * 100))%").font(.caption).foregroundStyle(Colors.swiftUIColor(.textSecondary))
+     }
+     .frame(maxWidth: .infinity)
+     .padding()
+     .background(Color.accent.opacity(0.1))
+     .cornerRadius(8)
+     .padding()
+    } else if case .saving = viewModel.uploadState {
+     VStack(spacing: 8) {
+      ProgressView().tint(.accent)
+      Text("Saving job details...").font(.caption).foregroundStyle(Colors.swiftUIColor(.textSecondary))
+     }
+     .frame(maxWidth: .infinity)
+     .padding()
+     .background(Color.accent.opacity(0.1))
+     .cornerRadius(8)
+     .padding()
+    }
+
+    // Action Buttons
+    HStack(spacing: 12) {
+     BrandButton("Cancel", isDisabled: viewModel.isPublishing, hasIcon: false, icon: "", secondary: true) {
+      viewModel.showSummary = false
+     }
+
+     BrandButton(viewModel.isPublishing ? "Publishing..." : "Publish", isDisabled: viewModel.isPublishing, hasIcon: true, icon: "paperplane.fill", secondary: false) {
+      Task {
+       await publishJob()
+      }
      }
     }
-    .buttonStyle(.borderedProminent)
+    .padding()
+    .background(Colors.swiftUIColor(.textPrimary))
    }
-   .padding()
+   .background(Colors.swiftUIColor(.appBackground))
   }
   .alert("Publishing Error", isPresented: $showErrorAlert) {
    Button("OK") {
@@ -163,14 +244,23 @@ struct CreateJobSheet: View {
   }
 
   viewModel.isPublishing = true
+  viewModel.uploadState = .compressing
 
   let serviceLocation = ServiceLocation(
    name: viewModel.city,
    coordinate: nil
   )
 
-  // Compress image before upload
-  let imageToUpload = viewModel.selectedImage.flatMap { viewModel.compressImage($0, quality: 0.7) } ?? viewModel.selectedImage
+  // Compress image in background thread (non-blocking)
+  let selectedImage = viewModel.selectedImage
+  let imageToUpload = await Task.detached(priority: .userInitiated) {
+   selectedImage.flatMap { image in
+    guard let data = image.jpegData(compressionQuality: 0.7) else { return nil }
+    return UIImage(data: data)
+   } ?? selectedImage
+  }.value
+
+  viewModel.uploadState = .uploading(progress: 0.0)
 
   let serviceImage = ServiceImage(
    localId: UUID().uuidString,
@@ -194,23 +284,37 @@ struct CreateJobSheet: View {
    someoneAround: viewModel.aroundOption != .noOne,
    specialTools: viewModel.toolsNeeded == .yes ? viewModel.toolsDescription : nil,
    serviceDate: viewModel.getServiceDate(),
-   estimatedDurationHours: viewModel.getEstimatedDurationHours()
+   estimatedDurationHours: viewModel.getEstimatedDurationHours(),
+   status: .published
   )
 
   do {
+   viewModel.uploadState = .saving
    try await servicesStore.addService(service, image: imageToUpload)
 
+   viewModel.uploadState = .completed
+   viewModel.showSummary = false // Dismiss summary sheet
    withAnimation {
-    viewModel.showConfetti = true
+    viewModel.showSuccessModal = true
    }
   } catch {
    let errorMessage = error.localizedDescription.isEmpty ? "Failed to publish job. Please try again." : error.localizedDescription
    viewModel.publishError = errorMessage
+   viewModel.uploadState = .idle
    showErrorAlert = true
    print("❌ Error publishing service: \(error)")
   }
 
   viewModel.isPublishing = false
+ }
+
+ private func navigateToMyJobs() {
+  dismiss() // Dismiss sheet first
+
+  // Wait for dismissal animation, then navigate
+  DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+   coordinator.selectTab(.myJobs)
+  }
  }
 }
 

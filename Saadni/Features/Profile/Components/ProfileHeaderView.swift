@@ -6,23 +6,41 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct ProfileHeaderView: View {
     let displayName: String
     let email: String
+    let photoURL: String?
 
     var body: some View {
         VStack(spacing: 12) {
             HStack(spacing: 16) {
                 // Profile Image
-                Circle()
-                    .fill(Color.accent.opacity(0.2))
-                    .frame(width: 70, height: 70)
-                    .overlay(
-                        Image(systemName: "person.fill")
-                            .font(.system(size: 28))
-                            .foregroundStyle(.accent)
-                    )
+                if let photoURL = photoURL, let url = URL(string: photoURL) {
+                    KFImage(url)
+                        .placeholder {
+                            Circle()
+                                .fill(Color.accent.opacity(0.2))
+                                .overlay(
+                                    ProgressView()
+                                        .progressViewStyle(.circular)
+                                )
+                        }
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 70, height: 70)
+                        .clipShape(Circle())
+                } else {
+                    Circle()
+                        .fill(Color.accent.opacity(0.2))
+                        .frame(width: 70, height: 70)
+                        .overlay(
+                            Image(systemName: "person.fill")
+                                .font(.system(size: 28))
+                                .foregroundStyle(.accent)
+                        )
+                }
 
                 VStack(alignment: .leading, spacing: 6) {
                     Text(displayName)
@@ -47,5 +65,5 @@ struct ProfileHeaderView: View {
 }
 
 #Preview {
-    ProfileHeaderView(displayName: "John Doe", email: "john@example.com")
+    ProfileHeaderView(displayName: "John Doe", email: "john@example.com", photoURL: nil)
 }

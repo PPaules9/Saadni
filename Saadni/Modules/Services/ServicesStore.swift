@@ -45,7 +45,12 @@ class ServicesStore {
     guard let documents = snapshot?.documents else { return }
     
     self.services = documents.compactMap { doc in
-     try? JobService.fromFirestore(id: doc.documentID, data: doc.data())
+     do {
+      return try JobService.fromFirestore(id: doc.documentID, data: doc.data())
+     } catch {
+      print("⚠️ Failed to decode service \(doc.documentID): \(error)")
+      return nil
+     }
     }
     
     print("✅ Loaded \(self.services.count) services from Firestore")
@@ -56,14 +61,19 @@ class ServicesStore {
  
  func addService(_ service: JobService, image: UIImage?) async throws {
   var updatedService = service
-  
+
   // Upload image first, fail if it fails
   if let image = image {
-   let imageURL = try await StorageService.shared.uploadServiceImage(image, serviceId: service.id)
-   // We don't need to manually update here - Firestore listener will pick up the change
-   print("✅ Image uploaded for service: \(service.id)")
+   let imageURL = try await StorageService.shared.uploadServiceImage(image, serviceId: service.id, providerId: service.providerId)
+   // ✅ Update the service object with the image URL before saving
+   updatedService.image = ServiceImage(
+    localId: updatedService.image.localId,
+    remoteURL: imageURL,
+    localImage: nil  // Clear local image after upload
+   )
+   print("✅ Image uploaded and service updated: \(service.id)")
   }
-  
+
   // Then save service to Firestore
   try await FirestoreService.shared.saveService(updatedService)
  }
@@ -84,8 +94,12 @@ class ServicesStore {
   do {
    for serviceId in serviceIds {
     let snapshot = try await db.collection("services").document(serviceId).getDocument()
-    if let service = try? JobService.fromFirestore(id: snapshot.documentID, data: snapshot.data() ?? [:]) {
-     fetchedServices.append(service)
+    do {
+     if let service = try JobService.fromFirestore(id: snapshot.documentID, data: snapshot.data() ?? [:]) {
+      fetchedServices.append(service)
+     }
+    } catch {
+     print("⚠️ Failed to decode service \(serviceId): \(error)")
     }
    }
    print("✅ Fetched \(fetchedServices.count) services by IDs")
@@ -120,7 +134,12 @@ class ServicesStore {
     .getDocuments()
 
    userServices = snapshot.documents.compactMap { doc in
-    try? JobService.fromFirestore(id: doc.documentID, data: doc.data())
+    do {
+     return try JobService.fromFirestore(id: doc.documentID, data: doc.data())
+    } catch {
+     print("⚠️ Failed to decode user service \(doc.documentID): \(error)")
+     return nil
+    }
    }
   } catch {
    print("❌ Error fetching user services: \(error)")
@@ -189,7 +208,12 @@ class ServicesStore {
     .getDocuments()
 
    let providerServices = providerSnapshot.documents.compactMap { doc in
-    try? JobService.fromFirestore(id: doc.documentID, data: doc.data())
+    do {
+     return try JobService.fromFirestore(id: doc.documentID, data: doc.data())
+    } catch {
+     print("⚠️ Failed to decode completed provider service \(doc.documentID): \(error)")
+     return nil
+    }
    }
 
    // Services where I was the hired applicant
@@ -200,7 +224,12 @@ class ServicesStore {
     .getDocuments()
 
    let applicantServices = applicantSnapshot.documents.compactMap { doc in
-    try? JobService.fromFirestore(id: doc.documentID, data: doc.data())
+    do {
+     return try JobService.fromFirestore(id: doc.documentID, data: doc.data())
+    } catch {
+     print("⚠️ Failed to decode completed applicant service \(doc.documentID): \(error)")
+     return nil
+    }
    }
 
    let combined = (providerServices + applicantServices).sorted {
@@ -226,7 +255,12 @@ class ServicesStore {
     .getDocuments()
 
    let archived = snapshot.documents.compactMap { doc in
-    try? JobService.fromFirestore(id: doc.documentID, data: doc.data())
+    do {
+     return try JobService.fromFirestore(id: doc.documentID, data: doc.data())
+    } catch {
+     print("⚠️ Failed to decode archived service \(doc.documentID): \(error)")
+     return nil
+    }
    }
 
    print("✅ Fetched \(archived.count) archived services for user: \(userId)")

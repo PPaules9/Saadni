@@ -9,6 +9,7 @@ import SwiftUI
 import FirebaseCore
 import FirebaseMessaging
 import UserNotifications
+import Kingfisher
 
 
 @main
@@ -20,6 +21,12 @@ struct SaadniApp: App {
  init() {
   // Configure Firebase FIRST before any Firebase-dependent code
   FirebaseApp.configure()
+
+  // Configure Kingfisher image cache
+  let cache = ImageCache.default
+  cache.memoryStorage.config.totalCostLimit = 100 * 1024 * 1024  // 100 MB memory
+  cache.diskStorage.config.sizeLimit = 500 * 1024 * 1024         // 500 MB disk
+  cache.diskStorage.config.expiration = .days(7)                 // 7 days expiration
 
   // Initialize container after Firebase is configured
   _container = State(initialValue: AppContainer())
@@ -38,8 +45,17 @@ struct SaadniApp: App {
     }
     .onChange(of: container.authManager.currentUserId) { oldValue, newValue in
      if let userId = newValue {
-      container.applicationsStore.setupListeners(userId: userId)
-      container.conversationsStore.setupListeners(userId: userId)
+      Task {
+       do {
+        // Setup applications listener (async)
+        try await container.applicationsStore.setupListeners(userId: userId)
+        // Setup conversations listener
+        container.conversationsStore.setupListeners(userId: userId)
+       } catch {
+        container.errorHandler.handle(error)
+        print("⚠️ Failed to setup listeners on user change: \(error)")
+       }
+      }
       NotificationService.shared.setCurrentUser(userId)
       // FCM token registration handled by AppDelegate.messaging(_:didReceiveRegistrationToken:)
      } else {
@@ -141,8 +157,11 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
    Task {
     do {
      try await NotificationService.shared.registerDeviceToken(fcmToken, for: userId)
+     print("✅ FCM token registered successfully")
     } catch {
      print("❌ Failed to register FCM token: \(error)")
+     // Note: This is in AppDelegate, not in a view, so we can't use errorHandler
+     // Error is logged for developer debugging
     }
    }
   }

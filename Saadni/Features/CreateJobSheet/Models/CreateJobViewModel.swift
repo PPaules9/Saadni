@@ -36,6 +36,14 @@ enum DurationOption: String, CaseIterable {
     case custom = "Custom"
 }
 
+enum UploadState: Equatable {
+    case idle
+    case compressing
+    case uploading(progress: Double)
+    case saving
+    case completed
+}
+
 @Observable
 class CreateJobViewModel {
     // MARK: - Tab 1: Job Details & Location
@@ -76,12 +84,13 @@ class CreateJobViewModel {
 
     // MARK: - UI State
     var currentTab: Int = 0
-    var showConfetti: Bool = false
+    var showSuccessModal: Bool = false
     var showImagePicker: Bool = false
     var showMapSheet: Bool = false
     var isPublishing: Bool = false
     var publishError: String?
     var showSummary: Bool = false
+    var uploadState: UploadState = .idle
     var mapPosition: MapCameraPosition = .region(
         MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 26.8206, longitude: 30.8025),
@@ -90,12 +99,14 @@ class CreateJobViewModel {
     )
 
     // MARK: - Validation
+    @ObservationIgnored
     var isTab1Valid: Bool {
         !jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !city.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
+    @ObservationIgnored
     var tab1ValidationError: String? {
         if jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return "Job name is required"
@@ -109,10 +120,12 @@ class CreateJobViewModel {
         return nil
     }
 
+    @ObservationIgnored
     var isTab2Valid: Bool {
         selectedImage != nil
     }
 
+    @ObservationIgnored
     var tab2ValidationError: String? {
         if selectedImage == nil {
             return "Please select an image for the job"
@@ -120,6 +133,7 @@ class CreateJobViewModel {
         return nil
     }
 
+    @ObservationIgnored
     var isTab3Valid: Bool {
         if toolsNeeded == .yes {
             return !toolsDescription.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -127,6 +141,7 @@ class CreateJobViewModel {
         return true
     }
 
+    @ObservationIgnored
     var tab3ValidationError: String? {
         if toolsNeeded == .yes && toolsDescription.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return "Please describe the tools needed"
@@ -134,11 +149,13 @@ class CreateJobViewModel {
         return nil
     }
 
+    @ObservationIgnored
     var isTab4Valid: Bool {
         guard let priceValue = Double(price), priceValue > 0 else { return false }
         return true
     }
 
+    @ObservationIgnored
     var tab4ValidationError: String? {
         if price.isEmpty {
             return "Price is required"
@@ -152,6 +169,7 @@ class CreateJobViewModel {
         return nil
     }
 
+    @ObservationIgnored
     var isTab5Valid: Bool {
         // If specific date is selected, date must be in the future
         if serviceTimeline == .specificDate {
@@ -165,6 +183,7 @@ class CreateJobViewModel {
         return true
     }
 
+    @ObservationIgnored
     var tab5ValidationError: String? {
         if serviceTimeline == .specificDate {
             if specificDate <= Date() {
@@ -182,6 +201,7 @@ class CreateJobViewModel {
         return nil
     }
 
+    @ObservationIgnored
     var isCurrentTabValid: Bool {
         switch currentTab {
         case 0: return isTab1Valid
@@ -194,6 +214,7 @@ class CreateJobViewModel {
         }
     }
 
+    @ObservationIgnored
     var isFormValid: Bool {
         let isTitleValid = !jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         let isPriceValid = Double(price) ?? 0 > 0
@@ -208,6 +229,7 @@ class CreateJobViewModel {
         return isTab1Valid && isTab2Valid && isTab3Valid && isTab4Valid && isTab5Valid
     }
 
+    @ObservationIgnored
     var currentTabValidationError: String? {
         switch currentTab {
         case 0: return tab1ValidationError

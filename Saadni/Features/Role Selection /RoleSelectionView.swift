@@ -81,7 +81,6 @@ struct RoleSelectionView: View {
   isUpdating = true
 
   Task {
-   do {
     // Create updated user with role selection
     var updatedUser = user
     updatedUser.isJobSeeker = isJobSeeker
@@ -98,13 +97,6 @@ struct RoleSelectionView: View {
     await MainActor.run {
      isUpdating = false
     }
-   } catch {
-    await MainActor.run {
-     errorMessage = error.localizedDescription
-     showError = true
-     isUpdating = false
-    }
-   }
   }
  }
 }

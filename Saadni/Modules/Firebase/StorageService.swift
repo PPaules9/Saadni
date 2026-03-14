@@ -16,15 +16,15 @@ class StorageService {
  private init() {}
  
  /// Upload service image to Firebase Storage
- func uploadServiceImage(_ image: UIImage, serviceId: String) async throws -> String {
-  // Compress image
-  guard let imageData = image.jpegData(compressionQuality: 0.7) else {
+ func uploadServiceImage(_ image: UIImage, serviceId: String, providerId: String) async throws -> String {
+  // No compression needed - image already compressed in CreateJobSheet
+  guard let imageData = image.jpegData(compressionQuality: 1.0) else {
    throw NSError(domain: "StorageService", code: 1,
                  userInfo: [NSLocalizedDescriptionKey: "Could not convert image to JPEG"])
   }
-  
-  // Create storage reference
-  let imagePath = "services/\(serviceId)/image.jpg"
+
+  // Create storage reference - Path must match Firebase rules: services/{providerId}/{allPaths=**}
+  let imagePath = "services/\(providerId)/\(serviceId)/image.jpg"
   let storageRef = storage.reference().child(imagePath)
   
   // Upload

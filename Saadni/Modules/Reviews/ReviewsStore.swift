@@ -29,10 +29,15 @@ class ReviewsStore {
 
     // MARK: - Setup & Teardown
 
-    func setupListeners(userId: String) {
+    /// Sets up real-time listeners for user reviews (received and submitted)
+    /// - Parameter userId: The user ID to listen for reviews
+    /// - Throws: Firestore errors during listener setup
+    /// - Note: This method sets up async snapshot listeners but returns immediately.
+    ///         The listeners continue running in the background and update state via SwiftUI @Observable
+    func setupListeners(userId: String) async throws {
         stopListening()
 
-        // Listen to reviews I received
+        // Setup received reviews listener (async but non-blocking)
         receivedReviewsListener = db.collection("reviews")
             .whereField("revieweeId", isEqualTo: userId)
             .order(by: "createdAt", descending: true)
@@ -46,14 +51,20 @@ class ReviewsStore {
 
                 guard let documents = snapshot?.documents else { return }
 
-                self.reviewsIReceived = documents.compactMap { doc in
-                    try? Review.fromFirestore(id: doc.documentID, data: doc.data())
+                DispatchQueue.main.async {
+                    self.reviewsIReceived = documents.compactMap { doc in
+                        do {
+                            return try Review.fromFirestore(id: doc.documentID, data: doc.data())
+                        } catch {
+                            print("⚠️ Failed to decode received review \(doc.documentID): \(error)")
+                            return nil
+                        }
+                    }
+                    print("✅ Loaded \(self.reviewsIReceived.count) reviews received")
                 }
-
-                print("✅ Loaded \(self.reviewsIReceived.count) reviews received")
             }
 
-        // Listen to reviews I submitted
+        // Setup submitted reviews listener (async but non-blocking)
         submittedReviewsListener = db.collection("reviews")
             .whereField("reviewerId", isEqualTo: userId)
             .order(by: "createdAt", descending: true)
@@ -67,17 +78,26 @@ class ReviewsStore {
 
                 guard let documents = snapshot?.documents else { return }
 
-                self.reviewsISubmitted = documents.compactMap { doc in
-                    try? Review.fromFirestore(id: doc.documentID, data: doc.data())
+                DispatchQueue.main.async {
+                    self.reviewsISubmitted = documents.compactMap { doc in
+                        do {
+                            return try Review.fromFirestore(id: doc.documentID, data: doc.data())
+                        } catch {
+                            print("⚠️ Failed to decode submitted review \(doc.documentID): \(error)")
+                            return nil
+                        }
+                    }
+                    print("✅ Loaded \(self.reviewsISubmitted.count) reviews submitted")
                 }
-
-                print("✅ Loaded \(self.reviewsISubmitted.count) reviews submitted")
             }
+
+        print("🔄 [ReviewsStore] Listeners setup for user: \(userId)")
     }
 
     func stopListening() {
         receivedReviewsListener?.remove()
         submittedReviewsListener?.remove()
+        print("🧹 [ReviewsStore] Listeners stopped")
     }
 
     // MARK: - Submit Review
@@ -134,7 +154,12 @@ class ReviewsStore {
             .getDocuments()
 
         let reviews = snapshot.documents.compactMap { doc -> Review? in
-            try? Review.fromFirestore(id: doc.documentID, data: doc.data())
+            do {
+                return try Review.fromFirestore(id: doc.documentID, data: doc.data())
+            } catch {
+                print("⚠️ Failed to decode review for service \(doc.documentID): \(error)")
+                return nil
+            }
         }
 
         print("✅ Fetched \(reviews.count) reviews for service: \(serviceId)")

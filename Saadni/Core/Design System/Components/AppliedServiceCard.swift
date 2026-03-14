@@ -57,7 +57,7 @@ struct AppliedServiceCard: View {
                         .font(.caption)
                         .foregroundStyle(.gray)
 
-                    Text(formatDate(application.appliedAt ?? Date()))
+                    Text(formatDate(application.appliedAt))
                         .font(.caption)
                         .foregroundStyle(.white)
                 }

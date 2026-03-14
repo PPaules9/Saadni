@@ -26,7 +26,8 @@ struct ProfileView: View {
                         if let user = authManager.currentUser {
                             ProfileHeaderView(
                                 displayName: user.displayName ?? "User",
-                                email: user.email
+                                email: user.email,
+                                photoURL: user.photoURL
                             )
                         }
 

@@ -46,7 +46,7 @@ struct NeedJobView: View {
  private func tabContent(for tab: JobSeekerTab, coordinator: JobSeekerCoordinator) -> some View {
   let binding = coordinator.pathBinding(for: tab)
   NavigationStack(path: binding) {
-   rootView(for: tab)
+   rootView(for: tab, coordinator: coordinator)
     .navigationDestination(for: JobSeekerDestination.self) { destination in
      destinationView(for: destination)
     }
@@ -54,7 +54,7 @@ struct NeedJobView: View {
  }
 
  @ViewBuilder
- private func rootView(for tab: JobSeekerTab) -> some View {
+ private func rootView(for tab: JobSeekerTab, coordinator: JobSeekerCoordinator) -> some View {
   switch tab {
   case .dashboard:
    HomeView()
@@ -62,6 +62,7 @@ struct NeedJobView: View {
    ChatView()
   case .addJob:
    CreateJobSheet(selectedCategory: "homeCleaning", initialJobName: nil)
+    .environment(coordinator)
   case .myJobs:
    myJobs()
   case .profile:

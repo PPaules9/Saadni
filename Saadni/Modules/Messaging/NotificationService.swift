@@ -77,7 +77,7 @@ class NotificationService {
         body: String,
         data: [String: String] = [:]
     ) async throws {
-        guard let deviceToken = try await getDeviceToken(for: userId) else {
+        guard (try await getDeviceToken(for: userId)) != nil else {
             print("⚠️ No device token found for user \(userId)")
             return
         }
@@ -85,12 +85,6 @@ class NotificationService {
         // In production, use Cloud Functions to send notifications
         // Client-side FCM sending is not recommended
         // This is just a reference for the data structure
-
-        let notificationData = [
-            "title": title,
-            "body": body,
-            "sentAt": ISO8601DateFormatter().string(from: Date())
-        ]
 
         print("📤 Notification prepared for \(userId): \(title)")
     }

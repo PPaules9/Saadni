@@ -27,7 +27,12 @@ class WalletStore {
 
     // MARK: - Setup & Teardown
 
-    func setupListeners(userId: String) {
+    /// Sets up real-time listener for user transactions (earnings, withdrawals, top-ups)
+    /// - Parameter userId: The user ID to listen for transactions
+    /// - Throws: Firestore errors during listener setup
+    /// - Note: This method sets up async snapshot listener but returns immediately.
+    ///         The listener continues running in the background and updates state via SwiftUI @Observable
+    func setupListeners(userId: String) async throws {
         stopListening()
 
         transactionsListener = db.collection("transactions")
@@ -43,19 +48,29 @@ class WalletStore {
 
                 guard let documents = snapshot?.documents else { return }
 
-                self.transactions = documents.compactMap { doc in
-                    try? Transaction.fromFirestore(id: doc.documentID, data: doc.data())
+                DispatchQueue.main.async {
+                    self.transactions = documents.compactMap { doc in
+                        do {
+                            return try Transaction.fromFirestore(id: doc.documentID, data: doc.data())
+                        } catch {
+                            print("⚠️ Failed to decode transaction \(doc.documentID): \(error)")
+                            return nil
+                        }
+                    }
+
+                    // Calculate balance from all transactions
+                    self.walletBalance = self.transactions.reduce(0.0) { $0 + $1.amount }
+
+                    print("✅ Loaded \(self.transactions.count) transactions, balance: EGP \(String(format: "%.2f", self.walletBalance))")
                 }
-
-                // Calculate balance from all transactions
-                self.walletBalance = self.transactions.reduce(0.0) { $0 + $1.amount }
-
-                print("✅ Loaded \(self.transactions.count) transactions, balance: EGP \(String(format: "%.2f", self.walletBalance))")
             }
+
+        print("🔄 [WalletStore] Listener setup for user: \(userId)")
     }
 
     func stopListening() {
         transactionsListener?.remove()
+        print("🧹 [WalletStore] Listener stopped")
     }
 
     // MARK: - Add Transaction

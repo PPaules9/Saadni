@@ -112,7 +112,7 @@ struct BrowseJobs: View {
      VStack(spacing: 14) {
       if filteredServices.isEmpty {
        VStack(spacing: 16) {
-        Image(systemName: "briefcase.slash")
+        Image(systemName: "briefcase")
          .font(.system(size: 48))
          .foregroundStyle(.gray)
         Text("No Jobs Found")

@@ -54,6 +54,30 @@ struct MainView: View {
   }
   .environment(container.appStateManager)
   .environment(container.userCache)
+  .environment(container.authManager)
+  .environment(container.errorHandler)
+  .alert("Error", isPresented: $container.errorHandler.isPresented) {
+   Button("Dismiss") {
+    container.errorHandler.dismiss()
+   }
+   if container.errorHandler.retryAction != nil {
+    Button("Retry") {
+     container.errorHandler.retry()
+    }
+   }
+  } message: {
+   if let error = container.errorHandler.currentError {
+    VStack(alignment: .leading, spacing: 8) {
+     Text(error.errorDescription ?? "Unknown error")
+      .font(.body)
+     if let suggestion = error.recoverySuggestion {
+      Text(suggestion)
+       .font(.caption)
+       .foregroundStyle(.secondary)
+     }
+    }
+   }
+  }
   .task {
    // Initialize app coordinator on first load
    if appCoordinator == nil, let user = container.authManager.currentUser {
@@ -100,9 +124,8 @@ struct MainView: View {
     .environment(container.servicesStore)
     .environment(container.messagesStore)
     .environment(container.conversationsStore)
-    .onAppear {
-     reviewsStore.setupListeners(userId: user.id)
-     walletStore.setupListeners(userId: user.id)
+    .task {
+     await setupDataListeners(userId: user.id)
     }
   } else if user.isServiceProvider {
    NeedWork()
@@ -113,10 +136,68 @@ struct MainView: View {
     .environment(container.servicesStore)
     .environment(container.messagesStore)
     .environment(container.conversationsStore)
-    .onAppear {
-     reviewsStore.setupListeners(userId: user.id)
-     walletStore.setupListeners(userId: user.id)
+    .task {
+     await setupDataListeners(userId: user.id)
     }
+  }
+ }
+
+ /// Sets up all real-time data listeners concurrently using TaskGroup
+ /// - Parameter userId: The user ID to set up listeners for
+ /// - Note: Uses modern Swift Concurrency with TaskGroup for efficient concurrent setup
+ ///         All listeners start at approximately the same time, reducing perceived load time
+ private func setupDataListeners(userId: String) async {
+  let startTime = Date()
+  print("🚀 [MainView] Starting concurrent listener setup for user: \(userId)")
+
+  await withTaskGroup(of: (String, Error?).self) { group in
+   // Task 1: Reviews listener
+   group.addTask {
+    do {
+     try await self.reviewsStore.setupListeners(userId: userId)
+     return ("ReviewsStore", nil)
+    } catch {
+     return ("ReviewsStore", error)
+    }
+   }
+
+   // Task 2: Wallet listener
+   group.addTask {
+    do {
+     try await self.walletStore.setupListeners(userId: userId)
+     return ("WalletStore", nil)
+    } catch {
+     return ("WalletStore", error)
+    }
+   }
+
+   // Task 3: Applications listeners
+   group.addTask {
+    do {
+     try await self.container.applicationsStore.setupListeners(userId: userId)
+     return ("ApplicationsStore", nil)
+    } catch {
+     return ("ApplicationsStore", error)
+    }
+   }
+
+   // Collect all results
+   var allSucceeded = true
+   for await (storeName, error) in group {
+    if let error = error {
+     print("❌ \(storeName) listener setup failed: \(error)")
+     allSucceeded = false
+    } else {
+     print("✅ \(storeName) listener setup succeeded")
+    }
+   }
+
+   let duration = Date().timeIntervalSince(startTime)
+   if allSucceeded {
+    print("✨ All listeners ready in \(String(format: "%.2f", duration))s")
+   } else {
+    print("⚠️ Some listeners failed to setup (check errors above)")
+   }
   }
  }
 }

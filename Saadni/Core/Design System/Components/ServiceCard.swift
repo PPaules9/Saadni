@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct ServiceCard: View {
  let service: JobService
@@ -30,6 +31,26 @@ struct ServiceCard: View {
       Image(uiImage: uiImage)
        .resizable()
        .aspectRatio(contentMode: .fill)
+     } else if let remoteURL = service.image.remoteURL, let url = URL(string: remoteURL) {
+      KFImage(url)
+       .placeholder {
+        ZStack {
+         Color(.systemGray6)
+         ProgressView()
+        }
+       }
+       .resizable()
+       .aspectRatio(contentMode: .fill)
+       .background(
+        ZStack {
+         Color(.systemGray6)
+         Image(systemName: "briefcase.fill")
+          .resizable()
+          .aspectRatio(contentMode: .fit)
+          .padding(40)
+          .foregroundStyle(.accent)
+        }
+       )
      } else {
       ZStack {
        Color(.systemGray6)

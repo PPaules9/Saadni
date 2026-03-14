@@ -100,6 +100,9 @@
 		2244224F2F643FF100241E1C /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244224E2F643FF100241E1C /* AppConstants.swift */; };
 		2264A02D2F4C6C110004B2B4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2264A02C2F4C6C110004B2B4 /* README.md */; };
 		226B50092F646C1B00C09676 /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50082F646C1B00C09676 /* AppContainer.swift */; };
+		226B500C2F658D0B00C09676 /* CreateJobSummaryModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B500A2F658D0B00C09676 /* CreateJobSummaryModal.swift */; };
+		226B500D2F658D0B00C09676 /* JobPublishedSuccessModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B500B2F658D0B00C09676 /* JobPublishedSuccessModal.swift */; };
+		226B50102F65A5F700C09676 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 226B500F2F65A5F700C09676 /* Kingfisher */; };
 		22B999FF2F5F1A8A00B3E070 /* StateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B999FE2F5F1A8A00B3E070 /* StateKey.swift */; };
 		22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */; };
 		22FD35F52F55F5CE00AF3127 /* LaunchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD35F32F55F5CE00AF3127 /* LaunchScreen.swift */; };
@@ -212,6 +215,8 @@
 		2244224E2F643FF100241E1C /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
 		2264A02C2F4C6C110004B2B4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		226B50082F646C1B00C09676 /* AppContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainer.swift; sourceTree = "<group>"; };
+		226B500A2F658D0B00C09676 /* CreateJobSummaryModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobSummaryModal.swift; sourceTree = "<group>"; };
+		226B500B2F658D0B00C09676 /* JobPublishedSuccessModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobPublishedSuccessModal.swift; sourceTree = "<group>"; };
 		22B999FE2F5F1A8A00B3E070 /* StateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateKey.swift; sourceTree = "<group>"; };
 		22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		22FD35F32F55F5CE00AF3127 /* LaunchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreen.swift; sourceTree = "<group>"; };
@@ -247,6 +252,7 @@
 				2236A1A02F50ADED00A7A19F /* FirebaseFirestore in Frameworks */,
 				2236A1A22F50ADED00A7A19F /* FirebaseMessaging in Frameworks */,
 				2236A1A42F50ADED00A7A19F /* FirebaseRemoteConfig in Frameworks */,
+				226B50102F65A5F700C09676 /* Kingfisher in Frameworks */,
 				2236A1A62F50ADED00A7A19F /* FirebaseStorage in Frameworks */,
 				2236A19C2F50ADED00A7A19F /* FirebaseCore in Frameworks */,
 				2236A19A2F50ADED00A7A19F /* FirebaseAuth in Frameworks */,
@@ -354,15 +360,15 @@
 		2236A1642F50949000A7A19F /* Features */ = {
 			isa = PBXGroup;
 			children = (
-				224422372F643AB700241E1C /* Profile */,
-				224421F52F633AEA00241E1C /* Reviews */,
 				22FD35F42F55F5CE00AF3127 /* LaunchScreen */,
 				2236A1D22F53281E00A7A19F /* Authentication */,
 				22FD36D52F5715E000AF3127 /* Role Selection  */,
 				22FD36E62F573A7600AF3127 /* CreateJobSheet */,
 				2236A1632F50949000A7A19F /* ServiceDetail */,
 				224421C52F6304B200241E1C /* WalletView */,
+				224421F52F633AEA00241E1C /* Reviews */,
 				224421FE2F633B0100241E1C /* ServiceManagement */,
+				224422372F643AB700241E1C /* Profile */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -373,7 +379,6 @@
 				224422152F63500B00241E1C /* ChatViews */,
 				22FD36D62F57161100AF3127 /* NeedWorkViews */,
 				22FD36DE2F5716A800AF3127 /* NeedJobViews */,
-				2236A1662F50949000A7A19F /* ChatView.swift */,
 				2236A1692F50949000A7A19F /* ProfileView.swift */,
 			);
 			path = MainViews;
@@ -489,6 +494,7 @@
 		224422152F63500B00241E1C /* ChatViews */ = {
 			isa = PBXGroup;
 			children = (
+				2236A1662F50949000A7A19F /* ChatView.swift */,
 				224422132F63500B00241E1C /* ChatDetailView.swift */,
 				224422142F63500B00241E1C /* ChatListView.swift */,
 			);
@@ -635,6 +641,8 @@
 		22FD36E62F573A7600AF3127 /* CreateJobSheet */ = {
 			isa = PBXGroup;
 			children = (
+				226B500A2F658D0B00C09676 /* CreateJobSummaryModal.swift */,
+				226B500B2F658D0B00C09676 /* JobPublishedSuccessModal.swift */,
 				22FD36EF2F57418600AF3127 /* CreateJobTab1.swift */,
 				22FD36F02F57418600AF3127 /* CreateJobTab2.swift */,
 				22FD36F12F57418600AF3127 /* CreateJobTab3.swift */,
@@ -684,6 +692,7 @@
 				2236A1A12F50ADED00A7A19F /* FirebaseMessaging */,
 				2236A1A32F50ADED00A7A19F /* FirebaseRemoteConfig */,
 				2236A1A52F50ADED00A7A19F /* FirebaseStorage */,
+				226B500F2F65A5F700C09676 /* Kingfisher */,
 			);
 			productName = Saadni;
 			productReference = 224421FE2F63497500241E1C /* Saadni.app */;
@@ -715,6 +724,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				2236A1982F50ADED00A7A19F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				226B500E2F65A5F700C09676 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 228B2C752F36048800A4441B;
@@ -803,6 +813,8 @@
 				22FD36F62F57418600AF3127 /* CreateJobTab4.swift in Sources */,
 				224422112F634FE100241E1C /* MessageBubble.swift in Sources */,
 				224422382F643AB700241E1C /* ProfileViewModel.swift in Sources */,
+				226B500C2F658D0B00C09676 /* CreateJobSummaryModal.swift in Sources */,
+				226B500D2F658D0B00C09676 /* JobPublishedSuccessModal.swift in Sources */,
 				224422392F643AB700241E1C /* AccountMenuSection.swift in Sources */,
 				2244223A2F643AB700241E1C /* WorkManagementSection.swift in Sources */,
 				2244223B2F643AB700241E1C /* ProfileHeaderView.swift in Sources */,
@@ -1090,6 +1102,14 @@
 				minimumVersion = 12.10.0;
 			};
 		};
+		226B500E2F65A5F700C09676 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.8.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1127,6 +1147,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2236A1982F50ADED00A7A19F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		226B500F2F65A5F700C09676 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 226B500E2F65A5F700C09676 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

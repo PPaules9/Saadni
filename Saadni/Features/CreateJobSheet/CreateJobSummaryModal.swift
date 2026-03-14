@@ -79,10 +79,53 @@ struct CreateJobSummaryModal: View {
                 .padding()
             }
 
+            // Progress UI during upload
+            if case .compressing = viewModel.uploadState {
+                VStack(spacing: 8) {
+                    ProgressView()
+                        .tint(.accent)
+                    Text("Compressing image...")
+                        .font(.caption)
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.accent.opacity(0.1))
+                .cornerRadius(8)
+                .padding()
+            } else if case .uploading(let progress) = viewModel.uploadState {
+                VStack(spacing: 8) {
+                    ProgressView(value: progress)
+                        .tint(.accent)
+                    Text("Uploading image... \(Int(progress * 100))%")
+                        .font(.caption)
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.accent.opacity(0.1))
+                .cornerRadius(8)
+                .padding()
+            } else if case .saving = viewModel.uploadState {
+                VStack(spacing: 8) {
+                    ProgressView()
+                        .tint(.accent)
+                    Text("Saving job details...")
+                        .font(.caption)
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.accent.opacity(0.1))
+                .cornerRadius(8)
+                .padding()
+            }
+
             // Action Buttons
             HStack(spacing: 12) {
                 BrandButton(
                     "Cancel",
+                    isDisabled: viewModel.isPublishing,
                     hasIcon: false,
                     icon: "",
                     secondary: true
@@ -92,10 +135,10 @@ struct CreateJobSummaryModal: View {
 
                 BrandButton(
                     viewModel.isPublishing ? "Publishing..." : "Publish",
+                    isDisabled: viewModel.isPublishing,
                     hasIcon: true,
                     icon: "paperplane.fill",
-                    secondary: false,
-                    isDisabled: viewModel.isPublishing
+                    secondary: false
                 ) {
                     onPublish()
                 }

@@ -33,7 +33,10 @@ class ApplicationsStore {
 
  // MARK: - Setup Listeners
 
- func setupListeners(userId: String) {
+ /// Sets up real-time listeners for user applications (submitted and received)
+ /// - Parameter userId: The user ID to listen for applications
+ /// - Throws: Firestore errors during listener setup
+ func setupListeners(userId: String) async throws {
   stopListening()
 
   // Listen to applications I submitted
@@ -50,60 +53,72 @@ class ApplicationsStore {
 
     guard let documents = snapshot?.documents else { return }
 
-    let decoder = Firestore.Decoder()
-    self.myApplications = documents.compactMap { doc in
-     try? decoder.decode(JobApplication.self, from: doc.data())
-    }
+    DispatchQueue.main.async {
+     let decoder = Firestore.Decoder()
+     self.myApplications = documents.compactMap { doc in
+      do {
+       return try decoder.decode(JobApplication.self, from: doc.data())
+      } catch {
+       print("⚠️ Failed to decode my application \(doc.documentID): \(error)")
+       return nil
+      }
+     }
 
-    print("✅ Loaded \(self.myApplications.count) my applications")
+     print("✅ Loaded \(self.myApplications.count) my applications")
+    }
    }
 
   // Listen to applications received on my services
-  Task {
-   await self.setupReceivedApplicationsListener(userId: userId)
-  }
+  try await setupReceivedApplicationsListener(userId: userId)
+
+  print("🔄 [ApplicationsStore] Listeners setup for user: \(userId)")
  }
 
- private func setupReceivedApplicationsListener(userId: String) async {
+ private func setupReceivedApplicationsListener(userId: String) async throws {
   // Get all service IDs created by this user
-  do {
-   let servicesSnapshot = try await db.collection("services")
-    .whereField("providerId", isEqualTo: userId)
-    .getDocuments()
+  let servicesSnapshot = try await db.collection("services")
+   .whereField("providerId", isEqualTo: userId)
+   .getDocuments()
 
-   let serviceIds = servicesSnapshot.documents.map { $0.documentID }
+  let serviceIds = servicesSnapshot.documents.map { $0.documentID }
 
-   if serviceIds.isEmpty {
-    print("📝 User has no services, no applications to receive")
-    return
-   }
+  if serviceIds.isEmpty {
+   print("📝 User has no services, no applications to receive")
+   return
+  }
 
-   // Handle >10 services by chunking into batches of 10
-   // Firestore "in" queries support max 10 items per query
-   let chunks = stride(from: 0, to: serviceIds.count, by: 10).map { startIndex in
-    Array(serviceIds[startIndex..<min(startIndex + 10, serviceIds.count)])
-   }
+  // Handle >10 services by chunking into batches of 10
+  // Firestore "in" queries support max 10 items per query
+  let chunks = stride(from: 0, to: serviceIds.count, by: 10).map { startIndex in
+   Array(serviceIds[startIndex..<min(startIndex + 10, serviceIds.count)])
+  }
 
-   print("ℹ️ Setting up \(chunks.count) listener(s) for \(serviceIds.count) services")
+  print("ℹ️ Setting up \(chunks.count) listener(s) for \(serviceIds.count) services")
 
-   // Set up a listener for each chunk
-   for (index, serviceIdChunk) in chunks.enumerated() {
-    let listener = db.collection("applications")
-     .whereField("serviceId", in: serviceIdChunk)
-     .order(by: "appliedAt", descending: true)
-     .addSnapshotListener { [weak self] snapshot, error in
-      guard let self = self else { return }
+  // Set up a listener for each chunk
+  for (index, serviceIdChunk) in chunks.enumerated() {
+   let listener = db.collection("applications")
+    .whereField("serviceId", in: serviceIdChunk)
+    .order(by: "appliedAt", descending: true)
+    .addSnapshotListener { [weak self] snapshot, error in
+     guard let self = self else { return }
 
-      if let error = error {
-       print("❌ Error fetching received applications (chunk \(index)): \(error)")
-       return
-      }
+     if let error = error {
+      print("❌ Error fetching received applications (chunk \(index)): \(error)")
+      return
+     }
 
-      guard let documents = snapshot?.documents else { return }
+     guard let documents = snapshot?.documents else { return }
 
+     DispatchQueue.main.async {
       let decoder = Firestore.Decoder()
       let applications = documents.compactMap { doc in
-       try? decoder.decode(JobApplication.self, from: doc.data())
+       do {
+        return try decoder.decode(JobApplication.self, from: doc.data())
+       } catch {
+        print("⚠️ Failed to decode received application \(doc.documentID): \(error)")
+        return nil
+       }
       }
 
       // Merge with existing applications, avoiding duplicates
@@ -115,14 +130,12 @@ class ApplicationsStore {
 
       print("✅ Loaded applications for service chunk \(index + 1)/\(chunks.count)")
      }
+    }
 
-    receivedApplicationsListeners.append(listener)
-   }
-
-   print("✅ Set up \(receivedApplicationsListeners.count) listener(s) for received applications")
-  } catch {
-   print("❌ Error setting up received applications listener: \(error)")
+   receivedApplicationsListeners.append(listener)
   }
+
+  print("✅ Set up \(receivedApplicationsListeners.count) listener(s) for received applications")
  }
 
  // MARK: - Stop Listening
@@ -131,6 +144,7 @@ class ApplicationsStore {
   myApplicationsListener?.remove()
   receivedApplicationsListeners.forEach { $0.remove() }
   receivedApplicationsListeners.removeAll()
+  print("🧹 [ApplicationsStore] Listeners stopped")
  }
 
  // MARK: - Validation
