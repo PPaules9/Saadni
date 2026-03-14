@@ -10,8 +10,9 @@ import Foundation
 
 @Observable
 class AppStateManager {
+    /// Track if user has ever seen onboarding (first-time UX only)
+    /// Role selection state comes from User object, not flags
     private(set) var hasSeenOnboarding: Bool = false
-    private(set) var hasSelectedRole: Bool = false
 
     init() {
         loadState()
@@ -19,44 +20,26 @@ class AppStateManager {
 
     private func loadState() {
         hasSeenOnboarding = UserDefaults.standard.bool(forKey: StateKeys.hasSeenOnboarding.key)
-        hasSelectedRole = UserDefaults.standard.bool(forKey: StateKeys.hasSelectedRole.key)
-        print("✅ AppState loaded - OnboardingSeen: \(hasSeenOnboarding), RoleSelected: \(hasSelectedRole)")
+        print("📂 [AppStateManager] LOADED from UserDefaults:")
+        print("   • hasSeenOnboarding: \(hasSeenOnboarding)")
     }
 
+    /// Mark onboarding as complete (shows once per app install)
     func completeOnboarding() async throws {
         hasSeenOnboarding = true
         try await saveState()
         print("✅ Onboarding completed")
     }
 
-    func resetOnboarding() async throws {
+    /// Reset onboarding flag when new user logs in
+    func resetForNextUser() async throws {
         hasSeenOnboarding = false
         try await saveState()
-    }
-
-    func completeRoleSelection() async throws {
-        hasSelectedRole = true
-        try await saveState()
-        print("✅ Role selection completed")
-    }
-
-    func resetRoleSelection() async throws {
-        hasSelectedRole = false
-        try await saveState()
-    }
-
-    /// Reset all state when user signs out
-    /// This ensures new login flow shows Onboarding → Auth → RoleSelection
-    func resetAllState() async throws {
-        hasSeenOnboarding = false
-        hasSelectedRole = false
-        try await saveState()
-        print("🔄 AppState reset on sign out")
+        print("🔄 AppState reset for next user")
     }
 
     private func saveState() async throws {
         UserDefaults.standard.set(hasSeenOnboarding, forKey: StateKeys.hasSeenOnboarding.key)
-        UserDefaults.standard.set(hasSelectedRole, forKey: StateKeys.hasSelectedRole.key)
         print("💾 AppState persisted")
     }
 }

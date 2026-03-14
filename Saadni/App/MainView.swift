@@ -18,17 +18,24 @@ struct MainView: View {
    switch container.authManager.authState {
    case .authenticating:
     ProgressView().tint(.accent)
+     .onAppear {
+      print("🔄 [MainView] authState = .authenticating")
+     }
+
    case .unauthenticated:
     if container.appStateManager.hasSeenOnboarding {
      AuthenticationView()
     } else {
      OnboardingView()
     }
+
    case .authenticated:
-    // Read live user from currentUser (delegates to userCache)
     if let user = container.authManager.currentUser {
-     if container.appStateManager.hasSelectedRole {
-      // Only show content if coordinator is ready
+     // Source of truth: User object (not flags)
+     // Check if user has selected a role
+     let hasSelectedRole = user.isJobSeeker || user.isServiceProvider
+
+     if hasSelectedRole {
       if let appCoordinator = appCoordinator {
        authenticatedContent(for: user)
         .environment(appCoordinator)
@@ -36,10 +43,11 @@ struct MainView: View {
        ProgressView().tint(.accent)
       }
      } else {
+      // User is authenticated but hasn't selected a role yet
       RoleSelectionView(user: user)
      }
     } else {
-     // Fallback: user authenticated but data not loaded yet
+     // Authenticated but user data not loaded yet
      ProgressView().tint(.accent)
     }
    }

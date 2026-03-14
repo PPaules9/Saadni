@@ -177,9 +177,10 @@ class AuthenticationManager {
   try Auth.auth().signOut()
   authState = .unauthenticated
 
-  // Reset app state so next login shows full flow: Onboarding → Auth → RoleSelection
-  try await appStateManager.resetAllState()
-  print("✅ User signed out and AppState reset")
+  // Reset onboarding flag so next user sees fresh flow
+  // Role selection state will come from the new User object
+  try await appStateManager.resetForNextUser()
+  print("✅ User signed out and onboarding reset")
  }
  
  // MARK: - Firestore Integration

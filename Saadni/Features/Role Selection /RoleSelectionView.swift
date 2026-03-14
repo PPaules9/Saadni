@@ -9,7 +9,6 @@ import SwiftUI
 
 struct RoleSelectionView: View {
  let user: User
- @Environment(AppStateManager.self) var appStateManager
  @Environment(UserCache.self) var userCache
  @State private var isUpdating = false
  @State private var showError = false
@@ -88,11 +87,12 @@ struct RoleSelectionView: View {
     updatedUser.isJobSeeker = isJobSeeker
     updatedUser.isServiceProvider = !isJobSeeker
 
-    // Use UserCache for optimistic update + Firestore sync
+    // Save user with selected role
+    // Source of truth is now the User object, not AppState flags
     await userCache.updateUser(updatedUser)
 
-    // Complete role selection (persists UI state)
-    try await appStateManager.completeRoleSelection()
+    print("✅ Role selected: \(isJobSeeker ? "Job Seeker" : "Service Provider")")
+    print("   MainView will automatically show app content because user.isJobSeeker is now set")
 
     // Update UI state on main thread
     await MainActor.run {
@@ -108,4 +108,3 @@ struct RoleSelectionView: View {
   }
  }
 }
-

@@ -42,9 +42,10 @@ final class AuthCoordinator {
         currentStep = .roleSelection
     }
 
-    func completeRoleSelection() async throws {
-        try await appStateManager.completeRoleSelection()
-        // Auth flow complete - MainView will switch to authenticated content
+    func completeRoleSelection() {
+        // Role selection is handled by User object now (isJobSeeker/isServiceProvider)
+        // MainView will automatically show app content when user.isJobSeeker is set
+        print("✅ Role selection complete - MainView will update automatically")
     }
 
     func skipToAuthentication() {

@@ -20,6 +20,7 @@ struct StateKey<T> {
 
 // Define keys as constants (prevents typos)
 enum StateKeys {
+    // Only track onboarding (first-time UX)
+    // Role selection comes from User object (isJobSeeker/isServiceProvider)
     static let hasSeenOnboarding = StateKey<Bool>("hasSeenOnboarding", default: false)
-    static let hasSelectedRole = StateKey<Bool>("hasSelectedRole", default: false)
 }
