@@ -14,7 +14,6 @@ class ServicesStore {
  // MARK: - Error States
  var isLoadingServices: Bool = false
  var servicesError: String? = nil
- var retryServicesAction: (() async -> Void)? = nil
 
  private var servicesListener: ListenerRegistration?
 
@@ -48,9 +47,6 @@ class ServicesStore {
     if let error = error {
      self.servicesError = "Failed to load services. Check your connection."
      self.isLoadingServices = false
-     self.retryServicesAction = { [weak self] in
-      await self?.setupListeners()
-     }
      print("❌ Error fetching services: \(error)")
      return
     }
@@ -77,10 +73,13 @@ class ServicesStore {
  func addService(_ service: JobService, image: UIImage?) async throws {
   var updatedService = service
 
+  // Validate before publishing
+  try ServiceValidator.canPublish(updatedService)
+
   // Upload image first, fail if it fails
   if let image = image {
    let imageURL = try await StorageService.shared.uploadServiceImage(image, serviceId: service.id, providerId: service.providerId)
-   // ✅ Update the service object with the image URL before saving
+   // Update the service object with the image URL before saving
    updatedService.image = ServiceImage(
     localId: updatedService.image.localId,
     remoteURL: imageURL.absoluteString,
@@ -121,9 +120,6 @@ class ServicesStore {
    return fetchedServices
   } catch {
    servicesError = "Failed to load services. Check your connection."
-   retryServicesAction = { [weak self] in
-    _ = await self?.fetchServicesByIds(serviceIds)
-   }
    print("❌ Error fetching services by IDs: \(error)")
    return []
   }
@@ -164,9 +160,6 @@ class ServicesStore {
    servicesError = nil
   } catch {
    servicesError = "Failed to load your services. Check your connection."
-   retryServicesAction = { [weak self] in
-    _ = await self?.fetchUserServices(userId: userId)
-   }
    print("❌ Error fetching user services: \(error)")
   }
 
@@ -184,15 +177,24 @@ class ServicesStore {
  }
 
  func markServiceAsCompleted(serviceId: String) async throws {
+  // Validate service state before completion
+  guard let service = services.first(where: { $0.id == serviceId }) else {
+   throw NSError(
+    domain: "ServicesStore",
+    code: 1,
+    userInfo: [NSLocalizedDescriptionKey: "Service not found: \(serviceId)"]
+   )
+  }
+
+  try ServiceValidator.canMarkAsCompleted(service)
+
   try await db.collection("services").document(serviceId).updateData([
    "status": ServiceStatus.completed.rawValue,
    "completedAt": Timestamp(date: Date())
   ])
 
   // Update provider statistics
-  if let service = services.first(where: { $0.id == serviceId }) {
-   try await incrementProviderJobsCompleted(providerId: service.providerId)
-  }
+  try await incrementProviderJobsCompleted(providerId: service.providerId)
 
   print("✅ Service marked as completed: \(serviceId)")
  }
@@ -266,9 +268,6 @@ class ServicesStore {
    return combined
   } catch {
    servicesError = "Failed to load completed services. Check your connection."
-   retryServicesAction = { [weak self] in
-    _ = await self?.fetchCompletedServices(userId: userId)
-   }
    print("❌ Error fetching completed services: \(error)")
    return []
   }
@@ -298,11 +297,14 @@ class ServicesStore {
    return archived
   } catch {
    servicesError = "Failed to load archived services. Check your connection."
-   retryServicesAction = { [weak self] in
-    _ = await self?.fetchArchivedServices(userId: userId)
-   }
    print("❌ Error fetching archived services: \(error)")
    return []
   }
+ }
+
+ // MARK: - Retry Logic
+
+ func retryLoadingServices() {
+  setupListeners()
  }
 }

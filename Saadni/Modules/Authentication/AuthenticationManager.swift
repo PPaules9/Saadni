@@ -191,7 +191,14 @@ class AuthenticationManager: AuthProvider {
    try await FirestoreService.shared.saveUser(user)
    print("✅ User \(user.id) saved to Firestore")
   } catch {
-   print("❌ Failed to save user to Firestore: \(error.localizedDescription)")
+   // Log error for debugging but don't fail auth - user is cached
+   let appError = AppError.from(error)
+   print("⚠️ Failed to save user to Firestore (will retry later): \(appError.errorDescription ?? "")")
+   // In background, attempt retry after delay
+   Task {
+    try? await Task.sleep(for: .seconds(5))
+    try? await FirestoreService.shared.saveUser(user)
+   }
   }
  }
 }

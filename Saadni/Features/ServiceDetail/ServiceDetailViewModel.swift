@@ -32,27 +32,31 @@ final class ServiceDetailViewModel {
     func submitApplication(
         for serviceId: String,
         by applicantId: String,
+        applicantName: String,
+        applicantPhotoURL: String?,
         message: String = ""
     ) async {
-        guard let applicationsStore = applicationsStore else { return }
+        guard let applicationsStore = applicationsStore else {
+            applicationError = "Applications service unavailable"
+            return
+        }
 
         isSubmittingApplication = true
         applicationError = nil
 
         do {
-            let application = JobApplication(
-                id: UUID().uuidString,
+            // Use the proper submitApplication method from store
+            try await applicationsStore.submitApplication(
                 serviceId: serviceId,
                 applicantId: applicantId,
-                appliedAt: Date(),
-                status: .pending,
+                applicantName: applicantName,
+                applicantPhotoURL: applicantPhotoURL,
                 coverMessage: message
             )
-            try await applicationsStore.submitApplication(application)
             showApplicationSuccess = true
             isSubmittingApplication = false
         } catch {
-            applicationError = error.localizedDescription
+            applicationError = AppError.from(error).errorDescription ?? "Failed to submit application"
             isSubmittingApplication = false
             print("❌ Failed to submit application: \(error)")
         }
@@ -62,10 +66,14 @@ final class ServiceDetailViewModel {
     func markServiceAsCompleted(
         serviceId: String,
         providerId: String,
+        serviceName: String,
         servicePrice: Double
     ) async {
         guard let servicesStore = servicesStore,
-              let walletStore = walletStore else { return }
+              let walletStore = walletStore else {
+            completionError = "Services not available"
+            return
+        }
 
         isMarkingComplete = true
         completionError = nil
@@ -75,20 +83,17 @@ final class ServiceDetailViewModel {
             try await servicesStore.markServiceAsCompleted(serviceId: serviceId)
 
             // Create earning transaction
-            let transaction = Transaction(
-                id: UUID().uuidString,
+            try await walletStore.createEarningTransaction(
                 userId: providerId,
-                type: .earning,
                 amount: servicePrice,
-                description: "Service completed",
-                createdAt: Date()
+                serviceId: serviceId,
+                serviceName: serviceName
             )
-            try await walletStore.createTransaction(transaction)
 
             showCompletionSuccess = true
             isMarkingComplete = false
         } catch {
-            completionError = error.localizedDescription
+            completionError = AppError.from(error).errorDescription ?? "Failed to mark service as completed"
             isMarkingComplete = false
             print("❌ Failed to mark service as completed: \(error)")
         }

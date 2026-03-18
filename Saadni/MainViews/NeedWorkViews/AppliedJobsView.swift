@@ -20,8 +20,8 @@ struct AppliedJobsView: View {
         NavigationStack {
             if let error = applicationsStore.applicationsError {
                 ErrorStateView(
-                    message: error,
-                    retryAction: applicationsStore.retryApplicationsAction
+                    message: error.errorDescription ?? "Failed to load applications",
+                    retryAction: { await applicationsStore.retryLoadingApplications() }
                 )
             } else if applicationsStore.isLoadingApplications || isLoading {
                 VStack {

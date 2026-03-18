@@ -133,7 +133,7 @@ struct ChatDetailView: View {
                             .font(.headline)
                             .foregroundStyle(Colors.swiftUIColor(.textMain))
 
-                        Text(error)
+                        Text(error.errorDescription ?? "Unknown error")
                             .font(.caption)
                             .foregroundStyle(Colors.swiftUIColor(.textSecondary))
                             .multilineTextAlignment(.center)

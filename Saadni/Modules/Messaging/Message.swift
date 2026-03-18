@@ -13,6 +13,7 @@ struct Message: Identifiable, Codable {
     let conversationId: String
     let senderId: String
     let senderName: String
+    let senderPhotoURL: String?  // Denormalized for quick display
     let content: String
     let createdAt: Date
     var isRead: Bool
@@ -23,6 +24,7 @@ struct Message: Identifiable, Codable {
         case conversationId = "conversationId"
         case senderId = "senderId"
         case senderName = "senderName"
+        case senderPhotoURL = "senderPhotoURL"
         case content = "content"
         case createdAt = "createdAt"
         case isRead = "isRead"
@@ -33,7 +35,7 @@ struct Message: Identifiable, Codable {
 
     /// Convert Message to Firestore dictionary
     func toFirestore() -> [String: Any] {
-        return [
+        var dict: [String: Any] = [
             "conversationId": conversationId,
             "senderId": senderId,
             "senderName": senderName,
@@ -42,6 +44,12 @@ struct Message: Identifiable, Codable {
             "isRead": isRead,
             "participantIds": participantIds
         ]
+
+        if let photoURL = senderPhotoURL {
+            dict["senderPhotoURL"] = photoURL
+        }
+
+        return dict
     }
 
     /// Create Message from Firestore document
@@ -57,14 +65,16 @@ struct Message: Identifiable, Codable {
             return nil
         }
 
-        // senderName is optional for backward compatibility
+        // Optional fields for backward compatibility
         let senderName = data["senderName"] as? String ?? "User"
+        let senderPhotoURL = data["senderPhotoURL"] as? String
 
         return Message(
             id: id,
             conversationId: conversationId,
             senderId: senderId,
             senderName: senderName,
+            senderPhotoURL: senderPhotoURL,
             content: content,
             createdAt: createdAtTimestamp.dateValue(),
             isRead: isRead,

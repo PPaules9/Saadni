@@ -114,8 +114,8 @@ struct WalletSheet: View {
            .padding(.top, 20)
 
            ErrorStateView(
-               message: error,
-               retryAction: walletStore.retryTransactionsAction
+               message: error.errorDescription ?? "Failed to load transactions",
+               retryAction: { await walletStore.retryLoadingTransactions() }
            )
            .padding()
        }

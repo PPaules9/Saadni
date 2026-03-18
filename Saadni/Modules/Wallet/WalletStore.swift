@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFirestore
 
 @Observable
-class WalletStore {
+class WalletStore: ListenerManaging {
     // MARK: - State
 
     var transactions: [Transaction] = []
@@ -17,17 +17,43 @@ class WalletStore {
 
     // MARK: - Error States
     var isLoadingTransactions: Bool = false
-    var transactionsError: String? = nil
-    var retryTransactionsAction: (() async -> Void)? = nil
+    var transactionsError: AppError? = nil
 
-    private var transactionsListener: ListenerRegistration?
+    // MARK: - Listener Management (from ListenerManaging protocol)
+    var activeListeners: [String: ListenerRegistration] = [:]
+    var listenerSetupState: [String: Bool] = [:]
+
+    private var currentUserId: String?
 
     private var db: Firestore {
         Firestore.firestore()
     }
 
     deinit {
-        stopListening()
+        removeAllListeners()
+    }
+
+    // MARK: - Listener Management Implementation
+
+    func addListener(id: String, listener: ListenerRegistration) {
+        removeListener(id: id)
+        activeListeners[id] = listener
+        print("📡 [Listener] Added: \(id) (total active: \(activeListeners.count))")
+    }
+
+    func removeListener(id: String) {
+        if let listener = activeListeners.removeValue(forKey: id) {
+            listener.remove()
+            print("🧹 [Listener] Removed: \(id) (total active: \(activeListeners.count))")
+        }
+    }
+
+    func removeAllListeners() {
+        print("🧹 [Listener] Removing all \(activeListeners.count) listeners...")
+        activeListeners.values.forEach { $0.remove() }
+        activeListeners.removeAll()
+        listenerSetupState.removeAll()
+        print("🧹 [Listener] All listeners removed")
     }
 
     // MARK: - Setup & Teardown
@@ -35,42 +61,45 @@ class WalletStore {
     /// Sets up real-time listener for user transactions (earnings, withdrawals, top-ups)
     /// - Parameter userId: The user ID to listen for transactions
     /// - Throws: Firestore errors during listener setup
-    /// - Note: This method sets up async snapshot listener but returns immediately.
-    ///         The listener continues running in the background and updates state via SwiftUI @Observable
     func setupListeners(userId: String) async throws {
-        stopListening()
+        removeAllListeners()
 
+        currentUserId = userId
         isLoadingTransactions = true
         transactionsError = nil
 
-        transactionsListener = db.collection("transactions")
+        let listenerId = "transactions"
+        guard !isListenerActive(id: listenerId) else {
+            print("⚠️ Listener already active for transactions")
+            return
+        }
+
+        let listener = db.collection("transactions")
             .whereField("userId", isEqualTo: userId)
             .order(by: "createdAt", descending: true)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
 
                 if let error = error {
-                    self.transactionsError = "Failed to load wallet. Check your connection."
+                    self.transactionsError = AppError.from(error)
                     self.isLoadingTransactions = false
-                    self.retryTransactionsAction = { [weak self] in
-                        try? await self?.setupListeners(userId: userId)
-                    }
                     print("❌ Error fetching transactions: \(error)")
                     return
                 }
 
                 guard let documents = snapshot?.documents else { return }
 
-                DispatchQueue.main.async {
-                    self.transactions = documents.compactMap { doc in
-                        do {
-                            return try Transaction.fromFirestore(id: doc.documentID, data: doc.data())
-                        } catch {
-                            print("⚠️ Failed to decode transaction \(doc.documentID): \(error)")
-                            return nil
-                        }
+                let decoded = documents.compactMap { doc in
+                    do {
+                        return try Transaction.fromFirestore(id: doc.documentID, data: doc.data())
+                    } catch {
+                        print("⚠️ Failed to decode transaction \(doc.documentID): \(error)")
+                        return nil
                     }
+                }
 
+                Task { @MainActor in
+                    self.transactions = decoded
                     // Calculate balance from all transactions
                     self.walletBalance = self.transactions.reduce(0.0) { $0 + $1.amount }
 
@@ -80,12 +109,9 @@ class WalletStore {
                 }
             }
 
-        print("🔄 [WalletStore] Listener setup for user: \(userId)")
-    }
+        addListener(id: listenerId, listener: listener)
 
-    func stopListening() {
-        transactionsListener?.remove()
-        print("🧹 [WalletStore] Listener stopped")
+        print("🔄 [WalletStore] Listener setup for user: \(userId)")
     }
 
     // MARK: - Add Transaction
@@ -111,6 +137,9 @@ class WalletStore {
         serviceId: String,
         serviceName: String
     ) async throws {
+        // Validate earning before creating transaction
+        try ServiceValidator.canCreateEarning(amount: amount, forServiceWithId: serviceId)
+
         let transaction = Transaction(
             userId: userId,
             amount: amount,
@@ -179,5 +208,18 @@ class WalletStore {
     func deleteTransaction(_ transactionId: String) async throws {
         try await FirestoreService.shared.deleteTransaction(id: transactionId)
         print("✅ Transaction deleted: \(transactionId)")
+    }
+
+    // MARK: - Retry Logic
+
+    func retryLoadingTransactions() async {
+        guard let userId = currentUserId else { return }
+        do {
+            try await setupListeners(userId: userId)
+            print("✅ Transactions retry succeeded")
+        } catch {
+            transactionsError = AppError.from(error)
+            print("❌ Transactions retry failed: \(error)")
+        }
     }
 }

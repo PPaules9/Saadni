@@ -10,7 +10,9 @@ import FirebaseFirestore
 import SwiftUI
 
 @Observable
-class MessagesStore {
+class MessagesStore: ListenerManaging {
+
+ 
     // MARK: - State
 
     /// Messages grouped by conversation ID
@@ -20,15 +22,15 @@ class MessagesStore {
     var typingUsers: [String: Set<String>] = [:]
 
     /// Error state
-    var error: String?
+    var error: AppError?
 
     /// Loading state
     var isLoading: Bool = false
 
-    // MARK: - Private Properties
+    // MARK: - Listener Management (from ListenerManaging protocol)
+    var activeListeners: [String: ListenerRegistration] = [:]
+    var listenerSetupState: [String: Bool] = [:]
 
-    private var messageListeners: [String: ListenerRegistration] = [:]
-    private var typingListeners: [String: ListenerRegistration] = [:]
     private let db: Firestore
 
     init() {
@@ -36,21 +38,47 @@ class MessagesStore {
     }
 
     deinit {
-        stopAllListeners()
+        removeAllListeners()
+    }
+
+    // MARK: - Listener Management Implementation
+
+    func addListener(id: String, listener: ListenerRegistration) {
+        removeListener(id: id)
+        activeListeners[id] = listener
+        print("📡 [Listener] Added: \(id) (total active: \(activeListeners.count))")
+    }
+
+    func removeListener(id: String) {
+        if let listener = activeListeners.removeValue(forKey: id) {
+            listener.remove()
+            print("🧹 [Listener] Removed: \(id) (total active: \(activeListeners.count))")
+        }
+    }
+
+    func removeAllListeners() {
+        print("🧹 [Listener] Removing all \(activeListeners.count) listeners...")
+        activeListeners.values.forEach { $0.remove() }
+        activeListeners.removeAll()
+        listenerSetupState.removeAll()
+        print("🧹 [Listener] All listeners removed")
     }
 
     // MARK: - Setup & Teardown
 
     /// Setup real-time listener for a conversation
     func setupListener(conversationId: String) {
-        // Avoid duplicate listeners
-        if messageListeners[conversationId] != nil {
+        let listenerId = "messages_\(conversationId)"
+
+        // Skip if already listening
+        guard !isListenerActive(id: listenerId) else {
+            print("⚠️ Listener already active for conversation: \(conversationId)")
             return
         }
 
         isLoading = true
 
-        messageListeners[conversationId] = db.collection("messages")
+        let listener = db.collection("messages")
             .whereField("conversationId", isEqualTo: conversationId)
             .order(by: "createdAt", descending: false)
             .addSnapshotListener { [weak self] snapshot, error in
@@ -59,8 +87,8 @@ class MessagesStore {
                 self.isLoading = false
 
                 if let error = error {
-                    self.error = "❌ Error loading messages: \(error.localizedDescription)"
-                    print(self.error ?? "")
+                    self.error = AppError.from(error)
+                    print("❌ Error loading messages: \(error)")
                     return
                 }
 
@@ -73,23 +101,28 @@ class MessagesStore {
                 self.messages[conversationId] = fetchedMessages
                 print("✅ Loaded \(fetchedMessages.count) messages for conversation \(conversationId)")
             }
+
+        addListener(id: listenerId, listener: listener)
     }
 
     /// Setup typing indicator listener for a conversation
     func setupTypingListener(conversationId: String) {
-        // Avoid duplicate listeners
-        if typingListeners[conversationId] != nil {
+        let listenerId = "typing_\(conversationId)"
+
+        // Skip if already listening
+        guard !isListenerActive(id: listenerId) else {
+            print("⚠️ Typing listener already active for conversation: \(conversationId)")
             return
         }
 
-        typingListeners[conversationId] = db.collection("conversations")
+        let listener = db.collection("conversations")
             .document(conversationId)
             .collection("typingIndicators")
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
 
                 if let error = error {
-                    print("❌ Error loading typing indicators: \(error.localizedDescription)")
+                    print("❌ Error loading typing indicators: \(error)")
                     return
                 }
 
@@ -107,24 +140,14 @@ class MessagesStore {
 
                 self.typingUsers[conversationId] = typingUserIds
             }
+
+        addListener(id: listenerId, listener: listener)
     }
 
     /// Stop listening for specific conversation
     func stopListener(conversationId: String) {
-        messageListeners[conversationId]?.remove()
-        messageListeners.removeValue(forKey: conversationId)
-
-        typingListeners[conversationId]?.remove()
-        typingListeners.removeValue(forKey: conversationId)
-    }
-
-    /// Stop all listeners
-    private func stopAllListeners() {
-        messageListeners.values.forEach { $0.remove() }
-        messageListeners.removeAll()
-
-        typingListeners.values.forEach { $0.remove() }
-        typingListeners.removeAll()
+        removeListener(id: "messages_\(conversationId)")
+        removeListener(id: "typing_\(conversationId)")
     }
 
     // MARK: - Message Operations
@@ -134,6 +157,7 @@ class MessagesStore {
         to conversationId: String,
         from senderId: String,
         senderName: String,
+        senderPhotoURL: String? = nil,
         content: String,
         participantIds: [String]
     ) async throws {
@@ -146,6 +170,7 @@ class MessagesStore {
             conversationId: conversationId,
             senderId: senderId,
             senderName: senderName,
+            senderPhotoURL: senderPhotoURL,
             content: content,
             createdAt: Date(),
             isRead: false,
@@ -156,8 +181,8 @@ class MessagesStore {
             try await db.collection("messages").document(message.id).setData(message.toFirestore())
             print("✅ Message sent successfully")
         } catch {
-            self.error = "❌ Failed to send message: \(error.localizedDescription)"
-            print(self.error ?? "")
+            self.error = AppError.from(error)
+            print("❌ Failed to send message: \(error.localizedDescription)")
             throw error
         }
     }
@@ -170,8 +195,8 @@ class MessagesStore {
             ])
             print("✅ Message marked as read")
         } catch {
-            self.error = "❌ Failed to mark message as read: \(error.localizedDescription)"
-            print(self.error ?? "")
+            self.error = AppError.from(error)
+            print("❌ Failed to mark message as read: \(error.localizedDescription)")
             throw error
         }
     }
@@ -221,8 +246,8 @@ class MessagesStore {
             try await batch.commit()
             print("✅ Deleted \(snapshot.documents.count) expired messages")
         } catch {
-            self.error = "❌ Failed to delete expired messages: \(error.localizedDescription)"
-            print(self.error ?? "")
+            self.error = AppError.from(error)
+            print("❌ Failed to delete expired messages: \(error.localizedDescription)")
             throw error
         }
     }

@@ -9,31 +9,53 @@ import Foundation
 import FirebaseFirestore
 
 @Observable
-class ApplicationsStore {
+class ApplicationsStore: ListenerManaging {
  // MARK: - State
  var myApplications: [JobApplication] = []       // Applications I submitted
  var receivedApplications: [JobApplication] = [] // Applications to my services
 
  // MARK: - Error States
  var isLoadingApplications: Bool = false
- var applicationsError: String? = nil
- var retryApplicationsAction: (() async -> Void)? = nil
+ var applicationsError: AppError? = nil
 
- private var myApplicationsListener: ListenerRegistration?
- private var receivedApplicationsListeners: [ListenerRegistration] = []
+ // MARK: - Listener Management (from ListenerManaging protocol)
+ var activeListeners: [String: ListenerRegistration] = [:]
+ var listenerSetupState: [String: Bool] = [:]
+
+ private var currentUserId: String?
 
  private var db: Firestore {
   Firestore.firestore()
  }
 
- // Reference to ServicesStore to check service ownership
- var servicesStore: ServicesStore?
-
  // MARK: - Initialization
  init() {}
 
  deinit {
-  stopListening()
+  removeAllListeners()
+ }
+
+ // MARK: - Listener Management Implementation
+
+ func addListener(id: String, listener: ListenerRegistration) {
+  removeListener(id: id)
+  activeListeners[id] = listener
+  print("📡 [Listener] Added: \(id) (total active: \(activeListeners.count))")
+ }
+
+ func removeListener(id: String) {
+  if let listener = activeListeners.removeValue(forKey: id) {
+   listener.remove()
+   print("🧹 [Listener] Removed: \(id) (total active: \(activeListeners.count))")
+  }
+ }
+
+ func removeAllListeners() {
+  print("🧹 [Listener] Removing all \(activeListeners.count) listeners...")
+  activeListeners.values.forEach { $0.remove() }
+  activeListeners.removeAll()
+  listenerSetupState.removeAll()
+  print("🧹 [Listener] All listeners removed")
  }
 
  // MARK: - Setup Listeners
@@ -42,45 +64,51 @@ class ApplicationsStore {
  /// - Parameter userId: The user ID to listen for applications
  /// - Throws: Firestore errors during listener setup
  func setupListeners(userId: String) async throws {
-  stopListening()
+  removeAllListeners()
 
+  currentUserId = userId
   isLoadingApplications = true
   applicationsError = nil
 
-  // Listen to applications I submitted
-  myApplicationsListener = db.collection("applications")
+  // Setup my applications listener
+  let listenerId = "myApplications"
+  guard !isListenerActive(id: listenerId) else {
+    print("⚠️ Listener already active for my applications")
+    return
+  }
+
+  let listener = db.collection("applications")
    .whereField("applicantId", isEqualTo: userId)
    .order(by: "appliedAt", descending: true)
    .addSnapshotListener { [weak self] snapshot, error in
     guard let self = self else { return }
 
     if let error = error {
-     self.applicationsError = "Failed to load applications. Check your connection."
+     self.applicationsError = AppError.from(error)
      self.isLoadingApplications = false
-     self.retryApplicationsAction = { [weak self] in
-      try? await self?.setupListeners(userId: userId)
-     }
      print("❌ Error fetching my applications: \(error)")
      return
     }
 
     guard let documents = snapshot?.documents else { return }
 
-    DispatchQueue.main.async {
-     let decoder = Firestore.Decoder()
-     self.myApplications = documents.compactMap { doc in
-      do {
-       return try decoder.decode(JobApplication.self, from: doc.data())
-      } catch {
-       print("⚠️ Failed to decode my application \(doc.documentID): \(error)")
-       return nil
-      }
+    let decoded = documents.compactMap { doc in
+     do {
+      return try Firestore.Decoder().decode(JobApplication.self, from: doc.data())
+     } catch {
+      print("⚠️ Failed to decode my application \(doc.documentID): \(error)")
+      return nil
      }
+    }
 
+    Task { @MainActor in
+     self.myApplications = decoded
      self.applicationsError = nil
      print("✅ Loaded \(self.myApplications.count) my applications")
     }
    }
+
+  addListener(id: listenerId, listener: listener)
 
   // Listen to applications received on my services
   try await setupReceivedApplicationsListener(userId: userId)
@@ -102,16 +130,23 @@ class ApplicationsStore {
    return
   }
 
-  // Handle >10 services by chunking into batches of 10
-  // Firestore "in" queries support max 10 items per query
+  // Batch into chunks of 10 (Firestore "in" query limit)
   let chunks = stride(from: 0, to: serviceIds.count, by: 10).map { startIndex in
    Array(serviceIds[startIndex..<min(startIndex + 10, serviceIds.count)])
   }
 
   print("ℹ️ Setting up \(chunks.count) listener(s) for \(serviceIds.count) services")
 
-  // Set up a listener for each chunk
+  // Setup listener for each chunk with deduplication
   for (index, serviceIdChunk) in chunks.enumerated() {
+   let listenerId = "receivedApplications_chunk_\(index)"
+
+   // Skip if already listening to this chunk
+   guard !isListenerActive(id: listenerId) else {
+    print("⚠️ Listener already active for chunk \(index), skipping")
+    continue
+   }
+
    let listener = db.collection("applications")
     .whereField("serviceId", in: serviceIdChunk)
     .order(by: "appliedAt", descending: true)
@@ -119,31 +154,27 @@ class ApplicationsStore {
      guard let self = self else { return }
 
      if let error = error {
-      self.applicationsError = "Failed to load applications. Check your connection."
+      self.applicationsError = AppError.from(error)
       self.isLoadingApplications = false
-      self.retryApplicationsAction = { [weak self] in
-       try? await self?.setupListeners(userId: userId)
-      }
       print("❌ Error fetching received applications (chunk \(index)): \(error)")
       return
      }
 
      guard let documents = snapshot?.documents else { return }
 
-     DispatchQueue.main.async {
-      let decoder = Firestore.Decoder()
-      let applications = documents.compactMap { doc in
-       do {
-        return try decoder.decode(JobApplication.self, from: doc.data())
-       } catch {
-        print("⚠️ Failed to decode received application \(doc.documentID): \(error)")
-        return nil
-       }
+     let decoded = documents.compactMap { doc in
+      do {
+       return try Firestore.Decoder().decode(JobApplication.self, from: doc.data())
+      } catch {
+       print("⚠️ Failed to decode received application \(doc.documentID): \(error)")
+       return nil
       }
+     }
 
+     Task { @MainActor in
       // Merge with existing applications, avoiding duplicates
       let existingIds = Set(self.receivedApplications.map { $0.id })
-      let newApplications = applications.filter { !existingIds.contains($0.id) }
+      let newApplications = decoded.filter { !existingIds.contains($0.id) }
 
       self.receivedApplications.append(contentsOf: newApplications)
       self.receivedApplications.sort { $0.appliedAt > $1.appliedAt }
@@ -152,30 +183,10 @@ class ApplicationsStore {
      }
     }
 
-   receivedApplicationsListeners.append(listener)
+   addListener(id: listenerId, listener: listener)
   }
 
-  print("✅ Set up \(receivedApplicationsListeners.count) listener(s) for received applications")
- }
-
- // MARK: - Stop Listening
-
- func stopListening() {
-  myApplicationsListener?.remove()
-  receivedApplicationsListeners.forEach { $0.remove() }
-  receivedApplicationsListeners.removeAll()
-  print("🧹 [ApplicationsStore] Listeners stopped")
- }
-
- // MARK: - Validation
-
- /// Check if a user can apply to a service
- func canApply(to serviceId: String, userId: String) -> Bool {
-  // User cannot apply to their own service
-  if let service = servicesStore?.services.first(where: { $0.id == serviceId }) {
-   return service.providerId != userId
-  }
-  return true  // If service not found locally, allow (will fail on backend if needed)
+  print("✅ Set up \(chunks.count) listener(s) for received applications")
  }
 
  // MARK: - Submit Application
@@ -187,13 +198,7 @@ class ApplicationsStore {
   applicantPhotoURL: String?,
   coverMessage: String? = nil
  ) async throws {
-  // Check if user is applying to their own service
-  guard canApply(to: serviceId, userId: applicantId) else {
-   throw NSError(domain: "ApplicationsStore", code: 1,
-                 userInfo: [NSLocalizedDescriptionKey: "You cannot apply to your own service"])
-  }
-
-  // Check if already applied
+  // Check if already applied (to this specific service)
   let existingApplication = myApplications.first { $0.serviceId == serviceId && $0.status != .withdrawn }
   if existingApplication != nil {
    throw NSError(domain: "ApplicationsStore", code: 2,
@@ -331,5 +336,18 @@ class ApplicationsStore {
   // Filter out withdrawn applications
   let active = myApplications.filter { $0.status != .withdrawn }
   return active.sorted { $0.appliedAt > $1.appliedAt }
+ }
+
+ // MARK: - Retry Logic
+
+ func retryLoadingApplications() async {
+  guard let userId = currentUserId else { return }
+  do {
+   try await setupListeners(userId: userId)
+   print("✅ Applications retry succeeded")
+  } catch {
+   applicationsError = AppError.from(error)
+   print("❌ Applications retry failed: \(error)")
+  }
  }
 }

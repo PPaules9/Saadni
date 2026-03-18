@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFirestore
 
 @Observable
-class ReviewsStore {
+class ReviewsStore: ListenerManaging {
     // MARK: - State
 
     var reviewsIReceived: [Review] = []      // Reviews about me
@@ -18,18 +18,43 @@ class ReviewsStore {
 
     // MARK: - Error States
     var isLoadingReviews: Bool = false
-    var reviewsError: String? = nil
-    var retryReviewsAction: (() async -> Void)? = nil
+    var reviewsError: AppError? = nil
 
-    private var receivedReviewsListener: ListenerRegistration?
-    private var submittedReviewsListener: ListenerRegistration?
+    // MARK: - Listener Management (from ListenerManaging protocol)
+    var activeListeners: [String: ListenerRegistration] = [:]
+    var listenerSetupState: [String: Bool] = [:]
+
+    private var currentUserId: String?
 
     private var db: Firestore {
         Firestore.firestore()
     }
 
     deinit {
-        stopListening()
+        removeAllListeners()
+    }
+
+    // MARK: - Listener Management Implementation
+
+    func addListener(id: String, listener: ListenerRegistration) {
+        removeListener(id: id)
+        activeListeners[id] = listener
+        print("📡 [Listener] Added: \(id) (total active: \(activeListeners.count))")
+    }
+
+    func removeListener(id: String) {
+        if let listener = activeListeners.removeValue(forKey: id) {
+            listener.remove()
+            print("🧹 [Listener] Removed: \(id) (total active: \(activeListeners.count))")
+        }
+    }
+
+    func removeAllListeners() {
+        print("🧹 [Listener] Removing all \(activeListeners.count) listeners...")
+        activeListeners.values.forEach { $0.remove() }
+        activeListeners.removeAll()
+        listenerSetupState.removeAll()
+        print("🧹 [Listener] All listeners removed")
     }
 
     // MARK: - Setup & Teardown
@@ -37,88 +62,94 @@ class ReviewsStore {
     /// Sets up real-time listeners for user reviews (received and submitted)
     /// - Parameter userId: The user ID to listen for reviews
     /// - Throws: Firestore errors during listener setup
-    /// - Note: This method sets up async snapshot listeners but returns immediately.
-    ///         The listeners continue running in the background and update state via SwiftUI @Observable
     func setupListeners(userId: String) async throws {
-        stopListening()
+        removeAllListeners()
 
+        currentUserId = userId
         isLoadingReviews = true
         reviewsError = nil
 
-        // Setup received reviews listener (async but non-blocking)
-        receivedReviewsListener = db.collection("reviews")
+        // Setup received reviews listener
+        let receivedListenerId = "receivedReviews"
+        guard !isListenerActive(id: receivedListenerId) else {
+            print("⚠️ Listener already active for received reviews")
+            return
+        }
+
+        let receivedListener = db.collection("reviews")
             .whereField("revieweeId", isEqualTo: userId)
             .order(by: "createdAt", descending: true)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
 
                 if let error = error {
-                    self.reviewsError = "Failed to load reviews. Check your connection."
+                    self.reviewsError = AppError.from(error)
                     self.isLoadingReviews = false
-                    self.retryReviewsAction = { [weak self] in
-                        try? await self?.setupListeners(userId: userId)
-                    }
                     print("❌ Error fetching received reviews: \(error)")
                     return
                 }
 
                 guard let documents = snapshot?.documents else { return }
 
-                DispatchQueue.main.async {
-                    self.reviewsIReceived = documents.compactMap { doc in
-                        do {
-                            return try Review.fromFirestore(id: doc.documentID, data: doc.data())
-                        } catch {
-                            print("⚠️ Failed to decode received review \(doc.documentID): \(error)")
-                            return nil
-                        }
+                let decoded = documents.compactMap { doc in
+                    do {
+                        return try Review.fromFirestore(id: doc.documentID, data: doc.data())
+                    } catch {
+                        print("⚠️ Failed to decode received review \(doc.documentID): \(error)")
+                        return nil
                     }
+                }
+
+                Task { @MainActor in
+                    self.reviewsIReceived = decoded
                     print("✅ Loaded \(self.reviewsIReceived.count) reviews received")
                 }
             }
 
-        // Setup submitted reviews listener (async but non-blocking)
-        submittedReviewsListener = db.collection("reviews")
+        addListener(id: receivedListenerId, listener: receivedListener)
+
+        // Setup submitted reviews listener
+        let submittedListenerId = "submittedReviews"
+        guard !isListenerActive(id: submittedListenerId) else {
+            print("⚠️ Listener already active for submitted reviews")
+            return
+        }
+
+        let submittedListener = db.collection("reviews")
             .whereField("reviewerId", isEqualTo: userId)
             .order(by: "createdAt", descending: true)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
 
                 if let error = error {
-                    self.reviewsError = "Failed to load reviews. Check your connection."
+                    self.reviewsError = AppError.from(error)
                     self.isLoadingReviews = false
-                    self.retryReviewsAction = { [weak self] in
-                        try? await self?.setupListeners(userId: userId)
-                    }
                     print("❌ Error fetching submitted reviews: \(error)")
                     return
                 }
 
                 guard let documents = snapshot?.documents else { return }
 
-                DispatchQueue.main.async {
-                    self.reviewsISubmitted = documents.compactMap { doc in
-                        do {
-                            return try Review.fromFirestore(id: doc.documentID, data: doc.data())
-                        } catch {
-                            print("⚠️ Failed to decode submitted review \(doc.documentID): \(error)")
-                            return nil
-                        }
+                let decoded = documents.compactMap { doc in
+                    do {
+                        return try Review.fromFirestore(id: doc.documentID, data: doc.data())
+                    } catch {
+                        print("⚠️ Failed to decode submitted review \(doc.documentID): \(error)")
+                        return nil
                     }
+                }
 
+                Task { @MainActor in
+                    self.reviewsISubmitted = decoded
                     self.reviewsError = nil
                     self.isLoadingReviews = false
                     print("✅ Loaded \(self.reviewsISubmitted.count) reviews submitted")
                 }
             }
 
-        print("🔄 [ReviewsStore] Listeners setup for user: \(userId)")
-    }
+        addListener(id: submittedListenerId, listener: submittedListener)
 
-    func stopListening() {
-        receivedReviewsListener?.remove()
-        submittedReviewsListener?.remove()
-        print("🧹 [ReviewsStore] Listeners stopped")
+        print("🔄 [ReviewsStore] Listeners setup for user: \(userId)")
     }
 
     // MARK: - Submit Review
@@ -252,5 +283,18 @@ class ReviewsStore {
     func deleteReview(_ reviewId: String) async throws {
         try await FirestoreService.shared.deleteReview(id: reviewId)
         print("✅ Review deleted: \(reviewId)")
+    }
+
+    // MARK: - Retry Logic
+
+    func retryLoadingReviews() async {
+        guard let userId = currentUserId else { return }
+        do {
+            try await setupListeners(userId: userId)
+            print("✅ Reviews retry succeeded")
+        } catch {
+            reviewsError = AppError.from(error)
+            print("❌ Reviews retry failed: \(error)")
+        }
     }
 }
