@@ -114,6 +114,8 @@
 		226B50212F65E01E00C09676 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		226B50262F66234D00C09676 /* ErrorStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50242F66234D00C09676 /* ErrorStateView.swift */; };
 		226B50272F66234D00C09676 /* ServiceCategoryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50252F66234D00C09676 /* ServiceCategoryCard.swift */; };
+		227C499B2F6D5982001E2381 /* MyAddressesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227C499A2F6D5981001E2381 /* MyAddressesView.swift */; };
+		227C499F2F6D7F54001E2381 /* onBoarding.gif in Resources */ = {isa = PBXBuildFile; fileRef = 227C499E2F6D7F54001E2381 /* onBoarding.gif */; };
 		22B999FF2F5F1A8A00B3E070 /* StateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B999FE2F5F1A8A00B3E070 /* StateKey.swift */; };
 		22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */; };
 		22EFE4002F6AA98C00C5EBBB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EFE3FF2F6AA98C00C5EBBB /* AppDelegate.swift */; };
@@ -121,7 +123,7 @@
 		22FD36CC2F56F64D00AF3127 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36CB2F56F64D00AF3127 /* OnboardingView.swift */; };
 		22FD36D22F5714F900AF3127 /* RoleSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36D02F5714F900AF3127 /* RoleSelectionView.swift */; };
 		22FD36D32F5714F900AF3127 /* NeedWork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36D12F5714F900AF3127 /* NeedWork.swift */; };
-		22FD36D42F5714F900AF3127 /* NeedJobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36CF2F5714F900AF3127 /* NeedJobView.swift */; };
+		22FD36D42F5714F900AF3127 /* JobProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36CF2F5714F900AF3127 /* JobProvider.swift */; };
 		22FD36DB2F57168300AF3127 /* AppStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36D72F57168300AF3127 /* AppStateManager.swift */; };
 		22FD36DC2F57168300AF3127 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36D82F57168300AF3127 /* MainView.swift */; };
 		22FD36DD2F57168300AF3127 /* SaadniApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36D92F57168300AF3127 /* SaadniApp.swift */; };
@@ -236,13 +238,15 @@
 		226B50182F65D0B600C09676 /* StorageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageProvider.swift; sourceTree = "<group>"; };
 		226B50242F66234D00C09676 /* ErrorStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorStateView.swift; sourceTree = "<group>"; };
 		226B50252F66234D00C09676 /* ServiceCategoryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCategoryCard.swift; sourceTree = "<group>"; };
+		227C499A2F6D5981001E2381 /* MyAddressesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAddressesView.swift; sourceTree = "<group>"; };
+		227C499C2F6D6F30001E2381 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Library/Mobile Documents/com~apple~CloudDocs/Developer/My Apps/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
+		227C499E2F6D7F54001E2381 /* onBoarding.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = onBoarding.gif; sourceTree = "<group>"; };
 		22B999FE2F5F1A8A00B3E070 /* StateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateKey.swift; sourceTree = "<group>"; };
 		22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		22EFE3FE2F6899FD00C5EBBB /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Library/Mobile Documents/com~apple~CloudDocs/Developer/My Apps/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
 		22EFE3FF2F6AA98C00C5EBBB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		22FD35F32F55F5CE00AF3127 /* LaunchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreen.swift; sourceTree = "<group>"; };
 		22FD36CB2F56F64D00AF3127 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
-		22FD36CF2F5714F900AF3127 /* NeedJobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeedJobView.swift; sourceTree = "<group>"; };
+		22FD36CF2F5714F900AF3127 /* JobProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobProvider.swift; sourceTree = "<group>"; };
 		22FD36D02F5714F900AF3127 /* RoleSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleSelectionView.swift; sourceTree = "<group>"; };
 		22FD36D12F5714F900AF3127 /* NeedWork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeedWork.swift; sourceTree = "<group>"; };
 		22FD36D72F57168300AF3127 /* AppStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateManager.swift; sourceTree = "<group>"; };
@@ -352,6 +356,7 @@
 		2236A14A2F50949000A7A19F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				227C499E2F6D7F54001E2381 /* onBoarding.gif */,
 				22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */,
 				2236A1482F50949000A7A19F /* Assets.xcassets */,
 				2236A1492F50949000A7A19F /* Saadni.icon */,
@@ -385,6 +390,7 @@
 			isa = PBXGroup;
 			children = (
 				22FD35F42F55F5CE00AF3127 /* LaunchScreen */,
+				227C499D2F6D7ED7001E2381 /* Onboarding */,
 				2236A1D22F53281E00A7A19F /* Authentication */,
 				22FD36D52F5715E000AF3127 /* Role Selection  */,
 				22FD36E62F573A7600AF3127 /* CreateJobSheet */,
@@ -402,7 +408,7 @@
 			children = (
 				224422152F63500B00241E1C /* ChatViews */,
 				22FD36D62F57161100AF3127 /* NeedWorkViews */,
-				22FD36DE2F5716A800AF3127 /* NeedJobViews */,
+				22FD36DE2F5716A800AF3127 /* JobProviderViews */,
 				2236A1692F50949000A7A19F /* ProfileView.swift */,
 			);
 			path = MainViews;
@@ -463,7 +469,6 @@
 		2236A1D22F53281E00A7A19F /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
-				22FD36CB2F56F64D00AF3127 /* OnboardingView.swift */,
 				2236A1D02F53281E00A7A19F /* AuthenticationView.swift */,
 			);
 			path = Authentication;
@@ -553,6 +558,7 @@
 		224422372F643AB700241E1C /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				227C499A2F6D5981001E2381 /* MyAddressesView.swift */,
 				224422352F643AB700241E1C /* Components */,
 				224422362F643AB700241E1C /* ProfileViewModel.swift */,
 			);
@@ -593,6 +599,14 @@
 				226B50192F65D0B600C09676 /* Protocols */,
 			);
 			path = DI;
+			sourceTree = "<group>";
+		};
+		227C499D2F6D7ED7001E2381 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				22FD36CB2F56F64D00AF3127 /* OnboardingView.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		228B2C752F36048800A4441B = {
@@ -689,15 +703,15 @@
 			path = App;
 			sourceTree = "<group>";
 		};
-		22FD36DE2F5716A800AF3127 /* NeedJobViews */ = {
+		22FD36DE2F5716A800AF3127 /* JobProviderViews */ = {
 			isa = PBXGroup;
 			children = (
-				22FD36CF2F5714F900AF3127 /* NeedJobView.swift */,
+				22FD36CF2F5714F900AF3127 /* JobProvider.swift */,
 				22FD36E12F571CE800AF3127 /* HomeView.swift */,
 				22FD36EE2F57418600AF3127 /* CreateJobSheet.swift */,
 				224421FB2F63435300241E1C /* myJobs.swift */,
 			);
-			path = NeedJobViews;
+			path = JobProviderViews;
 			sourceTree = "<group>";
 		};
 		22FD36E62F573A7600AF3127 /* CreateJobSheet */ = {
@@ -757,7 +771,7 @@
 				226B500F2F65A5F700C09676 /* Kingfisher */,
 			);
 			productName = Saadni;
-			productReference = 22EFE3FE2F6899FD00C5EBBB /* Saadni.app */;
+			productReference = 227C499C2F6D6F30001E2381 /* Saadni.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -803,6 +817,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				227C499F2F6D7F54001E2381 /* onBoarding.gif in Resources */,
 				2236A18C2F50949000A7A19F /* Assets.xcassets in Resources */,
 				2236A18D2F50949000A7A19F /* Saadni.icon in Resources */,
 				22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */,
@@ -826,7 +841,7 @@
 				224421C42F62D1F800241E1C /* ProfileMenuRow.swift in Sources */,
 				22FD36D32F5714F900AF3127 /* NeedWork.swift in Sources */,
 				2244220A2F634EEC00241E1C /* MessagesStore.swift in Sources */,
-				22FD36D42F5714F900AF3127 /* NeedJobView.swift in Sources */,
+				22FD36D42F5714F900AF3127 /* JobProvider.swift in Sources */,
 				2224E8DE2F6837BE008B556F /* ServiceCategoryGroup.swift in Sources */,
 				2224E8E12F6837DA008B556F /* ListenerManager.swift in Sources */,
 				2224E8DF2F6837BE008B556F /* ServiceValidator.swift in Sources */,
@@ -834,6 +849,7 @@
 				226B50152F65D05900C09676 /* AppError.swift in Sources */,
 				22FD36CC2F56F64D00AF3127 /* OnboardingView.swift in Sources */,
 				2236A1712F50949000A7A19F /* Semantic Colors.swift in Sources */,
+				227C499B2F6D5982001E2381 /* MyAddressesView.swift in Sources */,
 				2236A1722F50949000A7A19F /* Tokens.swift in Sources */,
 				224421CE2F63226D00241E1C /* CarouselCard.swift in Sources */,
 				2236A1732F50949000A7A19F /* ServiceCard.swift in Sources */,
@@ -1081,6 +1097,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1121,6 +1138,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

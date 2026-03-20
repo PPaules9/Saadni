@@ -35,7 +35,7 @@ struct HomeActivityCard: View {
     }
     
     Spacer()
-    VStack(alignment: .leading, spacing: 4){
+    VStack(alignment: .trailing, spacing: 4){
      
      Text(status)
       .font(.subheadline)

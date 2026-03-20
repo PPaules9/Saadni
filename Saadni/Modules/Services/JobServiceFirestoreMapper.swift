@@ -44,38 +44,41 @@ struct JobServiceFirestoreMapper {
         ]
 
         // Optional provider fields
-        if let providerName = service.providerName {
-            dict["providerName"] = providerName
-        }
-        if let providerImageURL = service.providerImageURL {
-            dict["providerImageURL"] = providerImageURL
-        }
+        if let providerName = service.providerName { dict["providerName"] = providerName }
+        if let providerImageURL = service.providerImageURL { dict["providerImageURL"] = providerImageURL }
 
         // Category
-        if let category = service.category {
-            dict["category"] = category.rawValue
-        }
+        if let category = service.category { dict["category"] = category.rawValue }
 
-        // Special tools
-        if let specialTools = service.specialTools {
-            dict["specialTools"] = specialTools
-        }
+        // Shift specific fields
+        if let breakDuration = service.breakDuration { dict["breakDuration"] = breakDuration }
+        if let numberOfWorkersNeeded = service.numberOfWorkersNeeded { dict["numberOfWorkersNeeded"] = numberOfWorkersNeeded }
+        if let branchName = service.branchName { dict["branchName"] = branchName }
+        if let nearestLandmark = service.nearestLandmark { dict["nearestLandmark"] = nearestLandmark }
+        if let paymentMethod = service.paymentMethod { dict["paymentMethod"] = paymentMethod }
+        if let paymentTiming = service.paymentTiming { dict["paymentTiming"] = paymentTiming }
+        if let dressCode = service.dressCode { dict["dressCode"] = dressCode }
+        if let minimumAge = service.minimumAge { dict["minimumAge"] = minimumAge }
+        if let genderPreference = service.genderPreference { dict["genderPreference"] = genderPreference }
+        if let physicalRequirements = service.physicalRequirements { dict["physicalRequirements"] = physicalRequirements }
+        if let languageNeeded = service.languageNeeded { dict["languageNeeded"] = languageNeeded }
+        if let whatToBring = service.whatToBring { dict["whatToBring"] = whatToBring }
 
-        // Scheduling
-        if let serviceDate = service.serviceDate {
-            dict["serviceDate"] = Timestamp(date: serviceDate)
-        }
-        if let estimatedDurationHours = service.estimatedDurationHours {
-            dict["estimatedDurationHours"] = estimatedDurationHours
-        }
+        // Company Details
+        if let companyName = service.companyName { dict["companyName"] = companyName }
+        if let companyLogoURL = service.companyLogoURL { dict["companyLogoURL"] = companyLogoURL }
+        if let industryCategory = service.industryCategory { dict["industryCategory"] = industryCategory }
+        if let contactPersonName = service.contactPersonName { dict["contactPersonName"] = contactPersonName }
+        if let contactPersonPhone = service.contactPersonPhone { dict["contactPersonPhone"] = contactPersonPhone }
+
+        // Legacy/Special
+        if let specialTools = service.specialTools { dict["specialTools"] = specialTools }
+        if let serviceDate = service.serviceDate { dict["serviceDate"] = Timestamp(date: serviceDate) }
+        if let estimatedDurationHours = service.estimatedDurationHours { dict["estimatedDurationHours"] = estimatedDurationHours }
 
         // Completion fields
-        if let hiredApplicantId = service.hiredApplicantId {
-            dict["hiredApplicantId"] = hiredApplicantId
-        }
-        if let completedAt = service.completedAt {
-            dict["completedAt"] = Timestamp(date: completedAt)
-        }
+        if let hiredApplicantId = service.hiredApplicantId { dict["hiredApplicantId"] = hiredApplicantId }
+        if let completedAt = service.completedAt { dict["completedAt"] = Timestamp(date: completedAt) }
 
         return dict
     }
@@ -145,6 +148,23 @@ struct JobServiceFirestoreMapper {
             address: address,
             floor: floor,
             unit: unit,
+            breakDuration: data["breakDuration"] as? String,
+            numberOfWorkersNeeded: data["numberOfWorkersNeeded"] as? Int,
+            branchName: data["branchName"] as? String,
+            nearestLandmark: data["nearestLandmark"] as? String,
+            paymentMethod: data["paymentMethod"] as? String,
+            paymentTiming: data["paymentTiming"] as? String,
+            dressCode: data["dressCode"] as? String,
+            minimumAge: data["minimumAge"] as? String,
+            genderPreference: data["genderPreference"] as? String,
+            physicalRequirements: data["physicalRequirements"] as? String,
+            languageNeeded: data["languageNeeded"] as? String,
+            whatToBring: data["whatToBring"] as? String,
+            companyName: data["companyName"] as? String,
+            companyLogoURL: data["companyLogoURL"] as? String,
+            industryCategory: data["industryCategory"] as? String,
+            contactPersonName: data["contactPersonName"] as? String,
+            contactPersonPhone: data["contactPersonPhone"] as? String,
             someoneAround: someoneAround,
             specialTools: specialTools,
             serviceDate: serviceDate,

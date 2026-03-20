@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct JobPublishedSuccessModal: View {
-    let jobTitle: String
-    let jobPrice: String
-    let jobImage: UIImage?
+    @Bindable var viewModel: CreateJobViewModel
     let onComplete: () -> Void
 
     var body: some View {
@@ -20,59 +18,116 @@ struct JobPublishedSuccessModal: View {
                 .ignoresSafeArea()
 
             // Content card
-            VStack(spacing: 24) {
-                // Success checkmark icon
-                Image(systemName: "checkmark.circle.fill")
-                    .resizable()
-                    .frame(width: 80, height: 80)
-                    .foregroundStyle(.green)
-
-                // Job preview section
-                VStack(spacing: 12) {
-                    if let image = jobImage {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 120, height: 120)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                    }
-
-                    Text(jobTitle)
+            VStack(spacing: 0) {
+                // Header
+                VStack(spacing: 8) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .resizable()
+                        .frame(width: 60, height: 60)
+                        .foregroundStyle(.green)
+                    
+                    Text("Success!")
                         .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundStyle(Color(UIColor.label))
-                        .lineLimit(2)
-                        .multilineTextAlignment(.center)
-
-                    Text(jobPrice)
-                        .font(.headline)
-                        .foregroundStyle(.green)
+                        .foregroundStyle(Color.accent)
+                    
+                    Text("\(viewModel.selectedDates.count) shift(s) successfully published.")
+                        .font(.subheadline)
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
                 }
-
-                // Success message
-                Text("Your job has been published!")
-                    .font(.headline)
-                    .foregroundStyle(Color(UIColor.label))
-
-                // Cool button
-                BrandButton("Cool", hasIcon: false, icon: "", secondary: false) {
-                    onComplete()
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Colors.swiftUIColor(.appBackground))
+                
+                // Scrollable Summary
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 16) {
+                        
+                        // Pic and Title
+                        HStack(spacing: 16) {
+                            if let image = viewModel.selectedImage {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 60, height: 60)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                            } else {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color.gray.opacity(0.2))
+                                    .frame(width: 60, height: 60)
+                                    .overlay(Image(systemName: "briefcase.fill").foregroundStyle(.gray))
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(viewModel.jobName)
+                                    .font(.headline)
+                                    .lineLimit(2)
+                                Text("EGP \(viewModel.price)")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.green)
+                            }
+                        }
+                        
+                        Divider()
+                        
+                        // Details Breakdown
+                        DetailRow(icon: "calendar.badge.clock", title: "Shifts Created", value: "\(viewModel.selectedDates.count) Shifts")
+                        DetailRow(icon: "mappin.and.ellipse", title: "Location", value: viewModel.city)
+                        DetailRow(icon: "building.2.fill", title: "Company", value: viewModel.companyName)
+                        DetailRow(icon: "creditcard.fill", title: "Payment", value: "\(viewModel.paymentMethod) - \(viewModel.paymentTiming)")
+                        
+                        if !viewModel.dressCode.isEmpty {
+                            DetailRow(icon: "tshirt.fill", title: "Dress Code", value: viewModel.dressCode)
+                        }
+                    }
+                    .padding()
                 }
-                .frame(width: 200)
+                .frame(maxHeight: 250) // Limit scroll height
+                
+                // Action Button
+                VStack {
+                    BrandButton("Return to Dashboard", hasIcon: false, icon: "", secondary: false) {
+                        onComplete()
+                    }
+                }
+                .padding()
+                .background(Colors.swiftUIColor(.appBackground))
             }
-            .padding(32)
             .background(Colors.swiftUIColor(.textPrimary))
             .cornerRadius(20)
-            .padding()
+            .padding(24)
+        }
+    }
+}
+
+fileprivate struct DetailRow: View {
+    let icon: String
+    let title: String
+    let value: String
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: icon)
+                .foregroundStyle(Color.accent)
+                .frame(width: 24)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.caption)
+                    .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                Text(value)
+                    .font(.subheadline)
+                    .foregroundStyle(Colors.swiftUIColor(.textMain))
+                    .fontWeight(.medium)
+            }
         }
     }
 }
 
 #Preview {
     JobPublishedSuccessModal(
-        jobTitle: "Professional House Cleaning",
-        jobPrice: "EGP 500",
-        jobImage: nil,
+        viewModel: CreateJobViewModel(),
         onComplete: {}
     )
 }

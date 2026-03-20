@@ -9,6 +9,10 @@ import SwiftUI
 struct DashboardView: View {
  @State private var currentCarouselIndex: Int = 0
  @State private var showWalletSheet: Bool = false
+ @State private var selectedDateForShift: Date?
+ @State private var navigateToBrowseJobs: Bool = false
+ @State private var calendarSelection: Date = Date()
+ @State private var isCalendarVisible: Bool = false
  
  var body: some View {
   ZStack {
@@ -22,6 +26,54 @@ struct DashboardView: View {
       DashboardHeaderView()
        .padding(.horizontal, 20)
        .padding(.vertical, 16)
+      
+      // Shift-Picker Calendar
+      ShiftPickerCalendarView { date in
+       selectedDateForShift = date
+       navigateToBrowseJobs = true
+      }
+      .padding(.bottom, 24)
+      
+      // Full Calendar Picker
+      VStack(alignment: .leading, spacing: 12) {
+				HStack {
+					Text("Pick from calendar")
+						.font(.subheadline)
+						.foregroundStyle(.primary)
+						.fontDesign(.monospaced)
+						.kerning(-1)
+						.padding(.horizontal, 20)
+					
+					Spacer()
+					
+					Toggle("", isOn: $isCalendarVisible.animation(.easeInOut))
+						.labelsHidden()
+						.tint(.accent)
+						.padding(.trailing, 20)
+				}
+       
+				if isCalendarVisible {
+					DatePicker(
+						"Select Shift Date",
+						selection: Binding(
+							get: { calendarSelection },
+							set: { newDate in
+								calendarSelection = newDate
+								selectedDateForShift = newDate
+								navigateToBrowseJobs = true
+							}
+						),
+						in: Date()...,
+						displayedComponents: [.date]
+					)
+					.datePickerStyle(.graphical)
+					.tint(.accent)
+					.background(Colors.swiftUIColor(.textPrimary))
+					.cornerRadius(24)
+					.padding(.horizontal, 20)
+				}
+      }
+      .padding(.bottom, 24)
       
       // Carousel Section
       JobStatusCarouselView(currentIndex: $currentCarouselIndex)
@@ -38,6 +90,11 @@ struct DashboardView: View {
        .padding(.vertical, 32)
      }
     }
+    .navigationDestination(isPresented: $navigateToBrowseJobs) {
+     if let date = selectedDateForShift {
+      BrowseJobs(selectedDate: date)
+     }
+    }
    }
   }
   .sheet(isPresented: $showWalletSheet) {
@@ -46,21 +103,102 @@ struct DashboardView: View {
  }
 }
 
+// MARK: - Shift Picker Calendar View
+struct ShiftPickerCalendarView: View {
+ let upcomingDates: [Date]
+ let action: (Date) -> Void
+ 
+ init(action: @escaping (Date) -> Void) {
+  self.action = action
+  // Generate next 14 days
+  var dates: [Date] = []
+  let calendar = Calendar.current
+  for i in 0..<14 {
+   if let date = calendar.date(byAdding: .day, value: i, to: Date()) {
+    dates.append(date)
+   }
+  }
+  self.upcomingDates = dates
+ }
+ 
+ var body: some View {
+  VStack(alignment: .leading, spacing: 12) {
+   Text("Available Shifts Near You")
+    .font(.headline)
+    .foregroundStyle(.primary)
+    .fontDesign(.monospaced)
+    .kerning(-1)
+    .padding(.horizontal, 20)
+   
+   ScrollView(.horizontal, showsIndicators: false) {
+    HStack(spacing: 12) {
+     ForEach(upcomingDates, id: \.self) { date in
+      Button(action: {
+       action(date)
+      }) {
+       VStack(spacing: 8) {
+        Text(isToday(date) ? "Today" : isTomorrow(date) ? "Tmrw" : getDayOfWeek(date))
+         .font(.caption)
+         .fontWeight(.semibold)
+         .foregroundStyle(isToday(date) ? .white : Colors.swiftUIColor(.textSecondary))
+        
+        Text(getDayNumber(date))
+         .font(.title2)
+         .fontWeight(.bold)
+         .foregroundStyle(isToday(date) ? .white : Colors.swiftUIColor(.textMain))
+       }
+       .frame(width: 70, height: 80)
+       .background(isToday(date) ? Color.accentColor : Colors.swiftUIColor(.textPrimary))
+       .cornerRadius(16)
+       .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+      }
+      .buttonStyle(.plain)
+     }
+    }
+    .padding(.horizontal, 20)
+   }
+  }
+ }
+ 
+ private func isToday(_ date: Date) -> Bool {
+  Calendar.current.isDateInToday(date)
+ }
+ 
+ private func isTomorrow(_ date: Date) -> Bool {
+  Calendar.current.isDateInTomorrow(date)
+ }
+ 
+ private func getDayOfWeek(_ date: Date) -> String {
+  let formatter = DateFormatter()
+  formatter.dateFormat = "EEE"
+  return formatter.string(from: date)
+ }
+ 
+ private func getDayNumber(_ date: Date) -> String {
+  let formatter = DateFormatter()
+  formatter.dateFormat = "d"
+  return formatter.string(from: date)
+ }
+}
+
 
 // MARK: - Dashboard Header View
 struct DashboardHeaderView: View {
+    @Environment(AuthenticationManager.self) var authManager
+
  var body: some View {
   VStack(alignment: .leading, spacing: 8) {
    HStack {
     VStack(alignment: .leading, spacing: 4) {
-     Text("Hi, Pavly")
-      .font(.headline)
-      .foregroundStyle(.primary)
-      .fontDesign(.monospaced)
-      .kerning(-1)
-     
-     Text("Find your next service")
-      .font(.subheadline)
+            if let user = authManager.currentUser {
+                Text("Hi, \(user.displayName ?? "User")")
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                    .fontDesign(.monospaced)
+                    .kerning(-1)
+            }
+     Text("Find your next Job")
+      .font(.caption)
       .foregroundStyle(.secondary)
       .fontDesign(.monospaced)
       .kerning(-1)
@@ -83,6 +221,7 @@ struct DashboardHeaderView: View {
      }
     }
    }
+		Divider()
   }
  }
 }
@@ -103,22 +242,19 @@ struct JobStatusCarouselView: View {
      CarouselCard(
       title: "Featured Services",
       subtitle: "Get extra cash",
-      provider: "Additionals",
+      provider: "",
       price: "Up to 10%",
       onTapAction: {
        navigateToFeaturedService = true
       }
      )
      .tag(0)
-     .navigationDestination(isPresented: $navigateToFeaturedService) {
-      ServiceDetailView(service: featured)
-     }
     }
 
     CarouselCard(
      title: "Top Rated Users",
      subtitle: "5★ rated by customers",
-     provider: "well Known",
+     provider: "",
      price: "Popular",
      onTapAction: {}
     )
@@ -135,12 +271,19 @@ struct JobStatusCarouselView: View {
       }
      )
      .tag(2)
-     .navigationDestination(isPresented: $navigateToNewService) {
-      ServiceDetailView(service: new)
-     }
     }
    }
    .tabViewStyle(.page(indexDisplayMode: .never))
+   .navigationDestination(isPresented: $navigateToFeaturedService) {
+    if let featured = featuredService {
+     ServiceDetailView(service: featured)
+    }
+   }
+   .navigationDestination(isPresented: $navigateToNewService) {
+    if let new = newService {
+     ServiceDetailView(service: new)
+    }
+   }
    .frame(height: 220)
 
    // Carousel Indicators
@@ -244,5 +387,10 @@ struct RecentActivityView: View {
 
 
 #Preview {
+    let userCache = UserCache()
+    let authManager = AuthenticationManager(userCache: userCache)
+
  DashboardView()
+        .environment(UserCache())
+        .environment(authManager)
 }

@@ -10,6 +10,7 @@ import SwiftUI
 struct AccountMenuSection: View {
     let onLogout: () -> Void
     let onDeleteAccount: () -> Void
+    @State private var navigateToAddresses = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -20,6 +21,18 @@ struct AccountMenuSection: View {
                 .padding(.horizontal, 20)
 
             VStack(spacing: 0) {
+                ProfileMenuRow(
+                    icon: "mappin.circle.fill",
+                    title: "My Addresses",
+                    action: { navigateToAddresses = true }
+                )
+                .navigationDestination(isPresented: $navigateToAddresses) {
+                    MyAddressesView()
+                }
+
+                Divider()
+                    .padding(.vertical, 0)
+
                 ProfileMenuRow(
                     icon: "person.fill",
                     title: "Edit Personal Details",

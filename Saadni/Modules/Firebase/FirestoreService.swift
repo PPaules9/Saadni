@@ -42,6 +42,47 @@ class FirestoreService: FirestoreProvider {
 
  // MARK: - User Operations
  
+ func deleteUserData(userId: String) async throws {
+  // 1. Delete user's services
+  let servicesSnapshot = try await servicesCollection.whereField("providerId", isEqualTo: userId).getDocuments()
+  for doc in servicesSnapshot.documents {
+   try await doc.reference.delete()
+  }
+  
+  // 2. Delete user's applications
+  let applicationsSnapshot = try await applicationsCollection.whereField("applicantId", isEqualTo: userId).getDocuments()
+  for doc in applicationsSnapshot.documents {
+   try await doc.reference.delete()
+  }
+  
+  // 3. Delete user's received and submitted reviews
+  let receivedReviewsSnapshot = try await reviewsCollection.whereField("revieweeId", isEqualTo: userId).getDocuments()
+  for doc in receivedReviewsSnapshot.documents {
+   try await doc.reference.delete()
+  }
+  
+  let submittedReviewsSnapshot = try await reviewsCollection.whereField("reviewerId", isEqualTo: userId).getDocuments()
+  for doc in submittedReviewsSnapshot.documents {
+   try await doc.reference.delete()
+  }
+  
+  // 4. Delete user's transactions
+  let transactionsSnapshot = try await transactionsCollection.whereField("userId", isEqualTo: userId).getDocuments()
+  for doc in transactionsSnapshot.documents {
+   try await doc.reference.delete()
+  }
+  
+  // 5. Delete Conversations
+  let conversationsSnapshot = try await db.collection("conversations").whereField("participantIds", arrayContains: userId).getDocuments()
+  for doc in conversationsSnapshot.documents {
+   try await doc.reference.delete()
+  }
+  
+  // 6. Delete User document
+  try await usersCollection.document(userId).delete()
+  print("✅ All user data deleted from Firestore for: \(userId)")
+ }
+ 
  func saveUser(_ user: User) async throws {
   let encoder = Firestore.Encoder()
   let data = try encoder.encode(user)

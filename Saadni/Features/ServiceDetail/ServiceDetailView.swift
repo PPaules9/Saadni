@@ -651,7 +651,7 @@ struct ApplyJobSheetContent: View {
     location: ServiceLocation(name: "Cairo, Egypt", latitude: nil, longitude: nil),
     description: "Comprehensive house cleaning service including deep cleaning, dusting, mopping, and sanitizing all areas of your home.",
     image: ServiceImage(),
-    category: .homeCleaning,
+		category: .communityAndOutdoor,
     providerId: "provider_1",
     someoneAround: true,
     specialTools: "Vacuum cleaner, mop, cleaning supplies provided",

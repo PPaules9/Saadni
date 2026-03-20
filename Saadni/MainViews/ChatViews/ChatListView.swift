@@ -7,80 +7,6 @@
 
 import SwiftUI
 
-struct ChatListView: View {
- @Environment(ConversationsStore.self) var conversationsStore
- @Environment(AuthenticationManager.self) var authManager
- @State private var searchText = ""
- @State private var selectedConversation: Conversation?
- @State private var showChatDetail = false
- 
- var filteredConversations: [Conversation] {
-  if searchText.isEmpty {
-   return conversationsStore.sortedConversations
-  }
-  return conversationsStore.searchConversations(searchText)
- }
- 
- var body: some View {
-  NavigationStack {
-   ZStack {
-    Color(Colors.swiftUIColor(.appBackground))
-     .ignoresSafeArea()
-    
-    VStack(spacing: 0) {
-    
-     BrandTextField(
-      hasTitle: false,
-      title: "",
-      placeholder: "Search conversations...",
-      text: $searchText
-     )
-     .padding()
-     .onSubmit {
-     }
-    
-   
-     // Conversations List
-     if conversationsStore.isLoading {
-      ProgressView()
-       .frame(maxWidth: .infinity, maxHeight: .infinity)
-     } else if filteredConversations.isEmpty {
-      VStack(spacing: 16) {
-       Image(systemName: "bubble.left")
-        .font(.system(size: 48))
-        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-       
-       Text("No conversations yet")
-        .font(.headline)
-        .foregroundStyle(Colors.swiftUIColor(.textMain))
-       
-       Text("Start a conversation by clicking the chat icon on a service page")
-        .font(.caption)
-        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-        .multilineTextAlignment(.center)
-        .padding(.horizontal)
-      }
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
-     } else {
-      List {
-       ForEach(filteredConversations) { conversation in
-        NavigationLink(destination: ChatDetailView(conversation: conversation)) {
-         ConversationRow(conversation: conversation, currentUserId: authManager.currentUserId ?? "")
-        }
-        .listRowBackground(Colors.swiftUIColor(.surfaceWhite))
-        .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
-       }
-      }
-      .listStyle(.plain)
-      .scrollContentBackground(.hidden)
-     }
-    }
-   }
-   .navigationTitle("Chats")
-   .navigationBarTitleDisplayMode(.inline)
-  }
- }
-}
 
 // MARK: - Search Bar
 
@@ -158,7 +84,7 @@ struct ConversationRow: View {
     }
    }
   }
-  .padding(12)
+  .padding(8)
   .onAppear {
    loadOtherUserName()
   }
@@ -172,7 +98,7 @@ struct ConversationRow: View {
    do {
     if let user = try await FirestoreService.shared.fetchUser(id: otherUserId) {
      await MainActor.run {
-      otherUserName = user.displayName ?? user.email ?? "User"
+			 otherUserName = user.displayName ?? user.email
      }
     }
    } catch {
@@ -184,7 +110,14 @@ struct ConversationRow: View {
 }
 
 #Preview {
- ChatListView()
-  .environment(ConversationsStore())
-  .environment(AuthenticationManager(userCache: UserCache()))
+    ConversationRow(
+        conversation: Conversation(
+            id: "preview_conversation_id",
+            participantIds: ["current_user_id", "other_user_id"],
+            lastMessage: "Hey, how can I help you today?",
+            lastMessageTime: Date(),
+            lastMessageSenderId: "other_user_id"
+        ),
+        currentUserId: "current_user_id"
+    )
 }

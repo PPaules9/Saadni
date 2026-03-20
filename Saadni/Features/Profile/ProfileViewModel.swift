@@ -95,4 +95,8 @@ class ProfileViewModel {
         // signOut() now handles all cleanup: auth logout + AppState reset
         try await authManager.signOut()
     }
+    
+    func deleteAccount() async throws {
+        try await authManager.deleteAccount()
+    }
 }

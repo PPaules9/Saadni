@@ -9,55 +9,74 @@ import SwiftUI
 
 struct CreateJobTab3: View {
     @Bindable var viewModel: CreateJobViewModel
-
+    
+    let paymentMethods = ["Cash", "In-App Wallet", "Bank Transfer"]
+    let paymentTimings = ["Same Day", "Within 24 Hours", "End of Week"]
+    
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                Text("Does this job need any special tools?")
-                    .font(.headline)
-                    .fontWeight(.semibold)
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 24) {
+                // Payment Amount
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 4) {
+                        Text("Shift Pay Output (Total/Fixed)")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                        Text("*").foregroundStyle(.red)
+                    }
                     .frame(maxWidth: .infinity, alignment: .leading)
-
-                VStack(spacing: 8) {
-                    ForEach(ToolsNeeded.allCases, id: \.self) { option in
-                        Button(action: { viewModel.toolsNeeded = option }) {
+                    
+                    HStack {
+                        Text("EGP")
+                            .font(.headline)
+                            .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                        BrandTextField(hasTitle: false, title: "", placeholder: "0.00", text: $viewModel.price)
+                    }
+                }
+                
+                // Payment Method
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Payment Method")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                    
+                    ForEach(paymentMethods, id: \.self) { method in
+                        Button(action: { viewModel.paymentMethod = method }) {
                             HStack {
-                                Image(systemName: viewModel.toolsNeeded == option ? "checkmark.circle.fill" : "circle")
-                                    .foregroundStyle(viewModel.toolsNeeded == option ? Color.accent : Color.gray)
-
-                                Text(option.rawValue)
+                                Image(systemName: viewModel.paymentMethod == method ? "checkmark.circle.fill" : "circle")
+                                    .foregroundStyle(viewModel.paymentMethod == method ? Color.accent : Color.gray)
+                                Text(method)
                                     .foregroundStyle(Colors.swiftUIColor(.textMain))
-
                                 Spacer()
                             }
-                            .padding(12)
-                            .background(viewModel.toolsNeeded == option ? Color.accent.opacity(0.1) : Colors.swiftUIColor(.textPrimary))
+                            .padding()
+                            .background(viewModel.paymentMethod == method ? Color.accent.opacity(0.1) : Colors.swiftUIColor(.textPrimary))
                             .cornerRadius(12)
                         }
                     }
                 }
-
-                if viewModel.toolsNeeded == .yes {
-                    VStack(spacing: 8) {
-                        HStack(spacing: 4) {
-                            Text("State the tools needed")
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-                            Text("*")
-                                .foregroundStyle(.red)
+                
+                // Payment Timing
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Payment Timing")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                    
+                    ForEach(paymentTimings, id: \.self) { timing in
+                        Button(action: { viewModel.paymentTiming = timing }) {
+                            HStack {
+                                Image(systemName: viewModel.paymentTiming == timing ? "checkmark.circle.fill" : "circle")
+                                    .foregroundStyle(viewModel.paymentTiming == timing ? Color.accent : Color.gray)
+                                Text(timing)
+                                    .foregroundStyle(Colors.swiftUIColor(.textMain))
+                                Spacer()
+                            }
+                            .padding()
+                            .background(viewModel.paymentTiming == timing ? Color.accent.opacity(0.1) : Colors.swiftUIColor(.textPrimary))
+                            .cornerRadius(12)
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                        BrandTextEditor(
-                            hasTitle: false,
-                            title: "Tools",
-                            placeholder: "List all tools needed for this job...",
-                            text: $viewModel.toolsDescription
-                        )
                     }
-                    .transition(.opacity)
                 }
-
                 Spacer()
             }
             .padding()

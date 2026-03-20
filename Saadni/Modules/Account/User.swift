@@ -9,6 +9,16 @@ import Foundation
 import FirebaseAuth
 import FirebaseFirestore
 
+// MARK: - Sub-models
+
+struct SavedAddress: Codable, Identifiable, Hashable {
+    var id: String = UUID().uuidString
+    var address: String
+    var floor: String
+    var unit: String
+    var city: String
+}
+
 // MARK: - User Model
 
 struct User: Codable, Identifiable, Hashable {
@@ -54,6 +64,10 @@ struct User: Codable, Identifiable, Hashable {
 
     // MARK: - Profile Completion
     var profileCompletionPercentage: Int = 0
+
+    // MARK: - Saved Addresses
+    var savedAddresses: [SavedAddress]?
+    var defaultAddressId: String?
 
     // MARK: - Preferences
     var preferredLanguage: String = "en"
@@ -126,6 +140,8 @@ struct User: Codable, Identifiable, Hashable {
         totalApplicationsSubmitted: Int = 0,
         totalJobsAppliedTo: Int = 0,
         profileCompletionPercentage: Int = 0,
+        savedAddresses: [SavedAddress]? = nil,
+        defaultAddressId: String? = nil,
         preferredLanguage: String = "en",
         timezone: String? = nil,
         notificationsEnabled: Bool = true,
@@ -172,6 +188,8 @@ struct User: Codable, Identifiable, Hashable {
         self.totalApplicationsSubmitted = totalApplicationsSubmitted
         self.totalJobsAppliedTo = totalJobsAppliedTo
         self.profileCompletionPercentage = profileCompletionPercentage
+        self.savedAddresses = savedAddresses
+        self.defaultAddressId = defaultAddressId
         self.preferredLanguage = preferredLanguage
         self.timezone = timezone
         self.notificationsEnabled = notificationsEnabled

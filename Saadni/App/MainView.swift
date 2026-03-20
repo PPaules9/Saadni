@@ -123,7 +123,7 @@ struct MainView: View {
  @ViewBuilder
  private func authenticatedContent(for user: User) -> some View {
   if user.isJobSeeker {
-   NeedJobView()
+   JobProvider()
     .environment(reviewsStore)
     .environment(walletStore)
     .environment(container.authManager)

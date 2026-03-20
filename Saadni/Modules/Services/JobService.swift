@@ -80,20 +80,33 @@ struct JobService: Codable, Hashable, Identifiable {
     /// Unit/apartment number (if applicable)
     var unit: String = ""
 
-    // MARK: - Service Requirements
+    // MARK: - Shift Specific Fields
+    var breakDuration: String?
+    var numberOfWorkersNeeded: Int?
+    var branchName: String?
+    var nearestLandmark: String?
+    
+    var paymentMethod: String?
+    var paymentTiming: String?
+    
+    var dressCode: String?
+    var minimumAge: String?
+    var genderPreference: String?
+    var physicalRequirements: String?
+    var languageNeeded: String?
+    var whatToBring: String?
+    
+    // MARK: - Company Info
+    var companyName: String?
+    var companyLogoURL: String?
+    var industryCategory: String?
+    var contactPersonName: String?
+    var contactPersonPhone: String?
 
-    /// Whether someone will be around during the service
+    // MARK: - Legacy / Other Fields (Keeping for compatibility if needed)
     var someoneAround: Bool = false
-
-    /// Special tools/equipment needed for the service (optional)
     var specialTools: String?
-
-    // MARK: - Service Scheduling
-
-    /// When the service should be performed (optional - can be flexible)
     var serviceDate: Date?
-
-    /// Estimated duration in hours (optional)
     var estimatedDurationHours: Double?
 
     // MARK: - Initializers
@@ -110,6 +123,23 @@ struct JobService: Codable, Hashable, Identifiable {
         address: String = "",
         floor: String = "",
         unit: String = "",
+        breakDuration: String? = nil,
+        numberOfWorkersNeeded: Int? = 1,
+        branchName: String? = nil,
+        nearestLandmark: String? = nil,
+        paymentMethod: String? = nil,
+        paymentTiming: String? = nil,
+        dressCode: String? = nil,
+        minimumAge: String? = nil,
+        genderPreference: String? = nil,
+        physicalRequirements: String? = nil,
+        languageNeeded: String? = nil,
+        whatToBring: String? = nil,
+        companyName: String? = nil,
+        companyLogoURL: String? = nil,
+        industryCategory: String? = nil,
+        contactPersonName: String? = nil,
+        contactPersonPhone: String? = nil,
         someoneAround: Bool = false,
         specialTools: String? = nil,
         serviceDate: Date? = nil,
@@ -127,6 +157,23 @@ struct JobService: Codable, Hashable, Identifiable {
         self.address = address
         self.floor = floor
         self.unit = unit
+        self.breakDuration = breakDuration
+        self.numberOfWorkersNeeded = numberOfWorkersNeeded
+        self.branchName = branchName
+        self.nearestLandmark = nearestLandmark
+        self.paymentMethod = paymentMethod
+        self.paymentTiming = paymentTiming
+        self.dressCode = dressCode
+        self.minimumAge = minimumAge
+        self.genderPreference = genderPreference
+        self.physicalRequirements = physicalRequirements
+        self.languageNeeded = languageNeeded
+        self.whatToBring = whatToBring
+        self.companyName = companyName
+        self.companyLogoURL = companyLogoURL
+        self.industryCategory = industryCategory
+        self.contactPersonName = contactPersonName
+        self.contactPersonPhone = contactPersonPhone
         self.someoneAround = someoneAround
         self.specialTools = specialTools
         self.serviceDate = serviceDate
@@ -157,6 +204,23 @@ struct JobService: Codable, Hashable, Identifiable {
         address: String = "",
         floor: String = "",
         unit: String = "",
+        breakDuration: String? = nil,
+        numberOfWorkersNeeded: Int? = 1,
+        branchName: String? = nil,
+        nearestLandmark: String? = nil,
+        paymentMethod: String? = nil,
+        paymentTiming: String? = nil,
+        dressCode: String? = nil,
+        minimumAge: String? = nil,
+        genderPreference: String? = nil,
+        physicalRequirements: String? = nil,
+        languageNeeded: String? = nil,
+        whatToBring: String? = nil,
+        companyName: String? = nil,
+        companyLogoURL: String? = nil,
+        industryCategory: String? = nil,
+        contactPersonName: String? = nil,
+        contactPersonPhone: String? = nil,
         someoneAround: Bool = false,
         specialTools: String? = nil,
         serviceDate: Date? = nil,
@@ -182,6 +246,23 @@ struct JobService: Codable, Hashable, Identifiable {
         self.address = address
         self.floor = floor
         self.unit = unit
+        self.breakDuration = breakDuration
+        self.numberOfWorkersNeeded = numberOfWorkersNeeded
+        self.branchName = branchName
+        self.nearestLandmark = nearestLandmark
+        self.paymentMethod = paymentMethod
+        self.paymentTiming = paymentTiming
+        self.dressCode = dressCode
+        self.minimumAge = minimumAge
+        self.genderPreference = genderPreference
+        self.physicalRequirements = physicalRequirements
+        self.languageNeeded = languageNeeded
+        self.whatToBring = whatToBring
+        self.companyName = companyName
+        self.companyLogoURL = companyLogoURL
+        self.industryCategory = industryCategory
+        self.contactPersonName = contactPersonName
+        self.contactPersonPhone = contactPersonPhone
         self.someoneAround = someoneAround
         self.specialTools = specialTools
         self.serviceDate = serviceDate

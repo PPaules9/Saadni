@@ -67,7 +67,6 @@ struct ServiceValidator {
         }
     }
 
-    /// Validates that a service can be published
     static func canPublish(_ service: JobService) throws {
         guard !service.title.trimmingCharacters(in: .whitespaces).isEmpty else {
             throw NSError(
@@ -82,22 +81,6 @@ struct ServiceValidator {
                 domain: "ServiceValidator",
                 code: 8,
                 userInfo: [NSLocalizedDescriptionKey: "Service price must be greater than 0"]
-            )
-        }
-
-        guard !service.description.trimmingCharacters(in: .whitespaces).isEmpty else {
-            throw NSError(
-                domain: "ServiceValidator",
-                code: 9,
-                userInfo: [NSLocalizedDescriptionKey: "Service description cannot be empty"]
-            )
-        }
-
-        guard service.image.remoteURL != nil || service.image.localImage != nil else {
-            throw NSError(
-                domain: "ServiceValidator",
-                code: 10,
-                userInfo: [NSLocalizedDescriptionKey: "Service must have an image"]
             )
         }
     }

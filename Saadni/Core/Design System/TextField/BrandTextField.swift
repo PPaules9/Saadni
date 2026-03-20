@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-// MARK: - Basic TextField Component
-
 struct BrandTextField: View {
     let hasTitle: Bool
     let title: String

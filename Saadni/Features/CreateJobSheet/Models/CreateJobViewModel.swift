@@ -9,33 +9,6 @@ import SwiftUI
 import MapKit
 import FirebaseFirestore
 
-enum AroundOption: String, CaseIterable {
-    case you = "You"
-    case someoneElse = "Someone Else"
-    case noOne = "No One"
-}
-
-enum ToolsNeeded: String, CaseIterable {
-    case yes = "Yes"
-    case maybe = "Maybe"
-    case no = "No"
-}
-
-enum ServiceTimeline: String, CaseIterable {
-    case asap = "ASAP"
-    case flexible = "Flexible"
-    case specificDate = "Specific Date"
-}
-
-enum DurationOption: String, CaseIterable {
-    case lessThanHour = "Less than 1 hour"
-    case oneToThree = "1-3 hours"
-    case fourToEight = "4-8 hours"
-    case fullDay = "Full day (8+ hours)"
-    case multipleDays = "Multiple days"
-    case custom = "Custom"
-}
-
 enum UploadState: Equatable {
     case idle
     case compressing
@@ -46,44 +19,52 @@ enum UploadState: Equatable {
 
 @Observable
 class CreateJobViewModel {
-    // MARK: - Tab 1: Job Details & Location
+    // MARK: - Tab 1: Basic Shift Info
     var jobName: String = ""
+    var selectedDates: Set<DateComponents> = []
+    var startTime: Date = Date()
+    var endTime: Date = Date().addingTimeInterval(3600 * 8)
+    var breakDuration: String = ""
+    var numberOfWorkersNeeded: String = "1"
+
+    // MARK: - Tab 2: Location
+    var branchName: String = ""
     var address: String = ""
-    var floor: String = ""
-    var unit: String = ""
+    var nearestLandmark: String = ""
     var city: String = ""
-
-    // MARK: - Tab 2: Pictures & Around
-    var selectedImage: UIImage?
-    var aroundOption: AroundOption = .you
-
-    // MARK: - Tab 3: Tools
-    var toolsNeeded: ToolsNeeded = .yes
-    var toolsDescription: String = ""
-
-    // MARK: - Tab 4: Price
-    var price: String = ""
-
-    // MARK: - Tab 5: Schedule & Duration
-    var serviceTimeline: ServiceTimeline = .flexible
-    var specificDate: Date = Date()
-    var durationOption: DurationOption = .oneToThree
-    var customDurationHours: String = ""
-
-    // MARK: - Tab 6: Details
-    var otherDetails: String = ""
-
-    // MARK: - Location & Service Properties
     var selectedLocation: CLLocationCoordinate2D?
     var selectedLocationName: String = ""
-    var description: String = ""
-    var currentUserId: String?
 
-    // MARK: - Service Category Tags
+    // MARK: - Tab 3: Pay
+    var price: String = ""
+    var paymentMethod: String = "Cash"
+    var paymentTiming: String = "Same Day"
+
+    // MARK: - Tab 4: Requirements (Optional)
+    var dressCode: String = ""
+    var minimumAge: String = ""
+    var genderPreference: String = "Any"
+    var physicalRequirements: String = ""
+    var languageNeeded: String = ""
+
+    // MARK: - Tab 5: Description & Details (Optional)
+    var otherDetails: String = ""
+    var whatToBring: String = ""
+    var selectedImage: UIImage?
+
+    // MARK: - Tab 6: Company Info
+    var companyName: String = ""
+    var industryCategory: String = ""
+    var contactPersonName: String = ""
+    var contactPersonPhone: String = ""
+
+    // MARK: - Metadata
+    var currentUserId: String?
     var selectedCategoryTags: Set<String> = []
 
     // MARK: - UI State
     var currentTab: Int = 0
+    var showValidationError: Bool = false
     var showSuccessModal: Bool = false
     var showImagePicker: Bool = false
     var showMapSheet: Bool = false
@@ -91,6 +72,7 @@ class CreateJobViewModel {
     var publishError: String?
     var showSummary: Bool = false
     var uploadState: UploadState = .idle
+    var showAddressSavedAlert: Bool = false
     var mapPosition: MapCameraPosition = .region(
         MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 26.8206, longitude: 30.8025),
@@ -102,102 +84,63 @@ class CreateJobViewModel {
     @ObservationIgnored
     var isTab1Valid: Bool {
         !jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !city.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        !selectedDates.isEmpty &&
+        (Int(numberOfWorkersNeeded) ?? 0) > 0
     }
 
     @ObservationIgnored
     var tab1ValidationError: String? {
-        if jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return "Job name is required"
-        }
-        if address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return "Address is required"
-        }
-        if city.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return "City is required"
-        }
+        if jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Job Title is required" }
+        if selectedDates.isEmpty { return "Please select at least one date" }
+        if (Int(numberOfWorkersNeeded) ?? 0) <= 0 { return "Need at least 1 worker" }
         return nil
     }
 
     @ObservationIgnored
     var isTab2Valid: Bool {
-        selectedImage != nil
+        !address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        selectedLocation != nil
     }
 
     @ObservationIgnored
     var tab2ValidationError: String? {
-        if selectedImage == nil {
-            return "Please select an image for the job"
-        }
+        if address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Address is required" }
+        if selectedLocation == nil { return "Please pinpoint the location on map" }
         return nil
     }
 
     @ObservationIgnored
     var isTab3Valid: Bool {
-        if toolsNeeded == .yes {
-            return !toolsDescription.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        }
-        return true
+        guard let p = Double(price), p > 0 else { return false }
+        return !paymentMethod.isEmpty && !paymentTiming.isEmpty
     }
 
     @ObservationIgnored
     var tab3ValidationError: String? {
-        if toolsNeeded == .yes && toolsDescription.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return "Please describe the tools needed"
-        }
+        guard let p = Double(price), p > 0 else { return "Please enter a valid pay amount" }
+        if paymentMethod.isEmpty { return "Payment Method is required" }
+        if paymentTiming.isEmpty { return "Payment Timing is required" }
         return nil
     }
 
     @ObservationIgnored
-    var isTab4Valid: Bool {
-        guard let priceValue = Double(price), priceValue > 0 else { return false }
-        return true
+    var isTab4Valid: Bool { true } // All optional
+
+    @ObservationIgnored
+    var isTab5Valid: Bool { true } // All optional
+
+    @ObservationIgnored
+    var isTab6Valid: Bool {
+        !companyName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !contactPersonName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !contactPersonPhone.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     @ObservationIgnored
-    var tab4ValidationError: String? {
-        if price.isEmpty {
-            return "Price is required"
-        }
-        guard let priceValue = Double(price) else {
-            return "Please enter a valid price"
-        }
-        if priceValue <= 0 {
-            return "Price must be greater than 0"
-        }
-        return nil
-    }
-
-    @ObservationIgnored
-    var isTab5Valid: Bool {
-        // If specific date is selected, date must be in the future
-        if serviceTimeline == .specificDate {
-            return specificDate > Date()
-        }
-        // If custom duration is selected, must have valid hours
-        if durationOption == .custom {
-            guard let hours = Double(customDurationHours), hours > 0 else { return false }
-            return true
-        }
-        return true
-    }
-
-    @ObservationIgnored
-    var tab5ValidationError: String? {
-        if serviceTimeline == .specificDate {
-            if specificDate <= Date() {
-                return "Please select a future date"
-            }
-        }
-        if durationOption == .custom {
-            if customDurationHours.isEmpty {
-                return "Please enter duration in hours"
-            }
-            guard let hours = Double(customDurationHours), hours > 0 else {
-                return "Please enter a valid duration"
-            }
-        }
+    var tab6ValidationError: String? {
+        if companyName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Company name is required" }
+        if contactPersonName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Contact name is required" }
+        if contactPersonPhone.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Phone number is required" }
         return nil
     }
 
@@ -209,24 +152,9 @@ class CreateJobViewModel {
         case 2: return isTab3Valid
         case 3: return isTab4Valid
         case 4: return isTab5Valid
-        case 5: return true
+        case 5: return isTab6Valid
         default: return false
         }
-    }
-
-    @ObservationIgnored
-    var isFormValid: Bool {
-        let isTitleValid = !jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        let isPriceValid = Double(price) ?? 0 > 0
-        let isImageValid = selectedImage != nil
-        let isLocationValid = selectedLocation != nil && !city.isEmpty
-
-        return isTitleValid && isPriceValid && isImageValid && isLocationValid
-    }
-
-    // MARK: - Navigation
-    func canPublish() -> Bool {
-        return isTab1Valid && isTab2Valid && isTab3Valid && isTab4Valid && isTab5Valid
     }
 
     @ObservationIgnored
@@ -235,55 +163,47 @@ class CreateJobViewModel {
         case 0: return tab1ValidationError
         case 1: return tab2ValidationError
         case 2: return tab3ValidationError
-        case 3: return tab4ValidationError
-        case 4: return tab5ValidationError
-        case 5: return nil
+        case 3: return nil
+        case 4: return nil
+        case 5: return tab6ValidationError
         default: return nil
         }
     }
+    
+    @ObservationIgnored
+    var isFormValid: Bool {
+        return isTab1Valid && isTab2Valid && isTab3Valid && isTab4Valid && isTab5Valid && isTab6Valid
+    }
 
     func nextTab() {
+        showValidationError = false
         if currentTab < 5 {
             currentTab += 1
         }
     }
 
     func previousTab() {
+        showValidationError = false
         if currentTab > 0 {
             currentTab -= 1
         }
     }
-
+    
     // MARK: - Image Compression
     func compressImage(_ image: UIImage, quality: CGFloat = 0.7) -> UIImage? {
         guard let data = image.jpegData(compressionQuality: quality) else { return nil }
         return UIImage(data: data)
     }
 
-    // MARK: - Schedule Helpers
-    func getEstimatedDurationHours() -> Double? {
-        switch durationOption {
-        case .lessThanHour: return 0.5
-        case .oneToThree: return 2.0
-        case .fourToEight: return 6.0
-        case .fullDay: return 8.0
-        case .multipleDays: return 24.0
-        case .custom: return Double(customDurationHours)
-        }
-    }
-
-    func getServiceDate() -> Date? {
-        return serviceTimeline == .specificDate ? specificDate : nil
-    }
-
     // MARK: - Service Creation
-    func createService(category: ServiceCategoryType) -> JobService? {
-        guard isFormValid else { return nil }
-        guard let priceValue = Double(price) else { return nil }
-        guard let providerId = currentUserId else { return nil }
+    
+    /// Generates multiple shifts if multiple dates are selected
+    func createServices(category: ServiceCategoryType) -> [JobService] {
+        guard let priceValue = Double(price) else { return [] }
+        guard let providerId = currentUserId else { return [] }
 
         let serviceLocation = ServiceLocation(
-            name: city,
+            name: city.isEmpty ? "Location" : city,
             coordinate: selectedLocation
         )
 
@@ -293,56 +213,69 @@ class CreateJobViewModel {
             localImage: selectedImage
         )
 
-        return JobService(
-            title: jobName,
-            price: priceValue,
-            location: serviceLocation,
-            description: otherDetails,
-            image: serviceImage,
-            category: category,
-            providerId: providerId,
-            address: address,
-            floor: floor,
-            unit: unit,
-            someoneAround: aroundOption != .noOne,
-            specialTools: toolsNeeded == .yes ? toolsDescription : nil,
-            serviceDate: getServiceDate(),
-            estimatedDurationHours: getEstimatedDurationHours(),
-            status: .published
-        )
+        var generatedServices: [JobService] = []
+        let calendar = Calendar.current
+        
+        var estDuration = endTime.timeIntervalSince(startTime) / 3600.0
+        if estDuration < 0 {
+            estDuration += 24.0 // Handle over-midnight shifts
+        }
+        
+        for dateComp in selectedDates {
+            guard let date = calendar.date(from: dateComp) else { continue }
+            
+            // Combine selected date with start time
+            let hour = calendar.component(.hour, from: startTime)
+            let minute = calendar.component(.minute, from: startTime)
+            var finalDateComp = calendar.dateComponents([.year, .month, .day], from: date)
+            finalDateComp.hour = hour
+            finalDateComp.minute = minute
+            
+            let finalServiceDate = calendar.date(from: finalDateComp) ?? date
+
+            let job = JobService(
+                title: jobName,
+                price: priceValue,
+                location: serviceLocation,
+                description: otherDetails,
+                image: serviceImage,
+                category: category,
+                providerId: providerId,
+                address: address,
+                floor: "",
+                unit: "",
+                breakDuration: breakDuration.isEmpty ? nil : breakDuration,
+                numberOfWorkersNeeded: Int(numberOfWorkersNeeded) ?? 1,
+                branchName: branchName.isEmpty ? nil : branchName,
+                nearestLandmark: nearestLandmark.isEmpty ? nil : nearestLandmark,
+                paymentMethod: paymentMethod,
+                paymentTiming: paymentTiming,
+                dressCode: dressCode.isEmpty ? nil : dressCode,
+                minimumAge: minimumAge.isEmpty ? nil : minimumAge,
+                genderPreference: genderPreference,
+                physicalRequirements: physicalRequirements.isEmpty ? nil : physicalRequirements,
+                languageNeeded: languageNeeded.isEmpty ? nil : languageNeeded,
+                whatToBring: whatToBring.isEmpty ? nil : whatToBring,
+                companyName: companyName,
+                industryCategory: industryCategory.isEmpty ? nil : industryCategory,
+                contactPersonName: contactPersonName,
+                contactPersonPhone: contactPersonPhone,
+                someoneAround: false,
+                specialTools: nil,
+                serviceDate: finalServiceDate,
+                estimatedDurationHours: estDuration > 0 ? estDuration : 1.0,
+                status: .published
+            )
+            generatedServices.append(job)
+        }
+        
+        return generatedServices
     }
 
-    func createServiceDraft(category: ServiceCategoryType) -> JobService? {
-        guard let priceValue = Double(price), !jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
-        guard let providerId = currentUserId else { return nil }
-
-        let serviceLocation = ServiceLocation(
-            name: city,
-            coordinate: selectedLocation
-        )
-
-        let serviceImage = ServiceImage(
-            localId: UUID().uuidString,
-            remoteURL: nil,
-            localImage: selectedImage
-        )
-
-        return JobService(
-            title: jobName,
-            price: priceValue,
-            location: serviceLocation,
-            description: otherDetails,
-            image: serviceImage,
-            category: category,
-            providerId: providerId,
-            address: address,
-            floor: floor,
-            unit: unit,
-            someoneAround: aroundOption != .noOne,
-            specialTools: toolsNeeded == .yes ? toolsDescription : nil,
-            serviceDate: getServiceDate(),
-            estimatedDurationHours: getEstimatedDurationHours(),
-            status: .draft
-        )
+    // MARK: - Address Auto-fill
+    func applyDefaultAddress(_ addressData: SavedAddress?) {
+        guard let addressData = addressData else { return }
+        self.address = addressData.address
+        self.city = addressData.city
     }
 }

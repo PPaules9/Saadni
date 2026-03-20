@@ -22,18 +22,24 @@ final class AppCoordinator {
     // MARK: - Role Management
 
     func setupCoordinator(for user: User) {
-        // Clean up existing coordinators
-        jobSeekerCoordinator = nil
-        serviceProviderCoordinator = nil
-
-        // Create new coordinator based on role
-        if user.isJobSeeker {
-            jobSeekerCoordinator = JobSeekerCoordinator()
-        } else if user.isServiceProvider {
-            serviceProviderCoordinator = ServiceProviderCoordinator()
+        // Create new coordinator based on role only if it doesn't exist
+        // to prevent dropping navigation state when user model updates
+        if user.isServiceProvider {
+            if serviceProviderCoordinator == nil {
+                serviceProviderCoordinator = ServiceProviderCoordinator()
+                jobSeekerCoordinator = nil
+            }
+        } else if user.isJobSeeker {
+            if jobSeekerCoordinator == nil {
+                jobSeekerCoordinator = JobSeekerCoordinator()
+                serviceProviderCoordinator = nil
+            }
         } else {
             // Default fallback
-            jobSeekerCoordinator = JobSeekerCoordinator()
+            if jobSeekerCoordinator == nil {
+                jobSeekerCoordinator = JobSeekerCoordinator()
+                serviceProviderCoordinator = nil
+            }
         }
     }
 

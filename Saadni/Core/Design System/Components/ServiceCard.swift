@@ -22,9 +22,8 @@ struct ServiceCard: View {
   return service.providerId == currentUserId
  }
 
- var body: some View {
-  Button(action: navigateToDetail) {
-   ZStack() {
+ private var cardContent: some View {
+  ZStack() {
     // Background Image
     Group {
      if let uiImage = service.image.localImage {
@@ -110,7 +109,16 @@ struct ServiceCard: View {
 
    }
    .clipShape(RoundedRectangle(cornerRadius: 15))
-   .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 15))
+ }
+
+ var body: some View {
+  Button(action: navigateToDetail) {
+   if #available(iOS 26, *) {
+    cardContent
+     .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 15))
+   } else {
+    cardContent
+   }
   }
  }
 
@@ -134,7 +142,7 @@ struct ServiceCard: View {
     location: ServiceLocation(name: "Cairo, Egypt", latitude: nil, longitude: nil),
     description: "Need help cleaning my apartment",
     image: ServiceImage(),
-    category: .homeCleaning,
+		category: .foodAndBeverage,
     providerId: "provider_1"
    )
   )

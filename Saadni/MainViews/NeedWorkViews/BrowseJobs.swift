@@ -11,7 +11,12 @@ struct BrowseJobs: View {
  @State private var searchText = ""
  @State private var sortOption: SortOption = .none
  @State private var selectedCategory: ServiceCategoryType? = nil
+ @State var selectedDate: Date?
  @Environment(ServicesStore.self) var servicesStore
+
+ init(selectedDate: Date? = nil) {
+  _selectedDate = State(initialValue: selectedDate)
+ }
 
  enum SortOption {
   case none
@@ -26,7 +31,7 @@ struct BrowseJobs: View {
    location: ServiceLocation(name: "Cairo, Egypt", latitude: nil, longitude: nil),
    description: "Need help cleaning my apartment",
    image: ServiceImage(),
-   category: .homeCleaning,
+   category: .cleaningAndMaintenance,
    providerId: "provider_1"
   ),
   JobService(
@@ -35,7 +40,7 @@ struct BrowseJobs: View {
    location: ServiceLocation(name: "Giza, Egypt", latitude: nil, longitude: nil),
    description: "Looking for experienced babysitter",
    image: ServiceImage(),
-   category: .babySitting,
+   category: .communityAndOutdoor,
    providerId: "provider_2"
   ),
   JobService(
@@ -44,7 +49,7 @@ struct BrowseJobs: View {
    location: ServiceLocation(name: "Alexandria, Egypt", latitude: nil, longitude: nil),
    description: "Need assistance moving to new apartment",
    image: ServiceImage(),
-   category: .helpMoving,
+   category: .movingAndLabour,
    providerId: "provider_3"
   )
  ]
@@ -63,6 +68,13 @@ struct BrowseJobs: View {
   if let selectedCategory = selectedCategory {
    services = services.filter { $0.category == selectedCategory }
   }
+  
+  if let date = selectedDate {
+   services = services.filter { service in
+    guard let sDate = service.serviceDate else { return false }
+    return Calendar.current.isDate(sDate, inSameDayAs: date)
+   }
+  }
 
   switch sortOption {
   case .none:
@@ -80,6 +92,28 @@ struct BrowseJobs: View {
     .ignoresSafeArea()
 
    VStack(spacing: 0) {
+    
+    // Active Filters Bar
+    if selectedDate != nil {
+     HStack {
+      Text("Filtered by Date: \(selectedDate!.formatted(date: .abbreviated, time: .omitted))")
+       .font(.caption)
+       .fontWeight(.semibold)
+       .foregroundStyle(Color.accentColor)
+      
+      Spacer()
+      
+      Button(action: { selectedDate = nil }) {
+       Image(systemName: "xmark.circle.fill")
+        .foregroundStyle(.gray)
+      }
+     }
+     .padding(.horizontal)
+     .padding(.vertical, 8)
+     .background(Color.accentColor.opacity(0.1))
+    }
+    
+    // Category Scroll
     ScrollView(.horizontal, showsIndicators: false) {
      HStack(spacing: 8) {
       Button(action: { selectedCategory = nil }) {

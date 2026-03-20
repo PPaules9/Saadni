@@ -24,6 +24,7 @@ class AuthenticationManager: AuthProvider {
  private var authStateHandle: AuthStateDidChangeListenerHandle?
  private let userCache: UserCache
  private let appStateManager: AppStateManager
+ @ObservationIgnored private var isAuthFlowActive = false
 
  var isAuthenticated: Bool {
   if case .authenticated = authState {
@@ -69,7 +70,7 @@ class AuthenticationManager: AuthProvider {
       await MainActor.run {
        self.authState = .authenticated(cachedUser)
       }
-     } else {
+     } else if !self.isAuthFlowActive {
       // New user - create with default values
       let user = User(from: firebaseUser)
 
@@ -94,21 +95,30 @@ class AuthenticationManager: AuthProvider {
  
  /// Sign in with email and password
  func signIn(email: String, password: String) async throws {
+  isAuthFlowActive = true
+  defer { isAuthFlowActive = false }
   authState = .authenticating
   errorMessage = nil
 
   do {
    let authResult = try await Auth.auth().signIn(withEmail: email, password: password)
-   let user = User(from: authResult.user)
+   
+   // Load existing user from Firestore instead of creating new default values
+   await userCache.loadUser(id: authResult.user.uid)
 
-   // Update cache and auth state
-   await userCache.updateUser(user)
-   await MainActor.run {
-    self.authState = .authenticated(user)
+   if let existingUser = userCache.currentUser {
+    await MainActor.run {
+     self.authState = .authenticated(existingUser)
+    }
+   } else {
+    // Fallback if user doesn't exist in Firestore
+    let user = User(from: authResult.user)
+    await userCache.updateUser(user)
+    await MainActor.run {
+     self.authState = .authenticated(user)
+    }
+    await updateUserInFirestore(user)
    }
-
-   // Ensure user exists in Firestore
-   await updateUserInFirestore(user)
   } catch {
    authState = .unauthenticated
    errorMessage = error.localizedDescription
@@ -118,6 +128,8 @@ class AuthenticationManager: AuthProvider {
  
  /// Create account with email and password
  func signUp(email: String, password: String, fullName: String) async throws {
+  isAuthFlowActive = true
+  defer { isAuthFlowActive = false }
   authState = .authenticating
   errorMessage = nil
 
@@ -150,20 +162,29 @@ class AuthenticationManager: AuthProvider {
  
  /// Sign in anonymously (useful for testing)
  func signInAnonymously() async throws {
+  isAuthFlowActive = true
+  defer { isAuthFlowActive = false }
   authState = .authenticating
   errorMessage = nil
 
   do {
    let authResult = try await Auth.auth().signInAnonymously()
-   let user = User(from: authResult.user)
+   
+   // Load existing anonymous user instead of creating new default values
+   await userCache.loadUser(id: authResult.user.uid)
 
-   // Update cache and auth state
-   await userCache.updateUser(user)
-   await MainActor.run {
-    self.authState = .authenticated(user)
+   if let existingUser = userCache.currentUser {
+    await MainActor.run {
+     self.authState = .authenticated(existingUser)
+    }
+   } else {
+    let user = User(from: authResult.user)
+    await userCache.updateUser(user)
+    await MainActor.run {
+     self.authState = .authenticated(user)
+    }
+    await updateUserInFirestore(user)
    }
-
-   await updateUserInFirestore(user)
   } catch {
    authState = .unauthenticated
    errorMessage = error.localizedDescription
@@ -185,6 +206,31 @@ class AuthenticationManager: AuthProvider {
   }
  }
  
+ /// Delete account
+ func deleteAccount() async throws {
+  guard let firebaseUser = Auth.auth().currentUser else {
+   throw NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "No current user to delete."])
+  }
+  
+  let uid = firebaseUser.uid
+  
+  // 1. Delete all Firestore data related to user
+  try await FirestoreService.shared.deleteUserData(userId: uid)
+  
+  // 2. Delete the Firebase Auth User
+  try await firebaseUser.delete()
+  
+  // 3. Clear cache and update auth state
+  self.userCache.clearCache()
+  await MainActor.run {
+   self.authState = .unauthenticated
+  }
+  
+  // 4. Reset onboarding flag
+  try await appStateManager.resetForNextUser()
+  print("✅ Account completely deleted and onboarding reset")
+ }
+ 
  // MARK: - Firestore Integration
  private func updateUserInFirestore(_ user: User) async {
   do {
@@ -202,4 +248,3 @@ class AuthenticationManager: AuthProvider {
   }
  }
 }
-

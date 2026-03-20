@@ -6,96 +6,145 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct CreateJobTab2: View {
     @Bindable var viewModel: CreateJobViewModel
 
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(spacing: 24) {
-                // Picture Section
-                VStack(spacing: 12) {
-                    HStack(spacing: 4) {
-                        Text("Post a Picture")
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                        Text("*")
-                            .foregroundStyle(.red)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(viewModel.selectedImage != nil ? Colors.swiftUIColor(.textPrimary) : Color.red.opacity(0.05))
-                            .strokeBorder(viewModel.selectedImage == nil ? Color.red.opacity(0.5) : Color.clear, lineWidth: 2)
-
-                        if let image = viewModel.selectedImage {
-                            VStack(alignment: .trailing) {
-                                HStack {
-                                    Spacer()
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .font(.system(size: 24))
-                                        .foregroundStyle(.green)
-                                        .padding(8)
-                                }
-
-                                Spacer()
-
-                                Image(uiImage: image)
-                                  .resizable()
-                                  .scaledToFill()
-                                  .frame(maxWidth: .infinity, maxHeight: 200)
-                                  .clipped()
-                            }
-                        } else {
-                            VStack(spacing: 12) {
-                                Image(systemName: "camera.fill")
-                                    .font(.system(size: 36))
-                                    .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-                                Text("Tap to add a photo")
-                                    .font(.subheadline)
-                                    .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-                            }
-                        }
-                    }
-                    .frame(height: 200)
-                    .onTapGesture {
-                        viewModel.showImagePicker = true
-                    }
-                }
-
-                Divider()
-
-                // Around Section
-                VStack(spacing: 12) {
-                    Text("Will there be someone around?")
+                // Address Header
+                HStack(spacing: 4) {
+                    Text("Location Details")
                         .font(.headline)
                         .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                    VStack(spacing: 8) {
-                        ForEach(AroundOption.allCases, id: \.self) { option in
-                            Button(action: { viewModel.aroundOption = option }) {
-                                HStack {
-                                    Image(systemName: viewModel.aroundOption == option ? "checkmark.circle.fill" : "circle")
-                                        .foregroundStyle(viewModel.aroundOption == option ? Color.accent : Color.gray)
-
-                                    Text(option.rawValue)
-                                        .foregroundStyle(Colors.swiftUIColor(.textMain))
-
-                                    Spacer()
-                                }
-                                .padding(12)
-                                .background(viewModel.aroundOption == option ? Color.accent.opacity(0.1) : Colors.swiftUIColor(.textPrimary))
-                                .cornerRadius(12)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                // Branch Name
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Branch Name (Optional)")
+                        .font(.subheadline)
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                    BrandTextField(hasTitle: false, title: "", placeholder: "e.g., Downtown Branch", text: $viewModel.branchName)
+                }
+                
+                // City
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 4) {
+                        Text("City")
+                            .font(.subheadline)
+                            .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                        Text("*").foregroundStyle(.red)
+                    }
+                    BrandTextField(hasTitle: false, title: "", placeholder: "e.g., Cairo", text: $viewModel.city)
+                }
+                
+                // Address
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 4) {
+                        Text("Full Address")
+                            .font(.subheadline)
+                            .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                        Text("*").foregroundStyle(.red)
+                    }
+                    BrandTextField(hasTitle: false, title: "", placeholder: "Street, Building, Floor", text: $viewModel.address)
+                }
+                
+                // Landmark
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Nearest Landmark (Optional)")
+                        .font(.subheadline)
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                    BrandTextField(hasTitle: false, title: "", placeholder: "e.g., Next to Starbucks", text: $viewModel.nearestLandmark)
+                }
+                
+                // Map Section
+                VStack(spacing: 12) {
+                    HStack(spacing: 4) {
+                        Text("Pinpoint on Map")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                        Text("*").foregroundStyle(.red)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    Button(action: {
+                        viewModel.showMapSheet = true
+                    }) {
+                        HStack {
+                            Image(systemName: "map.fill")
+                                .foregroundStyle(Color.accent)
+                            Text(viewModel.selectedLocation != nil ? "Location Selected" : "Tap to open map")
+                                .font(.subheadline)
+                                .fontWeight(viewModel.selectedLocation != nil ? .semibold : .regular)
+                                .foregroundStyle(viewModel.selectedLocation != nil ? Color.accent : Colors.swiftUIColor(.textSecondary))
+                            Spacer()
+                            if viewModel.selectedLocation != nil {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.green)
+                            } else {
+                                Image(systemName: "chevron.right")
+                                    .foregroundStyle(Colors.swiftUIColor(.textSecondary))
                             }
                         }
+                        .padding()
+                        .background(viewModel.selectedLocation != nil ? Color.accent.opacity(0.1) : Colors.swiftUIColor(.textPrimary))
+                        .cornerRadius(12)
                     }
                 }
-
+                
                 Spacer()
             }
             .padding()
+        }
+        .sheet(isPresented: $viewModel.showMapSheet) {
+            MapSelectionView(viewModel: viewModel)
+        }
+    }
+}
+
+struct MapSelectionView: View {
+    @Bindable var viewModel: CreateJobViewModel
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        NavigationStack {
+            Map(position: $viewModel.mapPosition) {
+                if let coord = viewModel.selectedLocation {
+                    Annotation("Selected", coordinate: coord) {
+                        Image(systemName: "mappin.circle.fill")
+                            .font(.title)
+                            .foregroundStyle(Color.accent)
+                    }
+                }
+            }
+            .onMapCameraChange(frequency: .onEnd) { context in
+                viewModel.selectedLocation = context.region.center
+            }
+            .overlay(alignment: .center) {
+                if viewModel.selectedLocation == nil {
+                    Image(systemName: "mappin")
+                        .font(.largeTitle)
+                        .foregroundStyle(Color.accent)
+                        .offset(y: -15)
+                }
+            }
+            .overlay(alignment: .bottom) {
+                Button("Confirm Location") {
+                    dismiss()
+                }
+                .buttonStyle(.borderedProminent)
+                .padding(.bottom, 30)
+            }
+            .navigationTitle("Select Location")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") { dismiss() }
+                }
+            }
         }
     }
 }

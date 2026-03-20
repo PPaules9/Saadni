@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct LaunchScreen: View {
  @State private var isAnimating = false
@@ -16,51 +17,29 @@ struct LaunchScreen: View {
    Color.accent
     .ignoresSafeArea()
    
-   Color.black.opacity(0.83) // adjust 0.2–0.6 as needed
-    .ignoresSafeArea()
-   
-   
-   
    VStack(spacing: 40) {
-    Spacer()
-    
-    // Logo/App Icon
-    VStack(spacing: 20) {
-     
-     Image("icon")
-      .resizable()
-      .scaledToFit()
-      .frame(width: 100, height: 100)
-      .padding()
-     
+		 Spacer()
+		 
+		 
+		 VStack(spacing: 0) {
+		 KFAnimatedImage(source: .provider(
+			LocalFileImageDataProvider(fileURL: Bundle.main.url(forResource: "onBoarding", withExtension: "gif")!)
+		 ))
+		 .configure { view in view.repeatCount = .finite(count: 3) }
+		 .scaledToFit()
+		 .frame(width: 300, height: 300)
      
      // App Name
-     Text("Sa3dni - ساعدني")
-      .font(.system(size: 36, weight: .bold))
-      .foregroundColor(.white)
+     Text("Saedni")
+				 .font(.title)
+				 .fontDesign(.monospaced)
+				 .fontWeight(.regular)
+				 .bold()
+				 .foregroundStyle(Colors.swiftUIColor(.textMain))
      
-     Text("Connecting Services & Opportunities")
-      .font(.system(size: 14, weight: .medium))
-      .foregroundColor(Colors.swiftUIColor(.textSecondary))
-      .multilineTextAlignment(.center)
-      .padding(.horizontal, 40)
     }
-    
     Spacer()
-    
-    // Loading Indicator
-    VStack(spacing: 20) {
-     ProgressView()
-      .scaleEffect(1.2)
-      .tint(.white)
-     
-     Text("Loading...")
-      .font(.system(size: 14, weight: .medium))
-      .foregroundColor(.white)
-    }
-    
     Spacer()
-     .frame(height: 60)
    }
   }
  }

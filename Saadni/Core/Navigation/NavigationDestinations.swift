@@ -34,16 +34,16 @@ enum ServiceProviderTab: String, CaseIterable {
     case home
     case chat
     case myJobs
-    case profile
     case search
+	case profile
 
     var title: String {
         switch self {
         case .home: return "Home"
         case .chat: return "Chat"
         case .myJobs: return "Jobs"
-        case .search: return "Search"
         case .profile: return "Profile"
+				case .search: return "Search"
         }
     }
 
@@ -52,8 +52,8 @@ enum ServiceProviderTab: String, CaseIterable {
         case .home: return "house"
         case .chat: return "text.bubble.fill"
         case .myJobs: return "bag.fill"
-        case .profile: return "person.fill"
         case .search: return "magnifyingglass"
+				case .profile: return "person.fill"
         }
     }
 }

@@ -9,75 +9,79 @@ import SwiftUI
 
 struct CreateJobTab6: View {
     @Bindable var viewModel: CreateJobViewModel
-    let onPublish: () -> Void
-
+    var onPublish: () -> Void
+    
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                Text("Any other details you want to add?")
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 24) {
+                Text("Your Company Information")
                     .font(.headline)
                     .fontWeight(.semibold)
                     .frame(maxWidth: .infinity, alignment: .leading)
-
-                BrandTextEditor(
-                    hasTitle: true,
-                    title: "Additional Details",
-                    placeholder: "Share any additional information about the job...",
-                    text: $viewModel.otherDetails
-                )
-
-                // Summary
-                VStack(spacing: 12) {
-                    Divider()
-
-                    VStack(spacing: 8) {
-                        HStack {
-                            Text("Job Name:")
-                                .font(.subheadline)
-                                .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-                            Spacer()
-                            Text(viewModel.jobName)
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-                        }
-
-                        HStack {
-                            Text("Location:")
-                                .font(.subheadline)
-                                .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-                            Spacer()
-                            Text(viewModel.city)
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-                        }
-
-                        HStack {
-                            Text("Budget:")
-                                .font(.subheadline)
-                                .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-                            Spacer()
-                            Text("\(viewModel.price) EGP")
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-                        }
+                
+                Text("This information will be associated with your shift postings to help students verify employers.")
+                    .font(.caption)
+                    .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                // Company Name
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 4) {
+                        Text("Company/Brand Name")
+                            .font(.subheadline)
+                            .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                        Text("*").foregroundStyle(.red)
                     }
-                    .padding(12)
-                    .background(Colors.swiftUIColor(.textPrimary))
-                    .cornerRadius(12)
+                    BrandTextField(hasTitle: false, title: "", placeholder: "e.g., McDonald's, Zara", text: $viewModel.companyName)
                 }
 
-                VStack(spacing: 12) {
-                    BrandButton(
-                        "Publish the Job",
-                        hasIcon: true,
-                        icon: "paperplane.fill",
-                        secondary: false
-                    ) {
+                // Industry
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Industry Category (Optional)")
+                        .font(.subheadline)
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                    BrandTextField(hasTitle: false, title: "", placeholder: "e.g., Fast Food, Retail", text: $viewModel.industryCategory)
+                }
+
+                // Contact Name
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 4) {
+                        Text("Contact Person Name")
+                            .font(.subheadline)
+                            .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                        Text("*").foregroundStyle(.red)
+                    }
+                    BrandTextField(hasTitle: false, title: "", placeholder: "Name", text: $viewModel.contactPersonName)
+                }
+
+                // Contact Phone
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 4) {
+                        Text("Contact Phone")
+                            .font(.subheadline)
+                            .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                        Text("*").foregroundStyle(.red)
+                    }
+                    BrandTextField(hasTitle: false, title: "", placeholder: "Phone Number", text: $viewModel.contactPersonPhone)
+                }
+
+                Button(action: {
+                    if viewModel.isTab6Valid {
+                        viewModel.showValidationError = false
                         onPublish()
+                    } else {
+                        viewModel.showValidationError = true
                     }
-                    .disabled(!viewModel.canPublish())
+                }) {
+                    Text("Review Shift(s)")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.accent)
+                        .foregroundStyle(.white)
+                        .cornerRadius(12)
                 }
-                .padding(.top, 8)
+                .padding(.top, 16)
 
                 Spacer()
             }
