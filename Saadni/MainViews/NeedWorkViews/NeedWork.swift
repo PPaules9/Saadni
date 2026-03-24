@@ -46,9 +46,6 @@ struct NeedWork: View {
 				}
 				
 			}
-			.tint(.accent)
-		
-	
 		} else {
 			NeedWorkView()
 		}
@@ -100,6 +97,17 @@ struct NeedWork: View {
  }
 
  @ViewBuilder
+ private func tabContent(for tab: JobSeekerTab, coordinator: JobSeekerCoordinator) -> some View {
+  let binding = coordinator.pathBinding(for: tab)
+  NavigationStack(path: binding) {
+   rootView(for: tab)
+    .navigationDestination(for: JobSeekerDestination.self) { destination in
+     destinationView(for: destination)
+    }
+  }
+ }
+
+ @ViewBuilder
  private func rootView(for tab: ServiceProviderTab) -> some View {
   switch tab {
   case .home:
@@ -112,7 +120,22 @@ struct NeedWork: View {
 		BrowseJobs()
   case .profile:
    ProfileView()
- 
+  }
+ }
+
+ @ViewBuilder
+ private func rootView(for tab: JobSeekerTab) -> some View {
+  switch tab {
+  case .dashboard:
+   DashboardView()
+  case .chat:
+   ChatView()
+//  case .addJob:
+   CreateJobSheet(selectedCategory: ServiceCategoryType.communityAndOutdoor.rawValue, initialJobName: nil)
+  case .myJobs:
+   AppliedJobsView()
+  case .profile:
+   ProfileView()
   }
  }
 
@@ -131,11 +154,25 @@ struct NeedWork: View {
      .environment(conversationsStore)
      .environment(MessagesStore())
    } else {
-    // Fallback: conversation not loaded yet
     ProgressView()
-     .onAppear {
-      // Conversation will load via real-time listener
-     }
+   }
+  }
+ }
+
+ @ViewBuilder
+ private func destinationView(for destination: JobSeekerDestination) -> some View {
+  switch destination {
+  case .serviceDetail(let service):
+   ServiceDetailView(service: service)
+  case .categoryDetail(let category):
+   Text("Category: \(category.rawValue)") // Placeholder
+  case .chatDetail(let conversationId):
+   if let conversation = conversationsStore.getConversationById(conversationId) {
+    ChatDetailView(conversation: conversation)
+     .environment(conversationsStore)
+     .environment(MessagesStore())
+   } else {
+    ProgressView()
    }
   }
  }

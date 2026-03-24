@@ -116,6 +116,7 @@
 		226B50272F66234D00C09676 /* ServiceCategoryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50252F66234D00C09676 /* ServiceCategoryCard.swift */; };
 		227C499B2F6D5982001E2381 /* MyAddressesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227C499A2F6D5981001E2381 /* MyAddressesView.swift */; };
 		227C499F2F6D7F54001E2381 /* onBoarding.gif in Resources */ = {isa = PBXBuildFile; fileRef = 227C499E2F6D7F54001E2381 /* onBoarding.gif */; };
+		227C49A32F72D40A001E2381 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 227C49A22F72D40A001E2381 /* Localizable.xcstrings */; };
 		22B999FF2F5F1A8A00B3E070 /* StateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B999FE2F5F1A8A00B3E070 /* StateKey.swift */; };
 		22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */; };
 		22EFE4002F6AA98C00C5EBBB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EFE3FF2F6AA98C00C5EBBB /* AppDelegate.swift */; };
@@ -239,8 +240,10 @@
 		226B50242F66234D00C09676 /* ErrorStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorStateView.swift; sourceTree = "<group>"; };
 		226B50252F66234D00C09676 /* ServiceCategoryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCategoryCard.swift; sourceTree = "<group>"; };
 		227C499A2F6D5981001E2381 /* MyAddressesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAddressesView.swift; sourceTree = "<group>"; };
-		227C499C2F6D6F30001E2381 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Library/Mobile Documents/com~apple~CloudDocs/Developer/My Apps/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
 		227C499E2F6D7F54001E2381 /* onBoarding.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = onBoarding.gif; sourceTree = "<group>"; };
+		227C49A02F72D359001E2381 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Saadni.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		227C49A12F72D359001E2381 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		227C49A22F72D40A001E2381 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		22B999FE2F5F1A8A00B3E070 /* StateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateKey.swift; sourceTree = "<group>"; };
 		22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		22EFE3FF2F6AA98C00C5EBBB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -360,6 +363,7 @@
 				22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */,
 				2236A1482F50949000A7A19F /* Assets.xcassets */,
 				2236A1492F50949000A7A19F /* Saadni.icon */,
+				227C49A22F72D40A001E2381 /* Localizable.xcstrings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -417,6 +421,7 @@
 		2236A16B2F50949000A7A19F /* Saadni */ = {
 			isa = PBXGroup;
 			children = (
+				227C49A12F72D359001E2381 /* Info.plist */,
 				22FD36DA2F57168300AF3127 /* App */,
 				22FD35F62F56E83E00AF3127 /* Modules */,
 				2236A14B2F50949000A7A19F /* Core */,
@@ -614,6 +619,7 @@
 			children = (
 				2264A02C2F4C6C110004B2B4 /* README.md */,
 				2236A16B2F50949000A7A19F /* Saadni */,
+				227C49A02F72D359001E2381 /* Saadni.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -771,7 +777,7 @@
 				226B500F2F65A5F700C09676 /* Kingfisher */,
 			);
 			productName = Saadni;
-			productReference = 227C499C2F6D6F30001E2381 /* Saadni.app */;
+			productReference = 227C49A02F72D359001E2381 /* Saadni.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -795,6 +801,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ar,
 			);
 			mainGroup = 228B2C752F36048800A4441B;
 			minimizedProjectReferenceProxies = 1;
@@ -819,6 +826,7 @@
 			files = (
 				227C499F2F6D7F54001E2381 /* onBoarding.gif in Resources */,
 				2236A18C2F50949000A7A19F /* Assets.xcassets in Resources */,
+				227C49A32F72D40A001E2381 /* Localizable.xcstrings in Resources */,
 				2236A18D2F50949000A7A19F /* Saadni.icon in Resources */,
 				22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */,
 				2264A02D2F4C6C110004B2B4 /* README.md in Resources */,
@@ -1016,6 +1024,7 @@
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -1074,6 +1083,7 @@
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1089,6 +1099,7 @@
 				DEVELOPMENT_TEAM = VH2NKLHXDK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Saadni/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Saedni - ساعدني";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We would like to take a photo using your camera.";
@@ -1130,6 +1141,7 @@
 				DEVELOPMENT_TEAM = VH2NKLHXDK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Saadni/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Saedni - ساعدني";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We would like to take a photo using your camera.";

@@ -1,0 +1,610 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+
+    },
+    "*" : {
+
+    },
+    "%@ • Floor %@, Unit %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ • Floor %2$@, Unit %3$@"
+          }
+        }
+      }
+    },
+    "%lld" : {
+
+    },
+    "%lld shift(s) successfully published." : {
+
+    },
+    "%lld/500" : {
+
+    },
+    "4.76" : {
+
+    },
+    "About This Job" : {
+
+    },
+    "Add" : {
+
+    },
+    "Add Service View" : {
+
+    },
+    "Address Saved" : {
+
+    },
+    "All" : {
+
+    },
+    "All fields here are optional. Provide details if your shift requires them." : {
+
+    },
+    "Already Applied" : {
+
+    },
+    "Already have an account? " : {
+
+    },
+    "Application Detail Sheet" : {
+
+    },
+    "Application Sent!" : {
+
+    },
+    "Applications List for %@" : {
+
+    },
+    "Applications List Sheet" : {
+
+    },
+    "Applied" : {
+
+    },
+    "Apply for Job" : {
+
+    },
+    "Apply for This Job" : {
+
+    },
+    "Apply Sheet for %@" : {
+
+    },
+    "Archive" : {
+
+    },
+    "Available Shifts Near You" : {
+
+    },
+    "Branch Name (Optional)" : {
+
+    },
+    "Break (Optional)" : {
+
+    },
+    "Briefly describe the tasks..." : {
+
+    },
+    "Browse Jobs...." : {
+
+    },
+    "Call" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Category: %@" : {
+
+    },
+    "Chat" : {
+
+    },
+    "Chats" : {
+
+    },
+    "Choose how you want to use Saadni" : {
+
+    },
+    "Choose Photo" : {
+
+    },
+    "City" : {
+
+    },
+    "Close" : {
+
+    },
+    "Company/Brand Name" : {
+
+    },
+    "Complete Service" : {
+
+    },
+    "Completed %@" : {
+
+    },
+    "Completed Services" : {
+
+    },
+    "Compressing image..." : {
+
+    },
+    "Confirm Completion" : {
+
+    },
+    "Confirm Location" : {
+
+    },
+    "Contact Person Name" : {
+
+    },
+    "Contact Phone" : {
+
+    },
+    "Continue as Guest" : {
+
+    },
+    "Could not load names" : {
+
+    },
+    "Counter-offer a different price if needed" : {
+
+    },
+    "Cover Message (Optional)" : {
+
+    },
+    "Cover Photo (Optional)" : {
+
+    },
+    "Create your account" : {
+
+    },
+    "Current Role" : {
+
+    },
+    "Dashboard" : {
+
+    },
+    "Dates" : {
+
+    },
+    "Default" : {
+
+    },
+    "Delete" : {
+
+    },
+    "Dismiss" : {
+
+    },
+    "Don't have an account? " : {
+
+    },
+    "Dress Code" : {
+
+    },
+    "Duration" : {
+
+    },
+    "e.g., a barista, a cashier, an event helper..." : {
+
+    },
+    "Earnings per month" : {
+
+    },
+    "EGP" : {
+
+    },
+    "EGP " : {
+
+    },
+    "EGP %@" : {
+
+    },
+    "End" : {
+
+    },
+    "Enter price" : {
+
+    },
+    "Error" : {
+
+    },
+    "Failed to load messages" : {
+
+    },
+    "Filter" : {
+
+    },
+    "Filtered by Date: %@" : {
+
+    },
+    "Find your next Job" : {
+
+    },
+    "Find your next job!" : {
+
+    },
+    "For: %@" : {
+
+    },
+    "Full Address" : {
+
+    },
+    "Gender Preference" : {
+
+    },
+    "Hi, %@" : {
+
+    },
+    "How would you rate this experience?" : {
+
+    },
+    "I Need Help Hire" : {
+
+    },
+    "Industry Category (Optional)" : {
+
+    },
+    "Info" : {
+
+    },
+    "Job Title" : {
+
+    },
+    "Language Needed" : {
+
+    },
+    "Learn more" : {
+
+    },
+    "Loading applications..." : {
+
+    },
+    "Loading completed services..." : {
+
+    },
+    "Loading messages..." : {
+
+    },
+    "Loading reviews..." : {
+
+    },
+    "Loading transactions..." : {
+
+    },
+    "Loading your jobs..." : {
+
+    },
+    "Loading..." : {
+
+    },
+    "Location" : {
+
+    },
+    "Location Details" : {
+
+    },
+    "Location Selected" : {
+
+    },
+    "Mark as Complete" : {
+
+    },
+    "Mark Service as Complete?" : {
+
+    },
+    "Mark this service as complete? Both parties will be able to leave reviews." : {
+
+    },
+    "Minimum Age" : {
+
+    },
+    "My Account" : {
+
+    },
+    "My Addresses" : {
+
+    },
+    "My Jobs" : {
+
+    },
+    "My Reviews" : {
+
+    },
+    "My Work" : {
+
+    },
+    "Nearest Landmark (Optional)" : {
+
+    },
+    "NEW" : {
+
+    },
+    "No Completed Services" : {
+
+    },
+    "No conversations yet" : {
+
+    },
+    "No Image" : {
+
+    },
+    "No Jobs Found" : {
+
+    },
+    "No messages yet" : {
+
+    },
+    "No ratings" : {
+
+    },
+    "No Reviews Yet" : {
+
+    },
+    "No saved addresses yet." : {
+
+    },
+    "No Sort" : {
+
+    },
+    "No transactions yet" : {
+
+    },
+    "OK" : {
+
+    },
+    "Once marked complete, both you and the worker will be able to leave reviews. This action cannot be undone." : {
+
+    },
+    "Online" : {
+
+    },
+    "Payment Method" : {
+
+    },
+    "Payment Timing" : {
+
+    },
+    "Physical Requirements" : {
+
+    },
+    "Pick from calendar" : {
+
+    },
+    "Pinpoint on Map" : {
+
+    },
+    "Please enter a valid number" : {
+
+    },
+    "Preview and publish %lld shift(s)" : {
+
+    },
+    "Price" : {
+
+    },
+    "Profile" : {
+
+    },
+    "Proposed Price (Optional)" : {
+
+    },
+    "Publishing Error" : {
+
+    },
+    "Rate Your Experience" : {
+
+    },
+    "Recent Activities" : {
+
+    },
+    "Recent Activity" : {
+
+    },
+    "Retry" : {
+
+    },
+    "Review" : {
+
+    },
+    "Review for: %@" : {
+
+    },
+    "Review Shift(s)" : {
+
+    },
+    "Review Your Job(s)" : {
+
+    },
+    "Reviews" : {
+
+    },
+    "Reviews will appear here after you complete services" : {
+
+    },
+    "Saadni" : {
+
+    },
+    "Saedni" : {
+
+    },
+    "Saving job details..." : {
+
+    },
+    "See All" : {
+
+    },
+    "See what others say" : {
+
+    },
+    "Select from Library" : {
+
+    },
+    "Select Location" : {
+
+    },
+    "Select Shift Date" : {
+
+    },
+    "Select Shift Date(s)" : {
+
+    },
+    "Service" : {
+
+    },
+    "Service Category" : {
+
+    },
+    "Service Provider" : {
+
+    },
+    "Service: %@" : {
+
+    },
+    "Set Default" : {
+
+    },
+    "Shift Pay Output (Total/Fixed)" : {
+
+    },
+    "Shift Timing" : {
+
+    },
+    "Sign In" : {
+
+    },
+    "Sign Up" : {
+
+    },
+    "Someone Will Be Around" : {
+
+    },
+    "Sort A-Z" : {
+
+    },
+    "Sort by Price" : {
+
+    },
+    "Start" : {
+
+    },
+    "Start a conversation by clicking the chat icon on a service page" : {
+
+    },
+    "Start the conversation" : {
+
+    },
+    "Status" : {
+
+    },
+    "Submit Application" : {
+
+    },
+    "Submit Review" : {
+
+    },
+    "Submitting..." : {
+
+    },
+    "Success!" : {
+
+    },
+    "Tap to add a photo" : {
+
+    },
+    "Tap to open map" : {
+
+    },
+    "Tell the job poster why you're interested and why you're a good fit" : {
+
+    },
+    "The client will be present during the service" : {
+
+    },
+    "This information will be associated with your shift postings to help students verify employers." : {
+
+    },
+    "to" : {
+
+    },
+    "Tools & Equipment Needed" : {
+
+    },
+    "Top up" : {
+
+    },
+    "Try adjusting your filters" : {
+
+    },
+    "Type a message..." : {
+
+    },
+    "Uploading image... %lld%%" : {
+
+    },
+    "User Type" : {
+
+    },
+    "View All" : {
+
+    },
+    "View Requests" : {
+
+    },
+    "View your finished work" : {
+
+    },
+    "Welcome back" : {
+
+    },
+    "What brings you here?" : {
+
+    },
+    "What to bring? (Optional)" : {
+
+    },
+    "What will the worker do? (Optional)" : {
+
+    },
+    "Withdraw" : {
+
+    },
+    "Workers Needed" : {
+
+    },
+    "Write a Review" : {
+
+    },
+    "You can check saved address in profile tab under my Account section" : {
+
+    },
+    "You currently have no open applications" : {
+
+    },
+    "Your application has been submitted successfully. The job poster will review it soon." : {
+
+    },
+    "Your Company Information" : {
+
+    },
+    "Your completed services will appear here" : {
+
+    },
+    "Your Review (Optional)" : {
+
+    },
+    "Your Wallet" : {
+
+    }
+  },
+  "version" : "1.1"
+}

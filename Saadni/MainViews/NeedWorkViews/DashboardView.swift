@@ -5,6 +5,7 @@
 //  Created by Pavly Paules on 25/02/2026.
 //
 import SwiftUI
+internal import Combine
 
 struct DashboardView: View {
  @State private var currentCarouselIndex: Int = 0
@@ -13,7 +14,8 @@ struct DashboardView: View {
  @State private var navigateToBrowseJobs: Bool = false
  @State private var calendarSelection: Date = Date()
  @State private var isCalendarVisible: Bool = false
- 
+	@State private var viewModel: ProfileViewModel?
+
  var body: some View {
   ZStack {
    Color(Colors.swiftUIColor(.appBackground))
@@ -232,8 +234,8 @@ struct JobStatusCarouselView: View {
  @Binding var currentIndex: Int
  @State private var navigateToFeaturedService = false
  @State private var navigateToNewService = false
- let featuredService = JobService.sampleData.first { $0.isFeatured }
- let newService = JobService.sampleData.first { $0.isNew }
+ @State private var featuredService: JobService?
+ @State private var newService: JobService?
 
  var body: some View {
   VStack(spacing: 16) {
@@ -297,6 +299,15 @@ struct JobStatusCarouselView: View {
    .padding(.bottom, 12)
   }
   .padding(.horizontal, 20)
+  .onAppear {
+   featuredService = JobService.sampleData.randomElement()
+   newService = JobService.sampleData.filter { Calendar.current.isDateInToday($0.createdAt) }.randomElement() ?? JobService.sampleData.randomElement()
+  }
+  .onReceive(Timer.publish(every: 60, on: .main, in: .common).autoconnect()) { _ in
+   withAnimation {
+    currentIndex = (currentIndex + 1) % 3
+   }
+  }
  }
 }
 

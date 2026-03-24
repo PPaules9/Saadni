@@ -49,7 +49,7 @@ struct JobProvider: View {
 			.background(Colors.swiftUIColor(.appBackground))
 			.environment(coordinator)
 		} else {
-			ProgressView().tint(.accent)
+			LaunchScreen()
 		}
 
 	}
@@ -71,9 +71,9 @@ struct JobProvider: View {
    HomeView()
   case .chat:
    ChatView()
-  case .addJob:
-   CreateJobSheet(selectedCategory: "homeCleaning", initialJobName: nil)
-    .environment(coordinator)
+//  case .addJob:
+//   CreateJobSheet(selectedCategory: "homeCleaning", initialJobName: nil)
+//    .environment(coordinator)
   case .myJobs:
    myJobs()
   case .profile:

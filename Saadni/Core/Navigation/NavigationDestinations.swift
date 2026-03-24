@@ -5,7 +5,7 @@ import Foundation
 enum JobSeekerTab: String, CaseIterable {
     case dashboard
     case chat
-    case addJob
+//    case addJob
     case myJobs
     case profile
 
@@ -13,7 +13,7 @@ enum JobSeekerTab: String, CaseIterable {
         switch self {
         case .dashboard: return "Dashboard"
         case .chat: return "Chat"
-        case .addJob: return "Add Job"
+//        case .addJob: return "Add Job"
         case .myJobs: return "My Jobs"
         case .profile: return "Profile"
         }
@@ -23,7 +23,7 @@ enum JobSeekerTab: String, CaseIterable {
         switch self {
         case .dashboard: return "house"
         case .chat: return "text.bubble.fill"
-        case .addJob: return "plus"
+//        case .addJob: return "plus"
         case .myJobs: return "bag.fill"
         case .profile: return "person.fill"
         }

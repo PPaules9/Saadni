@@ -1,282 +1,350 @@
-# Saadni 🤝
-
 <div align="center">
 
-**Help Made Simple. Connections Made Easy.**
+# Saadni 🤝
 
-Connect with skilled service providers nearby or offer your services to earn money.
+### The On-Demand Services Marketplace for Your Community
 
-[![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange?logo=swift)](https://swift.org)
-[![iOS](https://img.shields.io/badge/iOS-17%2B-blue?logo=apple)](https://www.apple.com/ios)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![SwiftUI](https://img.shields.io/badge/SwiftUI-Modern-purple?logo=swift)](https://developer.apple.com/swiftui)
+**Post a task. Get it done. Earn on your schedule.**
 
-[About](#about) • [Features](#features) • [Tech Stack](#tech-stack) • [Installation](#installation) • [Architecture](#architecture) • [Contributing](#contributing)
+Saadni connects people who need everyday services with trusted local providers — instantly. Whether you need a hand around the house or want to earn extra income with your skills, Saadni makes it effortless.
+
+[![Swift](https://img.shields.io/badge/Swift-5.9%2B-F05138?logo=swift&logoColor=white)](https://swift.org)
+[![iOS](https://img.shields.io/badge/iOS-17%2B-007AFF?logo=apple&logoColor=white)](https://www.apple.com/ios)
+[![SwiftUI](https://img.shields.io/badge/SwiftUI-Declarative_UI-5856D6?logo=swift&logoColor=white)](https://developer.apple.com/swiftui)
+[![Firebase](https://img.shields.io/badge/Firebase-Backend-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com)
+[![License](https://img.shields.io/badge/License-MIT-34C759.svg)](LICENSE)
+
+[Overview](#overview) · [How It Works](#how-it-works) · [Features](#-core-features) · [Tech Stack](#-tech-stack) · [Architecture](#-architecture) · [Roadmap](#-roadmap) · [Future Vision](#-future-vision) · [Contributing](#-contributing)
 
 </div>
 
 ---
 
-## About
+## Overview
 
-**Saadni** (Arabic for "Help Me") is a community-driven iOS marketplace that bridges the gap between people needing services and skilled service providers. Built with modern Swift and SwiftUI, Saadni provides a seamless experience for both job seekers looking to earn extra income and users seeking reliable local services across 25+ categories.
+**Saadni** (Arabic: ساعدني — *"Help Me"*) is a native iOS marketplace that eliminates the friction between needing a service and getting it done. The platform operates on a simple principle: **anyone can post a task, and anyone with the right skills can fulfill it.**
 
-The app features a sophisticated dual-role system, real-time state management with @Observable, and Firebase integration for secure authentication and data persistence.
+The app serves two audiences through a single, unified experience:
 
----
+| Role | What You Do |
+|---|---|
+| **Task Poster** | Describe what you need, set your budget, and choose from applicants who respond in real time. |
+| **Service Provider** | Browse open tasks in your area, apply to the ones that match your skills, and earn money on your own terms. |
 
-## ✨ Features
-
-- **🎯 Dual-Role System** – Seamless switching between Job Seeker and Service Provider modes with role-specific dashboards
-- **🏠 25+ Service Categories** – Home cleaning, electrical work, plumbing, furniture assembly, painting, gardening, pet care, babysitting, moving assistance, and more
-- **📱 Intuitive Job Discovery** – Browse, filter, and apply to nearby service requests with real-time availability
-- **💼 Service Portfolio** – Create and manage your service offerings with descriptions, images, and pricing
-- **📊 Personal Dashboard** – Track active jobs, earnings, bookings, transaction history, and performance metrics
-- **💬 In-App Messaging** – Secure, real-time communication to arrange logistics and service details
-- **🔐 Modern Authentication** – Google & Apple Sign-In with Firebase backend
-- **🎨 Type-Safe State Management** – Custom `StateKey` system with `@Observable` for reliable app state handling
-- **📍 Location-Based Matching** – Find services and providers in your neighborhood
-- **⭐ Ratings & Reviews** – Build trust with transparent community feedback
+Saadni is purpose-built for communities where trusted, affordable help is hard to find — and where students, freelancers, and skilled workers are ready to earn. No agencies. No middlemen. Just people helping people.
 
 ---
 
-## 📸 Screenshots
+## How It Works
 
-| Onboarding | Role Selection | Job Seeker Dashboard | Service Provider |
-|------------|----------------|----------------------|------------------|
-| ![Onboarding](https://via.placeholder.com/300x600?text=Onboarding) | ![Role Selection](https://via.placeholder.com/300x600?text=Role+Selection) | ![Job Seeker](https://via.placeholder.com/300x600?text=Job+Seeker) | ![Provider](https://via.placeholder.com/300x600?text=Provider) |
+```
+┌─────────────────────────────────────────────────────┐
+│                    SAADNI FLOW                      │
+├─────────────────────────────────────────────────────┤
+│                                                     │
+│   1. Sign Up       →  Google or Apple Sign-In       │
+│   2. Choose Role   →  "I need help" or "I can help" │
+│   3. Post / Browse →  Create a task or find one     │
+│   4. Connect       →  In-app messaging & details    │
+│   5. Complete      →  Rate, review, and get paid    │
+│                                                     │
+└─────────────────────────────────────────────────────┘
+```
 
-*Screenshots coming soon. .....:*
-```
-/Resources/Screenshots/
-├── onboarding.png
-├── role-selection.png
-├── job-seeker-dashboard.png
-└── service-provider-dashboard.png
-```
+**For Task Posters:**
+1. Tap **"Post a Task"** and describe what you need
+2. Select a category from **25+ service types**
+3. Set your budget and preferred timing
+4. Review incoming applications and choose a provider
+5. Communicate directly through **in-app messaging**
+6. Mark the task complete and leave a review
+
+**For Service Providers:**
+1. Browse available tasks filtered by category, location, and budget
+2. Apply to tasks that match your skills
+3. Coordinate details with the task poster via chat
+4. Complete the work, get rated, and build your reputation
+
+---
+
+## ✨ Core Features
+
+### Dual-Role System
+Switch seamlessly between posting tasks and offering services — no need for separate accounts. Each role gets its own tailored dashboard, navigation, and workflows.
+
+### 25+ Service Categories
+From home maintenance to personal errands, Saadni covers a wide range of everyday needs:
+
+> 🏠 Home Cleaning · ⚡ Electrical Work · 🔧 Plumbing · 🪑 Furniture Assembly · 🎨 Painting · 🌿 Gardening · 🐾 Pet Care · 👶 Babysitting · 📦 Moving Assistance · 🚗 Car Services · 🍳 Cooking · 📸 Photography · 💻 Tech Support · 🧹 Laundry · and more...
+
+### Smart Job Discovery
+Browse, search, and filter available tasks by category, urgency, and budget. Real-time updates ensure you see new opportunities the moment they go live.
+
+### Service Portfolio Management
+Providers can create and manage their service listings — complete with descriptions, pricing, and availability — building a professional profile that attracts more work.
+
+### Personal Dashboard
+Track your active tasks, pending applications, earnings history, and performance metrics — all from a unified, role-aware dashboard.
+
+### In-App Messaging
+Secure, real-time chat between task posters and providers. Coordinate scheduling, share requirements, and confirm details without leaving the app.
+
+### Ratings & Reviews
+Every completed task generates a two-way review. Over time, top-rated providers stand out — and task posters build a track record of fair, reliable postings.
+
+### Digital Wallet
+Track earnings, view transaction history, and manage your balance directly within the app.
+
+### Modern Authentication
+Fast, secure sign-in with **Google** and **Apple** — powered by Firebase Authentication. No passwords to remember.
 
 ---
 
 ## 🛠 Tech Stack
 
-| Layer | Technology | Details |
-|-------|-----------|---------|
-| **UI Framework** | SwiftUI | Modern, declarative UI with @Observable |
-| **Language** | Swift 5.9+ | Type-safe, concurrency-aware code |
-| **Architecture** | MVVM + @Observable | Feature-based module organization |
-| **Backend** | Firebase | Firestore (database), Authentication, Storage |
-| **State Management** | @Observable + StateKey | Type-safe, observable state with async/throws |
-| **Authentication** | Firebase Auth | Google & Apple Sign-In |
-| **Real-time Messaging** | Firestore Listeners | Live messaging & notifications |
-| **Image Handling** | Firebase Storage | Secure image uploads & retrieval |
+| Layer | Technology | Purpose |
+|---|---|---|
+| **UI** | SwiftUI | Declarative, reactive interface with iOS 17+ capabilities |
+| **Language** | Swift 5.9+ | Type-safe, modern concurrency with `async/await` |
+| **Architecture** | MVVM + `@Observable` | Clean separation of concerns with feature-based modules |
+| **Backend** | Firebase Firestore | Real-time NoSQL database for tasks, users, and messages |
+| **Auth** | Firebase Auth | Secure Google & Apple Sign-In |
+| **Storage** | Firebase Storage | Image uploads for service portfolios and profiles |
+| **Messaging** | Firestore Listeners | Real-time chat with live message delivery |
+| **DI** | Custom Container | Lightweight dependency injection for testability |
+| **Navigation** | Coordinator Pattern | Centralized, type-safe navigation management |
 
 ---
 
 ## 📋 Requirements
 
-- **Xcode:** 15.0 or later
-- **Swift:** 5.9 or later
-- **iOS:** 17.0 or later
-- **CocoaPods:** For Firebase dependency management
-- **Firebase Account:** For backend services
-
----
-
-## 📖 Usage
-
-### For Job Seekers
-
-1. **Sign Up** – Use Google or Apple Sign-In to create your account
-2. **Select Role** – Choose "I want to earn money" during onboarding
-3. **Browse Jobs** – Explore available services in your area
-4. **Apply** – Select a job and submit your application
-5. **Communicate** – Use in-app messaging to arrange details
-6. **Complete & Earn** – Finish the service and receive ratings & payments
-
-### For Service Providers
-
-1. **Sign Up** – Use Google or Apple Sign-In to create your account
-2. **Select Role** – Choose "I need help with something" during onboarding
-3. **Post Service** – Describe what you need and select from 25+ categories
-4. **Wait for Applications** – Receive applications from available job seekers
-5. **Select & Communicate** – Choose a provider and arrange logistics
-6. **Rate & Review** – Provide feedback after service completion
-
-### Key Flows
-
-```
-App Launch
-    ↓
-[Onboarding Check] → Show onboarding if needed
-    ↓
-[Role Selection Check] → Direct to role-specific dashboard
-    ↓
-[Authenticated] → Main dashboard
-    └─ Job Seeker Mode: Browse, apply, message, earn
-    └─ Service Provider Mode: Post, receive offers, message, pay
-```
+| Requirement | Minimum Version |
+|---|---|
+| Xcode | 15.0+ |
+| Swift | 5.9+ |
+| iOS Deployment Target | 17.0+ |
+| Firebase Account | Required |
 
 ---
 
 ## 🏗 Architecture
 
-### MVVM with @Observable
-
-Saadni uses a modern MVVM architecture with Swift's `@Observable` macro (iOS 17+):
+Saadni follows a **feature-first MVVM architecture** powered by Swift's `@Observable` macro for efficient, automatic state management.
 
 ```
-View Layer (SwiftUI)
-    ↓ (observes)
-ViewModel (@Observable class)
-    ↓ (coordinates)
-Model Layer (Data structures, StateKey)
-    ↓ (persists)
-Data Layer (Firebase, UserDefaults)
+┌──────────────────────────────────────────────────┐
+│                   View Layer                     │
+│          (SwiftUI Views & Components)            │
+├──────────────────────────────────────────────────┤
+│                ViewModel Layer                   │
+│      (@Observable classes, business logic)       │
+├──────────────────────────────────────────────────┤
+│                  Model Layer                     │
+│       (Data models, StateKey system)             │
+├──────────────────────────────────────────────────┤
+│                  Data Layer                      │
+│     (Firebase Services, Local Persistence)       │
+└──────────────────────────────────────────────────┘
 ```
 
-### Key Architectural Components
+### Key Design Decisions
 
-**AppStateManager**
-- Manages global app state (onboarding status, role selection)
-- Uses `@Observable` for automatic SwiftUI binding
-- Implements `PersistenceProvider` protocol for flexible storage
-- Includes async/throws error handling
+- **Feature-Based Modules** — Code is organized by feature (`Chat`, `Dashboard`, `ServiceManagement`, etc.), not by architectural layer. Each module owns its views, view models, and models.
+- **Type-Safe StateKey System** — A custom `StateKey<T>` pattern eliminates magic strings and ensures compile-time safety for all app-state operations.
+- **Coordinator Navigation** — Centralized `AppCoordinator` manages the full navigation graph, keeping views decoupled from routing logic.
+- **Dependency Injection Container** — A lightweight `AppContainer` provides all dependencies, enabling clean initialization and testability.
+- **`@MainActor` Concurrency** — All UI-bound state is isolated to the main actor, ensuring thread-safe updates without boilerplate.
 
-**StateKey System**
-- Type-safe key-value storage
-- Prevents magic string errors
-- Supports any type with `StateKey<T>`
-- Located in: `Saadni/Core/Constants/StateKey.swift`
+### Project Structure
 
-**Feature Modules**
-- Organized by feature, not layer
-- Each feature has Views, ViewModels, Models, Services
-- Example: `MainViews/ServiceProvider/CreateJobSheet/`, `MainViews/JobSeekerMainView/`
-
-**Async/Await Concurrency**
-- All async operations use Swift's modern async/await
-- Error handling with throws and try/catch
-- Main thread updates with `@MainActor`
-
-### Memory & Performance
-
-- **ARC (Automatic Reference Counting)** for automatic memory management
-- **Stack vs Heap** allocation optimized for value vs reference types
-- **Observable Macro** ensures efficient change detection
-- **UserDefaults Caching** for fast app state restoration
+```
+Saadni/
+├── App/                    # App entry point, AppCoordinator, AppContainer
+├── Core/
+│   ├── Constants/          # StateKey definitions, app-wide constants
+│   ├── DI/                 # Dependency injection container
+│   ├── Design System/      # Reusable UI components, brand tokens
+│   ├── Error/              # Centralized error handling
+│   ├── Navigation/         # Coordinator and routing logic
+│   └── Resources/          # Assets, colors, fonts
+├── Features/
+│   ├── Authentication/     # Sign-in flows (Google, Apple)
+│   ├── Chat/               # Real-time messaging
+│   ├── CreateJobSheet/     # Task creation wizard
+│   ├── Dashboard/          # Role-specific dashboards
+│   ├── Onboarding/         # First-launch experience
+│   ├── Profile/            # User profile management
+│   ├── Reviews/            # Ratings & review system
+│   ├── Search/             # Task discovery & filtering
+│   ├── ServiceDetail/      # Task detail views
+│   ├── ServiceManagement/  # Provider service listings
+│   └── WalletView/         # Earnings & transaction tracking
+├── MainViews/
+│   ├── JobProviderViews/   # Task poster UI
+│   ├── NeedWorkViews/      # Service provider UI
+│   └── ChatViews/          # Messaging UI
+└── Modules/
+    ├── Account/            # User account services
+    ├── Applications/       # Job application logic
+    ├── Authentication/     # Auth service layer
+    ├── Firebase/           # Firebase configuration
+    ├── Messaging/          # Chat backend services
+    ├── Reviews/            # Review data services
+    ├── Services/           # Service listing management
+    └── Wallet/             # Wallet & transaction services
+```
 
 ---
 
 ## 🗺 Roadmap
 
-### Phase 1 (Current)
-- [x] Dual-role authentication system
-- [x] Role-based onboarding flows
-- [x] Type-safe state management
-- [ ] Service category management
-- [ ] Job listing & discovery
+### ✅ Phase 1 — Foundation *(Complete)*
+- [x] Dual-role authentication (Google & Apple Sign-In)
+- [x] Role-based onboarding with guided walkthroughs
+- [x] Type-safe state management with `StateKey` + `@Observable`
+- [x] 25+ service category system
+- [x] Task creation and posting workflow
+- [x] Service provider portfolio and listing management
+- [x] Real-time in-app messaging with Firestore
+- [x] Dashboard with active tasks, earnings, and metrics
+- [x] Ratings and reviews system
+- [x] Digital wallet and transaction history
+- [x] User profile and account management
+- [x] Search and discovery with category filtering
 
-### Phase 2 (Q2 2026)
-- [ ] In-app messaging system
-- [ ] Real-time notifications
-- [ ] Map-based location discovery
-- [ ] Application management
+### 🔄 Phase 2 — Enhancement *(In Progress)*
+- [ ] Map-based location discovery and proximity filtering
+- [ ] Push notifications for new tasks, messages, and status updates
+- [ ] Advanced search with multi-filter support (price, distance, rating)
+- [ ] Payment gateway integration
+- [ ] Media sharing in chat (images, voice notes)
 
-### Phase 3 (Q3 2026)
-- [ ] Ratings & reviews system
-- [ ] Payment integration
-- [ ] Advanced filtering & search
-- [ ] Push notifications
+### 📅 Phase 3 — Scale *(Planned — Q3 2026)*
+- [ ] Provider verification and badge system
+- [ ] Scheduling and calendar integration
+- [ ] Repeat task automation
+- [ ] Analytics dashboard for top providers
+- [ ] Referral rewards program
 
-### Phase 4 (Q4 2026)
-- [ ] Analytics & performance dashboards
-- [ ] Referral program
-- [ ] Service portfolio marketplace
-- [ ] Advanced messaging with media
+---
+
+## 🔮 Future Vision
+
+Beyond the current roadmap, Saadni is evolving into a **context-aware services platform** — one that doesn't just list tasks, but actively anticipates what users need and connects them to help in seconds. Here's where we're headed:
+
+---
+
+### 🎯 Instant Task Matching — *"Need It Now" Scenarios*
+
+Saadni will introduce **smart, contextual prompts** that surface the right service at the right time — turning common needs into one-tap actions.
+
+#### 🎪 Event Staffing On Demand
+
+> **Organizing an event?** Whether it's a private party, a corporate gathering, or a campus event — you shouldn't have to scramble for staff. Saadni will let event organizers instantly post shifts for **security personnel, event setup crews, servers, photographers, or cleanup teams**. Providers in the area see the shift, claim it, and show up. No agencies, no phone calls — just tap, post, and staff your event in minutes.
+>
+> **How it works:**
+> - Select **"I'm organizing an event"** from the quick-action menu
+> - Choose the type of help you need (security, catering staff, setup crew, etc.)
+> - Set the date, time, location, and pay rate
+> - The shift goes live immediately — nearby providers can claim it in real time
+> - Track confirmations and communicate with your team directly in-app
+
+#### 🚗 On-Demand Car Care
+
+> **Need your car washed but don't have time to drive to a car wash?** Saadni will bring the service to you. Post a mobile car wash request, and a nearby provider handles it at your location — at home, at the office, or wherever your car is parked. It's convenient for you and it's income for students and freelancers looking to earn on a flexible schedule.
+>
+> **How it works:**
+> - Tap **"Car Care"** and select the service (exterior wash, interior detailing, full service)
+> - Drop a pin or share your current location
+> - Set your preferred time window
+> - A verified provider accepts and heads to your location
+> - Track their arrival, confirm completion, and pay — all in-app
+
+---
+
+### 🧠 Smart Service Suggestions
+
+Over time, Saadni will learn from usage patterns and proactively suggest services:
+
+- **Recurring tasks** — "You booked a home cleaning last month. Want to schedule another?"
+- **Seasonal prompts** — "Summer's here — need your garden maintained?"
+- **Event-aware** — "Graduation season is coming. Looking for photographers or caterers?"
+- **Time-of-day awareness** — "Running late? Get someone to handle your errands."
+
+The goal is to reduce friction to zero: **you think it, Saadni offers it.**
+
+---
+
+### 🏪 Service Provider Storefronts
+
+Top-rated providers will be able to create **branded storefronts** — a dedicated page showcasing their services, pricing tiers, availability calendar, portfolio images, and reviews. Clients will be able to browse storefronts, compare providers, and book directly.
+
+---
+
+### 🤝 Community Trust Layer
+
+Saadni will introduce an **enhanced trust system** designed to make both sides of every transaction feel safe:
+
+- **Identity verification** — Government ID or university ID verification for providers
+- **Background check badges** — Optional, verified badges that signal trustworthiness
+- **Escrow payments** — Funds held securely until the task is marked complete by both parties
+- **Dispute resolution** — Built-in mediation for edge cases, protecting both posters and providers
+
+---
+
+### 📊 Provider Growth Tools
+
+For providers who treat Saadni as a primary income source, we'll offer:
+
+- **Earnings analytics** — Weekly and monthly breakdowns with trend insights
+- **Performance coaching** — Tips based on response time, completion rate, and review scores
+- **Priority listing** — High-performing providers surface first in search results
+- **Skill badges** — Earn certifications for categories (e.g., "Verified Electrician", "Top-Rated Cleaner")
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! Here's how you can help:
+Contributions are welcome. Here's how to get involved:
 
-### Getting Started
+1. **Fork** the repository
+2. **Branch** from `main`: `git checkout -b feature/your-feature`
+3. **Implement** your changes following the conventions below
+4. **Commit** with clear messages: `git commit -m "Add: clear description"`
+5. **Push** to your fork: `git push origin feature/your-feature`
+6. **Open** a Pull Request with a detailed description
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Make your changes
-4. Write or update tests
-5. Commit with clear messages: `git commit -m "Add: clear description"`
-6. Push to your fork: `git push origin feature/your-feature`
-7. Open a Pull Request
+### Code Conventions
 
-### Contribution Guidelines
-
-- Follow Swift [API Design Guidelines](https://swift.org/documentation/api-design-guidelines/)
-- Use meaningful variable and function names
-- Add comments for complex logic
-- Ensure code compiles without warnings
-- Test on iOS 17+ devices/simulators
-- Update README if adding new features
-
-### Code Style
-
-```swift
-// ✅ Good
-@Observable
-class UserViewModel {
-    @MainActor var isLoading = false
-
-    func fetchUser() async throws {
-        // Implementation
-    }
-}
-
-// ❌ Avoid
-class UserVM {
-    var loading: Bool = false
-    func fetch() {
-        // Implementation
-    }
-}
-```
+- Follow the [Swift API Design Guidelines](https://swift.org/documentation/api-design-guidelines/)
+- Use `@Observable` + `@MainActor` for all view models
+- Organize code by feature, not by layer
+- Use `async/await` for all asynchronous operations
+- Ensure zero compiler warnings before submitting
 
 ### Reporting Issues
 
-- Use [GitHub Issues](https://github.com/PPaules9/Saadni/issues)
-- Include device model, iOS version, and steps to reproduce
-- Attach screenshots or screen recordings when helpful
+Use [GitHub Issues](https://github.com/PPaules9/Saadni/issues) — include device model, iOS version, and clear reproduction steps. Screenshots and screen recordings are always helpful.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.
-
-The MIT License permits free use, modification, and distribution of the code, provided that the original license and copyright notice are included.
-
----
-
-## 📬 Contact & Author
-
-**Developer:** Pavly Paules
-**GitHub:** [@PPaules9](https://github.com/PPaules9)
-**Email:** [your-email@example.com](mailto:your-email@example.com)
-**LinkedIn:** [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
-
-### Support
-
-- 📧 Report bugs: [GitHub Issues](https://github.com/PPaules9/Saadni/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/PPaules9/Saadni/discussions)
-- ⭐ Found it helpful? Star the repository!
+This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for full terms.
 
 ---
 
 <div align="center">
 
-**Made with ❤️ by Pavly Paules**
+**Built by [Pavly Paules](https://github.com/PPaules9)**
 
-*Help Made Simple. Connections Made Easy.*
+📧 [GitHub Issues](https://github.com/PPaules9/Saadni/issues) · 💬 [Discussions](https://github.com/PPaules9/Saadni/discussions)
+
+⭐ If Saadni is useful to you, consider starring the repository.
+
+---
+
+*Saadni — Help Made Simple. Connections Made Easy.*
 
 [⬆ Back to Top](#saadni-)
 

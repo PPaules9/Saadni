@@ -48,7 +48,7 @@ struct CreateJobTab1: View {
                 // Dates Selection
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 4) {
-                        Text("Select Shift Dates")
+                        Text("Select Shift Date(s)")
                             .font(.subheadline)
                             .foregroundStyle(Colors.swiftUIColor(.textSecondary))
                         Text("*").foregroundStyle(.red)
