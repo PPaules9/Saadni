@@ -135,31 +135,32 @@ struct HomeView: View {
 						.buttonStyle(.plain)
 						.padding(.horizontal)
 					}
-
+					
 					
 					//MARK: - Service Categories Sections
 					
 					ForEach(HomeView.categories) { category in
 						VStack(alignment: .leading, spacing: 12) {
 							Text(category.title)
-								.font(.system(size: 16, weight: .semibold, design: .default))
+								.font(.system(size: 22, weight: .semibold, design: .monospaced))
 								.foregroundStyle(Colors.swiftUIColor(.textMain))
 								.padding(.horizontal)
+								.kerning(-0.5)
 							
 							ScrollView(.horizontal, showsIndicators: false) {
-								HStack(spacing: 12) {
+								HStack(spacing: 16) {
 									ForEach(category.services) { service in
 										Button(action: {
 											coordinator.presentSheet(.createJob(
 												category: category.categoryEnum,
-												initialJobName: service.displayName
+												initialJobName: String(localized: service.displayName)
 											))
 										}) {
 											ZStack {
 												Image(service.name)
 													.resizable()
 													.aspectRatio(contentMode: .fill)
-													.frame(width: 240)
+													.frame(width: 230)
 													.overlay(
 														LinearGradient(
 															colors: [.clear, .black.opacity(0.7)],
@@ -194,6 +195,33 @@ struct HomeView: View {
 						}
 					}
 				}
+				.padding(.bottom, 20)
+
+					VStack(alignment: .center) {
+						Text("IKEA Assembly, Hire a Specialist for easy Installment")
+							.font(.system(size: 22, weight: .semibold, design: .monospaced))
+							.foregroundStyle(Colors.swiftUIColor(.textMain))
+							.kerning(-0.5)
+						
+						Image("ikeaAssembly")
+							.resizable()
+							.aspectRatio(contentMode: .fill)
+							.frame(maxWidth: .infinity)
+							.overlay(
+								LinearGradient(
+									colors: [.clear, .black.opacity(0.7)],
+									startPoint: .center,
+									endPoint: .bottom
+								)
+							)
+							.clipShape(RoundedRectangle(cornerRadius: 16))
+							.padding()
+					}
+					.padding(.horizontal)
+
+					Spacer()
+					.frame(height: 40)
+				
 			}
 			
 		}
@@ -205,7 +233,7 @@ struct HomeView: View {
 extension HomeView {
 	struct JobCategory: Identifiable {
 		let id = UUID()
-		let title: String
+		let title: LocalizedStringResource
 		let categoryEnum: String
 		let services: [JobService]
 	}
@@ -213,67 +241,52 @@ extension HomeView {
 	struct JobService: Identifiable {
 		let id = UUID()
 		let name: String
-		let displayName: String
+		let displayName: LocalizedStringResource
 	}
 	
 	static let categories: [JobCategory] = [
-		JobCategory(title: "Food & Beverage", categoryEnum: ServiceCategoryType.foodAndBeverage.rawValue, services: [
-			JobService(name: "Cashier", displayName: "Cashier at Restaurant"),
-			JobService(name: "Barista", displayName: "Barista / Staff"),
-			JobService(name: "Waiter", displayName: "Waiter / Runner"),
-			JobService(name: "FoodDelivery", displayName: "Food Delivery Support"),
-			JobService(name: "EventCatering", displayName: "Event Catering Server"),
-			JobService(name: "foodTruck", displayName: "Food Truck Helper")
+		JobCategory(title: "Restaurants", categoryEnum: ServiceCategoryType.foodAndBeverage.rawValue, services: [
+			JobService(name: "cashierMan", displayName: "Cashier"),
+			JobService(name: "waiter", displayName: "Waiter"),
+			JobService(name: "foodTruck", displayName: "Food Truck Helper"),
+			JobService(name: "foodDelivery", displayName: "Delivery Hero"),
+			JobService(name: "eventCatering", displayName: "Event Catering"),
 		]),
-		JobCategory(title: "Retail & Malls", categoryEnum: ServiceCategoryType.retailAndMalls.rawValue, services: [
-			JobService(name: "doorInstallation", displayName: "Retail Sales Associate"),
-			JobService(name: "Cashier", displayName: "Mall Cashier"),
-			JobService(name: "furnitureAssembly", displayName: "Stock Replenisher"),
-			JobService(name: "outdoorCleaning", displayName: "Fitting Room Attendant"),
-			JobService(name: "beachBabySetting", displayName: "Holiday Gift Wrapper"),
-			JobService(name: "carpetCleaning", displayName: "Promo Stand Attendant")
+		JobCategory(title: "Malls", categoryEnum: ServiceCategoryType.retailAndMalls.rawValue, services: [
+			JobService(name: "shopAssistant", displayName: "shop assistant"),
+			JobService(name: "baristaMan", displayName: "Barista"),
+			JobService(name: "eventSecurity", displayName: "Security"),
 		]),
-		JobCategory(title: "Logistics & Warehousing", categoryEnum: ServiceCategoryType.logisticsAndWarehousing.rawValue, services: [
-			JobService(name: "helpMoving", displayName: "Warehouse Picker"),
-			JobService(name: "furnitureAssembly", displayName: "Order Sorter"),
-			JobService(name: "electricWork", displayName: "Inventory Counter"),
-			JobService(name: "helpMoving", displayName: "Loading Helper"),
+		JobCategory(title: "Warehouse", categoryEnum: ServiceCategoryType.logisticsAndWarehousing.rawValue, services: [
+			JobService(name: "warehouse", displayName: "Warehouse Work"),
+			JobService(name: "helpMoving", displayName: "Heavy Moving"),
 			JobService(name: "outdoorCleaning", displayName: "Last-Mile Delivery")
 		]),
-		JobCategory(title: "Cleaning & Maintenance", categoryEnum: ServiceCategoryType.cleaningAndMaintenance.rawValue, services: [
-			JobService(name: "homeCleaning", displayName: "Home Cleaning Shift"),
+		JobCategory(title: "Home", categoryEnum: ServiceCategoryType.cleaningAndMaintenance.rawValue, services: [
+			JobService(name: "furnitureAssembly", displayName: "Order Sorter"),
+			JobService(name: "electricWork", displayName: "Inventory Counter"),
+			JobService(name: "homeCleaning", displayName: "Home Cleaning"),
 			JobService(name: "carpetCleaning", displayName: "Office Cleaning Shift"),
+			JobService(name: "doorInstallation", displayName: "Retail Sales Associate"),
+			JobService(name: "furnitureAssembly", displayName: "Stock Replenisher"),
+			JobService(name: "outdoorCleaning", displayName: "Fitting Room Attendant"),
 			JobService(name: "outdoorCleaning", displayName: "Post-Event Cleaning"),
 			JobService(name: "doorInstallation", displayName: "Car Wash Attendant"),
 			JobService(name: "homeCleaning", displayName: "Common Area Cleaning")
 		]),
 		JobCategory(title: "Petrol & Automotive", categoryEnum: ServiceCategoryType.petrolAndAutomotive.rawValue, services: [
-			JobService(name: "tvMounting", displayName: "Petrol Station Attendant"),
+			JobService(name: "petrolStation", displayName: "Petrol Station Attendant"),
 			JobService(name: "outdoorCleaning", displayName: "Car Wash Assistant"),
-			JobService(name: "doorInstallation", displayName: "Parking Lot Attendant")
-		]),
-		JobCategory(title: "Security & Crowd Management", categoryEnum: ServiceCategoryType.securityAndCrowdManagement.rawValue, services: [
-			JobService(name: "doorInstallation", displayName: "Event Security Helper"),
-			JobService(name: "beachBabySetting", displayName: "Parking Enforcement Helper"),
-			JobService(name: "tvMounting", displayName: "Mall Entrance Checker")
 		]),
 		JobCategory(title: "Hospitality & Events", categoryEnum: ServiceCategoryType.hospitalityAndEvents.rawValue, services: [
 			JobService(name: "furnitureAssembly", displayName: "Event Setup Crew"),
-			JobService(name: "beachBabySetting", displayName: "Exhibition Helper"),
 			JobService(name: "homeCleaning", displayName: "Hotel Housekeeping"),
 			JobService(name: "carpetCleaning", displayName: "Breakfast Service Assistant"),
 			JobService(name: "tvMounting", displayName: "Venue Usher")
 		]),
-		JobCategory(title: "Moving & Labour", categoryEnum: ServiceCategoryType.movingAndLabour.rawValue, services: [
-			JobService(name: "helpMoving", displayName: "Moving Crew Helper"),
-			JobService(name: "furnitureAssembly", displayName: "Furniture Assembly Helper"),
-			JobService(name: "electricWork", displayName: "Construction Site Laborer")
-		]),
-		JobCategory(title: "Community & Outdoor", categoryEnum: ServiceCategoryType.communityAndOutdoor.rawValue, services: [
-			JobService(name: "beachBabySetting", displayName: "Flyer Distributor"),
+		JobCategory(title: "Community", categoryEnum: ServiceCategoryType.communityAndOutdoor.rawValue, services: [
 			JobService(name: "GymAssistant", displayName: "Gym Floor Assistant"),
 			JobService(name: "outdoorCleaning", displayName: "Street Promoter"),
-			JobService(name: "doorInstallation", displayName: "Queue Management Helper")
 		])
 	]
 }
@@ -285,7 +298,7 @@ extension HomeView {
 struct CircularService : View {
 	@Environment(\.colorScheme) var colorScheme
 	let serviceImage: String
-	let serviceName : String
+	let serviceName : LocalizedStringResource
 	var body: some View {
 		VStack{
 			ZStack{

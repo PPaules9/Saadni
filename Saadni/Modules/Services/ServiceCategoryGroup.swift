@@ -6,7 +6,7 @@ enum ServiceCategoryGroup: String, CaseIterable {
     case maintenance
     case assembly
 
-    var title: String {
+    var title: LocalizedStringResource {
         switch self {
         case .cleaning:
             return "Cleaning Services"
@@ -61,5 +61,5 @@ enum ServiceCategoryGroup: String, CaseIterable {
 struct ServiceItemCard: Identifiable {
     let id = UUID()
     let name: String
-    let displayName: String
+    let displayName: LocalizedStringResource
 }

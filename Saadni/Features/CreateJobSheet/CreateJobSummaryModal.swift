@@ -134,7 +134,7 @@ struct CreateJobSummaryModal: View {
 // MARK: - Helper Components
 
 struct SummarySection<Content: View>: View {
-	let title: String
+	let title: LocalizedStringResource
 	@ViewBuilder let content: Content
 	
 	var body: some View {
@@ -152,7 +152,7 @@ struct SummarySection<Content: View>: View {
 }
 
 struct SummaryRow: View {
-	let label: String
+	let label: LocalizedStringResource
 	let value: String
 	
 	var body: some View {

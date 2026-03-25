@@ -17,6 +17,7 @@ struct SaadniApp: App {
 
  @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
  @State private var container: AppContainer
+ @AppStorage("appLanguage") private var appLanguage = "en"
 
  init() {
   // Configure Firebase FIRST before any Firebase-dependent code
@@ -36,6 +37,8 @@ struct SaadniApp: App {
   WindowGroup {
    MainView()
     .environment(container)
+    .environment(\.locale, Locale(identifier: appLanguage))
+    .environment(\.layoutDirection, appLanguage == "ar" ? .rightToLeft : .leftToRight)
     .onAppear {
      // Request push notification permissions
      setupPushNotifications()

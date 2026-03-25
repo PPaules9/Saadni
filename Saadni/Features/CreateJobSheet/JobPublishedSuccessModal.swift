@@ -103,7 +103,7 @@ struct JobPublishedSuccessModal: View {
 
 fileprivate struct DetailRow: View {
     let icon: String
-    let title: String
+    let title: LocalizedStringResource
     let value: String
     
     var body: some View {

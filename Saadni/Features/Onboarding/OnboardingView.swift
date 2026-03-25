@@ -91,8 +91,8 @@ struct OnboardingView: View {
 
 // MARK: - Individual Onboarding Page
 struct OnboardingPage: View {
- let title: String
- let subtitle: String
+	let title: LocalizedStringResource
+	let subtitle: LocalizedStringResource
 
  var body: some View {
   VStack(spacing: 32) {
