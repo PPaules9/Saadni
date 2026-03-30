@@ -15,6 +15,7 @@ struct JobApplication: Codable, Identifiable, Hashable {
     // MARK: - References
     let serviceId: String       // Which service this application is for
     let applicantId: String     // User who applied
+    let providerId: String      // Owner of the service (denormalized for efficient querying)
     var applicantName: String
     var applicantPhotoURL: String?
 
@@ -35,6 +36,7 @@ struct JobApplication: Codable, Identifiable, Hashable {
     /// Create new application
     init(
         serviceId: String,
+        providerId: String,
         applicantId: String,
         applicantName: String,
         applicantPhotoURL: String? = nil,
@@ -43,6 +45,7 @@ struct JobApplication: Codable, Identifiable, Hashable {
     ) {
         self.id = UUID().uuidString
         self.serviceId = serviceId
+        self.providerId = providerId
         self.applicantId = applicantId
         self.applicantName = applicantName
         self.applicantPhotoURL = applicantPhotoURL
@@ -58,6 +61,7 @@ struct JobApplication: Codable, Identifiable, Hashable {
     init(
         id: String,
         serviceId: String,
+        providerId: String,
         applicantId: String,
         applicantName: String,
         applicantPhotoURL: String?,
@@ -70,6 +74,7 @@ struct JobApplication: Codable, Identifiable, Hashable {
     ) {
         self.id = id
         self.serviceId = serviceId
+        self.providerId = providerId
         self.applicantId = applicantId
         self.applicantName = applicantName
         self.applicantPhotoURL = applicantPhotoURL

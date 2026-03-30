@@ -10,11 +10,21 @@ internal import Combine
 struct DashboardView: View {
  @State private var currentCarouselIndex: Int = 0
  @State private var showWalletSheet: Bool = false
+ @State private var showNotificationDrawer: Bool = false
  @State private var selectedDateForShift: Date?
  @State private var navigateToBrowseJobs: Bool = false
  @State private var calendarSelection: Date = Date()
  @State private var isCalendarVisible: Bool = false
 	@State private var viewModel: ProfileViewModel?
+ @Environment(ServicesStore.self) var servicesStore
+ @Environment(\.notificationsStore) var notificationsStore
+
+ var jobDates: Set<DateComponents> {
+  Set(servicesStore.services.compactMap { service in
+   guard let serviceDate = service.serviceDate else { return nil }
+   return Calendar.current.dateComponents([.year, .month, .day], from: serviceDate)
+  })
+ }
 
  var body: some View {
   ZStack {
@@ -25,7 +35,7 @@ struct DashboardView: View {
     ScrollView {
      VStack(spacing: 0) {
       // Dashboard Header (Toolbar)
-      DashboardHeaderView()
+      DashboardHeaderView(showNotificationDrawer: $showNotificationDrawer)
        .padding(.horizontal, 20)
        .padding(.vertical, 16)
       
@@ -55,23 +65,14 @@ struct DashboardView: View {
 				}
        
 				if isCalendarVisible {
-					DatePicker(
-						"Select Shift Date",
-						selection: Binding(
-							get: { calendarSelection },
-							set: { newDate in
-								calendarSelection = newDate
-								selectedDateForShift = newDate
-								navigateToBrowseJobs = true
-							}
-						),
-						in: Date()...,
-						displayedComponents: [.date]
+					CustomCalendarWithJobIndicators(
+						selectedDate: $calendarSelection,
+						jobDates: jobDates,
+						onDateSelected: { date in
+							selectedDateForShift = date
+							navigateToBrowseJobs = true
+						}
 					)
-					.datePickerStyle(.graphical)
-					.tint(.accent)
-					.background(Colors.swiftUIColor(.textPrimary))
-					.cornerRadius(24)
 					.padding(.horizontal, 20)
 				}
       }
@@ -102,7 +103,15 @@ struct DashboardView: View {
   .sheet(isPresented: $showWalletSheet) {
    WalletSheet()
   }
+  .sheet(isPresented: $showNotificationDrawer) {
+   NotificationDrawerView(userRole: .jobSeeker)
+  }
+  .refreshable {
+   // Manual refresh: listeners update data automatically, but users can pull-to-refresh
+   try? await Task.sleep(nanoseconds: 500_000_000) // Brief pause for UX
+  }
  }
+
 }
 
 // MARK: - Shift Picker Calendar View
@@ -187,6 +196,8 @@ struct ShiftPickerCalendarView: View {
 // MARK: - Dashboard Header View
 struct DashboardHeaderView: View {
     @Environment(AuthenticationManager.self) var authManager
+    @Environment(\.notificationsStore) var notificationsStore
+    @Binding var showNotificationDrawer: Bool
 
  var body: some View {
   VStack(alignment: .leading, spacing: 8) {
@@ -204,22 +215,37 @@ struct DashboardHeaderView: View {
       .foregroundStyle(.secondary)
       .fontDesign(.monospaced)
       .kerning(-1)
-     
+
     }
-    
+
     Spacer()
-    
+
     HStack(spacing: 12) {
      Button(action: {}) {
       Image(systemName: "magnifyingglass")
        .font(.system(size: 18, weight: .semibold))
        .foregroundStyle(.primary)
      }
-     
-     Button(action: {}) {
-      Image(systemName: "bell")
-       .font(.system(size: 18, weight: .semibold))
-       .foregroundStyle(.primary)
+
+     ZStack(alignment: .topTrailing) {
+      Button(action: { showNotificationDrawer = true }) {
+       Image(systemName: "bell.fill")
+        .font(.system(size: 18, weight: .semibold))
+        .foregroundStyle(.primary)
+      }
+
+      if notificationsStore.unreadCount > 0 {
+       ZStack {
+        Circle()
+         .fill(Color(UIColor(hex: "#FF3B30")))
+
+        Text(notificationsStore.unreadCount > 99 ? "99+" : "\(notificationsStore.unreadCount)")
+         .font(.system(size: 10, weight: .bold))
+         .foregroundColor(.white)
+       }
+       .frame(width: 20, height: 20)
+       .offset(x: 8, y: -8)
+      }
      }
     }
    }

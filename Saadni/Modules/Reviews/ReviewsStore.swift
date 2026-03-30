@@ -79,6 +79,7 @@ class ReviewsStore: ListenerManaging {
         let receivedListener = db.collection("reviews")
             .whereField("revieweeId", isEqualTo: userId)
             .order(by: "createdAt", descending: true)
+            .limit(to: 50)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
 
@@ -118,6 +119,7 @@ class ReviewsStore: ListenerManaging {
         let submittedListener = db.collection("reviews")
             .whereField("reviewerId", isEqualTo: userId)
             .order(by: "createdAt", descending: true)
+            .limit(to: 50)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
 
@@ -155,13 +157,10 @@ class ReviewsStore: ListenerManaging {
     // MARK: - Submit Review
 
     func submitReview(_ review: Review) async throws {
-        // Save to Firestore
+        // Save to Firestore. The onReviewCreated Cloud Function will
+        // atomically update the reviewee's rating in the background.
         try await FirestoreService.shared.saveReview(review)
-
-        // Update reviewee's rating
-        try await updateUserRating(userId: review.revieweeId, newRating: review.rating)
-
-        print("✅ Review submitted and user rating updated")
+        print("✅ Review submitted")
     }
 
     // MARK: - Review Eligibility
@@ -240,42 +239,6 @@ class ReviewsStore: ListenerManaging {
 
     func getTotalReviewsForUser(userId: String) -> Int {
         return getReviewsReceivedBy(userId: userId).count
-    }
-
-    // MARK: - Update User Rating
-
-    private func updateUserRating(userId: String, newRating: Int) async throws {
-        let userRef = db.collection("users").document(userId)
-
-        do {
-            let snapshot = try await userRef.getDocument()
-            guard let data = snapshot.data() else {
-                // First review for this user
-                try await userRef.updateData([
-                    "rating": Double(newRating),
-                    "totalReviews": 1
-                ])
-                return
-            }
-
-            let currentRating = data["rating"] as? Double
-            let totalReviews = data["totalReviews"] as? Int ?? 0
-
-            // Calculate new average
-            let oldTotal = (currentRating ?? 0.0) * Double(totalReviews)
-            let newTotal = oldTotal + Double(newRating)
-            let newAverage = newTotal / Double(totalReviews + 1)
-
-            try await userRef.updateData([
-                "rating": newAverage,
-                "totalReviews": totalReviews + 1
-            ])
-
-            print("✅ User rating updated: \(String(format: "%.1f", newAverage))")
-        } catch {
-            print("❌ Error updating user rating: \(error)")
-            throw error
-        }
     }
 
     // MARK: - Delete Review

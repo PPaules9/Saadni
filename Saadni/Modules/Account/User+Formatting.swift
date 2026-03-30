@@ -59,9 +59,9 @@ extension User {
         return formatter.localizedString(for: lastLoginAt, relativeTo: Date())
     }
 
-    /// Profile completion status
-    var profileCompletionStatus: String {
-        switch profileCompletionPercentage {
+    /// Profile completion status for a given percentage
+    func profileCompletionStatus(for percentage: Int) -> String {
+        switch percentage {
         case 0...33:
             return "Incomplete"
         case 34...66:

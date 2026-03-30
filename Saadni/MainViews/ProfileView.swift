@@ -24,10 +24,14 @@ struct ProfileView: View {
 					VStack(alignment: .leading, spacing: 24) {
 						// Profile Header
 						if let user = authManager.currentUser {
+							let currentRole: UserRole = user.isServiceProvider ? .provider : .jobSeeker
+							let completionPercentage = user.getCompletionPercentage(forRole: currentRole)
+
 							ProfileHeaderView(
 								displayName: user.displayName ?? "User",
 								email: user.email,
-								photoURL: user.photoURL
+								photoURL: user.photoURL,
+								completionPercentage: completionPercentage
 							)
 						}
 						

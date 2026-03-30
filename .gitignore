@@ -61,3 +61,6 @@ Config/Secrets.xcconfig
 # ── Playgrounds ───────────────────────────────────────────
 timeline.xctimeline
 playground.xcworkspace
+
+# ── Course Material ───────────────────────────────────────────
+Saadni_Course/

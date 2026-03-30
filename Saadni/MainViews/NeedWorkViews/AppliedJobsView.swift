@@ -12,9 +12,21 @@ struct AppliedJobsView: View {
     @Environment(ApplicationsStore.self) var applicationsStore
     @Environment(ServicesStore.self) var servicesStore
 
-    @State private var applications: [JobApplication] = []
-    @State private var serviceMap: [String: JobService] = [:]
-    @State private var isLoading: Bool = true
+    var applications: [JobApplication] {
+        applicationsStore.myApplications
+            .filter { $0.status != .withdrawn }
+            .sorted { $0.appliedAt > $1.appliedAt }
+    }
+
+    var serviceMap: [String: JobService] {
+        let serviceIds = Set(applications.map { $0.serviceId })
+        let relevantServices = servicesStore.services.filter { serviceIds.contains($0.id) }
+        return Dictionary(uniqueKeysWithValues: relevantServices.map { ($0.id, $0) })
+    }
+
+    var isLoading: Bool {
+        applicationsStore.isLoadingApplications || servicesStore.isLoadingServices
+    }
 
     var body: some View {
         NavigationStack {
@@ -69,37 +81,12 @@ struct AppliedJobsView: View {
         }
         .navigationTitle("My Jobs")
         .background(Color(.systemGray6).opacity(0.1))
-        .task {
-            await loadApplications()
+        .refreshable {
+            // Manual refresh: listeners update data automatically, but users can pull-to-refresh
+            try? await Task.sleep(nanoseconds: 500_000_000) // Brief pause for UX
         }
     }
 
-    private func loadApplications() async {
-        isLoading = true
-        guard let userId = authManager.currentUserId else {
-            isLoading = false
-            return
-        }
-
-        // Fetch applications for this user
-        applications = await applicationsStore.fetchUserApplications(userId: userId)
-
-        // Extract unique service IDs
-        let serviceIds = Array(Set(applications.map { $0.serviceId }))
-
-        // Fetch services by IDs
-        let services = await servicesStore.fetchServicesByIds(serviceIds)
-
-        // Build service map for quick lookup
-        serviceMap = Dictionary(uniqueKeysWithValues: services.map { ($0.id, $0) })
-
-        // Sort applications by creation date (newest first)
-        applications.sort { (app1: JobApplication, app2: JobApplication) in
-            app1.appliedAt > app2.appliedAt
-        }
-
-        isLoading = false
-    }
 }
 
 #Preview {

@@ -12,7 +12,8 @@ struct ProfileHeaderView: View {
 	let displayName: String
 	let email: String
 	let photoURL: String?
-	
+	let completionPercentage: Int
+
 	var body: some View {
 		VStack(spacing: 12) {
 			HStack(spacing: 16) {
@@ -52,18 +53,26 @@ struct ProfileHeaderView: View {
 							.foregroundStyle(Colors.swiftUIColor(.textSecondary))
 					}
 					Spacer()
-					VStack{
-						HStack(spacing: 4){
-							Image("star.accent")
-								.resizable()
-								.frame(width: 12, height: 12)
-							Text("4.76")
-								.font(.subheadline)
-								.foregroundStyle(Colors.swiftUIColor(.primary))
-							
+					// Profile Completion Circle
+					ZStack {
+						Circle()
+							.stroke(Color(.systemGray5), lineWidth: 3)
+							.frame(width: 50, height: 50)
+
+						Circle()
+							.trim(from: 0, to: CGFloat(completionPercentage) / 100)
+							.stroke(Color.accent, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+							.frame(width: 50, height: 50)
+							.rotationEffect(.degrees(-90))
+
+						VStack(spacing: 0) {
+							Text("\(completionPercentage)")
+								.font(.system(size: 14, weight: .semibold))
+								.foregroundColor(.primary)
+							Text("%")
+								.font(.system(size: 10, weight: .regular))
+								.foregroundColor(.secondary)
 						}
-						Text("")
-							.font(.title)
 					}
 				}
 			}
@@ -77,5 +86,5 @@ struct ProfileHeaderView: View {
 }
 
 #Preview {
-	ProfileHeaderView(displayName: "John Doe", email: "john@example.com", photoURL: nil)
+	ProfileHeaderView(displayName: "John Doe", email: "john@example.com", photoURL: nil, completionPercentage: 75)
 }

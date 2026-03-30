@@ -46,7 +46,6 @@ struct CreateJobSummaryModal: View {
 						if !viewModel.breakDuration.isEmpty {
 							SummaryRow(label: "Break", value: viewModel.breakDuration)
 						}
-						SummaryRow(label: "Workers", value: viewModel.numberOfWorkersNeeded)
 					}
 					
 					SummarySection(title: "Location") {

@@ -15,57 +15,71 @@ class ServicesStore {
  var isLoadingServices: Bool = false
  var servicesError: String? = nil
 
- private var servicesListener: ListenerRegistration?
+ // MARK: - Pagination State
+ private var lastDocument: QueryDocumentSnapshot?
+ private(set) var hasMoreServices: Bool = true
+ private let pageSize = 20
 
  private var db: Firestore {
   Firestore.firestore()
  }
 
+ // MARK: - Paginated Fetch (replaces real-time listener)
 
+ /// Fetches the next page of published/active services.
+ /// Call with reset: true when changing category or doing pull-to-refresh.
+ func fetchServicesPage(category: ServiceCategoryType? = nil, reset: Bool = false) async {
+  guard hasMoreServices || reset else { return }
 
- func startListening() {
-  setupListeners()
- }
- 
- deinit {
-  servicesListener?.remove()
- }
- 
- // MARK: - Real-time Listeners
- 
-    private func setupListeners() {
-        // Listen to all published services
-        isLoadingServices = true
-        servicesError = nil
+  if reset {
+   lastDocument = nil
+   services = []
+   hasMoreServices = true
+  }
 
-        servicesListener = db.collection("services")
+  isLoadingServices = true
+  servicesError = nil
+
+  var query: Query = db.collection("services")
    .whereField("status", in: ["published", "active"])
    .order(by: "createdAt", descending: true)
-   .addSnapshotListener { [weak self] snapshot, error in
-    guard let self = self else { return }
+   .limit(to: pageSize)
 
-    if let error = error {
-     self.servicesError = "Failed to load services. Check your connection."
-     self.isLoadingServices = false
-     print("❌ Error fetching services: \(error)")
-     return
+  if let category {
+   query = db.collection("services")
+    .whereField("status", in: ["published", "active"])
+    .whereField("category", isEqualTo: category.rawValue)
+    .order(by: "createdAt", descending: true)
+    .limit(to: pageSize)
+  }
+
+  if let last = lastDocument {
+   query = query.start(afterDocument: last)
+  }
+
+  do {
+   let snapshot = try await query.getDocuments()
+   lastDocument = snapshot.documents.last
+   hasMoreServices = snapshot.documents.count == pageSize
+
+   let newServices = snapshot.documents.compactMap { doc -> JobService? in
+    do {
+     return try JobService.fromFirestore(id: doc.documentID, data: doc.data())
+    } catch {
+     print("⚠️ Failed to decode service \(doc.documentID): \(error)")
+     return nil
     }
-
-    guard let documents = snapshot?.documents else { return }
-
-    self.services = documents.compactMap { doc in
-     do {
-      return try JobService.fromFirestore(id: doc.documentID, data: doc.data())
-     } catch {
-      print("⚠️ Failed to decode service \(doc.documentID): \(error)")
-      return nil
-     }
-    }
-
-    self.servicesError = nil
-    self.isLoadingServices = false
-    print("✅ Loaded \(self.services.count) services from Firestore")
    }
+
+   services.append(contentsOf: newServices)
+   servicesError = nil
+   print("✅ Fetched \(newServices.count) services (total: \(services.count), hasMore: \(hasMoreServices))")
+  } catch {
+   servicesError = "Failed to load services. Check your connection."
+   print("❌ Error fetching services: \(error)")
+  }
+
+  isLoadingServices = false
  }
  
  // MARK: - Add Services (with Image Upload)
@@ -92,31 +106,41 @@ class ServicesStore {
   try await FirestoreService.shared.saveService(updatedService)
  }
  
-    // MARK: - Get Services (from memory, populated by listeners)
+    // MARK: - Get Services (from memory, populated by paginated fetch)
 
     func getAllServices() -> [JobService] {
         return services
     }
 
- // MARK: - Fetch Services by IDs
+ // MARK: - Fetch Services by IDs (batched — no N+1)
 
  func fetchServicesByIds(_ serviceIds: [String]) async -> [JobService] {
   guard !serviceIds.isEmpty else { return [] }
 
   var fetchedServices: [JobService] = []
 
+  // Firestore "in" queries support max 30 items per query
+  let chunks = stride(from: 0, to: serviceIds.count, by: 30).map {
+   Array(serviceIds[$0..<min($0 + 30, serviceIds.count)])
+  }
+
   do {
-   for serviceId in serviceIds {
-    let snapshot = try await db.collection("services").document(serviceId).getDocument()
-    do {
-     let service = try JobService.fromFirestore(id: snapshot.documentID, data: snapshot.data() ?? [:])
-     fetchedServices.append(service)
-    } catch {
-     print("⚠️ Failed to decode service \(serviceId): \(error)")
+   for chunk in chunks {
+    let snapshot = try await db.collection("services")
+     .whereField(FieldPath.documentID(), in: chunk)
+     .getDocuments()
+    let decoded = snapshot.documents.compactMap { doc -> JobService? in
+     do {
+      return try JobService.fromFirestore(id: doc.documentID, data: doc.data())
+     } catch {
+      print("⚠️ Failed to decode service \(doc.documentID): \(error)")
+      return nil
+     }
     }
+    fetchedServices.append(contentsOf: decoded)
    }
    servicesError = nil
-   print("✅ Fetched \(fetchedServices.count) services by IDs")
+   print("✅ Fetched \(fetchedServices.count) services by IDs (\(chunks.count) batch(es))")
    return fetchedServices
   } catch {
    servicesError = "Failed to load services. Check your connection."
@@ -305,6 +329,6 @@ class ServicesStore {
  // MARK: - Retry Logic
 
  func retryLoadingServices() {
-  setupListeners()
+  Task { await fetchServicesPage(reset: true) }
  }
 }

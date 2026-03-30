@@ -31,6 +31,7 @@ final class ServiceDetailViewModel {
     /// Submits an application for the service
     func submitApplication(
         for serviceId: String,
+        providerId: String,
         by applicantId: String,
         applicantName: String,
         applicantPhotoURL: String?,
@@ -45,9 +46,9 @@ final class ServiceDetailViewModel {
         applicationError = nil
 
         do {
-            // Use the proper submitApplication method from store
             try await applicationsStore.submitApplication(
                 serviceId: serviceId,
+                providerId: providerId,
                 applicantId: applicantId,
                 applicantName: applicantName,
                 applicantPhotoURL: applicantPhotoURL,

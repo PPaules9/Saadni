@@ -16,18 +16,19 @@ class AppContainer {
 	let appStateManager: AppStateManager
 	let messagesStore: MessagesStore
 	let conversationsStore: ConversationsStore
+	let notificationsStore: NotificationsStore
 	let errorHandler: ErrorHandler
-	
-	
-	
-	
+
+
+
+
 	init() {
 		// Initialize in correct order (dependencies first)
 		let cache = UserCache()
 		let appState = AppStateManager()
 		let authManager = AuthenticationManager(userCache: cache, appStateManager: appState)
 		let errorHandler = ErrorHandler()
-		
+
 		self.userCache = cache
 		self.authManager = authManager
 		self.servicesStore = ServicesStore()
@@ -35,6 +36,7 @@ class AppContainer {
 		self.appStateManager = appState
 		self.messagesStore = MessagesStore()
 		self.conversationsStore = ConversationsStore()
+		self.notificationsStore = NotificationsStore()
 		self.errorHandler = errorHandler
 	}
 }

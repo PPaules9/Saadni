@@ -52,6 +52,11 @@ struct CreateJobTab1: View {
                             .font(.subheadline)
                             .foregroundStyle(Colors.swiftUIColor(.textSecondary))
                         Text("*").foregroundStyle(.red)
+											Spacer()
+											Text("select at least one")
+												.font(.caption)
+												.foregroundStyle(Colors.swiftUIColor(.textSecondary))
+											
                     }
                     MultiDatePicker("Dates", selection: $viewModel.selectedDates, in: Date()...)
                         .padding()
@@ -81,34 +86,17 @@ struct CreateJobTab1: View {
                     .cornerRadius(12)
                 }
                 
-                // Break Duration & Workers
-                HStack(spacing: 12) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Break (Optional)")
-                            .font(.subheadline)
-                            .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-                        BrandTextField(
-                            hasTitle: false,
-                            title: "",
-                            placeholder: "e.g. 30 mins",
-                            text: $viewModel.breakDuration
-                        )
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack(spacing: 4) {
-                            Text("Workers Needed")
-                                .font(.subheadline)
-                                .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-                            Text("*").foregroundStyle(.red)
-                        }
-                        BrandTextField(
-                            hasTitle: false,
-                            title: "",
-                            placeholder: "1",
-                            text: $viewModel.numberOfWorkersNeeded
-                        )
-                    }
+                // Break Duration
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Break (Optional)")
+                        .font(.subheadline)
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                    BrandTextField(
+                        hasTitle: false,
+                        title: "",
+                        placeholder: "e.g. 30 mins",
+                        text: $viewModel.breakDuration
+                    )
                 }
                 
                 Spacer()

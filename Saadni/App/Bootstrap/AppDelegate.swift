@@ -7,6 +7,8 @@
 
 import UserNotifications
 import FirebaseMessaging
+import FirebaseFirestore
+import FirebaseAuth
 import UIKit
 
 
@@ -75,17 +77,30 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
   guard let fcmToken = fcmToken else { return }
   print("🔑 FCM Token: \(fcmToken)")
 
-  // Save token to Firestore if user is authenticated
-  if let userId = NotificationService.shared.getCurrentUserId() {
-   Task {
-    do {
-     try await NotificationService.shared.registerDeviceToken(fcmToken, for: userId)
-     print("✅ FCM token registered successfully")
-    } catch {
-     print("❌ Failed to register FCM token: \(error)")
-     // Note: This is in AppDelegate, not in a view, so we can't use errorHandler
-     // Error is logged for developer debugging
-    }
+  guard let userId = Auth.auth().currentUser?.uid else {
+   print("⚠️ Cannot save FCM token: user not authenticated")
+   return
+  }
+
+  Task {
+   let tokenData: [String: Any] = [
+    "token": fcmToken,
+    "platform": "ios",
+    "deviceModel": UIDevice.current.model,
+    "osVersion": UIDevice.current.systemVersion,
+    "registeredAt": Timestamp(date: Date()),
+    "isActive": true
+   ]
+   do {
+    try await Firestore.firestore()
+     .collection("users")
+     .document(userId)
+     .collection("fcmTokens")
+     .document(fcmToken)
+     .setData(tokenData, merge: true)
+    print("✅ FCM token saved to users/\(userId)/fcmTokens/")
+   } catch {
+    print("❌ Failed to save FCM token: \(error)")
    }
   }
  }

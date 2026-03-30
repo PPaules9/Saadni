@@ -13,10 +13,21 @@ struct UserReviewsView: View {
     @Environment(ReviewsStore.self) var reviewsStore
     @Environment(AuthenticationManager.self) var authManager
 
-    @State private var reviews: [Review] = []
-    @State private var isLoading: Bool = true
-    @State private var averageRating: Double?
-    @State private var totalReviews: Int = 0
+    var reviews: [Review] {
+        reviewsStore.getReviewsReceivedBy(userId: userId)
+    }
+
+    var isLoading: Bool {
+        reviewsStore.isLoadingReviews
+    }
+
+    var averageRating: Double? {
+        reviewsStore.getAverageRatingForUser(userId: userId)
+    }
+
+    var totalReviews: Int {
+        reviewsStore.getTotalReviewsForUser(userId: userId)
+    }
 
     var body: some View {
         ScrollView {
@@ -59,23 +70,12 @@ struct UserReviewsView: View {
         }
         .navigationTitle("Reviews")
         .background(Color(.systemGray6).opacity(0.1))
-        .task {
-            await loadReviews()
+        .refreshable {
+            // Manual refresh: listeners update data automatically, but users can pull-to-refresh
+            try? await Task.sleep(nanoseconds: 500_000_000) // Brief pause for UX
         }
     }
 
-    private func loadReviews() async {
-        isLoading = true
-
-        // Get reviews from the store
-        reviews = reviewsStore.getReviewsReceivedBy(userId: userId)
-
-        // Calculate statistics
-        averageRating = reviewsStore.getAverageRatingForUser(userId: userId)
-        totalReviews = reviewsStore.getTotalReviewsForUser(userId: userId)
-
-        isLoading = false
-    }
 }
 
 #Preview {

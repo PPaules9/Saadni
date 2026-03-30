@@ -17,34 +17,64 @@ struct NeedWork: View {
 				Tab("Dashboard", systemImage: "house") {
 					NavigationStack{
 						DashboardView()
+							.navigationDestination(for: ServiceProviderDestination.self) { destination in
+								destinationView(for: destination)
+							}
+							.navigationDestination(for: JobSeekerDestination.self) { destination in
+								destinationView(for: destination)
+							}
 					}
 				}
-				
+
 				Tab("Chat", systemImage: "text.bubble.fill") {
 					NavigationStack{
 						ChatView()
+							.navigationDestination(for: ServiceProviderDestination.self) { destination in
+								destinationView(for: destination)
+							}
+							.navigationDestination(for: JobSeekerDestination.self) { destination in
+								destinationView(for: destination)
+							}
 					}
 				}
-				
-				Tab("Add", systemImage: "plus") {
+
+				Tab("Jobs", systemImage: "bag.fill") {
 					NavigationStack{
 						AppliedJobsView()
+							.navigationDestination(for: ServiceProviderDestination.self) { destination in
+								destinationView(for: destination)
+							}
+							.navigationDestination(for: JobSeekerDestination.self) { destination in
+								destinationView(for: destination)
+							}
 					}
 				}
-				
-				
+
+
 				Tab("Profile", systemImage: "person.fill") {
 					NavigationStack{
 						ProfileView()
+							.navigationDestination(for: ServiceProviderDestination.self) { destination in
+								destinationView(for: destination)
+							}
+							.navigationDestination(for: JobSeekerDestination.self) { destination in
+								destinationView(for: destination)
+							}
 					}
 				}
-				
+
 				Tab(role: .search){
 					NavigationStack{
 						BrowseJobs()
+							.navigationDestination(for: ServiceProviderDestination.self) { destination in
+								destinationView(for: destination)
+							}
+							.navigationDestination(for: JobSeekerDestination.self) { destination in
+								destinationView(for: destination)
+							}
 					}
 				}
-				
+
 			}
 		} else {
 			NeedWorkView()
@@ -80,7 +110,7 @@ struct NeedWork: View {
 				.background(Colors.swiftUIColor(.appBackground))
 				.environment(coordinator)
 			} else {
-				ProgressView().tint(.accent)
+				LaunchScreen()
 			}
 		
 	}

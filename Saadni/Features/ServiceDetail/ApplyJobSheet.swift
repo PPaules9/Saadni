@@ -20,6 +20,12 @@ struct ApplyJobSheet: View {
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var showSuccess = false
+    @State private var showProfileCompletionPopup = false
+    @State private var profileCompletionPercentage = 0
+    @State private var showEditProfile = false
+    @State private var showPosterProfile = false
+    @State private var posterUser: User?
+    @State private var isLoadingPoster = false
 
     var isFormValid: Bool {
         // Form is always valid since both fields are optional
@@ -111,6 +117,71 @@ struct ApplyJobSheet: View {
                     Divider()
                         .background(Color.gray.opacity(0.3))
 
+                    // MARK: - Job Poster Section
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Job Poster")
+                            .font(.headline)
+                            .foregroundStyle(.white)
+
+                        Button(action: {
+                            showPosterProfile = true
+                        }) {
+                            if let poster = posterUser {
+                                HStack(spacing: 12) {
+                                    // Poster photo
+                                    if let photoURL = poster.photoURL, let url = URL(string: photoURL) {
+                                        AsyncImage(url: url) { image in
+                                            image
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 50, height: 50)
+                                                .clipShape(Circle())
+                                        } placeholder: {
+                                            Circle()
+                                                .fill(Color(.systemGray5))
+                                                .frame(width: 50, height: 50)
+                                        }
+                                    } else {
+                                        Circle()
+                                            .fill(Color(.systemGray5))
+                                            .frame(width: 50, height: 50)
+                                            .overlay(Text("👤").font(.system(size: 24)))
+                                    }
+
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(poster.displayName ?? "Service Provider")
+                                            .font(.headline)
+                                            .foregroundStyle(.white)
+                                        if let bio = poster.bio {
+                                            Text(bio)
+                                                .font(.caption)
+                                                .foregroundStyle(.gray)
+                                                .lineLimit(2)
+                                        }
+                                    }
+
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .foregroundStyle(.gray)
+                                }
+                                .padding(12)
+                                .background(Color(.systemGray6).opacity(0.3))
+                                .cornerRadius(8)
+                            } else if isLoadingPoster {
+                                HStack(spacing: 12) {
+                                    ProgressView()
+                                        .tint(.accent)
+                                    Text("Loading poster info...")
+                                        .foregroundStyle(.gray)
+                                }
+                                .padding(12)
+                            }
+                        }
+                    }
+
+                    Divider()
+                        .background(Color.gray.opacity(0.3))
+
                     // MARK: - Cover Message Section
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Cover Message (Optional)")
@@ -168,9 +239,7 @@ struct ApplyJobSheet: View {
 
                     // MARK: - Submit Button
                     Button {
-                        Task {
-                            await submitApplication()
-                        }
+                        handleSubmit()
                     } label: {
                         if isSubmitting {
                             HStack {
@@ -221,6 +290,55 @@ struct ApplyJobSheet: View {
                 Text("Your application has been submitted successfully. The job poster will review it soon.")
             }
         }
+        .sheet(isPresented: $showProfileCompletionPopup) {
+            ProfileCompletionPopup(
+                completionPercentage: profileCompletionPercentage,
+                onComplete: {
+                    showProfileCompletionPopup = false
+                    showEditProfile = true
+                },
+                onDismiss: {
+                    showProfileCompletionPopup = false
+                }
+            )
+        }
+        .sheet(isPresented: $showEditProfile) {
+            EditProfileSheet()
+        }
+        .sheet(isPresented: $showPosterProfile) {
+            if let poster = posterUser {
+                UserProfileSheet(userId: poster.id)
+            }
+        }
+        .task {
+            await loadPosterInfo()
+        }
+    }
+
+    private func loadPosterInfo() async {
+        isLoadingPoster = true
+        do {
+            posterUser = try await FirestoreService.shared.fetchUser(id: service.providerId)
+        } catch {
+            // Silently fail - poster info is optional
+        }
+        isLoadingPoster = false
+    }
+
+    private func handleSubmit() {
+        guard let user = authManager.currentUser else { return }
+
+        // Check JOB SEEKER profile completion (applying requires job seeker role)
+        if user.jobSeekerCompletionPercentage < 100 {
+            profileCompletionPercentage = user.jobSeekerCompletionPercentage
+            showProfileCompletionPopup = true
+            return
+        }
+
+        // Proceed with application
+        Task {
+            await submitApplication()
+        }
     }
 
     private func submitApplication() async {
@@ -245,11 +363,11 @@ struct ApplyJobSheet: View {
 
             try await applicationsStore.submitApplication(
                 serviceId: service.id,
+                providerId: service.providerId,
                 applicantId: currentUserId,
                 applicantName: currentUser.displayName,
                 applicantPhotoURL: currentUser.photoURL,
-                coverMessage: coverMessage.isEmpty ? nil : coverMessage,
-                proposedPrice: proposedPriceDouble
+                coverMessage: coverMessage.isEmpty ? nil : coverMessage
             )
 
             showSuccess = true

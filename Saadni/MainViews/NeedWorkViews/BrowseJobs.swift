@@ -65,10 +65,6 @@ struct BrowseJobs: View {
    }
   }
 
-  if let selectedCategory = selectedCategory {
-   services = services.filter { $0.category == selectedCategory }
-  }
-  
   if let date = selectedDate {
    services = services.filter { service in
     guard let sDate = service.serviceDate else { return false }
@@ -116,7 +112,10 @@ struct BrowseJobs: View {
     // Category Scroll
     ScrollView(.horizontal, showsIndicators: false) {
      HStack(spacing: 8) {
-      Button(action: { selectedCategory = nil }) {
+      Button(action: {
+       selectedCategory = nil
+       Task { await servicesStore.fetchServicesPage(category: nil, reset: true) }
+      }) {
        Text("All")
         .font(.system(size: 14, weight: .semibold))
         .foregroundStyle(selectedCategory == nil ? .white : .gray)
@@ -127,7 +126,10 @@ struct BrowseJobs: View {
       }
 
       ForEach(ServiceCategoryType.allCases, id: \.self) { category in
-       Button(action: { selectedCategory = category }) {
+       Button(action: {
+        selectedCategory = category
+        Task { await servicesStore.fetchServicesPage(category: category, reset: true) }
+       }) {
         Text(category.rawValue)
          .font(.system(size: 14, weight: .semibold))
          .foregroundStyle(selectedCategory == category ? .white : .gray)
@@ -144,7 +146,7 @@ struct BrowseJobs: View {
 
     ScrollView {
      VStack(spacing: 14) {
-      if filteredServices.isEmpty {
+      if filteredServices.isEmpty && !servicesStore.isLoadingServices {
        VStack(spacing: 16) {
         Image(systemName: "briefcase")
          .font(.system(size: 48))
@@ -162,11 +164,23 @@ struct BrowseJobs: View {
        ForEach(filteredServices, id: \.id) { service in
         ServiceCard(service: service)
        }
+
+       // Load-more trigger: fires when this row becomes visible
+       if servicesStore.hasMoreServices {
+        ProgressView()
+         .padding()
+         .onAppear {
+          Task { await servicesStore.fetchServicesPage(category: selectedCategory) }
+         }
+       }
       }
      }
      .padding()
     }
     .scrollIndicators(.hidden)
+    .refreshable {
+     await servicesStore.fetchServicesPage(category: selectedCategory, reset: true)
+    }
    }
    .searchable(text: $searchText, prompt: "Browse Jobs....")
    .toolbar {
@@ -185,6 +199,14 @@ struct BrowseJobs: View {
       Image(systemName: "line.3.horizontal.decrease.circle.fill")
        .font(.system(size: 16))
      }
+    }
+   }
+   .navigationDestination(for: ServiceProviderDestination.self) { destination in
+    switch destination {
+    case .serviceDetail(let service):
+     ServiceDetailView(service: service)
+    default:
+     EmptyView()
     }
    }
   }

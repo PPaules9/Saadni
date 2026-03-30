@@ -242,6 +242,10 @@ struct ServiceDetailView: View {
    ApplyJobSheetContent(service: service)
     .environment(applicationsStore)
   }
+  .sheet(isPresented: $showingApplications) {
+   ServiceApplicationsSheet(service: service)
+    .environment(applicationsStore)
+  }
  }
 
  private var isOwnService: Bool {
@@ -409,201 +413,201 @@ struct ApplyJobSheetContent: View {
   !isSubmitting
  }
 
- var body: some View {
-  NavigationStack {
-   ScrollView {
-    VStack(spacing: 24) {
-     // MARK: - Header
-     VStack(spacing: 8) {
-      Text("Apply for This Job")
-       .font(.title2)
-       .fontWeight(.bold)
-       .foregroundStyle(.white)
-
-      Text(service.title)
-       .font(.headline)
-       .foregroundStyle(.white)
-     }
-     .frame(maxWidth: .infinity)
-
-     Divider()
-      .background(Color.gray.opacity(0.3))
-
-     // MARK: - Service Summary
-     VStack(spacing: 12) {
-      HStack(spacing: 16) {
-       Image(systemName: "briefcase.fill")
-        .font(.title3)
-        .foregroundStyle(.accent)
-        .frame(width: 24)
-
-       VStack(alignment: .leading, spacing: 4) {
-        Text("Price")
-         .font(.caption)
-         .foregroundStyle(.gray)
-        Text(service.formattedPrice)
-         .font(.headline)
-         .foregroundStyle(.white)
-       }
-
-       Spacer()
-      }
-
-      HStack(spacing: 16) {
-       Image(systemName: "location.fill")
-        .font(.title3)
-        .foregroundStyle(.accent)
-        .frame(width: 24)
-
-       VStack(alignment: .leading, spacing: 4) {
-        Text("Location")
-         .font(.caption)
-         .foregroundStyle(.gray)
-        Text(service.location.name)
-         .font(.headline)
-         .foregroundStyle(.white)
-       }
-
-       Spacer()
-      }
-
-      if let hours = service.estimatedDurationHours {
-       HStack(spacing: 16) {
-        Image(systemName: "clock.fill")
-         .font(.title3)
-         .foregroundStyle(.accent)
-         .frame(width: 24)
-
-        VStack(alignment: .leading, spacing: 4) {
-         Text("Duration")
-          .font(.caption)
-          .foregroundStyle(.gray)
-         Text(String(format: "%.0f hours", hours))
-          .font(.headline)
-          .foregroundStyle(.white)
-        }
-
-        Spacer()
-       }
-      }
-     }
-     .padding(12)
-     .background(Color(.systemGray6).opacity(0.3))
-     .cornerRadius(8)
-
-     Divider()
-      .background(Color.gray.opacity(0.3))
-
-     // MARK: - Cover Message Section
-     VStack(alignment: .leading, spacing: 8) {
-      Text("Cover Message (Optional)")
-       .font(.subheadline)
-       .foregroundStyle(.gray)
-
-      Text("Tell the job poster why you're interested and why you're a good fit")
-       .font(.caption)
-       .foregroundStyle(.gray.opacity(0.7))
-
-      TextEditor(text: $coverMessage)
-       .frame(height: 120)
-       .padding(8)
-       .background(Color(.systemGray6).opacity(0.3))
-       .cornerRadius(8)
-       .foregroundStyle(.white)
-       .scrollContentBackground(.hidden)
-
-      Text("\(coverMessage.count)/500")
-       .font(.caption)
-       .foregroundStyle(.gray)
-       .frame(maxWidth: .infinity, alignment: .trailing)
-     }
-
-     // MARK: - Proposed Price Section
-     VStack(alignment: .leading, spacing: 8) {
-      Text("Proposed Price (Optional)")
-       .font(.subheadline)
-       .foregroundStyle(.gray)
-
-      Text("Counter-offer a different price if needed")
-       .font(.caption)
-       .foregroundStyle(.gray.opacity(0.7))
-
-      HStack(spacing: 8) {
-       Image(systemName: "dollarsign")
-        .foregroundStyle(.accent)
-
-       TextField("Enter price", text: $proposedPrice)
-        .keyboardType(.decimalPad)
-        .foregroundStyle(.white)
-      }
-      .padding(12)
-      .background(Color(.systemGray6).opacity(0.3))
-      .cornerRadius(8)
-
-      if !proposedPrice.isEmpty && Double(proposedPrice) == nil {
-       Text("Please enter a valid number")
-        .font(.caption)
-        .foregroundStyle(.red)
-      }
-     }
-
-     Spacer()
-
-     // MARK: - Submit Button
-     Button {
-      Task {
-       await submitApplication()
-      }
-     } label: {
-      if isSubmitting {
-       HStack {
-        ProgressView()
-         .tint(.white)
-        Text("Submitting...")
-       }
-       .frame(maxWidth: .infinity)
-       .padding()
-       .background(Color.gray.opacity(0.5))
-       .cornerRadius(12)
-       .foregroundStyle(.white)
-      } else {
-       Text("Submit Application")
-        .font(.headline)
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(isFormValid ? Color.blue : Color.gray.opacity(0.5))
-        .cornerRadius(12)
-        .foregroundStyle(.white)
-      }
-     }
-     .disabled(!isFormValid)
-    }
-    .padding()
-   }
-   .background(Color(.systemGray6).opacity(0.1))
-   .navigationTitle("Apply for Job")
-   .navigationBarTitleDisplayMode(.inline)
-   .toolbar {
-    ToolbarItem(placement: .topBarLeading) {
-     Button("Cancel") {
-      dismiss()
-     }
-     .foregroundStyle(.blue)
-    }
-   }
-   .alert("Error", isPresented: $showError) {
-    Button("OK", role: .cancel) { }
-   } message: {
-    Text(errorMessage)
-   }
-   .alert("Application Sent!", isPresented: $showSuccess) {
-    Button("OK", role: .cancel) {
-     dismiss()
-    }
-   } message: {
-    Text("Your application has been submitted successfully. The job poster will review it soon.")
-   }
-  }
+	var body: some View {
+		NavigationStack {
+			ScrollView {
+				VStack(spacing: 24) {
+					// MARK: - Header
+					VStack(spacing: 8) {
+						Text("Apply for This Job")
+							.font(.title2)
+							.fontWeight(.bold)
+							.foregroundStyle(.white)
+						
+						Text(service.title)
+							.font(.headline)
+							.foregroundStyle(.white)
+					}
+					.frame(maxWidth: .infinity)
+					
+					Divider()
+						.background(Color.gray.opacity(0.3))
+					
+					// MARK: - Service Summary
+					VStack(spacing: 12) {
+						HStack(spacing: 16) {
+							Image(systemName: "briefcase.fill")
+								.font(.title3)
+								.foregroundStyle(.accent)
+								.frame(width: 24)
+							
+							VStack(alignment: .leading, spacing: 4) {
+								Text("Price")
+									.font(.caption)
+									.foregroundStyle(.gray)
+								Text(service.formattedPrice)
+									.font(.headline)
+									.foregroundStyle(.white)
+							}
+							
+							Spacer()
+						}
+						
+						HStack(spacing: 16) {
+							Image(systemName: "location.fill")
+								.font(.title3)
+								.foregroundStyle(.accent)
+								.frame(width: 24)
+							
+							VStack(alignment: .leading, spacing: 4) {
+								Text("Location")
+									.font(.caption)
+									.foregroundStyle(.gray)
+								Text(service.location.name)
+									.font(.headline)
+									.foregroundStyle(.white)
+							}
+							
+							Spacer()
+						}
+						
+						if let hours = service.estimatedDurationHours {
+							HStack(spacing: 16) {
+								Image(systemName: "clock.fill")
+									.font(.title3)
+									.foregroundStyle(.accent)
+									.frame(width: 24)
+								
+								VStack(alignment: .leading, spacing: 4) {
+									Text("Duration")
+										.font(.caption)
+										.foregroundStyle(.gray)
+									Text(String(format: "%.0f hours", hours))
+										.font(.headline)
+										.foregroundStyle(.white)
+								}
+								
+								Spacer()
+							}
+						}
+					}
+					.padding(12)
+					.background(Color(.systemGray6).opacity(0.3))
+					.cornerRadius(8)
+					
+					Divider()
+						.background(Color.gray.opacity(0.3))
+					
+					// MARK: - Cover Message Section
+					VStack(alignment: .leading, spacing: 8) {
+						Text("Cover Message (Optional)")
+							.font(.subheadline)
+							.foregroundStyle(.gray)
+						
+						Text("Tell the job poster why you're interested and why you're a good fit")
+							.font(.caption)
+							.foregroundStyle(.gray.opacity(0.7))
+						
+						TextEditor(text: $coverMessage)
+							.frame(height: 120)
+							.padding(8)
+							.background(Color(.systemGray6).opacity(0.3))
+							.cornerRadius(8)
+							.foregroundStyle(.white)
+							.scrollContentBackground(.hidden)
+						
+						Text("\(coverMessage.count)/500")
+							.font(.caption)
+							.foregroundStyle(.gray)
+							.frame(maxWidth: .infinity, alignment: .trailing)
+					}
+					
+					// MARK: - Proposed Price Section
+					VStack(alignment: .leading, spacing: 8) {
+						Text("Proposed Price (Optional)")
+							.font(.subheadline)
+							.foregroundStyle(.gray)
+						
+						Text("Counter-offer a different price if needed")
+							.font(.caption)
+							.foregroundStyle(.gray.opacity(0.7))
+						
+						HStack(spacing: 8) {
+							Image(systemName: "dollarsign")
+								.foregroundStyle(.accent)
+							
+							TextField("Enter price", text: $proposedPrice)
+								.keyboardType(.decimalPad)
+								.foregroundStyle(.white)
+						}
+						.padding(12)
+						.background(Color(.systemGray6).opacity(0.3))
+						.cornerRadius(8)
+						
+						if !proposedPrice.isEmpty && Double(proposedPrice) == nil {
+							Text("Please enter a valid number")
+								.font(.caption)
+								.foregroundStyle(.red)
+						}
+					}
+					
+					Spacer()
+					
+					// MARK: - Submit Button
+					Button {
+						Task {
+							await submitApplication()
+						}
+					} label: {
+						if isSubmitting {
+							HStack {
+								ProgressView()
+									.tint(.white)
+								Text("Submitting...")
+							}
+							.frame(maxWidth: .infinity)
+							.padding()
+							.background(Color.gray.opacity(0.5))
+							.cornerRadius(12)
+							.foregroundStyle(.white)
+						} else {
+							Text("Submit Application")
+								.font(.headline)
+								.frame(maxWidth: .infinity)
+								.padding()
+								.background(isFormValid ? Color.blue : Color.gray.opacity(0.5))
+								.cornerRadius(12)
+								.foregroundStyle(.white)
+						}
+					}
+					.disabled(!isFormValid)
+				}
+				.padding()
+			}
+			.navigationTitle("Apply for Job")
+			.navigationBarTitleDisplayMode(.inline)
+			.toolbar {
+				ToolbarItem(placement: .topBarLeading) {
+					Button("Cancel") {
+						dismiss()
+					}
+					.foregroundStyle(.blue)
+				}
+			}
+			.alert("Error", isPresented: $showError) {
+				Button("OK", role: .cancel) { }
+			} message: {
+				Text(errorMessage)
+			}
+			.alert("Application Sent!", isPresented: $showSuccess) {
+				Button("OK", role: .cancel) {
+					dismiss()
+				}
+			} message: {
+				Text("Your application has been submitted successfully. The job poster will review it soon.")
+			}
+		
+	}
  }
 
  private func submitApplication() async {
@@ -626,6 +630,7 @@ struct ApplyJobSheetContent: View {
   do {
    try await applicationsStore.submitApplication(
     serviceId: service.id,
+    providerId: service.providerId,
     applicantId: currentUserId,
     applicantName: currentUser.displayName ?? "User",
     applicantPhotoURL: currentUser.photoURL,
@@ -640,6 +645,228 @@ struct ApplyJobSheetContent: View {
    isSubmitting = false
   }
  }
+}
+
+// MARK: - Service Applications Sheet
+
+struct ApplicantID: Identifiable {
+    let id: String
+}
+
+struct ServiceApplicationsSheet: View {
+    let service: JobService
+    @Environment(\.dismiss) var dismiss
+    @Environment(ApplicationsStore.self) var applicationsStore
+
+    @State private var applicantUsers: [String: User] = [:]
+    @State private var isLoading = true
+    @State private var selectedApplicantID: ApplicantID?
+    @State private var actionError: String?
+    @State private var showError = false
+
+    var applications: [JobApplication] {
+        applicationsStore.getApplications(for: service.id)
+            .sorted { $0.appliedAt > $1.appliedAt }
+    }
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if isLoading && applications.isEmpty {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Colors.swiftUIColor(.appBackground))
+                } else if applications.isEmpty {
+                    ContentUnavailableView(
+                        "No Applications Yet",
+                        systemImage: "person.fill.questionmark",
+                        description: Text("No one has applied to this job yet")
+                    )
+                    .background(Colors.swiftUIColor(.appBackground))
+                } else {
+                    List {
+                        ForEach(applications) { application in
+                            applicationRow(application)
+                                .listRowBackground(Colors.swiftUIColor(.surfaceWhite))
+                        }
+                    }
+                    .listStyle(.insetGrouped)
+                    .scrollContentBackground(.hidden)
+                    .background(Colors.swiftUIColor(.appBackground))
+                }
+            }
+            .navigationTitle("Applications (\(applications.count))")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }
+                }
+            }
+            .alert("Error", isPresented: $showError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(actionError ?? "An error occurred")
+            }
+        }
+        .task {
+            await loadApplicantUsers()
+            isLoading = false
+        }
+        .sheet(item: $selectedApplicantID) { identifier in
+            UserProfileSheet(userId: identifier.id)
+        }
+    }
+
+    @ViewBuilder
+    private func applicationRow(_ application: JobApplication) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Header: avatar + name + status badge
+            HStack(spacing: 12) {
+                if let photoURL = applicantUsers[application.applicantId]?.photoURL,
+                   let url = URL(string: photoURL) {
+                    AsyncImage(url: url) { img in
+                        img.resizable().scaledToFill()
+                    } placeholder: {
+                        Color(.systemGray5)
+                    }
+                    .frame(width: 44, height: 44)
+                    .clipShape(Circle())
+                } else {
+                    Circle()
+                        .fill(Color(.systemGray5))
+                        .frame(width: 44, height: 44)
+                        .overlay(Text("👤").font(.system(size: 18)))
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(applicantUsers[application.applicantId]?.displayName ?? application.applicantName)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(Colors.swiftUIColor(.textMain))
+
+                    if let rating = applicantUsers[application.applicantId]?.rating {
+                        HStack(spacing: 2) {
+                            Image(systemName: "star.fill")
+                                .font(.system(size: 10))
+                                .foregroundColor(.orange)
+                            Text(String(format: "%.1f", rating))
+                                .font(.system(size: 11))
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+
+                Spacer()
+
+                statusBadge(for: application.status)
+            }
+
+            // Cover message
+            if let message = application.coverMessage, !message.isEmpty {
+                Text(message)
+                    .font(.system(size: 13))
+                    .foregroundColor(.secondary)
+                    .lineLimit(3)
+            }
+
+            // Action buttons
+            HStack(spacing: 8) {
+                if application.status == .pending {
+                    Button {
+                        Task { await accept(application) }
+                    } label: {
+                        Label("Accept", systemImage: "checkmark")
+                            .font(.system(size: 13, weight: .semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(Color.green)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+
+                    Button {
+                        Task { await reject(application) }
+                    } label: {
+                        Label("Reject", systemImage: "xmark")
+                            .font(.system(size: 13, weight: .semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(Color.red)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                Button {
+                    selectedApplicantID = ApplicantID(id: application.applicantId)
+                } label: {
+                    Text("View Profile")
+                        .font(.system(size: 13, weight: .medium))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                        .background(Color(.systemGray5))
+                        .foregroundColor(.primary)
+                        .cornerRadius(8)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    @ViewBuilder
+    private func statusBadge(for status: JobApplicationStatus) -> some View {
+        let (text, color): (String, Color) = {
+            switch status {
+            case .pending: return ("Pending", .orange)
+            case .accepted: return ("Accepted", .green)
+            case .rejected: return ("Rejected", .red)
+            case .withdrawn: return ("Withdrawn", .gray)
+            }
+        }()
+
+        Text(text)
+            .font(.system(size: 11, weight: .semibold))
+            .foregroundColor(.white)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(color)
+            .cornerRadius(6)
+    }
+
+    private func loadApplicantUsers() async {
+        for application in applications {
+            guard applicantUsers[application.applicantId] == nil else { continue }
+            if let user = try? await FirestoreService.shared.fetchUser(id: application.applicantId) {
+                applicantUsers[application.applicantId] = user
+            }
+        }
+    }
+
+    private func accept(_ application: JobApplication) async {
+        do {
+            try await applicationsStore.acceptApplication(
+                applicationId: application.id,
+                serviceId: service.id
+            )
+        } catch {
+            actionError = error.localizedDescription
+            showError = true
+        }
+    }
+
+    private func reject(_ application: JobApplication) async {
+        do {
+            try await applicationsStore.updateApplicationStatus(
+                applicationId: application.id,
+                newStatus: .rejected
+            )
+        } catch {
+            actionError = error.localizedDescription
+            showError = true
+        }
+    }
 }
 
 #Preview {

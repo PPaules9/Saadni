@@ -11,7 +11,9 @@ struct HomeView: View {
 	@State private var needHelpWith: String = ""
 	@FocusState private var isFocused: Bool
 	@State private var viewModel: ProfileViewModel?
+	@State private var showNotificationDrawer = false
 	@Environment(JobSeekerCoordinator.self) var coordinator
+	@Environment(\.notificationsStore) var notificationsStore
 	
 	var body: some View {
 		ZStack {
@@ -33,18 +35,26 @@ struct HomeView: View {
 								.tracking(-1.5)
 								.padding(.top, 12)
 							Spacer()
-							
-							
-							Button(action: {}) {
-								Image(systemName: "arrow.left.arrow.right")
-									.font(.system(size: 18, weight: .semibold))
-									.foregroundStyle(.black)
-							}
-							
-							Button(action: {}) {
-								Image(systemName: "bell")
-									.font(.system(size: 18, weight: .semibold))
-									.foregroundStyle(.black)
+
+							ZStack(alignment: .topTrailing) {
+								Button(action: { showNotificationDrawer = true }) {
+									Image(systemName: "bell.fill")
+										.font(.system(size: 18, weight: .semibold))
+										.foregroundStyle(.black)
+								}
+
+								if notificationsStore.unreadCount > 0 {
+									ZStack {
+										Circle()
+											.fill(Color(UIColor(hex: "#FF3B30")))
+
+										Text(notificationsStore.unreadCount > 99 ? "99+" : "\(notificationsStore.unreadCount)")
+											.font(.system(size: 10, weight: .bold))
+											.foregroundColor(.white)
+									}
+									.frame(width: 20, height: 20)
+									.offset(x: 8, y: -8)
+								}
 							}
 						}
 						.padding(.horizontal, 20)
@@ -197,33 +207,37 @@ struct HomeView: View {
 				}
 				.padding(.bottom, 20)
 
-					VStack(alignment: .center) {
-						Text("IKEA Assembly, Hire a Specialist for easy Installment")
-							.font(.system(size: 22, weight: .semibold, design: .monospaced))
-							.foregroundStyle(Colors.swiftUIColor(.textMain))
-							.kerning(-0.5)
-						
-						Image("ikeaAssembly")
-							.resizable()
-							.aspectRatio(contentMode: .fill)
-							.frame(maxWidth: .infinity)
-							.overlay(
-								LinearGradient(
-									colors: [.clear, .black.opacity(0.7)],
-									startPoint: .center,
-									endPoint: .bottom
-								)
+				VStack(alignment: .center) {
+					Text("IKEA Assembly, Hire a Specialist for easy Installment")
+						.font(.system(size: 20, weight: .semibold, design: .monospaced))
+						.foregroundStyle(Colors.swiftUIColor(.textMain))
+						.kerning(-0.5)
+						.multilineTextAlignment(.center)
+					
+					Image("ikeaAssembly")
+						.resizable()
+						.aspectRatio(contentMode: .fill)
+						.frame(maxWidth: .infinity)
+						.overlay(
+							LinearGradient(
+								colors: [.clear, .black.opacity(0.7)],
+								startPoint: .center,
+								endPoint: .bottom
 							)
-							.clipShape(RoundedRectangle(cornerRadius: 16))
-							.padding()
-					}
-					.padding(.horizontal)
+						)
+						.clipShape(RoundedRectangle(cornerRadius: 16))
+						.padding()
+						.padding(.horizontal)
+				}
 
 					Spacer()
 					.frame(height: 40)
 				
 			}
-			
+
+		}
+		.sheet(isPresented: $showNotificationDrawer) {
+			NotificationDrawerView(userRole: .provider)
 		}
 	}
 }
@@ -278,16 +292,12 @@ extension HomeView {
 			JobService(name: "petrolStation", displayName: "Petrol Station Attendant"),
 			JobService(name: "outdoorCleaning", displayName: "Car Wash Assistant"),
 		]),
-		JobCategory(title: "Hospitality & Events", categoryEnum: ServiceCategoryType.hospitalityAndEvents.rawValue, services: [
-			JobService(name: "furnitureAssembly", displayName: "Event Setup Crew"),
+		JobCategory(title: "Community", categoryEnum: ServiceCategoryType.hospitalityAndEvents.rawValue, services: [
 			JobService(name: "homeCleaning", displayName: "Hotel Housekeeping"),
-			JobService(name: "carpetCleaning", displayName: "Breakfast Service Assistant"),
-			JobService(name: "tvMounting", displayName: "Venue Usher")
-		]),
-		JobCategory(title: "Community", categoryEnum: ServiceCategoryType.communityAndOutdoor.rawValue, services: [
 			JobService(name: "GymAssistant", displayName: "Gym Floor Assistant"),
-			JobService(name: "outdoorCleaning", displayName: "Street Promoter"),
-		])
+			JobService(name: "furnitureAssembly", displayName: "Event Setup Crew"),
+
+		]),
 	]
 }
 

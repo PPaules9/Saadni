@@ -25,7 +25,6 @@ class CreateJobViewModel {
     var startTime: Date = Date()
     var endTime: Date = Date().addingTimeInterval(3600 * 8)
     var breakDuration: String = ""
-    var numberOfWorkersNeeded: String = "1"
 
     // MARK: - Tab 2: Location
     var branchName: String = ""
@@ -84,15 +83,13 @@ class CreateJobViewModel {
     @ObservationIgnored
     var isTab1Valid: Bool {
         !jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !selectedDates.isEmpty &&
-        (Int(numberOfWorkersNeeded) ?? 0) > 0
+        !selectedDates.isEmpty
     }
 
     @ObservationIgnored
     var tab1ValidationError: String? {
         if jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Job Title is required" }
         if selectedDates.isEmpty { return "Please select at least one date" }
-        if (Int(numberOfWorkersNeeded) ?? 0) <= 0 { return "Need at least 1 worker" }
         return nil
     }
 
@@ -245,7 +242,7 @@ class CreateJobViewModel {
                 floor: "",
                 unit: "",
                 breakDuration: breakDuration.isEmpty ? nil : breakDuration,
-                numberOfWorkersNeeded: Int(numberOfWorkersNeeded) ?? 1,
+                numberOfWorkersNeeded: nil,
                 branchName: branchName.isEmpty ? nil : branchName,
                 nearestLandmark: nearestLandmark.isEmpty ? nil : nearestLandmark,
                 paymentMethod: paymentMethod,

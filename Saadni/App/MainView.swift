@@ -17,7 +17,7 @@ struct MainView: View {
   Group {
    switch container.authManager.authState {
    case .authenticating:
-    ProgressView().tint(.accent)
+		 LaunchScreen()
      .onAppear {
       print("🔄 [MainView] authState = .authenticating")
      }
@@ -48,7 +48,7 @@ struct MainView: View {
      }
     } else {
      // Authenticated but user data not loaded yet
-     ProgressView().tint(.accent)
+			LaunchScreen()
     }
    }
   }
@@ -186,6 +186,12 @@ struct MainView: View {
     } catch {
      return ("ApplicationsStore", error)
     }
+   }
+
+   // Task 4: Services initial page fetch
+   group.addTask {
+    await self.container.servicesStore.fetchServicesPage(reset: true)
+    return ("ServicesStore", nil)
    }
 
    // Collect all results

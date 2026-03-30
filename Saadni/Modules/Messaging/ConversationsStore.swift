@@ -49,6 +49,7 @@ class ConversationsStore {
         listener = db.collection("conversations")
             .whereField("participantIds", arrayContains: userId)
             .order(by: "lastMessageTime", descending: true)
+            .limit(to: 30)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
 

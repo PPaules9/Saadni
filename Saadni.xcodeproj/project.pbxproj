@@ -118,6 +118,20 @@
 		227C499F2F6D7F54001E2381 /* onBoarding.gif in Resources */ = {isa = PBXBuildFile; fileRef = 227C499E2F6D7F54001E2381 /* onBoarding.gif */; };
 		227C49A32F72D40A001E2381 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 227C49A22F72D40A001E2381 /* Localizable.xcstrings */; };
 		22B999FF2F5F1A8A00B3E070 /* StateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B999FE2F5F1A8A00B3E070 /* StateKey.swift */; };
+		22C198B42F78097E00555D41 /* ApplicantCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198B32F78097E00555D41 /* ApplicantCard.swift */; };
+		22C198B62F78099D00555D41 /* ProfileCompletionPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198B52F78099D00555D41 /* ProfileCompletionPopup.swift */; };
+		22C198B92F7809AE00555D41 /* UserProfileSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198B82F7809AE00555D41 /* UserProfileSheet.swift */; };
+		22C198BA2F7809AE00555D41 /* EditProfileSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198B72F7809AE00555D41 /* EditProfileSheet.swift */; };
+		22C198BD2F784C0E00555D41 /* CustomCalendarWithJobIndicators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198BC2F784C0E00555D41 /* CustomCalendarWithJobIndicators.swift */; };
+		22C198C22F7974E100555D41 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198BE2F7974E100555D41 /* Notification.swift */; };
+		22C198C32F7974E100555D41 /* NotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198BF2F7974E100555D41 /* NotificationType.swift */; };
+		22C198CC2F79759400555D41 /* FCMService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198C42F79759400555D41 /* FCMService.swift */; };
+		22C198CD2F79759400555D41 /* NotificationCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198C92F79759400555D41 /* NotificationCardView.swift */; };
+		22C198CE2F79759400555D41 /* NotificationBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198C82F79759400555D41 /* NotificationBadgeView.swift */; };
+		22C198CF2F79759400555D41 /* NotificationsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198C62F79759400555D41 /* NotificationsStore.swift */; };
+		22C198D02F79759400555D41 /* NotificationDrawerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198CA2F79759400555D41 /* NotificationDrawerView.swift */; };
+		22C198D22F7975AF00555D41 /* NotificationPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198D12F7975AF00555D41 /* NotificationPreferences.swift */; };
+		22C198D52F79784100555D41 /* NotificationsStoreKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198D32F79784100555D41 /* NotificationsStoreKey.swift */; };
 		22D6C2B52F53589E0071BAC9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */; };
 		22EFE4002F6AA98C00C5EBBB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EFE3FF2F6AA98C00C5EBBB /* AppDelegate.swift */; };
 		22FD35F52F55F5CE00AF3127 /* LaunchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD35F32F55F5CE00AF3127 /* LaunchScreen.swift */; };
@@ -144,6 +158,7 @@
 		2224E8DC2F6837BE008B556F /* ServiceCategoryGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCategoryGroup.swift; sourceTree = "<group>"; };
 		2224E8DD2F6837BE008B556F /* ServiceValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceValidator.swift; sourceTree = "<group>"; };
 		2224E8E02F6837DA008B556F /* ListenerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenerManager.swift; sourceTree = "<group>"; };
+		222517472F7AA9A000F99714 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Library/Mobile Documents/com~apple~CloudDocs/Developer/My Apps/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
 		2236A13C2F50949000A7A19F /* DesignSystemButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemButtons.swift; sourceTree = "<group>"; };
 		2236A13E2F50949000A7A19F /* Colors Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Colors Themes.swift"; sourceTree = "<group>"; };
 		2236A13F2F50949000A7A19F /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
@@ -244,8 +259,21 @@
 		227C49A12F72D359001E2381 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		227C49A22F72D40A001E2381 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		22B999FE2F5F1A8A00B3E070 /* StateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateKey.swift; sourceTree = "<group>"; };
+		22C198B32F78097E00555D41 /* ApplicantCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicantCard.swift; sourceTree = "<group>"; };
+		22C198B52F78099D00555D41 /* ProfileCompletionPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCompletionPopup.swift; sourceTree = "<group>"; };
+		22C198B72F7809AE00555D41 /* EditProfileSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileSheet.swift; sourceTree = "<group>"; };
+		22C198B82F7809AE00555D41 /* UserProfileSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileSheet.swift; sourceTree = "<group>"; };
+		22C198BC2F784C0E00555D41 /* CustomCalendarWithJobIndicators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCalendarWithJobIndicators.swift; sourceTree = "<group>"; };
+		22C198BE2F7974E100555D41 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
+		22C198BF2F7974E100555D41 /* NotificationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationType.swift; sourceTree = "<group>"; };
+		22C198C42F79759400555D41 /* FCMService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FCMService.swift; sourceTree = "<group>"; };
+		22C198C62F79759400555D41 /* NotificationsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsStore.swift; sourceTree = "<group>"; };
+		22C198C82F79759400555D41 /* NotificationBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationBadgeView.swift; sourceTree = "<group>"; };
+		22C198C92F79759400555D41 /* NotificationCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCardView.swift; sourceTree = "<group>"; };
+		22C198CA2F79759400555D41 /* NotificationDrawerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDrawerView.swift; sourceTree = "<group>"; };
+		22C198D12F7975AF00555D41 /* NotificationPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPreferences.swift; sourceTree = "<group>"; };
+		22C198D32F79784100555D41 /* NotificationsStoreKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsStoreKey.swift; sourceTree = "<group>"; };
 		22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		22DF2F7D2F72E9D300A75ED5 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Library/Mobile Documents/com~apple~CloudDocs/Developer/My Apps/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
 		22EFE3FF2F6AA98C00C5EBBB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		22FD35F32F55F5CE00AF3127 /* LaunchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreen.swift; sourceTree = "<group>"; };
 		22FD36CB2F56F64D00AF3127 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
@@ -311,6 +339,7 @@
 		2236A1442F50949000A7A19F /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				22C198B32F78097E00555D41 /* ApplicantCard.swift */,
 				226B50242F66234D00C09676 /* ErrorStateView.swift */,
 				226B50252F66234D00C09676 /* ServiceCategoryCard.swift */,
 				2244220F2F634FE100241E1C /* MessageBubble.swift */,
@@ -361,6 +390,7 @@
 			children = (
 				227C499E2F6D7F54001E2381 /* onBoarding.gif */,
 				22D6C2B42F53589E0071BAC9 /* GoogleService-Info.plist */,
+				227C49A12F72D359001E2381 /* Info.plist */,
 				2236A1482F50949000A7A19F /* Assets.xcassets */,
 				2236A1492F50949000A7A19F /* Saadni.icon */,
 				227C49A22F72D40A001E2381 /* Localizable.xcstrings */,
@@ -371,6 +401,7 @@
 		2236A14B2F50949000A7A19F /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				22C198C12F7974E100555D41 /* Notifications */,
 				226B501A2F65D0B600C09676 /* DI */,
 				226B50132F65D05900C09676 /* Error */,
 				2244221C2F63523F00241E1C /* Navigation */,
@@ -426,7 +457,6 @@
 				2236A14B2F50949000A7A19F /* Core */,
 				2236A1642F50949000A7A19F /* Features */,
 				2236A16A2F50949000A7A19F /* MainViews */,
-				227C49A12F72D359001E2381 /* Info.plist */,
 			);
 			path = Saadni;
 			sourceTree = "<group>";
@@ -552,6 +582,7 @@
 		224422352F643AB700241E1C /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				22C198B52F78099D00555D41 /* ProfileCompletionPopup.swift */,
 				224422312F643AB700241E1C /* AccountMenuSection.swift */,
 				224422322F643AB700241E1C /* ProfileHeaderView.swift */,
 				224422332F643AB700241E1C /* RoleSwitcherView.swift */,
@@ -563,6 +594,8 @@
 		224422372F643AB700241E1C /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				22C198B72F7809AE00555D41 /* EditProfileSheet.swift */,
+				22C198B82F7809AE00555D41 /* UserProfileSheet.swift */,
 				227C499A2F6D5981001E2381 /* MyAddressesView.swift */,
 				224422352F643AB700241E1C /* Components */,
 				224422362F643AB700241E1C /* ProfileViewModel.swift */,
@@ -631,12 +664,68 @@
 			path = Constants;
 			sourceTree = "<group>";
 		};
+		22C198C02F7974E100555D41 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				22C198D12F7975AF00555D41 /* NotificationPreferences.swift */,
+				22C198BE2F7974E100555D41 /* Notification.swift */,
+				22C198BF2F7974E100555D41 /* NotificationType.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		22C198C12F7974E100555D41 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				22C198D42F79784100555D41 /* Environment */,
+				22C198C52F79759400555D41 /* Services */,
+				22C198C72F79759400555D41 /* Stores */,
+				22C198CB2F79759400555D41 /* Views */,
+				22C198C02F7974E100555D41 /* Models */,
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
+		22C198C52F79759400555D41 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				22C198C42F79759400555D41 /* FCMService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		22C198C72F79759400555D41 /* Stores */ = {
+			isa = PBXGroup;
+			children = (
+				22C198C62F79759400555D41 /* NotificationsStore.swift */,
+			);
+			path = Stores;
+			sourceTree = "<group>";
+		};
+		22C198CB2F79759400555D41 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				22C198C82F79759400555D41 /* NotificationBadgeView.swift */,
+				22C198C92F79759400555D41 /* NotificationCardView.swift */,
+				22C198CA2F79759400555D41 /* NotificationDrawerView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		22C198D42F79784100555D41 /* Environment */ = {
+			isa = PBXGroup;
+			children = (
+				22C198D32F79784100555D41 /* NotificationsStoreKey.swift */,
+			);
+			path = Environment;
+			sourceTree = "<group>";
+		};
 		22EFE4012F6AAADA00C5EBBB /* Bootstrap */ = {
 			isa = PBXGroup;
 			children = (
-				22EFE3FF2F6AA98C00C5EBBB /* AppDelegate.swift */,
 				226B50082F646C1B00C09676 /* AppContainer.swift */,
 				22FD36D72F57168300AF3127 /* AppStateManager.swift */,
+				22EFE3FF2F6AA98C00C5EBBB /* AppDelegate.swift */,
 			);
 			path = Bootstrap;
 			sourceTree = "<group>";
@@ -690,6 +779,7 @@
 		22FD36D62F57161100AF3127 /* NeedWorkViews */ = {
 			isa = PBXGroup;
 			children = (
+				22C198BC2F784C0E00555D41 /* CustomCalendarWithJobIndicators.swift */,
 				22FD36D12F5714F900AF3127 /* NeedWork.swift */,
 				2236A1672F50949000A7A19F /* DashboardView.swift */,
 				2236A1652F50949000A7A19F /* BrowseJobs.swift */,
@@ -711,9 +801,9 @@
 		22FD36DE2F5716A800AF3127 /* JobProviderViews */ = {
 			isa = PBXGroup;
 			children = (
+				22FD36EE2F57418600AF3127 /* CreateJobSheet.swift */,
 				22FD36CF2F5714F900AF3127 /* JobProvider.swift */,
 				22FD36E12F571CE800AF3127 /* HomeView.swift */,
-				22FD36EE2F57418600AF3127 /* CreateJobSheet.swift */,
 				224421FB2F63435300241E1C /* myJobs.swift */,
 			);
 			path = JobProviderViews;
@@ -776,7 +866,7 @@
 				226B500F2F65A5F700C09676 /* Kingfisher */,
 			);
 			productName = Saadni;
-			productReference = 22DF2F7D2F72E9D300A75ED5 /* Saadni.app */;
+			productReference = 222517472F7AA9A000F99714 /* Saadni.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -787,7 +877,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2620;
-				LastUpgradeCheck = 2630;
+				LastUpgradeCheck = 2640;
 				TargetAttributes = {
 					228B2C7D2F36048800A4441B = {
 						CreatedOnToolsVersion = 26.2;
@@ -850,6 +940,8 @@
 				2244220A2F634EEC00241E1C /* MessagesStore.swift in Sources */,
 				22FD36D42F5714F900AF3127 /* JobProvider.swift in Sources */,
 				2224E8DE2F6837BE008B556F /* ServiceCategoryGroup.swift in Sources */,
+				22C198B92F7809AE00555D41 /* UserProfileSheet.swift in Sources */,
+				22C198BA2F7809AE00555D41 /* EditProfileSheet.swift in Sources */,
 				2224E8E12F6837DA008B556F /* ListenerManager.swift in Sources */,
 				2224E8DF2F6837BE008B556F /* ServiceValidator.swift in Sources */,
 				226B50142F65D05900C09676 /* ErrorHandler.swift in Sources */,
@@ -858,6 +950,11 @@
 				2236A1712F50949000A7A19F /* Semantic Colors.swift in Sources */,
 				227C499B2F6D5982001E2381 /* MyAddressesView.swift in Sources */,
 				2236A1722F50949000A7A19F /* Tokens.swift in Sources */,
+				22C198CC2F79759400555D41 /* FCMService.swift in Sources */,
+				22C198CD2F79759400555D41 /* NotificationCardView.swift in Sources */,
+				22C198CE2F79759400555D41 /* NotificationBadgeView.swift in Sources */,
+				22C198CF2F79759400555D41 /* NotificationsStore.swift in Sources */,
+				22C198D02F79759400555D41 /* NotificationDrawerView.swift in Sources */,
 				224421CE2F63226D00241E1C /* CarouselCard.swift in Sources */,
 				2236A1732F50949000A7A19F /* ServiceCard.swift in Sources */,
 				224422062F634EBE00241E1C /* TypingIndicator.swift in Sources */,
@@ -877,6 +974,7 @@
 				2244220E2F634F4700241E1C /* NotificationService.swift in Sources */,
 				224421AF2F6066E800241E1C /* ServicesStore.swift in Sources */,
 				22FD36FC2F5741B200AF3127 /* CreateJobViewModel.swift in Sources */,
+				22C198BD2F784C0E00555D41 /* CustomCalendarWithJobIndicators.swift in Sources */,
 				2236A1B22F5321E300A7A19F /* ApplicationsStore.swift in Sources */,
 				224421BD2F62CD3600241E1C /* ServiceImage.swift in Sources */,
 				224421BE2F62CD3600241E1C /* ServiceCategoryType.swift in Sources */,
@@ -885,6 +983,8 @@
 				224421BF2F62CD3600241E1C /* ServiceStatus.swift in Sources */,
 				224421C02F62CD3600241E1C /* ServiceLocation.swift in Sources */,
 				2236A1BA2F53220400A7A19F /* ApplicationBadge.swift in Sources */,
+				22C198C22F7974E100555D41 /* Notification.swift in Sources */,
+				22C198C32F7974E100555D41 /* NotificationType.swift in Sources */,
 				224421C92F63079B00241E1C /* HomeActivityCard.swift in Sources */,
 				224421FC2F63435300241E1C /* myJobs.swift in Sources */,
 				2236A1B32F5321E300A7A19F /* User.swift in Sources */,
@@ -894,6 +994,8 @@
 				2244222E2F6439AD00241E1C /* UserScoreCalculator.swift in Sources */,
 				2244222F2F6439AD00241E1C /* UserValueObjects.swift in Sources */,
 				224422302F6439AD00241E1C /* User+Permissions.swift in Sources */,
+				22C198D52F79784100555D41 /* NotificationsStoreKey.swift in Sources */,
+				22C198D22F7975AF00555D41 /* NotificationPreferences.swift in Sources */,
 				224421D62F63368D00241E1C /* Review.swift in Sources */,
 				2244224C2F643FE000241E1C /* Transaction.swift in Sources */,
 				2244224D2F643FE000241E1C /* WalletStore.swift in Sources */,
@@ -906,6 +1008,7 @@
 				22FD36F62F57418600AF3127 /* CreateJobTab4.swift in Sources */,
 				224422112F634FE100241E1C /* MessageBubble.swift in Sources */,
 				224422382F643AB700241E1C /* ProfileViewModel.swift in Sources */,
+				22C198B62F78099D00555D41 /* ProfileCompletionPopup.swift in Sources */,
 				226B500C2F658D0B00C09676 /* CreateJobSummaryModal.swift in Sources */,
 				226B500D2F658D0B00C09676 /* JobPublishedSuccessModal.swift in Sources */,
 				226B501B2F65D0B600C09676 /* StorageProvider.swift in Sources */,
@@ -919,6 +1022,7 @@
 				224422122F634FE100241E1C /* TypingIndicatorView.swift in Sources */,
 				22FD36F72F57418600AF3127 /* CreateJobTab1.swift in Sources */,
 				22FD36F82F57418600AF3127 /* CreateJobTab3.swift in Sources */,
+				22C198B42F78097E00555D41 /* ApplicantCard.swift in Sources */,
 				224422432F643ADC00241E1C /* InputState.swift in Sources */,
 				224422442F643ADC00241E1C /* BrandPasswordField.swift in Sources */,
 				224422452F643ADC00241E1C /* BrandSearchField.swift in Sources */,
@@ -967,6 +1071,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1033,6 +1138,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1098,8 +1204,8 @@
 				DEVELOPMENT_TEAM = VH2NKLHXDK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Saadni/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Saedni - ساعدني";
+				INFOPLIST_FILE = Saadni/Core/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Saedny;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We would like to take a photo using your camera.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -1140,8 +1246,8 @@
 				DEVELOPMENT_TEAM = VH2NKLHXDK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Saadni/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Saedni - ساعدني";
+				INFOPLIST_FILE = Saadni/Core/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Saedny;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We would like to take a photo using your camera.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

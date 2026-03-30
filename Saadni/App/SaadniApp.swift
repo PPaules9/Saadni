@@ -37,6 +37,7 @@ struct SaadniApp: App {
   WindowGroup {
    MainView()
     .environment(container)
+    .environment(\.notificationsStore, container.notificationsStore)
     .environment(\.locale, Locale(identifier: appLanguage))
     .environment(\.layoutDirection, appLanguage == "ar" ? .rightToLeft : .leftToRight)
     .onAppear {
@@ -45,8 +46,8 @@ struct SaadniApp: App {
     }
     .onChange(of: container.authManager.currentUserId) { oldValue, newValue in
      if let userId = newValue {
-      // Start services listener when user authenticates
-      container.servicesStore.startListening()
+      // Fetch initial services page when user authenticates
+      Task { await container.servicesStore.fetchServicesPage(reset: true) }
 
       Task {
        do {
@@ -54,6 +55,8 @@ struct SaadniApp: App {
         try await container.applicationsStore.setupListeners(userId: userId)
         // Setup conversations listener
         container.conversationsStore.setupListeners(userId: userId)
+        // Setup notifications listener
+        await container.notificationsStore.setupListeners(userId: userId)
        } catch {
         container.errorHandler.handle(error)
         print("⚠️ Failed to setup listeners on user change: \(error)")

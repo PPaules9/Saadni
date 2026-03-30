@@ -15,8 +15,14 @@ class MessagesStore: ListenerManaging {
  
     // MARK: - State
 
-    /// Messages grouped by conversation ID
+    /// Messages grouped by conversation ID (chronological order, newest at end)
     var messages: [String: [Message]] = [:]
+
+    /// Tracks whether older messages can be loaded per conversation
+    var hasOlderMessages: [String: Bool] = [:]
+
+    private let initialPageSize = 50
+    private let olderPageSize = 30
 
     /// Typing users in each conversation (conversationId -> Set of userIds)
     var typingUsers: [String: Set<String>] = [:]
@@ -78,9 +84,12 @@ class MessagesStore: ListenerManaging {
 
         isLoading = true
 
+        // Fetch newest messages first, then reverse so oldest appears at top of chat.
+        // Limit prevents loading entire history on open.
         let listener = db.collection("messages")
             .whereField("conversationId", isEqualTo: conversationId)
-            .order(by: "createdAt", descending: false)
+            .order(by: "createdAt", descending: true)
+            .limit(to: initialPageSize)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
 
@@ -98,7 +107,9 @@ class MessagesStore: ListenerManaging {
                     Message.fromFirestore(id: doc.documentID, data: doc.data())
                 }
 
-                self.messages[conversationId] = fetchedMessages
+                // Reverse so messages are in chronological order (oldest first)
+                self.messages[conversationId] = fetchedMessages.reversed()
+                self.hasOlderMessages[conversationId] = fetchedMessages.count == self.initialPageSize
                 print("✅ Loaded \(fetchedMessages.count) messages for conversation \(conversationId)")
             }
 
@@ -227,30 +238,37 @@ class MessagesStore: ListenerManaging {
         }
     }
 
-    // MARK: - Cleanup
+    // MARK: - Load Older Messages (pagination when scrolling up)
 
-    /// Delete old messages older than 90 days
-    func deleteExpiredMessages() async throws {
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
+    /// Loads messages older than the oldest currently loaded message.
+    func loadOlderMessages(conversationId: String) async {
+        guard hasOlderMessages[conversationId] == true,
+              let oldest = messages[conversationId]?.first,
+              let oldestTimestamp = oldest.createdAt as Date? else { return }
 
         do {
             let snapshot = try await db.collection("messages")
-                .whereField("createdAt", isLessThan: Timestamp(date: ninetyDaysAgo))
+                .whereField("conversationId", isEqualTo: conversationId)
+                .order(by: "createdAt", descending: true)
+                .whereField("createdAt", isLessThan: Timestamp(date: oldestTimestamp))
+                .limit(to: olderPageSize)
                 .getDocuments()
 
-            let batch = db.batch()
-            for document in snapshot.documents {
-                batch.deleteDocument(document.reference)
-            }
+            let older = snapshot.documents.compactMap { doc in
+                Message.fromFirestore(id: doc.documentID, data: doc.data())
+            }.reversed() as [Message]
 
-            try await batch.commit()
-            print("✅ Deleted \(snapshot.documents.count) expired messages")
+            messages[conversationId]?.insert(contentsOf: older, at: 0)
+            hasOlderMessages[conversationId] = snapshot.documents.count == olderPageSize
+            print("✅ Loaded \(older.count) older messages for conversation \(conversationId)")
         } catch {
             self.error = AppError.from(error)
-            print("❌ Failed to delete expired messages: \(error.localizedDescription)")
-            throw error
+            print("❌ Failed to load older messages: \(error.localizedDescription)")
         }
     }
+
+    // NOTE: Message cleanup (deleting messages older than 90 days) is handled
+    // by a scheduled Cloud Function — never run bulk deletes from the client.
 
     // MARK: - Helper Methods
 

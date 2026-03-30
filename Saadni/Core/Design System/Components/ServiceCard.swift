@@ -22,6 +22,10 @@ struct ServiceCard: View {
   return service.providerId == currentUserId
  }
 
+ private var userIsJobSeeker: Bool {
+  authManager.currentUser?.isJobSeeker ?? false
+ }
+
  private var cardContent: some View {
   ZStack() {
     // Background Image
@@ -112,11 +116,20 @@ struct ServiceCard: View {
  }
 
  var body: some View {
-  Button(action: navigateToDetail) {
-   if #available(iOS 26, *) {
-    cardContent
-     .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 15))
+  if #available(iOS 26, *) {
+   if userIsJobSeeker {
+    NavigationLink(value: JobSeekerDestination.serviceDetail(service)) {
+     cardContent
+      .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 15))
+    }
    } else {
+    NavigationLink(value: ServiceProviderDestination.serviceDetail(service)) {
+     cardContent
+      .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 15))
+    }
+   }
+  } else {
+   Button(action: navigateToDetail) {
     cardContent
    }
   }

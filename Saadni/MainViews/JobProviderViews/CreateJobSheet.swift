@@ -16,6 +16,9 @@ struct CreateJobSheet: View {
  @Environment(UserCache.self) var userCache
  @State private var viewModel = CreateJobViewModel()
  @State private var showErrorAlert = false
+ @State private var showProfileCompletionPopup = false
+ @State private var profileCompletionPercentage = 0
+ @State private var showEditProfile = false
  let selectedCategory: String
  let initialJobName: String?
  
@@ -149,10 +152,27 @@ struct CreateJobSheet: View {
   }
   .sheet(isPresented: $viewModel.showSummary) {
    CreateJobSummaryModal(viewModel: viewModel, onPublish: {
-    Task {
-     await publishJob()
+    viewModel.showSummary = false
+    // Dismiss sheet first, then show completion check
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+     handlePublish()
     }
    })
+  }
+  .sheet(isPresented: $showProfileCompletionPopup) {
+   ProfileCompletionPopup(
+    completionPercentage: profileCompletionPercentage,
+    onComplete: {
+     showProfileCompletionPopup = false
+     showEditProfile = true
+    },
+    onDismiss: {
+     showProfileCompletionPopup = false
+    }
+   )
+  }
+  .sheet(isPresented: $showEditProfile) {
+   EditProfileSheet()
   }
   .alert("Publishing Error", isPresented: $showErrorAlert) {
    Button("OK") {
@@ -175,6 +195,22 @@ struct CreateJobSheet: View {
   }
  }
  
+ private func handlePublish() {
+  guard let user = authManager.currentUser else { return }
+
+  // Check PROVIDER profile completion (posting jobs requires provider role)
+  if user.providerCompletionPercentage < 100 {
+   profileCompletionPercentage = user.providerCompletionPercentage
+   showProfileCompletionPopup = true
+   return
+  }
+
+  // Proceed with publish
+  Task {
+   await publishJob()
+  }
+ }
+
  private func publishJob() async {
   guard viewModel.isFormValid else {
    viewModel.publishError = "Please complete all required fields"

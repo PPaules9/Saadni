@@ -80,6 +80,7 @@ class ApplicationsStore: ListenerManaging {
   let listener = db.collection("applications")
    .whereField("applicantId", isEqualTo: userId)
    .order(by: "appliedAt", descending: true)
+   .limit(to: 50)
    .addSnapshotListener { [weak self] snapshot, error in
     guard let self = self else { return }
 
@@ -118,81 +119,54 @@ class ApplicationsStore: ListenerManaging {
  }
 
  private func setupReceivedApplicationsListener(userId: String) async throws {
-  // Get all service IDs created by this user
-  let servicesSnapshot = try await db.collection("services")
-   .whereField("providerId", isEqualTo: userId)
-   .getDocuments()
+  let listenerId = "receivedApplications"
 
-  let serviceIds = servicesSnapshot.documents.map { $0.documentID }
-
-  if serviceIds.isEmpty {
-   print("📝 User has no services, no applications to receive")
+  guard !isListenerActive(id: listenerId) else {
+   print("⚠️ Listener already active for received applications")
    return
   }
 
-  // Batch into chunks of 10 (Firestore "in" query limit)
-  let chunks = stride(from: 0, to: serviceIds.count, by: 10).map { startIndex in
-   Array(serviceIds[startIndex..<min(startIndex + 10, serviceIds.count)])
-  }
+  // Single query using denormalized providerId field — no chunking needed
+  let listener = db.collection("applications")
+   .whereField("providerId", isEqualTo: userId)
+   .order(by: "appliedAt", descending: true)
+   .limit(to: 50)
+   .addSnapshotListener { [weak self] snapshot, error in
+    guard let self = self else { return }
 
-  print("ℹ️ Setting up \(chunks.count) listener(s) for \(serviceIds.count) services")
+    if let error = error {
+     self.applicationsError = AppError.from(error)
+     self.isLoadingApplications = false
+     print("❌ Error fetching received applications: \(error)")
+     return
+    }
 
-  // Setup listener for each chunk with deduplication
-  for (index, serviceIdChunk) in chunks.enumerated() {
-   let listenerId = "receivedApplications_chunk_\(index)"
+    guard let documents = snapshot?.documents else { return }
 
-   // Skip if already listening to this chunk
-   guard !isListenerActive(id: listenerId) else {
-    print("⚠️ Listener already active for chunk \(index), skipping")
-    continue
-   }
-
-   let listener = db.collection("applications")
-    .whereField("serviceId", in: serviceIdChunk)
-    .order(by: "appliedAt", descending: true)
-    .addSnapshotListener { [weak self] snapshot, error in
-     guard let self = self else { return }
-
-     if let error = error {
-      self.applicationsError = AppError.from(error)
-      self.isLoadingApplications = false
-      print("❌ Error fetching received applications (chunk \(index)): \(error)")
-      return
-     }
-
-     guard let documents = snapshot?.documents else { return }
-
-     let decoded = documents.compactMap { doc in
-      do {
-       return try Firestore.Decoder().decode(JobApplication.self, from: doc.data())
-      } catch {
-       print("⚠️ Failed to decode received application \(doc.documentID): \(error)")
-       return nil
-      }
-     }
-
-     Task { @MainActor in
-      // Merge with existing applications, avoiding duplicates
-      let existingIds = Set(self.receivedApplications.map { $0.id })
-      let newApplications = decoded.filter { !existingIds.contains($0.id) }
-
-      self.receivedApplications.append(contentsOf: newApplications)
-      self.receivedApplications.sort { $0.appliedAt > $1.appliedAt }
-
-      print("✅ Loaded applications for service chunk \(index + 1)/\(chunks.count)")
+    let decoded = documents.compactMap { doc in
+     do {
+      return try Firestore.Decoder().decode(JobApplication.self, from: doc.data())
+     } catch {
+      print("⚠️ Failed to decode received application \(doc.documentID): \(error)")
+      return nil
      }
     }
 
-   addListener(id: listenerId, listener: listener)
-  }
+    Task { @MainActor in
+     self.receivedApplications = decoded
+     print("✅ Loaded \(decoded.count) received applications")
+    }
+   }
 
-  print("✅ Set up \(chunks.count) listener(s) for received applications")
+  addListener(id: listenerId, listener: listener)
+  print("✅ Set up received applications listener for provider: \(userId)")
  }
 
  // MARK: - Submit Application
 
  func submitApplication(
   serviceId: String,
+  providerId: String,
   applicantId: String,
   applicantName: String,
   applicantPhotoURL: String?,
@@ -205,9 +179,10 @@ class ApplicationsStore: ListenerManaging {
                  userInfo: [NSLocalizedDescriptionKey: "You have already applied to this job"])
   }
 
-  // Create application
+  // Create application (providerId stored for efficient server-side querying)
   let application = JobApplication(
    serviceId: serviceId,
+   providerId: providerId,
    applicantId: applicantId,
    applicantName: applicantName,
    applicantPhotoURL: applicantPhotoURL,

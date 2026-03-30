@@ -93,6 +93,7 @@ struct AppliedServiceCard: View {
         service: JobService.sampleData[0],
         application: JobApplication(
             serviceId: "service-1",
+            providerId: "provider-1",
             applicantId: "user-1",
             applicantName: "John Doe",
             applicantPhotoURL: nil,

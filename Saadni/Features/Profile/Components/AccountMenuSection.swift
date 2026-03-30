@@ -12,6 +12,7 @@ struct AccountMenuSection: View {
     let onDeleteAccount: () -> Void
     @State private var navigateToAddresses = false
     @State private var navigateToLanguage = false
+    @State private var showEditProfile = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -37,8 +38,11 @@ struct AccountMenuSection: View {
                 ProfileMenuRow(
                     icon: "person.fill",
                     title: "Edit Personal Details",
-                    action: {}
+                    action: { showEditProfile = true }
                 )
+                .sheet(isPresented: $showEditProfile) {
+                    EditProfileSheet()
+                }
 
                 Divider()
                     .padding(.vertical, 0)
