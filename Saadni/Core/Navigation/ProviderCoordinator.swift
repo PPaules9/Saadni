@@ -1,8 +1,16 @@
+//
+//  JobSeekerCoordinator.swift
+//  Saadni
+//
+//  Created by Pavly Paules on 30/03/2026.
+//
+
+
 import SwiftUI
 
 @Observable
-final class JobSeekerCoordinator: Equatable {
-    static func == (lhs: JobSeekerCoordinator, rhs: JobSeekerCoordinator) -> Bool {
+final class ProviderCoordinator: Equatable {
+    static func == (lhs: ProviderCoordinator, rhs: ProviderCoordinator) -> Bool {
         lhs === rhs
     }
     // Tab selection

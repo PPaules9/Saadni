@@ -197,6 +197,26 @@ final class NotificationsStore {
         print("✅ Preferences updated (will be synced to Firestore)")
     }
 
+    // MARK: - Role-Specific Unread Count
+    func unreadCount(for role: UserRole) -> Int {
+        let types: [NotificationType]
+        switch role {
+        case .jobSeeker:
+            types = [
+                .applicationStatus, .newMessageFromProvider, .jobReminder,
+                .reviewPostedByProvider, .jobCancelledByProvider, .earningReceived,
+                .topupSuccess, .withdrawalProcessed, .matchingJob, .applicationWithdrawnAck
+            ]
+        case .provider:
+            types = [
+                .newApplicationReceived, .newMessageFromSeeker, .applicationAcceptedBySeeker,
+                .applicationWithdrawnBySeeker, .jobStartsSoon, .paymentReceived,
+                .reviewPostedBySeeker, .jobExpiringSoon, .lowRatingAlert, .withdrawalPending
+            ]
+        }
+        return notifications.filter { !$0.read && types.contains($0.type) }.count
+    }
+
     // MARK: - Filtering & Search
     func notificationsByCategory(_ category: NotificationCategory) -> [Notification] {
         notifications.filter { $0.category == category }

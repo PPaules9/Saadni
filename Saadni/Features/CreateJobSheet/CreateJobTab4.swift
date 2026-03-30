@@ -14,7 +14,7 @@ struct CreateJobTab4: View {
     
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 24) {
+					VStack(alignment: .leading, spacing: 24) {
                 Text("All fields here are optional. Provide details if your shift requires them.")
                     .font(.caption)
                     .foregroundStyle(Colors.swiftUIColor(.textSecondary))
@@ -34,6 +34,7 @@ struct CreateJobTab4: View {
                         .font(.subheadline)
                         .foregroundStyle(Colors.swiftUIColor(.textSecondary))
                     BrandTextField(hasTitle: false, title: "", placeholder: "e.g., 18", text: $viewModel.minimumAge)
+										.keyboardType(.numberPad)
                 }
 
                 // Gender

@@ -71,7 +71,8 @@ class ServicesStore {
     }
    }
 
-   services.append(contentsOf: newServices)
+   let existingIds = Set(services.map { $0.id })
+   services.append(contentsOf: newServices.filter { !existingIds.contains($0.id) })
    servicesError = nil
    print("✅ Fetched \(newServices.count) services (total: \(services.count), hasMore: \(hasMoreServices))")
   } catch {

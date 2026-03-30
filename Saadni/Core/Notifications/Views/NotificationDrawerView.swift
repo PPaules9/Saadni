@@ -1,6 +1,11 @@
-import SwiftUI
+//
+//  NotificationDrawerView.swift
+//  Saadni
+//
+//  Created by Pavly Paules on 30/03/2026.
+//
 
-// MARK: - Notification Drawer View
+import SwiftUI
 
 struct NotificationDrawerView: View {
 	@Environment(\.notificationsStore) var notificationsStore
@@ -23,15 +28,14 @@ struct NotificationDrawerView: View {
 							.font(.system(size: 18, weight: .bold))
 							.foregroundColor(Colors.swiftUIColor(.textMain))
 							.fontDesign(.monospaced)
-							.kerning(0.8)
+							.kerning(0.1)
 						Spacer()
 						
-						if notificationsStore.unreadCount > 0 {
+						if notificationsStore.unreadCount(for: userRole) > 0 {
 							Button(action: markAllAsRead) {
 								Text("Mark all as read")
 									.font(.system(size: 12, weight: .semibold))
 									.foregroundColor(Colors.swiftUIColor(.textMain))
-								.fontDesign(.monospaced)
 							}
 						}
 						
@@ -42,28 +46,29 @@ struct NotificationDrawerView: View {
 						}
 					}
 					.padding(12)
-					.borderBottom(color: Color(UIColor(hex: "#E5E5EA")), width: 1)
+					Divider()
 					
 					// MARK: - Search & Filter
 					VStack(spacing: 8) {
 						// Search bar
 						HStack(spacing: 8) {
-							Image(systemName: "magnifyingglass")
-								.foregroundColor(.accentColor)
 							
-							TextField("Search notifications", text: $searchText)
-								.foregroundColor(Colors.swiftUIColor(.textMain))
-								.fontDesign(.monospaced)
+							BrandTextField(
+								hasTitle: false,
+								title: "",
+								placeholder: "Search notifications...",
+								text: $searchText
+							)
+							
 							
 							if !searchText.isEmpty {
 								Button(action: { searchText = "" }) {
 									Image(systemName: "xmark.circle.fill")
-										.foregroundColor(Color(UIColor(hex: "#8E8E93")))
+										.foregroundColor(Color.accentColor)
 								}
 							}
 						}
 						.padding(8)
-						.background(Color(UIColor(hex: "#F5F5F7")))
 						.cornerRadius(8)
 						
 						// Category filter pills
@@ -89,9 +94,8 @@ struct NotificationDrawerView: View {
 						}
 					}
 					.padding(.vertical, 8)
-					.background(Color(UIColor(hex: "#FEFEFE")))
-					.borderBottom(color: Color(UIColor(hex: "#E5E5EA")), width: 1)
 					
+					Divider()
 					// MARK: - Notifications List
 					if filteredNotifications.isEmpty {
 						emptyState
@@ -179,29 +183,29 @@ struct NotificationDrawerView: View {
 	
 	var emptyState: some View {
 		VStack(spacing: 16) {
-			Text("🔔")
-				.font(.system(size: 48))
+			Image(systemName: "bell")
+				.resizable()
+				.frame(width: 30, height: 30)
 			
-			Text("No notifications")
-				.font(.system(size: 16, weight: .semibold))
-				.foregroundColor(Color(UIColor(hex: "#1C1C1E")))
 			
 			Text(searchText.isEmpty
 					 ? "You're all caught up!"
 					 : "No notifications match your search")
 			.font(.system(size: 14))
-			.foregroundColor(Color(UIColor(hex: "#8E8E93")))
-			
+			.fontDesign(.monospaced)
+			.foregroundColor(Colors.swiftUIColor(.textSecondary))
+			.kerning(0.1)
 			if !searchText.isEmpty {
 				Button(action: { searchText = "" }) {
 					Text("Clear search")
 						.font(.system(size: 14, weight: .semibold))
-						.foregroundColor(Color(UIColor(hex: "#37857D")))
+						.fontDesign(.monospaced)
+						.foregroundColor(Colors.swiftUIColor(.textSecondary))
+						.kerning(0.1)
 				}
 			}
 		}
 		.frame(maxWidth: .infinity, maxHeight: .infinity)
-		.background(Color(UIColor(hex: "#F5F5F7")))
 	}
 	
 	// MARK: - Actions
@@ -226,27 +230,15 @@ struct FilterPill: View {
 				.foregroundColor(
 					isSelected
 					? .white
-					: Color(UIColor(hex: "#37857D"))
+					: Color.accentColor
 				)
 				.padding(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
 				.background(
 					isSelected
-					? Color(UIColor(hex: "#37857D"))
-					: Color(UIColor(hex: "#37857D")).opacity(0.1)
+					? Color.accentColor
+					: Color.accentColor.opacity(0.2)
 				)
 				.cornerRadius(16)
-		}
-	}
-}
-
-// MARK: - Border Bottom Modifier
-
-extension View {
-	func borderBottom(color: Color, width: CGFloat) -> some View {
-		VStack(spacing: 0) {
-			self
-			color
-				.frame(height: width)
 		}
 	}
 }
@@ -257,3 +249,4 @@ extension View {
 	NotificationDrawerView(userRole: .jobSeeker)
 		.environment(\.notificationsStore, NotificationsStore())
 }
+

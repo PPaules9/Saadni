@@ -68,9 +68,6 @@
     "👤" : {
 
     },
-    "🔔" : {
-
-    },
     "🖼️" : {
 
     },
@@ -86,6 +83,9 @@
       }
     },
     "99+" : {
+
+    },
+    "a Secretary" : {
 
     },
     "About" : {
@@ -137,6 +137,9 @@
           }
         }
       }
+    },
+    "Age" : {
+
     },
     "Air Conditioner" : {
 
@@ -228,6 +231,7 @@
       }
     },
     "Applied" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -302,13 +306,11 @@
     "Beach Baby Setting" : {
 
     },
-    "Bio" : {
-
-    },
     "Branch" : {
 
     },
     "Branch Name (Optional)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -449,6 +451,9 @@
     "Cleaning" : {
 
     },
+    "Cleaning Member Boy" : {
+
+    },
     "Cleaning Services" : {
 
     },
@@ -456,6 +461,7 @@
 
     },
     "Close" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -636,6 +642,9 @@
         }
       }
     },
+    "Current location" : {
+
+    },
     "Current Role" : {
       "localizations" : {
         "ar" : {
@@ -658,6 +667,9 @@
           }
         }
       }
+    },
+    "Date" : {
+
     },
     "Dates" : {
       "localizations" : {
@@ -698,6 +710,9 @@
     "Delivery Hero" : {
 
     },
+    "Detecting..." : {
+
+    },
     "Dismiss" : {
       "localizations" : {
         "ar" : {
@@ -724,6 +739,9 @@
     "Door Installation" : {
 
     },
+    "Drag the map to adjust the pin" : {
+
+    },
     "Dress Code" : {
       "localizations" : {
         "ar" : {
@@ -744,7 +762,11 @@
         }
       }
     },
+    "e.g., 22" : {
+
+    },
     "e.g., a barista, a cashier, an event helper..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -962,6 +984,9 @@
     "Gym Floor Assistant" : {
 
     },
+    "Have a Business?" : {
+
+    },
     "Heavy Moving" : {
 
     },
@@ -980,6 +1005,9 @@
           }
         }
       }
+    },
+    "Hire" : {
+
     },
     "Home" : {
 
@@ -1001,6 +1029,7 @@
       }
     },
     "I Need Help Hire" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1010,7 +1039,10 @@
         }
       }
     },
-    "I'm a company" : {
+    "I Need to Hire, e.g., a barista, a cashier,..." : {
+
+    },
+    "I represent a company" : {
 
     },
     "IKEA Assembly" : {
@@ -1059,6 +1091,9 @@
       }
     },
     "Jobs" : {
+
+    },
+    "Kitchen Drinkies Specialist" : {
 
     },
     "Kitchen Installation" : {
@@ -1163,6 +1198,9 @@
         }
       }
     },
+    "Locate me" : {
+
+    },
     "Location" : {
       "localizations" : {
         "ar" : {
@@ -1192,6 +1230,9 @@
           }
         }
       }
+    },
+    "Location Zone" : {
+
     },
     "Male" : {
 
@@ -1308,6 +1349,7 @@
       }
     },
     "Nearest Landmark (Optional)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1382,9 +1424,6 @@
           }
         }
       }
-    },
-    "No notifications" : {
-
     },
     "No notifications match your search" : {
 
@@ -1568,10 +1607,14 @@
     "Post-Event Cleaning" : {
 
     },
+    "Posted By" : {
+
+    },
     "Prefer not to say" : {
 
     },
     "Preview and publish %lld shift(s)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1712,7 +1755,11 @@
         }
       }
     },
+    "Review Your Job" : {
+
+    },
     "Review Your Job(s)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1772,7 +1819,7 @@
         }
       }
     },
-    "Search notifications" : {
+    "Search Location" : {
 
     },
     "Security" : {
@@ -1798,9 +1845,6 @@
         }
       }
     },
-    "select at least one" : {
-
-    },
     "Select from Library" : {
       "localizations" : {
         "ar" : {
@@ -1824,6 +1868,9 @@
         }
       }
     },
+    "Select location from map" : {
+
+    },
     "Select Shift Date" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1836,6 +1883,7 @@
       }
     },
     "Select Shift Date(s)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1844,9 +1892,6 @@
           }
         }
       }
-    },
-    "Select..." : {
-
     },
     "Service" : {
       "localizations" : {
@@ -1997,6 +2042,9 @@
         }
       }
     },
+    "Start Hiring Essential Roles" : {
+
+    },
     "Start the conversation" : {
       "localizations" : {
         "ar" : {
@@ -2021,6 +2069,7 @@
 
     },
     "Submit Application" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2181,6 +2230,9 @@
           }
         }
       }
+    },
+    "Use my current location" : {
+
     },
     "User Type" : {
       "localizations" : {
@@ -2360,6 +2412,9 @@
           }
         }
       }
+    },
+    "Your job location will be here" : {
+
     },
     "Your Review (Optional)" : {
       "localizations" : {

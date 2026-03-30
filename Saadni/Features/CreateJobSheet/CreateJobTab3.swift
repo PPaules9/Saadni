@@ -10,8 +10,8 @@ import SwiftUI
 struct CreateJobTab3: View {
     @Bindable var viewModel: CreateJobViewModel
     
-    let paymentMethods = ["Cash", "In-App Wallet", "Bank Transfer"]
-    let paymentTimings = ["Same Day", "Within 24 Hours", "End of Week"]
+	let paymentMethods = ["Cash", "Wallet", "Bank Transfer", "Instapay"]
+    let paymentTimings = ["Same Day", "Within 24 Hours", "End of Week", "1st of Next Month"]
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -31,6 +31,7 @@ struct CreateJobTab3: View {
                             .font(.headline)
                             .foregroundStyle(Colors.swiftUIColor(.textSecondary))
                         BrandTextField(hasTitle: false, title: "", placeholder: "0.00", text: $viewModel.price)
+												.keyboardType(.numberPad)
                     }
                 }
                 

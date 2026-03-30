@@ -1,8 +1,8 @@
 import SwiftUI
 
 @Observable
-final class ServiceProviderCoordinator: Equatable {
-    static func == (lhs: ServiceProviderCoordinator, rhs: ServiceProviderCoordinator) -> Bool {
+final class StudentCoordinator: Equatable {
+    static func == (lhs: StudentCoordinator, rhs: StudentCoordinator) -> Bool {
         lhs === rhs
     }
     // Tab selection

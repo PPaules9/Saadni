@@ -12,6 +12,7 @@ struct BrowseJobs: View {
  @State private var sortOption: SortOption = .none
  @State private var selectedCategory: ServiceCategoryType? = nil
  @State var selectedDate: Date?
+ @State private var viewMode: ViewMode = .grid
  @Environment(ServicesStore.self) var servicesStore
 
  init(selectedDate: Date? = nil) {
@@ -22,6 +23,11 @@ struct BrowseJobs: View {
   case none
   case price
   case alphabetical
+ }
+
+ enum ViewMode {
+  case grid
+  case list
  }
 
  private let mockServices: [JobService] = [
@@ -162,7 +168,12 @@ struct BrowseJobs: View {
        .padding()
       } else {
        ForEach(filteredServices, id: \.id) { service in
-        ServiceCard(service: service)
+        switch viewMode {
+        case .grid:
+         ServiceCard(service: service)
+        case .list:
+         ServiceListCard(service: service)
+        }
        }
 
        // Load-more trigger: fires when this row becomes visible
@@ -184,6 +195,17 @@ struct BrowseJobs: View {
    }
    .searchable(text: $searchText, prompt: "Browse Jobs....")
    .toolbar {
+    ToolbarItem(placement: .topBarLeading) {
+     Button {
+      withAnimation(.easeInOut(duration: 0.2)) {
+       viewMode = viewMode == .grid ? .list : .grid
+      }
+     } label: {
+      Image(systemName: viewMode == .grid ? "list.bullet" : "square.grid.2x2.fill")
+       .font(.system(size: 16))
+     }
+    }
+
     ToolbarItem(placement: .topBarTrailing) {
      Menu {
       Button(action: { sortOption = .none }) {

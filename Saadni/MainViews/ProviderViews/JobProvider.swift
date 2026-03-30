@@ -23,7 +23,7 @@ struct JobProvider: View {
 
 	@ViewBuilder
 	private func JobProviderView() -> some View {
-		if let coordinator = appCoordinator.jobSeekerCoordinator {
+		if let coordinator = appCoordinator.providerCoordinator {
 			TabView(
 				selection: Binding(
 					get: { coordinator.selectedTab },
@@ -54,7 +54,7 @@ struct JobProvider: View {
 
 	}
  @ViewBuilder
- private func tabContent(for tab: JobSeekerTab, coordinator: JobSeekerCoordinator) -> some View {
+ private func tabContent(for tab: JobSeekerTab, coordinator: ProviderCoordinator) -> some View {
   let binding = coordinator.pathBinding(for: tab)
   NavigationStack(path: binding) {
    rootView(for: tab, coordinator: coordinator)
@@ -65,7 +65,7 @@ struct JobProvider: View {
  }
 
  @ViewBuilder
- private func rootView(for tab: JobSeekerTab, coordinator: JobSeekerCoordinator) -> some View {
+ private func rootView(for tab: JobSeekerTab, coordinator: ProviderCoordinator) -> some View {
   switch tab {
   case .dashboard:
    HomeView()

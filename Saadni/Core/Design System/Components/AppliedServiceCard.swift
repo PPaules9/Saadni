@@ -18,13 +18,18 @@ struct AppliedServiceCard: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(service.title)
                         .font(.headline)
-                        .foregroundStyle(.white)
+                        .fontDesign(.monospaced)
+                        .foregroundStyle(Colors.swiftUIColor(.textMain))
                         .lineLimit(2)
 
                     if let name = service.providerName {
-                        Text(name)
-                            .font(.caption)
-                            .foregroundStyle(.gray)
+                        HStack(spacing: 4) {
+                            Image(systemName: "person.fill")
+                                .font(.caption2)
+                            Text(name)
+                                .font(.caption)
+                        }
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
                     }
                 }
 
@@ -34,51 +39,78 @@ struct AppliedServiceCard: View {
             }
 
             Divider()
-                .background(Color.gray.opacity(0.3))
 
             // Details row
             HStack(spacing: 16) {
-                // Price
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Price")
-                        .font(.caption)
-                        .foregroundStyle(.gray)
-
-                    Text(service.formattedPrice)
-                        .font(.headline)
-                        .foregroundStyle(.green)
+                // Category
+                if service.category != nil {
+                    HStack(spacing: 4) {
+                        Image(systemName: "tag.fill")
+                            .font(.caption2)
+                        Text(service.categoryDisplayName)
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                    }
+                    .foregroundStyle(.accent)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color.accent.opacity(0.12))
+                    .cornerRadius(6)
                 }
 
                 Spacer()
 
-                // Applied date
-                VStack(alignment: .trailing, spacing: 4) {
-                    Text("Applied")
-                        .font(.caption)
-                        .foregroundStyle(.gray)
+                // Price
+                Text(service.formattedPrice)
+                    .font(.headline)
+                    .fontWeight(.bold)
+                    .fontDesign(.monospaced)
+                    .foregroundStyle(.green)
+            }
 
+            HStack(spacing: 16) {
+                // Location
+                HStack(spacing: 4) {
+                    Image(systemName: "mappin.and.ellipse")
+                        .font(.caption2)
+                    Text(service.location.name)
+                        .font(.caption)
+                        .lineLimit(1)
+                }
+                .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+
+                Spacer()
+
+                // Applied date
+                HStack(spacing: 4) {
+                    Image(systemName: "clock")
+                        .font(.caption2)
                     Text(formatDate(application.appliedAt))
                         .font(.caption)
-                        .foregroundStyle(.white)
                 }
+                .foregroundStyle(Colors.swiftUIColor(.textSecondary))
             }
 
             // Cover message if available
             if let message = application.coverMessage, !message.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
                     Divider()
-                        .background(Color.gray.opacity(0.3))
 
-                    Text(message)
-                        .font(.caption)
-                        .foregroundStyle(.gray)
-                        .lineLimit(2)
+                    HStack(spacing: 4) {
+                        Image(systemName: "text.quote")
+                            .font(.caption2)
+                            .foregroundStyle(.accent)
+                        Text(message)
+                            .font(.caption)
+                            .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                            .lineLimit(2)
+                    }
                 }
             }
         }
         .padding()
-        .background(Color(.systemGray6).opacity(0.3))
-        .cornerRadius(12)
+        .background(Colors.swiftUIColor(.surfaceWhite))
+        .cornerRadius(14)
     }
 
     private func formatDate(_ date: Date) -> String {

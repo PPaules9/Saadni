@@ -12,7 +12,7 @@ struct CreateJobSheet: View {
  @Environment(\.dismiss) var dismiss
  @Environment(AuthenticationManager.self) var authManager
  @Environment(ServicesStore.self) var servicesStore
- @Environment(JobSeekerCoordinator.self) var coordinator
+ @Environment(ProviderCoordinator.self) var coordinator
  @Environment(UserCache.self) var userCache
  @State private var viewModel = CreateJobViewModel()
  @State private var showErrorAlert = false
@@ -152,11 +152,7 @@ struct CreateJobSheet: View {
   }
   .sheet(isPresented: $viewModel.showSummary) {
    CreateJobSummaryModal(viewModel: viewModel, onPublish: {
-    viewModel.showSummary = false
-    // Dismiss sheet first, then show completion check
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-     handlePublish()
-    }
+    handlePublish()
    })
   }
   .sheet(isPresented: $showProfileCompletionPopup) {
@@ -186,7 +182,8 @@ struct CreateJobSheet: View {
     viewModel.jobName = initialName
    }
    viewModel.currentUserId = authManager.currentUserId
-   
+   viewModel.applyCompanyInfo(authManager.currentUser)
+
    if let currentUser = authManager.currentUser,
       let defaultId = currentUser.defaultAddressId,
       let defaultAddress = currentUser.savedAddresses?.first(where: { $0.id == defaultId }) {
@@ -196,12 +193,16 @@ struct CreateJobSheet: View {
  }
  
  private func handlePublish() {
+  UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
   guard let user = authManager.currentUser else { return }
 
   // Check PROVIDER profile completion (posting jobs requires provider role)
   if user.providerCompletionPercentage < 100 {
    profileCompletionPercentage = user.providerCompletionPercentage
-   showProfileCompletionPopup = true
+   viewModel.showSummary = false
+   DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+    showProfileCompletionPopup = true
+   }
    return
   }
 
@@ -250,6 +251,7 @@ struct CreateJobSheet: View {
 
    viewModel.uploadState = .completed
    viewModel.showSummary = false // Dismiss summary sheet
+   saveCompanyInfoIfNeeded()
    withAnimation {
     viewModel.showSuccessModal = true
    }
@@ -273,6 +275,27 @@ struct CreateJobSheet: View {
   }
  }
  
+ private func saveCompanyInfoIfNeeded() {
+  guard var currentUser = authManager.currentUser else { return }
+
+  let nameChanged     = currentUser.companyName        != viewModel.companyName
+  let industryChanged = currentUser.industryCategory   != viewModel.industryCategory
+  let contactChanged  = currentUser.contactPersonName  != viewModel.contactPersonName
+  let phoneChanged    = currentUser.contactPersonPhone != viewModel.contactPersonPhone
+
+  guard nameChanged || industryChanged || contactChanged || phoneChanged else { return }
+
+  if !viewModel.companyName.isEmpty        { currentUser.companyName        = viewModel.companyName }
+  if !viewModel.industryCategory.isEmpty   { currentUser.industryCategory   = viewModel.industryCategory }
+  if !viewModel.contactPersonName.isEmpty  { currentUser.contactPersonName  = viewModel.contactPersonName }
+  if !viewModel.contactPersonPhone.isEmpty { currentUser.contactPersonPhone = viewModel.contactPersonPhone }
+
+  Task {
+   try? await FirestoreService.shared.saveUser(currentUser)
+   await userCache.updateUser(currentUser)
+  }
+ }
+
  private func saveAddressIfNeeded() -> Bool {
   guard var currentUser = authManager.currentUser else { return false }
   
@@ -313,5 +336,5 @@ struct CreateJobSheet: View {
   .environment(UserCache())
   .environment(AuthenticationManager(userCache: UserCache()))
   .environment(ServicesStore())
-  .environment(JobSeekerCoordinator())
+  .environment(ProviderCoordinator())
 }

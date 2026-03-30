@@ -8,7 +8,8 @@
       "Bash(npm install:*)",
       "Bash(firebase deploy:*)",
       "Bash(xcodebuild -scheme Saadni -destination 'platform=iOS Simulator,name=iPhone 16' -configuration Debug build)",
-      "Bash(xcodebuild -scheme Saadni -destination 'platform=iOS Simulator,name=iPhone 17' -configuration Debug build)"
+      "Bash(xcodebuild -scheme Saadni -destination 'platform=iOS Simulator,name=iPhone 17' -configuration Debug build)",
+      "Bash(xcodebuild -scheme Saadni -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -configuration Debug build)"
     ]
   }
 }

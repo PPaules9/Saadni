@@ -44,6 +44,9 @@ struct User: Codable, Identifiable, Hashable {
     var isJobSeeker: Bool = false        // Can apply to jobs
     var isCompany: Bool = false          // Service provider is company (not individual)
     var companyName: String?             // Company name if isCompany is true
+    var industryCategory: String?        // Industry/sector e.g. "Fast Food", "Retail"
+    var contactPersonName: String?       // Contact person for job postings
+    var contactPersonPhone: String?      // Contact phone for job postings
 
     // MARK: - Verification & Trust
     var isEmailVerified: Bool = false
@@ -141,6 +144,8 @@ struct User: Codable, Identifiable, Hashable {
         isJobSeeker: Bool = false,
         isCompany: Bool = false,
         companyName: String? = nil,
+        contactPersonName: String? = nil,
+        contactPersonPhone: String? = nil,
         isEmailVerified: Bool = false,
         isPhoneVerified: Bool = false,
         verificationLevel: VerificationLevel = .unverified,
@@ -198,6 +203,8 @@ struct User: Codable, Identifiable, Hashable {
         self.isJobSeeker = isJobSeeker
         self.isCompany = isCompany
         self.companyName = companyName
+        self.contactPersonName = contactPersonName
+        self.contactPersonPhone = contactPersonPhone
         self.isEmailVerified = isEmailVerified
         self.isPhoneVerified = isPhoneVerified
         self.verificationLevel = verificationLevel

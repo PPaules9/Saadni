@@ -82,6 +82,12 @@ struct ServiceCard: View {
        ApplicationBadge(count: applicationCount, size: .small)
       }
 
+      if let date = service.serviceDate {
+       Image(systemName: "calendar")
+       Text(date.formatted(.dateTime.day().month(.abbreviated)))
+        .fontDesign(.monospaced)
+      }
+
       Spacer()
       Image(systemName: "mappin.and.ellipse")
       Text(service.location.name)
@@ -137,9 +143,9 @@ struct ServiceCard: View {
 
  private func navigateToDetail() {
   // Use appropriate coordinator based on context
-  if let coordinator = appCoordinator.jobSeekerCoordinator {
+  if let coordinator = appCoordinator.providerCoordinator {
    coordinator.navigate(to: .serviceDetail(service))
-  } else if let coordinator = appCoordinator.serviceProviderCoordinator {
+  } else if let coordinator = appCoordinator.studentCoordinator {
    coordinator.navigate(to: .serviceDetail(service))
   }
  }

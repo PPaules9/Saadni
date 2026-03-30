@@ -15,7 +15,7 @@ struct DashboardView: View {
  @State private var navigateToBrowseJobs: Bool = false
  @State private var calendarSelection: Date = Date()
  @State private var isCalendarVisible: Bool = false
-	@State private var viewModel: ProfileViewModel?
+
  @Environment(ServicesStore.self) var servicesStore
  @Environment(\.notificationsStore) var notificationsStore
 
@@ -234,12 +234,12 @@ struct DashboardHeaderView: View {
         .foregroundStyle(.primary)
       }
 
-      if notificationsStore.unreadCount > 0 {
+      if notificationsStore.unreadCount(for: .jobSeeker) > 0 {
        ZStack {
         Circle()
          .fill(Color(UIColor(hex: "#FF3B30")))
 
-        Text(notificationsStore.unreadCount > 99 ? "99+" : "\(notificationsStore.unreadCount)")
+        Text(notificationsStore.unreadCount(for: .jobSeeker) > 99 ? "99+" : "\(notificationsStore.unreadCount(for: .jobSeeker))")
          .font(.system(size: 10, weight: .bold))
          .foregroundColor(.white)
        }

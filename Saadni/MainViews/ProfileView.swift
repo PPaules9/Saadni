@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct ProfileView: View {
-	@State private var viewModel: ProfileViewModel?
 	@Environment(AppStateManager.self) var appStateManager
 	@Environment(AuthenticationManager.self) var authManager
 	@Environment(UserCache.self) var userCache
 	@Environment(AppCoordinator.self) var appCoordinator
+	
+	// Local UI State replacing the ProfileViewModel
+	@State private var isAnimating: Bool = false
+	@State private var isSwitching: Bool = false
 	
 	var body: some View {
 		ZStack {
@@ -26,7 +29,7 @@ struct ProfileView: View {
 						if let user = authManager.currentUser {
 							let currentRole: UserRole = user.isServiceProvider ? .provider : .jobSeeker
 							let completionPercentage = user.getCompletionPercentage(forRole: currentRole)
-
+							
 							ProfileHeaderView(
 								displayName: user.displayName ?? "User",
 								email: user.email,
@@ -36,20 +39,18 @@ struct ProfileView: View {
 						}
 						
 						// Account Menu
-						if let vm = viewModel {
-							AccountMenuSection(
-								onLogout: {
-									Task {
-										try await vm.logout()
-									}
-								},
-								onDeleteAccount: {
-									Task {
-										try await vm.deleteAccount()
-									}
+						AccountMenuSection(
+							onLogout: {
+								Task {
+									try await authManager.signOut()
 								}
-							)
-						}
+							},
+							onDeleteAccount: {
+								Task {
+									try await authManager.deleteAccount()
+								}
+							}
+						)
 						
 						// Work Management
 						WorkManagementSection(
@@ -57,15 +58,13 @@ struct ProfileView: View {
 						)
 						
 						// Role Switcher
-						if let vm = viewModel {
-							RoleSwitcherView(
-								currentRoleLabel: vm.currentUserTypeLabel,
-								currentRoleIcon: vm.currentUserTypeIcon,
-								isAnimating: vm.isAnimating,
-								isSwitching: vm.isSwitching,
-								onSwitch: vm.switchUserType
-							)
-						}
+						RoleSwitcherView(
+							currentRoleLabel: currentUserTypeLabel,
+							currentRoleIcon: currentUserTypeIcon,
+							isAnimating: isAnimating,
+							isSwitching: isSwitching,
+							onSwitch: switchUserType
+						)
 						
 						Spacer()
 							.frame(height: 20)
@@ -75,14 +74,53 @@ struct ProfileView: View {
 				.navigationTitle("Profile")
 			}
 		}
-		.onAppear {
-			if viewModel == nil {
-				viewModel = ProfileViewModel(
-					authManager: authManager,
-					userCache: userCache,
-					appCoordinator: appCoordinator,
-					appStateManager: appStateManager
-				)
+	}
+	
+	// MARK: - Computed Properties
+	
+	private var currentUserTypeLabel: String {
+		if let user = authManager.currentUser {
+			if user.isJobSeeker { return "Need Help With Something" }
+			if user.isServiceProvider { return "Earn Some Cash" }
+		}
+		return "Unknown"
+	}
+	
+	private var currentUserTypeIcon: String {
+		if let user = authManager.currentUser {
+			if user.isJobSeeker { return "magnifyingglass.circle.fill" }
+			if user.isServiceProvider { return "briefcase.circle.fill" }
+		}
+		return "questionmark.circle"
+	}
+	
+	// MARK: - Handlers
+	
+	private func switchUserType() {
+		guard let currentUser = authManager.currentUser else { return }
+		
+		isSwitching = true
+		withAnimation(.easeInOut(duration: 0.6)) {
+			isAnimating = true
+		}
+		
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+			isAnimating = false
+		}
+		
+		Task {
+			var updatedUser = currentUser
+			updatedUser.isJobSeeker.toggle()
+			updatedUser.isServiceProvider.toggle()
+			
+			// Use UserCache for optimistic update + Firestore sync
+			await userCache.updateUser(updatedUser)
+			
+			// Trigger coordinator to switch role
+			appCoordinator.switchUserRole()
+			
+			await MainActor.run {
+				isSwitching = false
 			}
 		}
 	}

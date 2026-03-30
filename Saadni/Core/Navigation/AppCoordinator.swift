@@ -7,8 +7,8 @@ import SwiftUI
 @Observable
 final class AppCoordinator {
     // Child coordinators (one active at a time)
-    var jobSeekerCoordinator: JobSeekerCoordinator?
-    var serviceProviderCoordinator: ServiceProviderCoordinator?
+    var providerCoordinator: ProviderCoordinator?
+    var studentCoordinator: StudentCoordinator?
 
     // Dependencies
     private let authManager: AuthenticationManager
@@ -25,20 +25,20 @@ final class AppCoordinator {
         // Create new coordinator based on role only if it doesn't exist
         // to prevent dropping navigation state when user model updates
         if user.isServiceProvider {
-            if serviceProviderCoordinator == nil {
-                serviceProviderCoordinator = ServiceProviderCoordinator()
-                jobSeekerCoordinator = nil
+            if studentCoordinator == nil {
+                studentCoordinator = StudentCoordinator()
+                providerCoordinator = nil
             }
         } else if user.isJobSeeker {
-            if jobSeekerCoordinator == nil {
-                jobSeekerCoordinator = JobSeekerCoordinator()
-                serviceProviderCoordinator = nil
+            if providerCoordinator == nil {
+                providerCoordinator = ProviderCoordinator()
+                studentCoordinator = nil
             }
         } else {
             // Default fallback
-            if jobSeekerCoordinator == nil {
-                jobSeekerCoordinator = JobSeekerCoordinator()
-                serviceProviderCoordinator = nil
+            if providerCoordinator == nil {
+                providerCoordinator = ProviderCoordinator()
+                studentCoordinator = nil
             }
         }
     }
@@ -62,9 +62,9 @@ final class AppCoordinator {
 
     func handleChatDeepLink(conversationId: String, conversationsStore: ConversationsStore) {
         // Determine which coordinator is active
-        if let coordinator = jobSeekerCoordinator {
+        if let coordinator = providerCoordinator {
             coordinator.selectTabAndNavigate(to: .chat, destination: .chatDetail(conversationId: conversationId))
-        } else if let coordinator = serviceProviderCoordinator {
+        } else if let coordinator = studentCoordinator {
             coordinator.selectTabAndNavigate(to: .chat, destination: .chatDetail(conversationId: conversationId))
         }
     }

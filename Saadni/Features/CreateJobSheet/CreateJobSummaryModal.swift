@@ -15,16 +15,15 @@ struct CreateJobSummaryModal: View {
 	var body: some View {
 		VStack(spacing: 0) {
 			// Header
-			VStack(spacing: 8) {
-				Text("Review Your Job(s)")
+			HStack(spacing: 8) {
+				Text("Review Your Job")
 					.font(.headline)
 					.fontWeight(.semibold)
+					.fontDesign(.monospaced)
+					.kerning(0.01)
 				
-				Text("Preview and publish \(viewModel.selectedDates.count) shift(s)")
-					.font(.caption)
-					.foregroundStyle(Colors.swiftUIColor(.textSecondary))
 			}
-			.frame(maxWidth: .infinity, alignment: .leading)
+			.frame(maxWidth: .infinity, alignment: .center)
 			.padding()
 			.background(Colors.swiftUIColor(.textPrimary))
 			
@@ -48,6 +47,8 @@ struct CreateJobSummaryModal: View {
 						}
 					}
 					
+					Divider()
+					
 					SummarySection(title: "Location") {
 						SummaryRow(label: "City", value: viewModel.city)
 						SummaryRow(label: "Address", value: viewModel.address)
@@ -56,12 +57,17 @@ struct CreateJobSummaryModal: View {
 						}
 					}
 					
+					Divider()
+
+					
 					SummarySection(title: "Pay") {
 						SummaryRow(label: "Rate", value: "\(viewModel.price) EGP")
 						SummaryRow(label: "Method", value: viewModel.paymentMethod)
 						SummaryRow(label: "Timing", value: viewModel.paymentTiming)
 					}
 					
+					Divider()
+
 					SummarySection(title: "Requirements") {
 						if !viewModel.dressCode.isEmpty {
 							SummaryRow(label: "Dress Code", value: viewModel.dressCode)
@@ -71,6 +77,8 @@ struct CreateJobSummaryModal: View {
 						}
 						SummaryRow(label: "Gender Preference", value: viewModel.genderPreference)
 					}
+					
+					Divider()
 					
 					SummarySection(title: "Company Info") {
 						SummaryRow(label: "Company", value: viewModel.companyName)

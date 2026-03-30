@@ -38,7 +38,7 @@ enum ColorToken {
   case .warning:      return "#FACC15"
    
   case .backgroundLight:   return "E8F2EE"
-  case .backgroundDark:   return "#050C0C"
+  case .backgroundDark:   return "#1C1D1F"
    
   case .primary:        return "#37857D"
   case .primaryDark:     return "#2A8A47"

@@ -10,6 +10,10 @@
 		2224E8DE2F6837BE008B556F /* ServiceCategoryGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2224E8DC2F6837BE008B556F /* ServiceCategoryGroup.swift */; };
 		2224E8DF2F6837BE008B556F /* ServiceValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2224E8DD2F6837BE008B556F /* ServiceValidator.swift */; };
 		2224E8E12F6837DA008B556F /* ListenerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2224E8E02F6837DA008B556F /* ListenerManager.swift */; };
+		2225174A2F7AD2F200F99714 /* AuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222517492F7AD2F200F99714 /* AuthProvider.swift */; };
+		2225174C2F7AD40C00F99714 /* StateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2225174B2F7AD40C00F99714 /* StateKey.swift */; };
+		2225174E2F7B001600F99714 /* ProviderCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2225174D2F7B001600F99714 /* ProviderCoordinator.swift */; };
+		222517542F7B092000F99714 /* ServiceListCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222517532F7B092000F99714 /* ServiceListCard.swift */; };
 		2236A16E2F50949000A7A19F /* DesignSystemButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A13C2F50949000A7A19F /* DesignSystemButtons.swift */; };
 		2236A16F2F50949000A7A19F /* Colors Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A13E2F50949000A7A19F /* Colors Themes.swift */; };
 		2236A1702F50949000A7A19F /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236A13F2F50949000A7A19F /* Provider.swift */; };
@@ -75,10 +79,9 @@
 		224422122F634FE100241E1C /* TypingIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422102F634FE100241E1C /* TypingIndicatorView.swift */; };
 		224422162F63500B00241E1C /* ChatDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422132F63500B00241E1C /* ChatDetailView.swift */; };
 		224422172F63500B00241E1C /* ChatListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422142F63500B00241E1C /* ChatListView.swift */; };
-		2244221D2F63523F00241E1C /* JobSeekerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422192F63523F00241E1C /* JobSeekerCoordinator.swift */; };
 		2244221E2F63523F00241E1C /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422182F63523F00241E1C /* AppCoordinator.swift */; };
 		2244221F2F63523F00241E1C /* NavigationDestinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244221A2F63523F00241E1C /* NavigationDestinations.swift */; };
-		224422202F63523F00241E1C /* ServiceProviderCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244221B2F63523F00241E1C /* ServiceProviderCoordinator.swift */; };
+		224422202F63523F00241E1C /* StudentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244221B2F63523F00241E1C /* StudentCoordinator.swift */; };
 		224422252F64397F00241E1C /* JobServiceFirestoreMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422232F64397F00241E1C /* JobServiceFirestoreMapper.swift */; };
 		224422262F64397F00241E1C /* ServiceActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422242F64397F00241E1C /* ServiceActivity.swift */; };
 		224422272F64397F00241E1C /* JobService+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422212F64397F00241E1C /* JobService+Formatting.swift */; };
@@ -100,7 +103,6 @@
 		224422482F643ADC00241E1C /* BrandTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422412F643ADC00241E1C /* BrandTextField.swift */; };
 		2244224C2F643FE000241E1C /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422492F643FE000241E1C /* Transaction.swift */; };
 		2244224D2F643FE000241E1C /* WalletStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244224A2F643FE000241E1C /* WalletStore.swift */; };
-		2244224F2F643FF100241E1C /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244224E2F643FF100241E1C /* AppConstants.swift */; };
 		2264A02D2F4C6C110004B2B4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2264A02C2F4C6C110004B2B4 /* README.md */; };
 		226B50092F646C1B00C09676 /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50082F646C1B00C09676 /* AppContainer.swift */; };
 		226B500C2F658D0B00C09676 /* CreateJobSummaryModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B500A2F658D0B00C09676 /* CreateJobSummaryModal.swift */; };
@@ -110,14 +112,13 @@
 		226B50152F65D05900C09676 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50112F65D05900C09676 /* AppError.swift */; };
 		226B501B2F65D0B600C09676 /* StorageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50182F65D0B600C09676 /* StorageProvider.swift */; };
 		226B501C2F65D0B600C09676 /* FirestoreProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50172F65D0B600C09676 /* FirestoreProvider.swift */; };
-		226B501D2F65D0B600C09676 /* AuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50162F65D0B600C09676 /* AuthProvider.swift */; };
 		226B50212F65E01E00C09676 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		226B50262F66234D00C09676 /* ErrorStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50242F66234D00C09676 /* ErrorStateView.swift */; };
 		226B50272F66234D00C09676 /* ServiceCategoryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50252F66234D00C09676 /* ServiceCategoryCard.swift */; };
 		227C499B2F6D5982001E2381 /* MyAddressesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227C499A2F6D5981001E2381 /* MyAddressesView.swift */; };
 		227C499F2F6D7F54001E2381 /* onBoarding.gif in Resources */ = {isa = PBXBuildFile; fileRef = 227C499E2F6D7F54001E2381 /* onBoarding.gif */; };
 		227C49A32F72D40A001E2381 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 227C49A22F72D40A001E2381 /* Localizable.xcstrings */; };
-		22B999FF2F5F1A8A00B3E070 /* StateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B999FE2F5F1A8A00B3E070 /* StateKey.swift */; };
+		22A1B3C12F9000AA00BB1234 /* HireRoleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A1B3C02F9000AA00BB1234 /* HireRoleRow.swift */; };
 		22C198B42F78097E00555D41 /* ApplicantCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198B32F78097E00555D41 /* ApplicantCard.swift */; };
 		22C198B62F78099D00555D41 /* ProfileCompletionPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198B52F78099D00555D41 /* ProfileCompletionPopup.swift */; };
 		22C198B92F7809AE00555D41 /* UserProfileSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C198B82F7809AE00555D41 /* UserProfileSheet.swift */; };
@@ -158,7 +159,11 @@
 		2224E8DC2F6837BE008B556F /* ServiceCategoryGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCategoryGroup.swift; sourceTree = "<group>"; };
 		2224E8DD2F6837BE008B556F /* ServiceValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceValidator.swift; sourceTree = "<group>"; };
 		2224E8E02F6837DA008B556F /* ListenerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenerManager.swift; sourceTree = "<group>"; };
-		222517472F7AA9A000F99714 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Library/Mobile Documents/com~apple~CloudDocs/Developer/My Apps/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
+		222517492F7AD2F200F99714 /* AuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthProvider.swift; sourceTree = "<group>"; };
+		2225174B2F7AD40C00F99714 /* StateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateKey.swift; sourceTree = "<group>"; };
+		2225174D2F7B001600F99714 /* ProviderCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderCoordinator.swift; sourceTree = "<group>"; };
+		222517522F7B01FF00F99714 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Downloads/important Folder/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
+		222517532F7B092000F99714 /* ServiceListCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceListCard.swift; sourceTree = "<group>"; };
 		2236A13C2F50949000A7A19F /* DesignSystemButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemButtons.swift; sourceTree = "<group>"; };
 		2236A13E2F50949000A7A19F /* Colors Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Colors Themes.swift"; sourceTree = "<group>"; };
 		2236A13F2F50949000A7A19F /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
@@ -218,9 +223,8 @@
 		224422132F63500B00241E1C /* ChatDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatDetailView.swift; sourceTree = "<group>"; };
 		224422142F63500B00241E1C /* ChatListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListView.swift; sourceTree = "<group>"; };
 		224422182F63523F00241E1C /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
-		224422192F63523F00241E1C /* JobSeekerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobSeekerCoordinator.swift; sourceTree = "<group>"; };
 		2244221A2F63523F00241E1C /* NavigationDestinations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationDestinations.swift; sourceTree = "<group>"; };
-		2244221B2F63523F00241E1C /* ServiceProviderCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderCoordinator.swift; sourceTree = "<group>"; };
+		2244221B2F63523F00241E1C /* StudentCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentCoordinator.swift; sourceTree = "<group>"; };
 		224422212F64397F00241E1C /* JobService+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobService+Formatting.swift"; sourceTree = "<group>"; };
 		224422222F64397F00241E1C /* JobService+SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobService+SampleData.swift"; sourceTree = "<group>"; };
 		224422232F64397F00241E1C /* JobServiceFirestoreMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobServiceFirestoreMapper.swift; sourceTree = "<group>"; };
@@ -242,14 +246,12 @@
 		224422422F643ADC00241E1C /* InputState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputState.swift; sourceTree = "<group>"; };
 		224422492F643FE000241E1C /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		2244224A2F643FE000241E1C /* WalletStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletStore.swift; sourceTree = "<group>"; };
-		2244224E2F643FF100241E1C /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
 		2264A02C2F4C6C110004B2B4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		226B50082F646C1B00C09676 /* AppContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainer.swift; sourceTree = "<group>"; };
 		226B500A2F658D0B00C09676 /* CreateJobSummaryModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobSummaryModal.swift; sourceTree = "<group>"; };
 		226B500B2F658D0B00C09676 /* JobPublishedSuccessModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobPublishedSuccessModal.swift; sourceTree = "<group>"; };
 		226B50112F65D05900C09676 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		226B50122F65D05900C09676 /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
-		226B50162F65D0B600C09676 /* AuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthProvider.swift; sourceTree = "<group>"; };
 		226B50172F65D0B600C09676 /* FirestoreProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreProvider.swift; sourceTree = "<group>"; };
 		226B50182F65D0B600C09676 /* StorageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageProvider.swift; sourceTree = "<group>"; };
 		226B50242F66234D00C09676 /* ErrorStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorStateView.swift; sourceTree = "<group>"; };
@@ -258,7 +260,7 @@
 		227C499E2F6D7F54001E2381 /* onBoarding.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = onBoarding.gif; sourceTree = "<group>"; };
 		227C49A12F72D359001E2381 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		227C49A22F72D40A001E2381 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		22B999FE2F5F1A8A00B3E070 /* StateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateKey.swift; sourceTree = "<group>"; };
+		22A1B3C02F9000AA00BB1234 /* HireRoleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HireRoleRow.swift; sourceTree = "<group>"; };
 		22C198B32F78097E00555D41 /* ApplicantCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicantCard.swift; sourceTree = "<group>"; };
 		22C198B52F78099D00555D41 /* ProfileCompletionPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCompletionPopup.swift; sourceTree = "<group>"; };
 		22C198B72F7809AE00555D41 /* EditProfileSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileSheet.swift; sourceTree = "<group>"; };
@@ -294,7 +296,6 @@
 		22FD36F22F57418600AF3127 /* CreateJobTab4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobTab4.swift; sourceTree = "<group>"; };
 		22FD36F32F57418600AF3127 /* CreateJobTab5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobTab5.swift; sourceTree = "<group>"; };
 		22FD36FB2F5741B200AF3127 /* CreateJobViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobViewModel.swift; sourceTree = "<group>"; };
-		2D4ECBB5CAAF07DF4D34081C /* AuthCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCoordinator.swift; sourceTree = "<group>"; };
 		30DA4D8FE38E6191DE8527BE /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -339,7 +340,9 @@
 		2236A1442F50949000A7A19F /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				222517532F7B092000F99714 /* ServiceListCard.swift */,
 				22C198B32F78097E00555D41 /* ApplicantCard.swift */,
+				22A1B3C02F9000AA00BB1234 /* HireRoleRow.swift */,
 				226B50242F66234D00C09676 /* ErrorStateView.swift */,
 				226B50252F66234D00C09676 /* ServiceCategoryCard.swift */,
 				2244220F2F634FE100241E1C /* MessageBubble.swift */,
@@ -401,11 +404,10 @@
 		2236A14B2F50949000A7A19F /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				2225174B2F7AD40C00F99714 /* StateKey.swift */,
 				22C198C12F7974E100555D41 /* Notifications */,
-				226B501A2F65D0B600C09676 /* DI */,
 				226B50132F65D05900C09676 /* Error */,
 				2244221C2F63523F00241E1C /* Navigation */,
-				22B999FD2F5F1A7B00B3E070 /* Constants */,
 				2236A1472F50949000A7A19F /* Design System */,
 				2236A14A2F50949000A7A19F /* Resources */,
 			);
@@ -442,8 +444,8 @@
 			isa = PBXGroup;
 			children = (
 				224422152F63500B00241E1C /* ChatViews */,
-				22FD36D62F57161100AF3127 /* NeedWorkViews */,
-				22FD36DE2F5716A800AF3127 /* JobProviderViews */,
+				22FD36D62F57161100AF3127 /* StudentViews */,
+				22FD36DE2F5716A800AF3127 /* ProviderViews */,
 				2236A1692F50949000A7A19F /* ProfileView.swift */,
 			);
 			path = MainViews;
@@ -570,10 +572,9 @@
 			isa = PBXGroup;
 			children = (
 				224422182F63523F00241E1C /* AppCoordinator.swift */,
-				224422192F63523F00241E1C /* JobSeekerCoordinator.swift */,
+				2225174D2F7B001600F99714 /* ProviderCoordinator.swift */,
 				2244221A2F63523F00241E1C /* NavigationDestinations.swift */,
-				2244221B2F63523F00241E1C /* ServiceProviderCoordinator.swift */,
-				2D4ECBB5CAAF07DF4D34081C /* AuthCoordinator.swift */,
+				2244221B2F63523F00241E1C /* StudentCoordinator.swift */,
 				30DA4D8FE38E6191DE8527BE /* AppError.swift */,
 			);
 			path = Navigation;
@@ -624,19 +625,11 @@
 		226B50192F65D0B600C09676 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				226B50162F65D0B600C09676 /* AuthProvider.swift */,
+				222517492F7AD2F200F99714 /* AuthProvider.swift */,
 				226B50172F65D0B600C09676 /* FirestoreProvider.swift */,
 				226B50182F65D0B600C09676 /* StorageProvider.swift */,
 			);
 			path = Protocols;
-			sourceTree = "<group>";
-		};
-		226B501A2F65D0B600C09676 /* DI */ = {
-			isa = PBXGroup;
-			children = (
-				226B50192F65D0B600C09676 /* Protocols */,
-			);
-			path = DI;
 			sourceTree = "<group>";
 		};
 		227C499D2F6D7ED7001E2381 /* Onboarding */ = {
@@ -653,15 +646,6 @@
 				2264A02C2F4C6C110004B2B4 /* README.md */,
 				2236A16B2F50949000A7A19F /* Saadni */,
 			);
-			sourceTree = "<group>";
-		};
-		22B999FD2F5F1A7B00B3E070 /* Constants */ = {
-			isa = PBXGroup;
-			children = (
-				2244224E2F643FF100241E1C /* AppConstants.swift */,
-				22B999FE2F5F1A8A00B3E070 /* StateKey.swift */,
-			);
-			path = Constants;
 			sourceTree = "<group>";
 		};
 		22C198C02F7974E100555D41 /* Models */ = {
@@ -749,6 +733,7 @@
 				2236A1AC2F5321E300A7A19F /* Firebase */,
 				2236A1B12F5321E300A7A19F /* Applications */,
 				22FD35F72F56E8B600AF3127 /* Services */,
+				226B50192F65D0B600C09676 /* Protocols */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -776,7 +761,7 @@
 			path = "Role Selection ";
 			sourceTree = "<group>";
 		};
-		22FD36D62F57161100AF3127 /* NeedWorkViews */ = {
+		22FD36D62F57161100AF3127 /* StudentViews */ = {
 			isa = PBXGroup;
 			children = (
 				22C198BC2F784C0E00555D41 /* CustomCalendarWithJobIndicators.swift */,
@@ -785,7 +770,7 @@
 				2236A1652F50949000A7A19F /* BrowseJobs.swift */,
 				2236A1682F50949000A7A19F /* AppliedJobsView.swift */,
 			);
-			path = NeedWorkViews;
+			path = StudentViews;
 			sourceTree = "<group>";
 		};
 		22FD36DA2F57168300AF3127 /* App */ = {
@@ -798,7 +783,7 @@
 			path = App;
 			sourceTree = "<group>";
 		};
-		22FD36DE2F5716A800AF3127 /* JobProviderViews */ = {
+		22FD36DE2F5716A800AF3127 /* ProviderViews */ = {
 			isa = PBXGroup;
 			children = (
 				22FD36EE2F57418600AF3127 /* CreateJobSheet.swift */,
@@ -806,7 +791,7 @@
 				22FD36E12F571CE800AF3127 /* HomeView.swift */,
 				224421FB2F63435300241E1C /* myJobs.swift */,
 			);
-			path = JobProviderViews;
+			path = ProviderViews;
 			sourceTree = "<group>";
 		};
 		22FD36E62F573A7600AF3127 /* CreateJobSheet */ = {
@@ -866,7 +851,7 @@
 				226B500F2F65A5F700C09676 /* Kingfisher */,
 			);
 			productName = Saadni;
-			productReference = 222517472F7AA9A000F99714 /* Saadni.app */;
+			productReference = 222517522F7B01FF00F99714 /* Saadni.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -976,6 +961,7 @@
 				22FD36FC2F5741B200AF3127 /* CreateJobViewModel.swift in Sources */,
 				22C198BD2F784C0E00555D41 /* CustomCalendarWithJobIndicators.swift in Sources */,
 				2236A1B22F5321E300A7A19F /* ApplicationsStore.swift in Sources */,
+				222517542F7B092000F99714 /* ServiceListCard.swift in Sources */,
 				224421BD2F62CD3600241E1C /* ServiceImage.swift in Sources */,
 				224421BE2F62CD3600241E1C /* ServiceCategoryType.swift in Sources */,
 				226B50262F66234D00C09676 /* ErrorStateView.swift in Sources */,
@@ -992,6 +978,7 @@
 				224421C72F6304BB00241E1C /* WalletSheet.swift in Sources */,
 				2244222D2F6439AD00241E1C /* User+Formatting.swift in Sources */,
 				2244222E2F6439AD00241E1C /* UserScoreCalculator.swift in Sources */,
+				2225174C2F7AD40C00F99714 /* StateKey.swift in Sources */,
 				2244222F2F6439AD00241E1C /* UserValueObjects.swift in Sources */,
 				224422302F6439AD00241E1C /* User+Permissions.swift in Sources */,
 				22C198D52F79784100555D41 /* NotificationsStoreKey.swift in Sources */,
@@ -1013,16 +1000,18 @@
 				226B500D2F658D0B00C09676 /* JobPublishedSuccessModal.swift in Sources */,
 				226B501B2F65D0B600C09676 /* StorageProvider.swift in Sources */,
 				226B501C2F65D0B600C09676 /* FirestoreProvider.swift in Sources */,
-				226B501D2F65D0B600C09676 /* AuthProvider.swift in Sources */,
 				224422392F643AB700241E1C /* AccountMenuSection.swift in Sources */,
 				2244223A2F643AB700241E1C /* WorkManagementSection.swift in Sources */,
 				2244223B2F643AB700241E1C /* ProfileHeaderView.swift in Sources */,
 				226B50092F646C1B00C09676 /* AppContainer.swift in Sources */,
 				2244223C2F643AB700241E1C /* RoleSwitcherView.swift in Sources */,
 				224422122F634FE100241E1C /* TypingIndicatorView.swift in Sources */,
+				2225174A2F7AD2F200F99714 /* AuthProvider.swift in Sources */,
 				22FD36F72F57418600AF3127 /* CreateJobTab1.swift in Sources */,
 				22FD36F82F57418600AF3127 /* CreateJobTab3.swift in Sources */,
 				22C198B42F78097E00555D41 /* ApplicantCard.swift in Sources */,
+				22A1B3C12F9000AA00BB1234 /* HireRoleRow.swift in Sources */,
+				2225174E2F7B001600F99714 /* ProviderCoordinator.swift in Sources */,
 				224422432F643ADC00241E1C /* InputState.swift in Sources */,
 				224422442F643ADC00241E1C /* BrandPasswordField.swift in Sources */,
 				224422452F643ADC00241E1C /* BrandSearchField.swift in Sources */,
@@ -1032,14 +1021,12 @@
 				22FD36F92F57418600AF3127 /* CreateJobTab5.swift in Sources */,
 				2244220C2F634EFC00241E1C /* ConversationsStore.swift in Sources */,
 				22FD36FA2F57418600AF3127 /* CreateJobTab2.swift in Sources */,
-				2244224F2F643FF100241E1C /* AppConstants.swift in Sources */,
 				22FD36EB2F573A7600AF3127 /* SectionHeader.swift in Sources */,
 				224421F72F633AEA00241E1C /* SubmitReviewSheet.swift in Sources */,
 				2236A1B62F5321E300A7A19F /* JobApplication.swift in Sources */,
-				2244221D2F63523F00241E1C /* JobSeekerCoordinator.swift in Sources */,
 				2244221E2F63523F00241E1C /* AppCoordinator.swift in Sources */,
 				2244221F2F63523F00241E1C /* NavigationDestinations.swift in Sources */,
-				224422202F63523F00241E1C /* ServiceProviderCoordinator.swift in Sources */,
+				224422202F63523F00241E1C /* StudentCoordinator.swift in Sources */,
 				2236A1B72F5321E300A7A19F /* FirestoreService.swift in Sources */,
 				22FD36E22F571CE800AF3127 /* HomeView.swift in Sources */,
 				224421D92F6337CC00241E1C /* ServiceCompletionView.swift in Sources */,
@@ -1056,7 +1043,6 @@
 				2236A1892F50949000A7A19F /* DashboardView.swift in Sources */,
 				224421B32F61DDA400241E1C /* JobService.swift in Sources */,
 				2236A18A2F50949000A7A19F /* AppliedJobsView.swift in Sources */,
-				22B999FF2F5F1A8A00B3E070 /* StateKey.swift in Sources */,
 				2236A18B2F50949000A7A19F /* ProfileView.swift in Sources */,
 				224421FE2F633B0000241E1C /* CompletedServicesView.swift in Sources */,
 				224421FF2F633B0000241E1C /* UserReviewsView.swift in Sources */,

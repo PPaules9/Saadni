@@ -84,7 +84,7 @@ struct NeedWork: View {
 	@ViewBuilder
 	private func NeedWorkView() -> some View {
 		
-			if let coordinator = appCoordinator.serviceProviderCoordinator {
+			if let coordinator = appCoordinator.studentCoordinator {
 				TabView(
 					selection: Binding(
 						get: { coordinator.selectedTab },
@@ -116,7 +116,7 @@ struct NeedWork: View {
 	}
 	
  @ViewBuilder
- private func tabContent(for tab: ServiceProviderTab, coordinator: ServiceProviderCoordinator) -> some View {
+ private func tabContent(for tab: ServiceProviderTab, coordinator: StudentCoordinator) -> some View {
   let binding = coordinator.pathBinding(for: tab)
   NavigationStack(path: binding) {
    rootView(for: tab)
@@ -127,7 +127,7 @@ struct NeedWork: View {
  }
 
  @ViewBuilder
- private func tabContent(for tab: JobSeekerTab, coordinator: JobSeekerCoordinator) -> some View {
+ private func tabContent(for tab: JobSeekerTab, coordinator: ProviderCoordinator) -> some View {
   let binding = coordinator.pathBinding(for: tab)
   NavigationStack(path: binding) {
    rootView(for: tab)

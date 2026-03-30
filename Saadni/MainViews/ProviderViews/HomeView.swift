@@ -10,9 +10,8 @@ import SwiftUI
 struct HomeView: View {
 	@State private var needHelpWith: String = ""
 	@FocusState private var isFocused: Bool
-	@State private var viewModel: ProfileViewModel?
 	@State private var showNotificationDrawer = false
-	@Environment(JobSeekerCoordinator.self) var coordinator
+	@Environment(ProviderCoordinator.self) var coordinator
 	@Environment(\.notificationsStore) var notificationsStore
 	
 	var body: some View {
@@ -25,30 +24,33 @@ struct HomeView: View {
 					// Search bar section with accent background
 					
 					
-					VStack(alignment: .leading, spacing: 0) {
+					VStack(alignment: .center, spacing: 0) {
 						HStack{
-							Text("I Need Help Hire")
-								.font(.title2)
-								.foregroundStyle(.black)
-								.fontDesign(.monospaced)
-								.bold()
-								.tracking(-1.5)
-								.padding(.top, 12)
+							HStack(spacing: 8){
+								Text("Current location")
+									.font(.headline)
+									.foregroundStyle(.white)
+									.fontDesign(.monospaced)
+									.tracking(-1)
+									.padding(.top, 12)
+								Image(systemName: "chevron.down")
+									.padding(.top, 12)
+							}
 							Spacer()
-
+							
 							ZStack(alignment: .topTrailing) {
 								Button(action: { showNotificationDrawer = true }) {
-									Image(systemName: "bell.fill")
+									Image(systemName: "bell")
 										.font(.system(size: 18, weight: .semibold))
-										.foregroundStyle(.black)
+										.foregroundStyle(.white)
 								}
-
-								if notificationsStore.unreadCount > 0 {
+								
+								if notificationsStore.unreadCount(for: .provider) > 0 {
 									ZStack {
 										Circle()
-											.fill(Color(UIColor(hex: "#FF3B30")))
-
-										Text(notificationsStore.unreadCount > 99 ? "99+" : "\(notificationsStore.unreadCount)")
+											.fill(Colors.swiftUIColor(.borderWarning))
+										
+										Text(notificationsStore.unreadCount(for: .provider) > 99 ? "99+" : "\(notificationsStore.unreadCount(for: .provider))")
 											.font(.system(size: 10, weight: .bold))
 											.foregroundColor(.white)
 									}
@@ -58,12 +60,21 @@ struct HomeView: View {
 							}
 						}
 						.padding(.horizontal, 20)
+						//
+						//						Text("I Need Help Hire")
+						//							.font(.title2)
+						//							.foregroundStyle(.black)
+						//							.fontDesign(.monospaced)
+						//							.bold()
+						//							.tracking(-1.5)
+						//							.padding(.top, 12)
 						
-						TextField("", text: $needHelpWith, prompt: Text("e.g., a barista, a cashier, an event helper...").foregroundColor(.gray))
+						TextField("", text: $needHelpWith, prompt: Text("I Need to Hire, e.g., a barista, a cashier,...").foregroundColor(.gray))
 							.focused($isFocused)
 							.font(Font.caption)
 							.fontDesign(.monospaced)
 							.fontWeight(.regular)
+							.tracking(-1)
 							.padding(16)
 							.overlay(
 								RoundedRectangle(cornerRadius: 100)
@@ -147,6 +158,45 @@ struct HomeView: View {
 					}
 					
 					
+					VStack(alignment: .leading, spacing: 0) {
+						VStack(alignment: .leading, spacing: 4){
+							Text("Have a Business?")
+								.foregroundStyle(.accent)
+							Text("Start Hiring Essential Roles")
+								.foregroundStyle(Colors.swiftUIColor(.textMain))
+						}
+						.font(.system(size: 20, weight: .semibold, design: .default))
+						.padding()
+						.kerning(-0.5)
+						
+						
+						
+						HireRoleRow(icon: "sparkles", title: "Cleaning Member Boy") {
+							coordinator.presentSheet(.createJob(category: ServiceCategoryType.cleaningAndMaintenance.rawValue, initialJobName: "Cleaning Boy"))
+						}
+						
+						Divider()
+							.padding(.leading, 68)
+						
+						HireRoleRow(icon: "cup.and.saucer", title: "Kitchen Drinkies Specialist") {
+							coordinator.presentSheet(.createJob(category: ServiceCategoryType.foodAndBeverage.rawValue, initialJobName: "Kitchen Boy"))
+						}
+						
+						Divider()
+							.padding(.leading, 68)
+						
+						HireRoleRow(icon: "doc.text", title: "a Secretary") {
+							coordinator.presentSheet(.createJob(category: ServiceCategoryType.retailAndMalls.rawValue, initialJobName: "Secretary"))
+						}
+					}
+					.background(
+						RoundedRectangle(cornerRadius: 16)
+							.stroke(Colors.swiftUIColor(.textSecondary), lineWidth: 0.15)
+					)
+					.padding(.horizontal)
+					
+					
+					Divider()
 					//MARK: - Service Categories Sections
 					
 					ForEach(HomeView.categories) { category in
@@ -206,7 +256,7 @@ struct HomeView: View {
 					}
 				}
 				.padding(.bottom, 20)
-
+				
 				VStack(alignment: .center) {
 					Text("IKEA Assembly, Hire a Specialist for easy Installment")
 						.font(.system(size: 20, weight: .semibold, design: .monospaced))
@@ -229,12 +279,12 @@ struct HomeView: View {
 						.padding()
 						.padding(.horizontal)
 				}
-
-					Spacer()
+				
+				Spacer()
 					.frame(height: 40)
 				
 			}
-
+			
 		}
 		.sheet(isPresented: $showNotificationDrawer) {
 			NotificationDrawerView(userRole: .provider)
@@ -296,7 +346,7 @@ extension HomeView {
 			JobService(name: "homeCleaning", displayName: "Hotel Housekeeping"),
 			JobService(name: "GymAssistant", displayName: "Gym Floor Assistant"),
 			JobService(name: "furnitureAssembly", displayName: "Event Setup Crew"),
-
+			
 		]),
 	]
 }
@@ -321,7 +371,7 @@ struct CircularService : View {
 					.resizable()
 					.clipShape(Circle())
 					.frame(width: 50, height: 50)
-
+				
 			}
 			Text(serviceName)
 				.font(.caption)
@@ -336,5 +386,5 @@ struct CircularService : View {
 
 #Preview {
 	HomeView()
-		.environment(JobSeekerCoordinator())
+		.environment(ProviderCoordinator())
 }
