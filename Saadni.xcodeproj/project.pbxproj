@@ -156,13 +156,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		221716782F7C3A9400C52617 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Downloads/important Folder/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
 		2224E8DC2F6837BE008B556F /* ServiceCategoryGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCategoryGroup.swift; sourceTree = "<group>"; };
 		2224E8DD2F6837BE008B556F /* ServiceValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceValidator.swift; sourceTree = "<group>"; };
 		2224E8E02F6837DA008B556F /* ListenerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenerManager.swift; sourceTree = "<group>"; };
 		222517492F7AD2F200F99714 /* AuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthProvider.swift; sourceTree = "<group>"; };
 		2225174B2F7AD40C00F99714 /* StateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateKey.swift; sourceTree = "<group>"; };
 		2225174D2F7B001600F99714 /* ProviderCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderCoordinator.swift; sourceTree = "<group>"; };
-		222517522F7B01FF00F99714 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Downloads/important Folder/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
 		222517532F7B092000F99714 /* ServiceListCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceListCard.swift; sourceTree = "<group>"; };
 		2236A13C2F50949000A7A19F /* DesignSystemButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemButtons.swift; sourceTree = "<group>"; };
 		2236A13E2F50949000A7A19F /* Colors Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Colors Themes.swift"; sourceTree = "<group>"; };
@@ -875,7 +875,7 @@
 				226B500F2F65A5F700C09676 /* Kingfisher */,
 			);
 			productName = Saadni;
-			productReference = 222517522F7B01FF00F99714 /* Saadni.app */;
+			productReference = 221716782F7C3A9400C52617 /* Saadni.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

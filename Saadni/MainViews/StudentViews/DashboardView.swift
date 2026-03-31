@@ -207,6 +207,21 @@ struct DashboardHeaderView: View {
       .foregroundStyle(.secondary)
       .fontDesign(.monospaced)
       .kerning(-1)
+     if let user = authManager.currentUser,
+        let defaultId = user.defaultAddressId,
+        let defaultAddress = user.savedAddresses?.first(where: { $0.id == defaultId }) {
+      HStack(spacing: 4) {
+       Image(systemName: "mappin.circle.fill")
+        .font(.caption2)
+        .foregroundStyle(Color.accent)
+       Text(defaultAddress.label.isEmpty ? defaultAddress.address : defaultAddress.label)
+        .font(.caption2)
+        .fontWeight(.medium)
+        .foregroundStyle(Color.accent)
+        .fontDesign(.monospaced)
+        .kerning(-0.5)
+      }
+     }
 
     }
 
