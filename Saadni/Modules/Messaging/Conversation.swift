@@ -14,6 +14,23 @@ struct Conversation: Identifiable, Codable {
     let lastMessage: String
     let lastMessageTime: Date
     let lastMessageSenderId: String
+    var isPinned: Bool
+
+    init(
+        id: String,
+        participantIds: [String],
+        lastMessage: String,
+        lastMessageTime: Date,
+        lastMessageSenderId: String,
+        isPinned: Bool = false
+    ) {
+        self.id = id
+        self.participantIds = participantIds
+        self.lastMessage = lastMessage
+        self.lastMessageTime = lastMessageTime
+        self.lastMessageSenderId = lastMessageSenderId
+        self.isPinned = isPinned
+    }
 
     enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -21,6 +38,7 @@ struct Conversation: Identifiable, Codable {
         case lastMessage = "lastMessage"
         case lastMessageTime = "lastMessageTime"
         case lastMessageSenderId = "lastMessageSenderId"
+        case isPinned = "isPinned"
     }
 
     // MARK: - Firestore Conversion
@@ -31,7 +49,8 @@ struct Conversation: Identifiable, Codable {
             "participantIds": participantIds,
             "lastMessage": lastMessage,
             "lastMessageTime": Timestamp(date: lastMessageTime),
-            "lastMessageSenderId": lastMessageSenderId
+            "lastMessageSenderId": lastMessageSenderId,
+            "isPinned": isPinned
         ]
     }
 
@@ -51,7 +70,8 @@ struct Conversation: Identifiable, Codable {
             participantIds: participantIds,
             lastMessage: lastMessage,
             lastMessageTime: lastMessageTimeTimestamp.dateValue(),
-            lastMessageSenderId: lastMessageSenderId
+            lastMessageSenderId: lastMessageSenderId,
+            isPinned: data["isPinned"] as? Bool ?? false
         )
     }
 

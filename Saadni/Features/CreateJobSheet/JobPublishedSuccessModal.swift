@@ -74,7 +74,6 @@ struct JobPublishedSuccessModal: View {
 						// Details Breakdown
 						DetailRow(icon: "calendar.badge.clock", title: "Shifts Created", value: "\(viewModel.selectedDates.count) Shifts")
 						DetailRow(icon: "mappin.and.ellipse", title: "Location", value: viewModel.city)
-						DetailRow(icon: "building.2.fill", title: "Company", value: viewModel.companyName)
 						DetailRow(icon: "creditcard.fill", title: "Payment", value: "\(viewModel.paymentMethod) - \(viewModel.paymentTiming)")
 						
 						if !viewModel.dressCode.isEmpty {

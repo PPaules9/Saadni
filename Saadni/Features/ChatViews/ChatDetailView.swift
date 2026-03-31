@@ -208,6 +208,11 @@ struct ChatDetailView: View {
 							.padding(16)
 						}
 						.scrollDismissesKeyboard(.interactively)
+						.onAppear {
+							if let lastMessageId = messages.last?.id {
+								proxy.scrollTo(lastMessageId, anchor: .bottom)
+							}
+						}
 						.onChange(of: messages.count) { oldCount, newCount in
 							if newCount > oldCount, let lastMessageId = messages.last?.id {
 								withAnimation {

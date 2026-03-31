@@ -59,7 +59,7 @@ struct MyAddressesView: View {
 		.navigationTitle("My Addresses")
 		.navigationBarTitleDisplayMode(.inline)
 		.toolbar {
-			ToolbarItem(placement: .topBarLeading) {
+			ToolbarItem(placement: .topBarTrailing) {
 				Menu {
 					if let currentUser = authManager.currentUser {
 						ForEach(currentUser.savedAddresses ?? []) { address in

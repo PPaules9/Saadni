@@ -5,6 +5,7 @@
 //  Created by Pavly Paules on 22/02/2026.
 //
 import Foundation
+import SwiftUI
 
 enum ColorToken {
  // Brand colors
@@ -45,4 +46,52 @@ enum ColorToken {
   case .surfaceWhite:    return "#FEFEFE"
   }
  }
+}
+
+extension Color {
+    init?(hex: String) {
+        var hexString = hex
+        if hexString.hasPrefix("#") {
+            hexString.removeFirst()
+        }
+        if hexString.count == 6 {
+            hexString = "FF" + hexString // Add alpha if not present
+        }
+        guard let hexValue = UInt64(hexString, radix: 16) else { return nil }
+        let red = Double((hexValue & 0x00FF0000) >> 16) / 255.0
+        let green = Double((hexValue & 0x0000FF00) >> 8) / 255.0
+        let blue = Double(hexValue & 0x000000FF) / 255.0
+        let alpha = Double((hexValue & 0xFF000000) >> 24) / 255.0
+        self.init(.sRGB, red: red, green: green, blue: blue, opacity: alpha)
+    }
+}
+
+struct ColorTokensPreview: View {
+    let tokens: [ColorToken] = [
+        .textPrimary, .textSecondary, .textTertiary,
+        .error, .warning,
+        .backgroundLight, .backgroundDark,
+        .primary, .primaryDark, .surfaceWhite
+    ]
+    var body: some View {
+        List(tokens, id: \.self) { token in
+            HStack(spacing: 16) {
+                Color(hex: token.hex)?
+                    .frame(width: 32, height: 32)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color.gray.opacity(0.2)))
+                Text("\(String(describing: token))")
+                Spacer()
+                Text(token.hex).font(.caption).foregroundStyle(.secondary)
+            }
+            .padding(.vertical, 4)
+        }
+        .navigationTitle("Color Tokens")
+    }
+}
+
+#Preview {
+    NavigationStack {
+        ColorTokensPreview()
+    }
 }

@@ -11,13 +11,12 @@ struct DashboardView: View {
  @State private var currentCarouselIndex: Int = 0
  @State private var showWalletSheet: Bool = false
  @State private var showNotificationDrawer: Bool = false
- @State private var selectedDateForShift: Date?
- @State private var navigateToBrowseJobs: Bool = false
  @State private var calendarSelection: Date = Date()
  @State private var isCalendarVisible: Bool = false
 
  @Environment(ServicesStore.self) var servicesStore
  @Environment(\.notificationsStore) var notificationsStore
+ @Environment(StudentCoordinator.self) var coordinator
 
  var jobDates: Set<DateComponents> {
   Set(servicesStore.services.compactMap { service in
@@ -30,73 +29,66 @@ struct DashboardView: View {
   ZStack {
    Color(Colors.swiftUIColor(.appBackground))
     .ignoresSafeArea()
-   
-   NavigationStack {
-    ScrollView {
-     VStack(spacing: 0) {
-      // Dashboard Header (Toolbar)
-      DashboardHeaderView(showNotificationDrawer: $showNotificationDrawer)
-       .padding(.horizontal, 20)
-       .padding(.vertical, 16)
-      
-      // Shift-Picker Calendar
-      ShiftPickerCalendarView { date in
-       selectedDateForShift = date
-       navigateToBrowseJobs = true
-      }
-      .padding(.bottom, 24)
-      
-      // Full Calendar Picker
-      VStack(alignment: .leading, spacing: 12) {
-				HStack {
-					Text("Pick from calendar")
-						.font(.subheadline)
-						.foregroundStyle(.primary)
-						.fontDesign(.monospaced)
-						.kerning(-1)
-						.padding(.horizontal, 20)
-					
-					Spacer()
-					
-					Toggle("", isOn: $isCalendarVisible.animation(.easeInOut))
-						.labelsHidden()
-						.tint(.accent)
-						.padding(.trailing, 20)
-				}
-       
-				if isCalendarVisible {
-					CustomCalendarWithJobIndicators(
-						selectedDate: $calendarSelection,
-						jobDates: jobDates,
-						onDateSelected: { date in
-							selectedDateForShift = date
-							navigateToBrowseJobs = true
-						}
-					)
-					.padding(.horizontal, 20)
-				}
-      }
-      .padding(.bottom, 24)
-      
-      // Carousel Section
-      JobStatusCarouselView(currentIndex: $currentCarouselIndex)
-       .padding(.bottom, 24)
-      
-      // Earnings Section
-      EarningsView(showWalletSheet: $showWalletSheet)
-       .padding(.horizontal, 20)
-       .padding(.bottom, 32)
-      
-      // Recent Activity Section
-      RecentActivityView()
-       .padding(.horizontal, 20)
-       .padding(.vertical, 32)
+
+   ScrollView {
+    VStack(spacing: 0) {
+     // Dashboard Header (Toolbar)
+     DashboardHeaderView(showNotificationDrawer: $showNotificationDrawer)
+      .padding(.horizontal, 20)
+      .padding(.vertical, 16)
+
+     // Shift-Picker Calendar
+     ShiftPickerCalendarView { date in
+      coordinator.filterDate = date
+      coordinator.selectTab(.search)
      }
-    }
-    .navigationDestination(isPresented: $navigateToBrowseJobs) {
-     if let date = selectedDateForShift {
-      BrowseJobs(selectedDate: date)
+     .padding(.bottom, 24)
+
+     // Full Calendar Picker
+     VStack(alignment: .leading, spacing: 12) {
+      HStack {
+       Text("Pick from calendar")
+        .font(.subheadline)
+        .foregroundStyle(.primary)
+        .fontDesign(.monospaced)
+        .kerning(-1)
+        .padding(.horizontal, 20)
+
+       Spacer()
+
+       Toggle("", isOn: $isCalendarVisible.animation(.easeInOut))
+        .labelsHidden()
+        .tint(.accent)
+        .padding(.trailing, 20)
+      }
+
+      if isCalendarVisible {
+       CustomCalendarWithJobIndicators(
+        selectedDate: $calendarSelection,
+        jobDates: jobDates,
+        onDateSelected: { date in
+         coordinator.filterDate = date
+         coordinator.selectTab(.search)
+        }
+       )
+       .padding(.horizontal, 20)
+      }
      }
+     .padding(.bottom, 24)
+
+     // Carousel Section
+     JobStatusCarouselView(currentIndex: $currentCarouselIndex)
+      .padding(.bottom, 24)
+
+     // Earnings Section
+     EarningsView()
+      .padding(.horizontal, 20)
+      .padding(.bottom, 32)
+
+     // Recent Activity Section
+     RecentActivityView()
+      .padding(.horizontal, 20)
+      .padding(.vertical, 32)
     }
    }
   }
@@ -340,9 +332,15 @@ struct JobStatusCarouselView: View {
 
 // MARK: - Earnings View
 struct EarningsView: View {
- @State private var totalEarnings: Double = 250
- @Binding var showWalletSheet: Bool
- 
+// @Binding var showWalletSheet: Bool
+ @Environment(ServicesStore.self) var servicesStore
+ @Environment(AuthenticationManager.self) var authManager
+ @State private var completedServices: [JobService] = []
+
+ private var totalEarnings: Double {
+  completedServices.reduce(0) { $0 + $1.price }
+ }
+
  var body: some View {
   HStack() {
    VStack(alignment: .leading, spacing: 4){
@@ -351,13 +349,13 @@ struct EarningsView: View {
      .foregroundStyle(Colors.swiftUIColor(.textMain).opacity(0.7))
      .fontDesign(.monospaced)
      .kerning(-1)
-    
-    Text("Earnings per month")
+
+    Text("Total Earnings")
      .font(.caption)
      .foregroundStyle(Colors.swiftUIColor(.textMain).opacity(0.7))
      .fontDesign(.monospaced)
      .kerning(-1)
-    
+
    }
    Spacer()
    HStack(alignment: .center, spacing: 0) {
@@ -366,20 +364,25 @@ struct EarningsView: View {
      .foregroundStyle(.secondary)
      .fontDesign(.monospaced)
      .kerning(-1)
-    
+
     Text(String(format: "%.0f", totalEarnings))
      .font(.system(size: 30, weight: .bold))
      .foregroundStyle(.primary)
      .fontDesign(.monospaced)
      .kerning(-1)
-    
+
    }
   }
   .padding(16)
   .background(Color.accent)
   .cornerRadius(12)
-  .onTapGesture {
-   showWalletSheet = true
+//  .onTapGesture {
+//   showWalletSheet = true
+//  }
+  .task {
+   guard let userId = authManager.currentUser?.id else { return }
+   let all = await servicesStore.fetchCompletedServices(userId: userId)
+   completedServices = all.filter { $0.hiredApplicantId == userId }
   }
  }
 }
@@ -430,4 +433,6 @@ struct RecentActivityView: View {
  DashboardView()
         .environment(UserCache())
         .environment(authManager)
+        .environment(ServicesStore())
+        .environment(NotificationsStore())
 }

@@ -80,10 +80,6 @@ struct CreateJobSummaryModal: View {
 					
 					Divider()
 					
-					SummarySection(title: "Company Info") {
-						SummaryRow(label: "Company", value: viewModel.companyName)
-						SummaryRow(label: "Contact", value: "\(viewModel.contactPersonName) (\(viewModel.contactPersonPhone))")
-					}
 				}
 				.padding()
 			}

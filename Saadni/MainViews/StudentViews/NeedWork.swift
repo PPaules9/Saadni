@@ -13,68 +13,37 @@ struct NeedWork: View {
 
 	var body: some View {
 		if #available(iOS 26, *) {
-			TabView {
-				Tab("Dashboard", systemImage: "house") {
-					NavigationStack{
-						DashboardView()
-							.navigationDestination(for: ServiceProviderDestination.self) { destination in
-								destinationView(for: destination)
-							}
-							.navigationDestination(for: JobSeekerDestination.self) { destination in
-								destinationView(for: destination)
-							}
+			if let coordinator = appCoordinator.studentCoordinator {
+				TabView(selection: Binding(
+					get: { coordinator.selectedTab },
+					set: { coordinator.selectedTab = $0 }
+				)) {
+					Tab("Dashboard", systemImage: "house", value: ServiceProviderTab.home) {
+						tabContent(for: .home, coordinator: coordinator)
+					}
+					Tab("Chat", systemImage: "text.bubble.fill", value: ServiceProviderTab.chat) {
+						tabContent(for: .chat, coordinator: coordinator)
+					}
+					Tab("Jobs", systemImage: "bag.fill", value: ServiceProviderTab.myJobs) {
+						tabContent(for: .myJobs, coordinator: coordinator)
+					}
+					Tab("Profile", systemImage: "person.fill", value: ServiceProviderTab.profile) {
+						tabContent(for: .profile, coordinator: coordinator)
+					}
+					Tab(value: ServiceProviderTab.search, role: .search) {
+						tabContent(for: .search, coordinator: coordinator)
 					}
 				}
-
-				Tab("Chat", systemImage: "text.bubble.fill") {
-					NavigationStack{
-						ChatView()
-							.navigationDestination(for: ServiceProviderDestination.self) { destination in
-								destinationView(for: destination)
-							}
-							.navigationDestination(for: JobSeekerDestination.self) { destination in
-								destinationView(for: destination)
-							}
-					}
+				.sheet(item: Binding(
+					get: { coordinator.topSheet },
+					set: { _ in coordinator.dismissSheet() }
+				)) { sheet in
+					sheetContent(for: sheet)
+						.environment(coordinator)
 				}
-
-				Tab("Jobs", systemImage: "bag.fill") {
-					NavigationStack{
-						AppliedJobsView()
-							.navigationDestination(for: ServiceProviderDestination.self) { destination in
-								destinationView(for: destination)
-							}
-							.navigationDestination(for: JobSeekerDestination.self) { destination in
-								destinationView(for: destination)
-							}
-					}
-				}
-
-
-				Tab("Profile", systemImage: "person.fill") {
-					NavigationStack{
-						ProfileView()
-							.navigationDestination(for: ServiceProviderDestination.self) { destination in
-								destinationView(for: destination)
-							}
-							.navigationDestination(for: JobSeekerDestination.self) { destination in
-								destinationView(for: destination)
-							}
-					}
-				}
-
-				Tab(role: .search){
-					NavigationStack{
-						BrowseJobs()
-							.navigationDestination(for: ServiceProviderDestination.self) { destination in
-								destinationView(for: destination)
-							}
-							.navigationDestination(for: JobSeekerDestination.self) { destination in
-								destinationView(for: destination)
-							}
-					}
-				}
-
+				.tint(.accent)
+				.background(Colors.swiftUIColor(.appBackground))
+				.environment(coordinator)
 			}
 		} else {
 			NeedWorkView()
@@ -204,7 +173,7 @@ struct NeedWork: View {
    } else {
     ProgressView()
    }
-  }
+  } 
  }
 
  @ViewBuilder
@@ -222,7 +191,9 @@ struct NeedWork: View {
    Text("Applications List for \(title)")
   case .imagePicker:
    ImagePickerSheet(selectedImage: .constant(nil))
-  }
+	case .myAddresses:
+		MyAddressesView()
+	}
  }
 }
 

@@ -155,6 +155,34 @@ struct EditProfileSheet: View {
 			}
 
 			VStack(alignment: .leading, spacing: 16) {
+				sectionHeader("Business Information")
+					.padding(.horizontal)
+
+				VStack(alignment: .leading, spacing: 12) {
+					HStack {
+						Text("I represent a company")
+							.font(.subheadline)
+							.foregroundStyle(Colors.swiftUIColor(.textMain))
+						Spacer()
+						Toggle("", isOn: $isCompany)
+							.tint(.accent)
+					}
+					.padding(.horizontal)
+
+					VStack(spacing: 12) {
+						if isCompany {
+							BrandTextField(hasTitle: true, title: "Company/Brand Name", placeholder: "e.g., McDonald's, Zara", text: $companyName)
+						}
+						BrandTextField(hasTitle: true, title: "Industry Category (Optional)", placeholder: "e.g., Fast Food, Retail", text: $industryCategory)
+						BrandTextField(hasTitle: true, title: "Contact Person Name *", placeholder: "Name", text: $contactPersonName)
+						BrandTextField(hasTitle: true, title: "Contact Phone *", placeholder: "Phone Number", text: $contactPersonPhone)
+							.keyboardType(.phonePad)
+					}
+					.padding(.horizontal)
+				}
+			}
+
+			VStack(alignment: .leading, spacing: 16) {
 				sectionHeader("About You")
 					.padding(.horizontal)
 
@@ -276,7 +304,7 @@ struct EditProfileSheet: View {
 		currentUser.city             = city.isEmpty ? nil : city
 		currentUser.bio              = bio.isEmpty ? nil : bio
 		currentUser.isCompany          = isCompany
-		currentUser.companyName        = isCompany ? (companyName.isEmpty ? nil : companyName) : nil
+		currentUser.companyName        = companyName.isEmpty ? nil : companyName
 		currentUser.industryCategory   = industryCategory.isEmpty ? nil : industryCategory
 		currentUser.contactPersonName  = contactPersonName.isEmpty ? nil : contactPersonName
 		currentUser.contactPersonPhone = contactPersonPhone.isEmpty ? nil : contactPersonPhone

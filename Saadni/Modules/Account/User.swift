@@ -278,23 +278,22 @@ extension User {
         return Int((Double(completed) / Double(totalFields)) * 100)
     }
 
-    /// Calculates provider profile completion (3 required fields, varies by company status)
+    /// Calculates provider profile completion (5 required fields)
     private func calculateProviderCompletion() -> Int {
+        var completed = 0
+        let totalFields = 5
+
         if isCompany {
-            var completed = 0
-            let totalFields = 3
             if companyName != nil && !companyName!.isEmpty { completed += 1 }
-            if phoneNumber != nil && !phoneNumber!.isEmpty { completed += 1 }
-            if bio != nil && !bio!.isEmpty { completed += 1 }
-            return Int((Double(completed) / Double(totalFields)) * 100)
         } else {
-            var completed = 0
-            let totalFields = 3
             if displayName != nil && !displayName!.isEmpty { completed += 1 }
-            if phoneNumber != nil && !phoneNumber!.isEmpty { completed += 1 }
-            if bio != nil && !bio!.isEmpty { completed += 1 }
-            return Int((Double(completed) / Double(totalFields)) * 100)
         }
+        if phoneNumber != nil && !phoneNumber!.isEmpty { completed += 1 }
+        if bio != nil && !bio!.isEmpty { completed += 1 }
+        if contactPersonName != nil && !contactPersonName!.isEmpty { completed += 1 }
+        if contactPersonPhone != nil && !contactPersonPhone!.isEmpty { completed += 1 }
+
+        return Int((Double(completed) / Double(totalFields)) * 100)
     }
 
     /// Returns the completion percentage for the specified role

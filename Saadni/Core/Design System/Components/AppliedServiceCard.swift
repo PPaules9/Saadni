@@ -109,7 +109,7 @@ struct AppliedServiceCard: View {
             }
         }
         .padding()
-        .background(Colors.swiftUIColor(.surfaceWhite))
+        .background()
         .cornerRadius(14)
     }
 

@@ -14,6 +14,7 @@ struct BrowseJobs: View {
  @State var selectedDate: Date?
  @State private var viewMode: ViewMode = .grid
  @Environment(ServicesStore.self) var servicesStore
+ @Environment(StudentCoordinator.self) var coordinator
 
  init(selectedDate: Date? = nil) {
   _selectedDate = State(initialValue: selectedDate)
@@ -223,13 +224,11 @@ struct BrowseJobs: View {
      }
     }
    }
-   .navigationDestination(for: ServiceProviderDestination.self) { destination in
-    switch destination {
-    case .serviceDetail(let service):
-     ServiceDetailView(service: service)
-    default:
-     EmptyView()
-    }
+  }
+  .onAppear {
+   if let date = coordinator.filterDate {
+    selectedDate = date
+    coordinator.filterDate = nil
    }
   }
  }
@@ -241,4 +240,5 @@ struct BrowseJobs: View {
   .environment(ServicesStore())
   .environment(AuthenticationManager(userCache: userCache))
   .environment(userCache)
+  .environment(StudentCoordinator())
 }

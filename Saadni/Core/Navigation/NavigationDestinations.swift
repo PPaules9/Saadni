@@ -1,11 +1,8 @@
 import Foundation
 
-// MARK: - Tab Destinations
-
 enum JobSeekerTab: String, CaseIterable {
     case dashboard
     case chat
-//    case addJob
     case myJobs
     case profile
 
@@ -13,7 +10,6 @@ enum JobSeekerTab: String, CaseIterable {
         switch self {
         case .dashboard: return "Dashboard"
         case .chat: return "Chat"
-//        case .addJob: return "Add Job"
         case .myJobs: return "My Jobs"
         case .profile: return "Profile"
         }
@@ -23,7 +19,6 @@ enum JobSeekerTab: String, CaseIterable {
         switch self {
         case .dashboard: return "house"
         case .chat: return "text.bubble.fill"
-//        case .addJob: return "plus"
         case .myJobs: return "bag.fill"
         case .profile: return "person.fill"
         }
@@ -82,6 +77,7 @@ enum SheetDestination: Hashable, Identifiable {
     case applicationDetail(JobApplication)
     case applicationsList(serviceId: String, serviceTitle: String)
     case imagePicker
+    case myAddresses
 
     var id: String {
         switch self {
@@ -91,6 +87,7 @@ enum SheetDestination: Hashable, Identifiable {
         case .applicationDetail(let app): return "appDetail_\(app.id)"
         case .applicationsList(let serviceId, _): return "appList_\(serviceId)"
         case .imagePicker: return "imagePicker"
+        case .myAddresses: return "myAddresses"
         }
     }
 }

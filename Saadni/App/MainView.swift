@@ -9,27 +9,22 @@ import SwiftUI
 
 struct MainView: View {
  @Environment(AppContainer.self) var container
- @State private var reviewsStore = ReviewsStore()
- @State private var walletStore = WalletStore()
  @State private var appCoordinator: AppCoordinator?
 
  var body: some View {
   Group {
    switch container.authManager.authState {
-   case .authenticating:
+   case .authenticating:                    //1
 		 LaunchScreen()
-     .onAppear {
-      print("🔄 [MainView] authState = .authenticating")
-     }
 
-   case .unauthenticated:
+   case .unauthenticated:                   //2
     if container.appStateManager.hasSeenOnboarding {
      AuthenticationView()
     } else {
      OnboardingView()
     }
 
-   case .authenticated:
+   case .authenticated:                    //3
     if let user = container.authManager.currentUser {
      // Source of truth: User object (not flags)
      // Check if user has selected a role
@@ -56,6 +51,12 @@ struct MainView: View {
   .environment(container.userCache)
   .environment(container.authManager)
   .environment(container.errorHandler)
+  .environment(container.conversationsStore)
+  .environment(container.applicationsStore)
+  .environment(container.servicesStore)
+  .environment(container.messagesStore)
+  .environment(container.reviewsStore)
+  .environment(container.walletStore)
   .alert("Error", isPresented: Binding(
    get: { container.errorHandler.isPresented },
    set: { newValue in
@@ -96,7 +97,7 @@ struct MainView: View {
     coordinator.setupCoordinator(for: user)
    }
   }
-  .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("openChat"))) { notification in
+  .onReceive(NotificationCenter.default.publisher(for: .openChat)) { notification in
    // Handle notification tap - navigate to chat
    if let conversationId = notification.object as? String {
     appCoordinator?.handleChatDeepLink(conversationId: conversationId, conversationsStore: container.conversationsStore)
@@ -124,93 +125,8 @@ struct MainView: View {
  private func authenticatedContent(for user: User) -> some View {
   if user.isJobSeeker {
    JobProvider()
-    .environment(reviewsStore)
-    .environment(walletStore)
-    .environment(container.authManager)
-    .environment(container.applicationsStore)
-    .environment(container.servicesStore)
-    .environment(container.messagesStore)
-    .environment(container.conversationsStore)
-    .task {
-     await setupDataListeners(userId: user.id)
-    }
   } else if user.isServiceProvider {
    NeedWork()
-    .environment(reviewsStore)
-    .environment(walletStore)
-    .environment(container.authManager)
-    .environment(container.applicationsStore)
-    .environment(container.servicesStore)
-    .environment(container.messagesStore)
-    .environment(container.conversationsStore)
-    .task {
-     await setupDataListeners(userId: user.id)
-    }
-  }
- }
-
- /// Sets up all real-time data listeners concurrently using TaskGroup
- /// - Parameter userId: The user ID to set up listeners for
- /// - Note: Uses modern Swift Concurrency with TaskGroup for efficient concurrent setup
- ///         All listeners start at approximately the same time, reducing perceived load time
- private func setupDataListeners(userId: String) async {
-  let startTime = Date()
-  print("🚀 [MainView] Starting concurrent listener setup for user: \(userId)")
-
-  await withTaskGroup(of: (String, Error?).self) { group in
-   // Task 1: Reviews listener
-   group.addTask {
-    do {
-     try await self.reviewsStore.setupListeners(userId: userId)
-     return ("ReviewsStore", nil)
-    } catch {
-     return ("ReviewsStore", error)
-    }
-   }
-
-   // Task 2: Wallet listener
-   group.addTask {
-    do {
-     try await self.walletStore.setupListeners(userId: userId)
-     return ("WalletStore", nil)
-    } catch {
-     return ("WalletStore", error)
-    }
-   }
-
-   // Task 3: Applications listeners
-   group.addTask {
-    do {
-     try await self.container.applicationsStore.setupListeners(userId: userId)
-     return ("ApplicationsStore", nil)
-    } catch {
-     return ("ApplicationsStore", error)
-    }
-   }
-
-   // Task 4: Services initial page fetch
-   group.addTask {
-    await self.container.servicesStore.fetchServicesPage(reset: true)
-    return ("ServicesStore", nil)
-   }
-
-   // Collect all results
-   var allSucceeded = true
-   for await (storeName, error) in group {
-    if let error = error {
-     print("❌ \(storeName) listener setup failed: \(error)")
-     allSucceeded = false
-    } else {
-     print("✅ \(storeName) listener setup succeeded")
-    }
-   }
-
-   let duration = Date().timeIntervalSince(startTime)
-   if allSucceeded {
-    print("✨ All listeners ready in \(String(format: "%.2f", duration))s")
-   } else {
-    print("⚠️ Some listeners failed to setup (check errors above)")
-   }
   }
  }
 }

@@ -10,6 +10,7 @@ import SwiftUI
 enum MyJobsTab: String, CaseIterable {
     case myJobs = "My Jobs"
     case applicants = "Applicants"
+    case calendar = "Calendar"
 }
 
 struct myJobs: View {
@@ -25,6 +26,7 @@ struct myJobs: View {
     @State private var isLoading: Bool = true
     @State private var filterOption: ServiceFilterOption = .active
     @State private var selectedApplicantID: ApplicantID?
+    @State private var selectedCalendarDate: Date = Date()
 
     var filteredServices: [JobService] {
         switch filterOption {
@@ -36,6 +38,20 @@ struct myJobs: View {
             }
         case .completed:
             return userServices.filter { $0.status == .completed }
+        }
+    }
+
+    var providerJobDates: Set<DateComponents> {
+        Set(userServices.compactMap { service in
+            guard let serviceDate = service.serviceDate else { return nil }
+            return Calendar.current.dateComponents([.year, .month, .day], from: serviceDate)
+        })
+    }
+
+    var servicesForSelectedDate: [JobService] {
+        userServices.filter { service in
+            guard let serviceDate = service.serviceDate else { return false }
+            return Calendar.current.isDate(serviceDate, inSameDayAs: selectedCalendarDate)
         }
     }
 
@@ -51,10 +67,13 @@ struct myJobs: View {
             .padding()
 
             // Tab Content
-            if selectedTab == .myJobs {
+            switch selectedTab {
+            case .myJobs:
                 myJobsContent
-            } else {
+            case .applicants:
                 applicantsContent
+            case .calendar:
+                calendarContent
             }
         }
         .background(Colors.swiftUIColor(.appBackground))
@@ -143,6 +162,43 @@ struct myJobs: View {
                     }
                 }
                 .padding()
+            }
+        }
+        .background(Colors.swiftUIColor(.appBackground))
+    }
+
+    // MARK: - Calendar Tab
+
+    var calendarContent: some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                CustomCalendarWithJobIndicators(
+                    selectedDate: $selectedCalendarDate,
+                    jobDates: providerJobDates,
+                    onDateSelected: { _ in }
+                )
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 24)
+
+                Divider()
+                    .padding(.horizontal, 16)
+
+                if servicesForSelectedDate.isEmpty {
+                    ContentUnavailableView(
+                        "No Jobs on This Day",
+                        systemImage: "calendar.badge.exclamationmark",
+                        description: Text("You have no posted jobs on \(selectedCalendarDate.formatted(.dateTime.day().month(.wide)))")
+                    )
+                    .padding(.top, 40)
+                } else {
+                    LazyVStack(spacing: 12) {
+                        ForEach(servicesForSelectedDate) { service in
+                            ServiceListCard(service: service)
+                        }
+                    }
+                    .padding(16)
+                }
             }
         }
         .background(Colors.swiftUIColor(.appBackground))

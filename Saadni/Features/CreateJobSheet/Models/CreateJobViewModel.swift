@@ -63,12 +63,6 @@ class CreateJobViewModel {
 	var whatToBring: String = ""
 	var selectedImage: UIImage?
 	
-	// MARK: - Tab 6: Company Info
-	var companyName: String = ""
-	var industryCategory: String = ""
-	var contactPersonName: String = ""
-	var contactPersonPhone: String = ""
-	
 	// MARK: - Metadata
 	var currentUserId: String?
 	var selectedCategoryTags: Set<String> = []
@@ -137,21 +131,6 @@ class CreateJobViewModel {
 	var isTab5Valid: Bool { true } // All optional
 	
 	@ObservationIgnored
-	var isTab6Valid: Bool {
-		!companyName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-		!contactPersonName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-		!contactPersonPhone.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-	}
-	
-	@ObservationIgnored
-	var tab6ValidationError: String? {
-		if companyName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Company name is required" }
-		if contactPersonName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Contact name is required" }
-		if contactPersonPhone.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Phone number is required" }
-		return nil
-	}
-	
-	@ObservationIgnored
 	var isCurrentTabValid: Bool {
 		switch currentTab {
 		case 0: return isTab1Valid
@@ -159,32 +138,28 @@ class CreateJobViewModel {
 		case 2: return isTab3Valid
 		case 3: return isTab4Valid
 		case 4: return isTab5Valid
-		case 5: return isTab6Valid
 		default: return false
 		}
 	}
-	
+
 	@ObservationIgnored
 	var currentTabValidationError: String? {
 		switch currentTab {
 		case 0: return tab1ValidationError
 		case 1: return tab2ValidationError
 		case 2: return tab3ValidationError
-		case 3: return nil
-		case 4: return nil
-		case 5: return tab6ValidationError
 		default: return nil
 		}
 	}
-	
+
 	@ObservationIgnored
 	var isFormValid: Bool {
-		return isTab1Valid && isTab2Valid && isTab3Valid && isTab4Valid && isTab5Valid && isTab6Valid
+		return isTab1Valid && isTab2Valid && isTab3Valid && isTab4Valid && isTab5Valid
 	}
 	
 	func nextTab() {
 		showValidationError = false
-		if currentTab < 5 {
+		if currentTab < 4 {
 			currentTab += 1
 		}
 	}
@@ -205,7 +180,7 @@ class CreateJobViewModel {
 	// MARK: - Service Creation
 	
 	/// Generates multiple shifts if multiple dates are selected
-	func createServices(category: ServiceCategoryType) -> [JobService] {
+	func createServices(category: ServiceCategoryType, user: User) -> [JobService] {
 		guard let priceValue = Double(price) else { return [] }
 		guard let providerId = currentUserId else { return [] }
 		
@@ -263,10 +238,10 @@ class CreateJobViewModel {
 				physicalRequirements: physicalRequirements.isEmpty ? nil : physicalRequirements,
 				languageNeeded: languageNeeded.isEmpty ? nil : languageNeeded,
 				whatToBring: whatToBring.isEmpty ? nil : whatToBring,
-				companyName: companyName,
-				industryCategory: industryCategory.isEmpty ? nil : industryCategory,
-				contactPersonName: contactPersonName,
-				contactPersonPhone: contactPersonPhone,
+				companyName: user.companyName ?? user.displayName ?? "",
+				industryCategory: user.industryCategory,
+				contactPersonName: user.contactPersonName ?? user.displayName ?? "",
+				contactPersonPhone: user.contactPersonPhone ?? user.phoneNumber ?? "",
 				someoneAround: false,
 				specialTools: nil,
 				serviceDate: finalServiceDate,
@@ -277,23 +252,6 @@ class CreateJobViewModel {
 		}
 		
 		return generatedServices
-	}
-	
-	// MARK: - Company Info Auto-fill
-	func applyCompanyInfo(_ user: User?) {
-		guard let user = user, user.isServiceProvider else { return }
-		if companyName.isEmpty {
-			companyName = (user.isCompany ? user.companyName : user.displayName) ?? ""
-		}
-		if industryCategory.isEmpty {
-			industryCategory = user.industryCategory ?? ""
-		}
-		if contactPersonName.isEmpty {
-			contactPersonName = user.contactPersonName ?? user.displayName ?? ""
-		}
-		if contactPersonPhone.isEmpty {
-			contactPersonPhone = user.contactPersonPhone ?? user.phoneNumber ?? ""
-		}
 	}
 	
 	// MARK: - Address Auto-fill

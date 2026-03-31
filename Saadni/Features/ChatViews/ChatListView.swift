@@ -8,37 +8,6 @@
 import SwiftUI
 
 
-// MARK: - Search Bar
-
-struct SearchBar: View {
- @Binding var text: String
- var placeholder: String = "Search"
- 
- var body: some View {
-  HStack(spacing: 12) {
-   Image(systemName: "magnifyingglass")
-    .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-   
-   TextField(placeholder, text: $text)
-    .textFieldStyle(.plain)
-    .font(.body)
-    .foregroundStyle(Colors.swiftUIColor(.textMain))
-   
-   if !text.isEmpty {
-    Button(action: { text = "" }) {
-     Image(systemName: "xmark.circle.fill")
-      .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-    }
-   }
-  }
-  .padding(12)
-  .background(Colors.swiftUIColor(.surfaceWhite))
-  .cornerRadius(12)
- }
-}
-
-// MARK: - Conversation Row
-
 struct ConversationRow: View {
  let conversation: Conversation
  let currentUserId: String
@@ -71,10 +40,18 @@ struct ConversationRow: View {
     Spacer()
     
     VStack(alignment: .trailing, spacing: 4) {
-     Text(conversation.formattedLastMessageTime)
-      .font(.caption)
-      .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-     
+     HStack(spacing: 4) {
+      if conversation.isPinned {
+       Image(systemName: "pin.fill")
+        .font(.caption2)
+        .foregroundStyle(Colors.swiftUIColor(.primary))
+        .rotationEffect(.degrees(45))
+      }
+      Text(conversation.formattedLastMessageTime)
+       .font(.caption)
+       .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+     }
+
      // Unread indicator (optional)
      if conversation.id.count > 5 {
       Circle()

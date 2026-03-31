@@ -13,6 +13,9 @@
     "%" : {
 
     },
+    "%@" : {
+
+    },
     "%@ • Floor %@, Unit %@" : {
       "localizations" : {
         "ar" : {
@@ -83,9 +86,6 @@
       }
     },
     "99+" : {
-
-    },
-    "a Secretary" : {
 
     },
     "About" : {
@@ -471,19 +471,17 @@
         }
       }
     },
+    "Color Tokens" : {
+
+    },
     "Common Area Cleaning" : {
 
     },
     "Community" : {
 
     },
-    "Company" : {
-
-    },
-    "Company Info" : {
-
-    },
     "Company/Brand Name" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -559,10 +557,8 @@
         }
       }
     },
-    "Contact" : {
-
-    },
     "Contact Person Name" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -573,6 +569,7 @@
       }
     },
     "Contact Phone" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -642,9 +639,6 @@
         }
       }
     },
-    "Current location" : {
-
-    },
     "Current Role" : {
       "localizations" : {
         "ar" : {
@@ -700,6 +694,9 @@
           }
         }
       }
+    },
+    "Delete Conversation" : {
+
     },
     "Delete Notification" : {
 
@@ -777,6 +774,7 @@
       }
     },
     "Earnings per month" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1052,6 +1050,7 @@
 
     },
     "Industry Category (Optional)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1091,9 +1090,6 @@
       }
     },
     "Jobs" : {
-
-    },
-    "Kitchen Drinkies Specialist" : {
 
     },
     "Kitchen Installation" : {
@@ -1415,6 +1411,9 @@
         }
       }
     },
+    "No Jobs on This Day" : {
+
+    },
     "No messages yet" : {
       "localizations" : {
         "ar" : {
@@ -1487,6 +1486,9 @@
     "Office Cleaning Shift" : {
 
     },
+    "Office Secretary" : {
+
+    },
     "OK" : {
       "localizations" : {
         "ar" : {
@@ -1555,9 +1557,6 @@
     "Pet Setting" : {
 
     },
-    "Petrol & Automotive" : {
-
-    },
     "Petrol Station Attendant" : {
 
     },
@@ -1580,6 +1579,9 @@
           }
         }
       }
+    },
+    "Pin" : {
+
     },
     "Pinpoint on Map" : {
       "localizations" : {
@@ -1746,6 +1748,7 @@
       }
     },
     "Review Shift(s)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2153,6 +2156,7 @@
       }
     },
     "This information will be associated with your shift postings to help students verify employers." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2161,6 +2165,9 @@
           }
         }
       }
+    },
+    "This will permanently delete the conversation and all its messages. This action cannot be undone." : {
+
     },
     "Timing" : {
 
@@ -2195,6 +2202,9 @@
         }
       }
     },
+    "Total Earnings" : {
+
+    },
     "Try adjusting your filters" : {
       "localizations" : {
         "ar" : {
@@ -2220,6 +2230,9 @@
           }
         }
       }
+    },
+    "Unpin" : {
+
     },
     "Uploading image... %lld%%" : {
       "localizations" : {
@@ -2380,6 +2393,9 @@
         }
       }
     },
+    "You have no posted jobs on %@" : {
+
+    },
     "You're all caught up!" : {
 
     },
@@ -2394,6 +2410,7 @@
       }
     },
     "Your Company Information" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

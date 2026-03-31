@@ -15,6 +15,9 @@ final class StudentCoordinator: Equatable {
     var profilePath = NavigationPath()
     var searchPath = NavigationPath()
 
+    // Filter state passed from Dashboard to Browse tab
+    var filterDate: Date? = nil
+
     // Sheet state (stack for modal layering)
     var sheetStack: [SheetDestination] = []
 

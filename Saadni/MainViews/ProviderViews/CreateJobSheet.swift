@@ -22,7 +22,7 @@ struct CreateJobSheet: View {
  let selectedCategory: String
  let initialJobName: String?
  
- var tabNames = ["Basic", "Location", "Pay", "Reqs", "Info", "Company"]
+ var tabNames = ["Basic", "Location", "Pay", "Reqs", "Info"]
  
  var body: some View {
   ZStack {
@@ -33,16 +33,16 @@ struct CreateJobSheet: View {
     // Progress Indicator
     VStack(spacing: 12) {
      HStack(spacing: 4) {
-      ForEach(0..<6, id: \.self) { index in
+      ForEach(0..<5, id: \.self) { index in
        RoundedRectangle(cornerRadius: 2)
         .fill(index <= viewModel.currentTab ? Color.accent : Color.gray.opacity(0.3))
         .frame(height: 1)
       }
      }
      .padding(.horizontal)
-     
+
      HStack(spacing: 0) {
-      ForEach(0..<6, id: \.self) { index in
+      ForEach(0..<5, id: \.self) { index in
        Text(tabNames[index])
         .font(.caption2)
         .fontWeight(.semibold)
@@ -69,10 +69,6 @@ struct CreateJobSheet: View {
       CreateJobTab4(viewModel: viewModel)
      case 4:
       CreateJobTab5(viewModel: viewModel)
-     case 5:
-      CreateJobTab6(viewModel: viewModel, onPublish: {
-       viewModel.showSummary = true
-      })
      default:
       EmptyView()
      }
@@ -103,7 +99,7 @@ struct CreateJobSheet: View {
       }
      }
 
-     if viewModel.currentTab < 5 {
+     if viewModel.currentTab < 4 {
       BrandButton(
        "Next",
        hasIcon: true,
@@ -125,6 +121,15 @@ struct CreateJobSheet: View {
        } else {
         viewModel.showValidationError = true
        }
+      }
+     } else {
+      BrandButton(
+       "Review Shift(s)",
+       hasIcon: true,
+       icon: "checkmark",
+       secondary: false
+      ) {
+       viewModel.showSummary = true
       }
      }
     }
@@ -182,7 +187,6 @@ struct CreateJobSheet: View {
     viewModel.jobName = initialName
    }
    viewModel.currentUserId = authManager.currentUserId
-   viewModel.applyCompanyInfo(authManager.currentUser)
 
    if let currentUser = authManager.currentUser,
       let defaultId = currentUser.defaultAddressId,
@@ -197,8 +201,10 @@ struct CreateJobSheet: View {
   guard let user = authManager.currentUser else { return }
 
   // Check PROVIDER profile completion (posting jobs requires provider role)
-  if user.providerCompletionPercentage < 100 {
-   profileCompletionPercentage = user.providerCompletionPercentage
+  var freshUser = user
+  freshUser.recalculateProfileCompletion()
+  if freshUser.providerCompletionPercentage < 100 {
+   profileCompletionPercentage = freshUser.providerCompletionPercentage
    viewModel.showSummary = false
    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
     showProfileCompletionPopup = true
@@ -235,7 +241,8 @@ struct CreateJobSheet: View {
 
   let category = ServiceCategoryType.allCases.first { $0.rawValue == selectedCategory } ?? .foodAndBeverage
   
-  let services = viewModel.createServices(category: category)
+  guard let user = authManager.currentUser else { return }
+  let services = viewModel.createServices(category: category, user: user)
   guard !services.isEmpty else {
       viewModel.publishError = "Could not generate any shifts. Please check the dates."
       viewModel.isPublishing = false
@@ -251,7 +258,6 @@ struct CreateJobSheet: View {
 
    viewModel.uploadState = .completed
    viewModel.showSummary = false // Dismiss summary sheet
-   saveCompanyInfoIfNeeded()
    withAnimation {
     viewModel.showSuccessModal = true
    }
@@ -275,27 +281,6 @@ struct CreateJobSheet: View {
   }
  }
  
- private func saveCompanyInfoIfNeeded() {
-  guard var currentUser = authManager.currentUser else { return }
-
-  let nameChanged     = currentUser.companyName        != viewModel.companyName
-  let industryChanged = currentUser.industryCategory   != viewModel.industryCategory
-  let contactChanged  = currentUser.contactPersonName  != viewModel.contactPersonName
-  let phoneChanged    = currentUser.contactPersonPhone != viewModel.contactPersonPhone
-
-  guard nameChanged || industryChanged || contactChanged || phoneChanged else { return }
-
-  if !viewModel.companyName.isEmpty        { currentUser.companyName        = viewModel.companyName }
-  if !viewModel.industryCategory.isEmpty   { currentUser.industryCategory   = viewModel.industryCategory }
-  if !viewModel.contactPersonName.isEmpty  { currentUser.contactPersonName  = viewModel.contactPersonName }
-  if !viewModel.contactPersonPhone.isEmpty { currentUser.contactPersonPhone = viewModel.contactPersonPhone }
-
-  Task {
-   try? await FirestoreService.shared.saveUser(currentUser)
-   await userCache.updateUser(currentUser)
-  }
- }
-
  private func saveAddressIfNeeded() -> Bool {
   guard var currentUser = authManager.currentUser else { return false }
   

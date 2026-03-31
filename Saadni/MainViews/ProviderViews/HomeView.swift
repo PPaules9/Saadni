@@ -13,6 +13,18 @@ struct HomeView: View {
 	@State private var showNotificationDrawer = false
 	@Environment(ProviderCoordinator.self) var coordinator
 	@Environment(\.notificationsStore) var notificationsStore
+	@Environment(AuthenticationManager.self) var authManager
+	
+	private var locationLabel: String {
+		guard
+			let user = authManager.currentUser,
+			let defaultId = user.defaultAddressId,
+			let address = user.savedAddresses?.first(where: { $0.id == defaultId })
+		else { return "Current location" }
+		let words = address.address.split(separator: " ").map(String.init)
+		if words.count <= 2 { return address.address }
+		return words.prefix(2).joined(separator: " ") + "..."
+	}
 	
 	var body: some View {
 		ZStack {
@@ -26,15 +38,20 @@ struct HomeView: View {
 					
 					VStack(alignment: .center, spacing: 0) {
 						HStack{
-							HStack(spacing: 8){
-								Text("Current location")
-									.font(.headline)
-									.foregroundStyle(.white)
-									.fontDesign(.monospaced)
-									.tracking(-1)
-									.padding(.top, 12)
-								Image(systemName: "chevron.down")
-									.padding(.top, 12)
+							Button {
+								coordinator.presentSheet(.myAddresses)
+							} label: {
+								HStack(spacing: 8){
+									Text(locationLabel)
+										.font(.headline)
+										.foregroundStyle(.white)
+										.fontDesign(.monospaced)
+										.tracking(-1)
+										.padding(.top, 12)
+									Image(systemName: "chevron.down")
+										.padding(.top, 12)
+										.foregroundStyle(.white)
+								}
 							}
 							Spacer()
 							
@@ -177,15 +194,15 @@ struct HomeView: View {
 						
 						Divider()
 							.padding(.leading, 68)
+						//
+						//						HireRoleRow(icon: "cup.and.saucer", title: "Kitchen Drinkies Specialist") {
+						//							coordinator.presentSheet(.createJob(category: ServiceCategoryType.foodAndBeverage.rawValue, initialJobName: "Kitchen Boy"))
+						//						}
+						//
+						//						Divider()
+						//							.padding(.leading, 68)
 						
-						HireRoleRow(icon: "cup.and.saucer", title: "Kitchen Drinkies Specialist") {
-							coordinator.presentSheet(.createJob(category: ServiceCategoryType.foodAndBeverage.rawValue, initialJobName: "Kitchen Boy"))
-						}
-						
-						Divider()
-							.padding(.leading, 68)
-						
-						HireRoleRow(icon: "doc.text", title: "a Secretary") {
+						HireRoleRow(icon: "doc.text", title: "Office Secretary") {
 							coordinator.presentSheet(.createJob(category: ServiceCategoryType.retailAndMalls.rawValue, initialJobName: "Secretary"))
 						}
 					}
@@ -202,7 +219,7 @@ struct HomeView: View {
 					ForEach(HomeView.categories) { category in
 						VStack(alignment: .leading, spacing: 12) {
 							Text(category.title)
-								.font(.system(size: 22, weight: .semibold, design: .monospaced))
+								.font(.system(size: 20, weight: .regular, design: .monospaced))
 								.foregroundStyle(Colors.swiftUIColor(.textMain))
 								.padding(.horizontal)
 								.kerning(-0.5)
@@ -338,11 +355,9 @@ extension HomeView {
 			JobService(name: "doorInstallation", displayName: "Car Wash Attendant"),
 			JobService(name: "homeCleaning", displayName: "Common Area Cleaning")
 		]),
-		JobCategory(title: "Petrol & Automotive", categoryEnum: ServiceCategoryType.petrolAndAutomotive.rawValue, services: [
-			JobService(name: "petrolStation", displayName: "Petrol Station Attendant"),
-			JobService(name: "outdoorCleaning", displayName: "Car Wash Assistant"),
-		]),
 		JobCategory(title: "Community", categoryEnum: ServiceCategoryType.hospitalityAndEvents.rawValue, services: [
+			JobService(name: "outdoorCleaning", displayName: "Car Wash Assistant"),
+			JobService(name: "petrolStation", displayName: "Petrol Station Attendant"),
 			JobService(name: "homeCleaning", displayName: "Hotel Housekeeping"),
 			JobService(name: "GymAssistant", displayName: "Gym Floor Assistant"),
 			JobService(name: "furnitureAssembly", displayName: "Event Setup Crew"),
@@ -387,4 +402,5 @@ struct CircularService : View {
 #Preview {
 	HomeView()
 		.environment(ProviderCoordinator())
+		.environment(AuthenticationManager(userCache: UserCache()))
 }

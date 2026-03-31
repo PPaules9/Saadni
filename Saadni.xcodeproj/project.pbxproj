@@ -318,6 +318,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		222517552F7C18D600F99714 /* General */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = General;
+			sourceTree = "<group>";
+		};
+		222517562F7C18FA00F99714 /* StudentsViewsRelated */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = StudentsViewsRelated;
+			sourceTree = "<group>";
+		};
+		222517572F7C190900F99714 /* ProviderViewsRelated */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ProviderViewsRelated;
+			sourceTree = "<group>";
+		};
 		2236A13D2F50949000A7A19F /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
@@ -340,6 +361,9 @@
 		2236A1442F50949000A7A19F /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				222517552F7C18D600F99714 /* General */,
+				222517562F7C18FA00F99714 /* StudentsViewsRelated */,
+				222517572F7C190900F99714 /* ProviderViewsRelated */,
 				222517532F7B092000F99714 /* ServiceListCard.swift */,
 				22C198B32F78097E00555D41 /* ApplicantCard.swift */,
 				22A1B3C02F9000AA00BB1234 /* HireRoleRow.swift */,
@@ -359,6 +383,7 @@
 				2236A1B92F53220400A7A19F /* ApplicationBadge.swift */,
 				2236A1432F50949000A7A19F /* ServiceCard.swift */,
 				224421B02F60784600241E1C /* RoleOptionCard.swift */,
+				22C198BC2F784C0E00555D41 /* CustomCalendarWithJobIndicators.swift */,
 				22FD36E42F573A7600AF3127 /* SectionHeader.swift */,
 			);
 			path = Components;
@@ -410,6 +435,7 @@
 				2244221C2F63523F00241E1C /* Navigation */,
 				2236A1472F50949000A7A19F /* Design System */,
 				2236A14A2F50949000A7A19F /* Resources */,
+				226B50192F65D0B600C09676 /* Protocols */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -431,10 +457,11 @@
 				2236A1D22F53281E00A7A19F /* Authentication */,
 				22FD36D52F5715E000AF3127 /* Role Selection  */,
 				22FD36E62F573A7600AF3127 /* CreateJobSheet */,
+				224422152F63500B00241E1C /* ChatViews */,
 				2236A1632F50949000A7A19F /* ServiceDetail */,
-				224421C52F6304B200241E1C /* WalletView */,
 				224421F52F633AEA00241E1C /* Reviews */,
 				224421FE2F633B0100241E1C /* ServiceManagement */,
+				224421C52F6304B200241E1C /* WalletView */,
 				224422372F643AB700241E1C /* Profile */,
 			);
 			path = Features;
@@ -443,9 +470,9 @@
 		2236A16A2F50949000A7A19F /* MainViews */ = {
 			isa = PBXGroup;
 			children = (
-				224422152F63500B00241E1C /* ChatViews */,
 				22FD36D62F57161100AF3127 /* StudentViews */,
 				22FD36DE2F5716A800AF3127 /* ProviderViews */,
+				2236A1662F50949000A7A19F /* ChatView.swift */,
 				2236A1692F50949000A7A19F /* ProfileView.swift */,
 			);
 			path = MainViews;
@@ -561,7 +588,6 @@
 		224422152F63500B00241E1C /* ChatViews */ = {
 			isa = PBXGroup;
 			children = (
-				2236A1662F50949000A7A19F /* ChatView.swift */,
 				224422132F63500B00241E1C /* ChatDetailView.swift */,
 				224422142F63500B00241E1C /* ChatListView.swift */,
 			);
@@ -726,14 +752,13 @@
 			isa = PBXGroup;
 			children = (
 				2236A1AF2F5321E300A7A19F /* Account */,
-				2244224B2F643FE000241E1C /* Wallet */,
 				224422052F634EBE00241E1C /* Messaging */,
 				224421D52F63368D00241E1C /* Reviews */,
 				2236A1A82F5321E300A7A19F /* Authentication */,
 				2236A1AC2F5321E300A7A19F /* Firebase */,
 				2236A1B12F5321E300A7A19F /* Applications */,
 				22FD35F72F56E8B600AF3127 /* Services */,
-				226B50192F65D0B600C09676 /* Protocols */,
+				2244224B2F643FE000241E1C /* Wallet */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -764,7 +789,6 @@
 		22FD36D62F57161100AF3127 /* StudentViews */ = {
 			isa = PBXGroup;
 			children = (
-				22C198BC2F784C0E00555D41 /* CustomCalendarWithJobIndicators.swift */,
 				22FD36D12F5714F900AF3127 /* NeedWork.swift */,
 				2236A1672F50949000A7A19F /* DashboardView.swift */,
 				2236A1652F50949000A7A19F /* BrowseJobs.swift */,
@@ -786,10 +810,10 @@
 		22FD36DE2F5716A800AF3127 /* ProviderViews */ = {
 			isa = PBXGroup;
 			children = (
-				22FD36EE2F57418600AF3127 /* CreateJobSheet.swift */,
 				22FD36CF2F5714F900AF3127 /* JobProvider.swift */,
 				22FD36E12F571CE800AF3127 /* HomeView.swift */,
 				224421FB2F63435300241E1C /* myJobs.swift */,
+				22FD36EE2F57418600AF3127 /* CreateJobSheet.swift */,
 			);
 			path = ProviderViews;
 			sourceTree = "<group>";

@@ -61,6 +61,9 @@ struct JobProvider: View {
     .navigationDestination(for: JobSeekerDestination.self) { destination in
      destinationView(for: destination)
     }
+    .navigationDestination(for: ServiceProviderDestination.self) { destination in
+     destinationView(for: destination)
+    }
   }
  }
 
@@ -78,6 +81,24 @@ struct JobProvider: View {
    myJobs()
   case .profile:
    ProfileView()
+  }
+ }
+
+ @ViewBuilder
+ private func destinationView(for destination: ServiceProviderDestination) -> some View {
+  switch destination {
+  case .serviceDetail(let service):
+   ServiceDetailView(service: service)
+  case .applicationsList(let serviceId, let title):
+   Text("Applications List for \(title)")
+  case .categoryDetail(let category):
+   Text("Category: \(category.rawValue)")
+  case .chatDetail(let conversationId):
+   if let conversation = conversationsStore.getConversationById(conversationId) {
+    ChatDetailView(conversation: conversation)
+     .environment(conversationsStore)
+     .environment(MessagesStore())
+   }
   }
  }
 
@@ -112,6 +133,10 @@ struct JobProvider: View {
    Text("Applications List Sheet")
   case .imagePicker:
    ImagePickerSheet(selectedImage: .constant(nil))
+  case .myAddresses:
+   NavigationStack {
+    MyAddressesView()
+   }
   }
  }
 }

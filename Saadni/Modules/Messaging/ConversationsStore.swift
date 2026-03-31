@@ -142,13 +142,75 @@ class ConversationsStore {
         }
     }
 
-    /// Delete a conversation (archives it)
+    /// Delete a conversation entirely — removes all messages, typing indicators, and the conversation document from Firestore, plus clears local cache.
     func deleteConversation(_ conversationId: String) async throws {
         do {
+            // 1. Delete all messages for this conversation (batch in chunks of 500)
+            var lastSnapshot: QuerySnapshot? = nil
+            repeat {
+                var query = db.collection("messages")
+                    .whereField("conversationId", isEqualTo: conversationId)
+                    .limit(to: 500)
+                if let last = lastSnapshot?.documents.last {
+                    query = query.start(afterDocument: last)
+                }
+                let snapshot = try await query.getDocuments()
+                lastSnapshot = snapshot
+                if !snapshot.documents.isEmpty {
+                    let batch = db.batch()
+                    snapshot.documents.forEach { batch.deleteDocument($0.reference) }
+                    try await batch.commit()
+                    print("🗑️ Deleted \(snapshot.documents.count) messages for conversation \(conversationId)")
+                }
+            } while lastSnapshot?.documents.count == 500
+
+            // 2. Delete typing indicators subcollection
+            let typingDocs = try await db.collection("conversations")
+                .document(conversationId)
+                .collection("typingIndicators")
+                .getDocuments()
+            if !typingDocs.documents.isEmpty {
+                let batch = db.batch()
+                typingDocs.documents.forEach { batch.deleteDocument($0.reference) }
+                try await batch.commit()
+            }
+
+            // 3. Delete the conversation document itself
             try await db.collection("conversations").document(conversationId).delete()
-            print("✅ Conversation deleted")
+
+            // 4. Remove from local cache immediately
+            conversations.removeAll { $0.id == conversationId }
+            conversationsByUserId = conversationsByUserId.filter { $0.value.id != conversationId }
+
+            print("✅ Conversation \(conversationId) fully deleted")
         } catch {
             self.error = "❌ Failed to delete conversation: \(error.localizedDescription)"
+            print(self.error ?? "")
+            throw error
+        }
+    }
+
+    /// Pin or unpin a conversation — pinned conversations appear at the top of the list.
+    func pinConversation(_ conversationId: String, isPinned: Bool) async throws {
+        do {
+            try await db.collection("conversations").document(conversationId).updateData([
+                "isPinned": isPinned
+            ])
+            // Update local cache optimistically
+            if let index = conversations.firstIndex(where: { $0.id == conversationId }) {
+                let old = conversations[index]
+                conversations[index] = Conversation(
+                    id: old.id,
+                    participantIds: old.participantIds,
+                    lastMessage: old.lastMessage,
+                    lastMessageTime: old.lastMessageTime,
+                    lastMessageSenderId: old.lastMessageSenderId,
+                    isPinned: isPinned
+                )
+            }
+            print("✅ Conversation \(conversationId) \(isPinned ? "pinned" : "unpinned")")
+        } catch {
+            self.error = "❌ Failed to pin conversation: \(error.localizedDescription)"
             print(self.error ?? "")
             throw error
         }
@@ -171,13 +233,16 @@ class ConversationsStore {
         return conversationsByUserId[otherUserId] != nil
     }
 
-    /// Search conversations by last message content
+    /// Search conversations by last message content — pinned results appear first
     func searchConversations(_ query: String) -> [Conversation] {
-        guard !query.isEmpty else { return conversations }
+        guard !query.isEmpty else { return sortedConversations }
 
-        return conversations.filter { conversation in
-            conversation.lastMessage.localizedCaseInsensitiveContains(query)
-        }
+        return conversations
+            .filter { $0.lastMessage.localizedCaseInsensitiveContains(query) }
+            .sorted {
+                if $0.isPinned != $1.isPinned { return $0.isPinned }
+                return $0.lastMessageTime > $1.lastMessageTime
+            }
     }
 
     /// Get unread message count for a conversation
@@ -187,8 +252,11 @@ class ConversationsStore {
         return 0
     }
 
-    /// Sort conversations by most recent
+    /// Sort conversations — pinned first, then by most recent
     var sortedConversations: [Conversation] {
-        return conversations.sorted { $0.lastMessageTime > $1.lastMessageTime }
+        return conversations.sorted {
+            if $0.isPinned != $1.isPinned { return $0.isPinned }
+            return $0.lastMessageTime > $1.lastMessageTime
+        }
     }
 }

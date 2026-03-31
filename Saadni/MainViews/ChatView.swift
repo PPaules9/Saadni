@@ -13,6 +13,8 @@ struct ChatView: View {
 	@State private var searchText = ""
 	@State private var selectedConversation: Conversation?
 	@State private var showChatDetail = false
+	@State private var conversationToDelete: Conversation?
+	@State private var showDeleteAlert = false
 	
 	var filteredConversations: [Conversation] {
 		if searchText.isEmpty {
@@ -69,6 +71,32 @@ struct ChatView: View {
 								}
 								.listRowBackground(Color.clear)
 								.listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+								// Swipe right → Delete
+								.swipeActions(edge: .trailing, allowsFullSwipe: false) {
+									Button(role: .destructive) {
+										conversationToDelete = conversation
+										showDeleteAlert = true
+									} label: {
+										Label("Delete", systemImage: "trash")
+									}
+								}
+								// Swipe left → Pin / Unpin
+								.swipeActions(edge: .leading, allowsFullSwipe: true) {
+									Button {
+										Task {
+											try? await conversationsStore.pinConversation(
+												conversation.id,
+												isPinned: !conversation.isPinned
+											)
+										}
+									} label: {
+										Label(
+											conversation.isPinned ? "Unpin" : "Pin",
+											systemImage: conversation.isPinned ? "pin.slash" : "pin"
+										)
+									}
+									.tint(.yellow)
+								}
 							}
 						}
 						.listStyle(.plain)
@@ -78,6 +106,16 @@ struct ChatView: View {
 			}
 			.navigationTitle("Chats")
 			.navigationBarTitleDisplayMode(.inline)
+			.alert("Delete Conversation", isPresented: $showDeleteAlert, presenting: conversationToDelete) { conversation in
+				Button("Delete", role: .destructive) {
+					Task {
+						try? await conversationsStore.deleteConversation(conversation.id)
+					}
+				}
+				Button("Cancel", role: .cancel) {}
+			} message: { _ in
+				Text("This will permanently delete the conversation and all its messages. This action cannot be undone.")
+			}
 		}
 	}
 }
