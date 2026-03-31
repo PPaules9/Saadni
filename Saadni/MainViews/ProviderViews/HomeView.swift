@@ -21,8 +21,10 @@ struct HomeView: View {
 			let defaultId = user.defaultAddressId,
 			let address = user.savedAddresses?.first(where: { $0.id == defaultId })
 		else { return "Current location" }
-		let words = address.address.split(separator: " ").map(String.init)
-		if words.count <= 2 { return address.address }
+		let words = address.label.split(separator: " ").map(String.init)
+		if words.count <= 2 {
+			return address.label
+		}
 		return words.prefix(2).joined(separator: " ") + "..."
 	}
 	
@@ -77,14 +79,6 @@ struct HomeView: View {
 							}
 						}
 						.padding(.horizontal, 20)
-						//
-						//						Text("I Need Help Hire")
-						//							.font(.title2)
-						//							.foregroundStyle(.black)
-						//							.fontDesign(.monospaced)
-						//							.bold()
-						//							.tracking(-1.5)
-						//							.padding(.top, 12)
 						
 						TextField("", text: $needHelpWith, prompt: Text("I Need to Hire, e.g., a barista, a cashier,...").foregroundColor(.gray))
 							.focused($isFocused)
@@ -175,43 +169,65 @@ struct HomeView: View {
 					}
 					
 					
-					VStack(alignment: .leading, spacing: 0) {
-						VStack(alignment: .leading, spacing: 4){
-							Text("Have a Business?")
-								.foregroundStyle(.accent)
-							Text("Start Hiring Essential Roles")
-								.foregroundStyle(Colors.swiftUIColor(.textMain))
+					if #available(iOS 26.0, *) {
+						VStack(alignment: .leading, spacing: 0) {
+							VStack(alignment: .leading, spacing: 4){
+								Text("Have a Business?")
+									.foregroundStyle(.accent)
+								Text("Start Hiring Essential Roles")
+									.foregroundStyle(Colors.swiftUIColor(.textMain))
+							}
+							.font(.system(size: 20, weight: .semibold, design: .default))
+							.padding()
+							.kerning(-0.5)
+							
+							
+							
+							HireRoleRow(icon: "sparkles", title: "Cleaning Member Boy") {
+								coordinator.presentSheet(.createJob(category: ServiceCategoryType.cleaningAndMaintenance.rawValue, initialJobName: "Cleaning Boy"))
+							}
+							
+							Divider()
+								.padding(.leading, 68)
+							
+							HireRoleRow(icon: "doc.text", title: "Office Secretary") {
+								coordinator.presentSheet(.createJob(category: ServiceCategoryType.retailAndMalls.rawValue, initialJobName: "Secretary"))
+							}
 						}
-						.font(.system(size: 20, weight: .semibold, design: .default))
-						.padding()
-						.kerning(-0.5)
-						
-						
-						
-						HireRoleRow(icon: "sparkles", title: "Cleaning Member Boy") {
-							coordinator.presentSheet(.createJob(category: ServiceCategoryType.cleaningAndMaintenance.rawValue, initialJobName: "Cleaning Boy"))
-						}
-						
-						Divider()
-							.padding(.leading, 68)
-						//
-						//						HireRoleRow(icon: "cup.and.saucer", title: "Kitchen Drinkies Specialist") {
-						//							coordinator.presentSheet(.createJob(category: ServiceCategoryType.foodAndBeverage.rawValue, initialJobName: "Kitchen Boy"))
-						//						}
-						//
-						//						Divider()
-						//							.padding(.leading, 68)
-						
-						HireRoleRow(icon: "doc.text", title: "Office Secretary") {
-							coordinator.presentSheet(.createJob(category: ServiceCategoryType.retailAndMalls.rawValue, initialJobName: "Secretary"))
-						}
-					}
-					.background(
-						RoundedRectangle(cornerRadius: 16)
-							.stroke(Colors.swiftUIColor(.textSecondary), lineWidth: 0.15)
-					)
-					.padding(.horizontal)
 					
+						.glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 16))
+						.padding(.horizontal)
+					} else {
+						VStack(alignment: .leading, spacing: 0) {
+							VStack(alignment: .leading, spacing: 4){
+								Text("Have a Business?")
+									.foregroundStyle(.accent)
+								Text("Start Hiring Essential Roles")
+									.foregroundStyle(Colors.swiftUIColor(.textMain))
+							}
+							.font(.system(size: 20, weight: .semibold, design: .default))
+							.padding()
+							.kerning(-0.5)
+							
+							
+							
+							HireRoleRow(icon: "sparkles", title: "Cleaning Member Boy") {
+								coordinator.presentSheet(.createJob(category: ServiceCategoryType.cleaningAndMaintenance.rawValue, initialJobName: "Cleaning Boy"))
+							}
+							
+							Divider()
+								.padding(.leading, 68)
+							
+							HireRoleRow(icon: "doc.text", title: "Office Secretary") {
+								coordinator.presentSheet(.createJob(category: ServiceCategoryType.retailAndMalls.rawValue, initialJobName: "Secretary"))
+							}
+						}
+						.background(
+							RoundedRectangle(cornerRadius: 16)
+								.stroke(Colors.swiftUIColor(.textSecondary), lineWidth: 0.15)
+						)
+						.padding(.horizontal)
+					}
 					
 					Divider()
 					//MARK: - Service Categories Sections
@@ -219,7 +235,7 @@ struct HomeView: View {
 					ForEach(HomeView.categories) { category in
 						VStack(alignment: .leading, spacing: 12) {
 							Text(category.title)
-								.font(.system(size: 20, weight: .regular, design: .monospaced))
+								.font(.system(size: 20, weight: .regular, design: .default))
 								.foregroundStyle(Colors.swiftUIColor(.textMain))
 								.padding(.horizontal)
 								.kerning(-0.5)

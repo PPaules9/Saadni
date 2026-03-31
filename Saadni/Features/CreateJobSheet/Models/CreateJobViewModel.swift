@@ -45,6 +45,8 @@ class CreateJobViewModel {
 	var city: String = ""
 	var selectedLocation: CLLocationCoordinate2D?
 	var selectedLocationName: String = ""
+	var addressLabel: String = "Home"
+	var addressLabelCustom: String = ""
 	
 	// MARK: - Tab 3: Pay
 	var price: String = ""
@@ -101,11 +103,13 @@ class CreateJobViewModel {
 	
 	@ObservationIgnored
 	var isTab2Valid: Bool {
-		!address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+		let labelValid = addressLabel != "Other" || !addressLabelCustom.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+		return !address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && labelValid
 	}
 
 	@ObservationIgnored
 	var tab2ValidationError: String? {
+		if addressLabel == "Other" && addressLabelCustom.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Please enter a custom address name" }
 		if address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Address is required" }
 		return nil
 	}
@@ -259,5 +263,13 @@ class CreateJobViewModel {
 		guard let addressData = addressData else { return }
 		self.address = addressData.address
 		self.city = addressData.city
+		let knownLabels = ["Company", "Home", "Office", "Hotel", "Other"]
+		if knownLabels.contains(addressData.label) {
+			self.addressLabel = addressData.label
+			self.addressLabelCustom = ""
+		} else {
+			self.addressLabel = "Other"
+			self.addressLabelCustom = addressData.label
+		}
 	}
 }

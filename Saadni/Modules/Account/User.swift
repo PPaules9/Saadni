@@ -13,6 +13,7 @@ import FirebaseFirestore
 
 struct SavedAddress: Codable, Identifiable, Hashable {
     var id: String = UUID().uuidString
+    var label: String = "Home"
     var address: String
     var floor: String
     var unit: String
