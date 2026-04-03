@@ -37,25 +37,23 @@ class ApplicationsStore: ListenerManaging {
 
  // MARK: - Listener Management Implementation
 
- func addListener(id: String, listener: ListenerRegistration) {
-  removeListener(id: id)
-  activeListeners[id] = listener
-  print("📡 [Listener] Added: \(id) (total active: \(activeListeners.count))")
- }
-
- func removeListener(id: String) {
-  if let listener = activeListeners.removeValue(forKey: id) {
-   listener.remove()
-   print("🧹 [Listener] Removed: \(id) (total active: \(activeListeners.count))")
-  }
- }
-
+ /// Clear all listeners and reset local data
  func removeAllListeners() {
-  print("🧹 [Listener] Removing all \(activeListeners.count) listeners...")
+  print("🧹 [ApplicationsStore] Clearing all listeners and resetting state...")
+
+  // Remove Firestore listeners
   activeListeners.values.forEach { $0.remove() }
   activeListeners.removeAll()
   listenerSetupState.removeAll()
-  print("🧹 [Listener] All listeners removed")
+
+  // Clear local data for next session
+  myApplications = []
+  receivedApplications = []
+  isLoadingApplications = false
+  applicationsError = nil
+  currentUserId = nil
+  
+  print("🧹 [ApplicationsStore] State cleared")
  }
 
  // MARK: - Setup Listeners
@@ -266,6 +264,53 @@ class ApplicationsStore: ListenerManaging {
   }
 
   print("✅ Rejected \(pendingApplications.count) other applications for service: \(serviceId)")
+ }
+
+ // MARK: - Request Completion (Student marks job as done)
+
+ func requestCompletion(serviceId: String, note: String? = nil) async throws {
+  var updateData: [String: Any] = [
+   "status": ServiceStatus.pendingCompletion.rawValue,
+   "completionRequestedAt": Timestamp(date: Date())
+  ]
+  if let note = note, !note.isEmpty {
+   updateData["completionNote"] = note
+  }
+  try await db.collection("services").document(serviceId).updateData(updateData)
+  print("✅ Completion requested for service: \(serviceId)")
+ }
+
+ // MARK: - Confirm Completion (Provider confirms job is done)
+
+ func confirmCompletion(serviceId: String, applicationId: String) async throws {
+  // Mark service as completed
+  try await db.collection("services").document(serviceId).updateData([
+   "status": ServiceStatus.completed.rawValue,
+   "completedAt": Timestamp(date: Date())
+  ])
+
+  // Mark application as completed
+  try await db.collection("applications").document(applicationId).updateData([
+   "status": JobApplicationStatus.completed.rawValue,
+   "respondedAt": Timestamp(date: Date())
+  ])
+
+  print("✅ Job confirmed as completed: \(serviceId)")
+ }
+
+ // MARK: - Dispute Completion (Provider disputes student's claim)
+
+ func disputeCompletion(serviceId: String, reason: String? = nil) async throws {
+  var updateData: [String: Any] = [
+   "status": ServiceStatus.active.rawValue,
+   "completionRequestedAt": NSNull(),
+   "completionNote": NSNull()
+  ]
+  if let reason = reason, !reason.isEmpty {
+   updateData["disputeReason"] = reason
+  }
+  try await db.collection("services").document(serviceId).updateData(updateData)
+  print("✅ Completion disputed, job reverted to active: \(serviceId)")
  }
 
  // MARK: - Withdraw Application

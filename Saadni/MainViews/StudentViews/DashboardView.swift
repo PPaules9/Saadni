@@ -31,57 +31,40 @@ struct DashboardView: View {
     .ignoresSafeArea()
 
    ScrollView {
-    VStack(spacing: 0) {
-     // Dashboard Header (Toolbar)
-     DashboardHeaderView(showNotificationDrawer: $showNotificationDrawer)
-      .padding(.horizontal, 20)
-      .padding(.vertical, 16)
-
-     // Shift-Picker Calendar
-     ShiftPickerCalendarView { date in
-      coordinator.filterDate = date
-      coordinator.selectTab(.search)
-     }
-     .padding(.bottom, 24)
-
-     // Full Calendar Picker
-     VStack(alignment: .leading, spacing: 12) {
-      HStack {
-       Text("Pick from calendar")
-        .font(.subheadline)
-        .foregroundStyle(.primary)
-        .fontDesign(.monospaced)
-        .kerning(-1)
-        .padding(.horizontal, 20)
-
-       Spacer()
-
-       Toggle("", isOn: $isCalendarVisible.animation(.easeInOut))
-        .labelsHidden()
-        .tint(.accent)
-        .padding(.trailing, 20)
-      }
-
-      if isCalendarVisible {
-       CustomCalendarWithJobIndicators(
-        selectedDate: $calendarSelection,
-        jobDates: jobDates,
-        onDateSelected: { date in
-         coordinator.filterDate = date
-         coordinator.selectTab(.search)
-        }
-       )
-       .padding(.horizontal, 20)
-      }
-     }
-     .padding(.bottom, 24)
+		 VStack(spacing: 0) {
+			 // Dashboard Header (Toolbar)
+			 DashboardHeaderView(showNotificationDrawer: $showNotificationDrawer)
+				 .padding(.horizontal, 20)
+				 .padding(.vertical, 16)
+			 
+			 VStack{
+			 // Shift-Picker Calendar
+			 ShiftPickerCalendarView(isCalendarVisible: $isCalendarVisible) { date in
+				 coordinator.filterDate = date
+				 coordinator.selectTab(.search)
+			 }
+			 
+			 if isCalendarVisible {
+				 CustomCalendarWithJobIndicators(
+					selectedDate: $calendarSelection,
+					jobDates: jobDates,
+					onDateSelected: { date in
+						coordinator.filterDate = date
+						coordinator.selectTab(.search)
+					}
+				 )
+				 .padding(.horizontal, 20)
+				 .padding(.vertical)
+			 }
+		 }
+				.padding(.bottom)
 
      // Carousel Section
      JobStatusCarouselView(currentIndex: $currentCarouselIndex)
       .padding(.bottom, 24)
 
      // Earnings Section
-     EarningsView()
+     EarningsView(showWalletSheet: $showWalletSheet)
       .padding(.horizontal, 20)
       .padding(.bottom, 32)
 
@@ -108,11 +91,13 @@ struct DashboardView: View {
 
 // MARK: - Shift Picker Calendar View
 struct ShiftPickerCalendarView: View {
+ 	@Binding var isCalendarVisible: Bool
  let upcomingDates: [Date]
  let action: (Date) -> Void
- 
- init(action: @escaping (Date) -> Void) {
-  self.action = action
+
+  init(isCalendarVisible: Binding<Bool>, action: @escaping (Date) -> Void) {
+   self._isCalendarVisible = isCalendarVisible
+   self.action = action
   // Generate next 14 days
   var dates: [Date] = []
   let calendar = Calendar.current
@@ -126,20 +111,27 @@ struct ShiftPickerCalendarView: View {
  
  var body: some View {
   VStack(alignment: .leading, spacing: 12) {
-   Text("Available Shifts Near You")
-    .font(.headline)
-    .foregroundStyle(.primary)
-    .fontDesign(.monospaced)
-    .kerning(-1)
-    .padding(.horizontal, 20)
-   
+		HStack{
+			Text("Work on a Shift")
+				.font(.headline)
+				.foregroundStyle(.primary)
+				.fontDesign(.monospaced)
+				.kerning(-1)
+				.padding(.horizontal, 20)
+			
+			Spacer()
+			Toggle("", isOn: $isCalendarVisible.animation(.easeInOut))
+				.labelsHidden()
+				.tint(.accent)
+				.padding(.trailing, 20)
+		}
    ScrollView(.horizontal, showsIndicators: false) {
-    HStack(spacing: 12) {
+    HStack(spacing: 8) {
      ForEach(upcomingDates, id: \.self) { date in
       Button(action: {
        action(date)
       }) {
-       VStack(spacing: 8) {
+       VStack(spacing: 4) {
         Text(isToday(date) ? "Today" : isTomorrow(date) ? "Tmrw" : getDayOfWeek(date))
          .font(.caption)
          .fontWeight(.semibold)
@@ -150,16 +142,17 @@ struct ShiftPickerCalendarView: View {
          .fontWeight(.bold)
          .foregroundStyle(isToday(date) ? .white : Colors.swiftUIColor(.textMain))
        }
-       .frame(width: 70, height: 80)
+       .frame(width: 70, height: 70)
        .background(isToday(date) ? Color.accentColor : Colors.swiftUIColor(.textPrimary))
-       .cornerRadius(16)
+       .cornerRadius(14)
        .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
       }
       .buttonStyle(.plain)
      }
     }
-    .padding(.horizontal, 20)
+    .padding(.horizontal, 18)
    }
+	 .padding(.vertical)
   }
  }
  
@@ -198,30 +191,30 @@ struct DashboardHeaderView: View {
             if let user = authManager.currentUser {
                 Text("Hi, \(user.displayName ?? "User")")
                     .font(.headline)
-                    .foregroundStyle(.primary)
+										.foregroundStyle(Colors.swiftUIColor(.textSecondary))
                     .fontDesign(.monospaced)
                     .kerning(-1)
             }
-     Text("Find your next Job")
-      .font(.caption)
-      .foregroundStyle(.secondary)
-      .fontDesign(.monospaced)
-      .kerning(-1)
-     if let user = authManager.currentUser,
-        let defaultId = user.defaultAddressId,
-        let defaultAddress = user.savedAddresses?.first(where: { $0.id == defaultId }) {
-      HStack(spacing: 4) {
-       Image(systemName: "mappin.circle.fill")
-        .font(.caption2)
-        .foregroundStyle(Color.accent)
-       Text(defaultAddress.label.isEmpty ? defaultAddress.address : defaultAddress.label)
-        .font(.caption2)
-        .fontWeight(.medium)
-        .foregroundStyle(Color.accent)
-        .fontDesign(.monospaced)
-        .kerning(-0.5)
-      }
-     }
+//     Text("Find your next Job")
+//      .font(.caption)
+//      .foregroundStyle(.secondary)
+//      .fontDesign(.monospaced)
+//      .kerning(-1)
+//     if let user = authManager.currentUser,
+//        let defaultId = user.defaultAddressId,
+//        let defaultAddress = user.savedAddresses?.first(where: { $0.id == defaultId }) {
+//      HStack(spacing: 4) {
+//       Image(systemName: "mappin.circle.fill")
+//        .font(.caption2)
+//        .foregroundStyle(Color.accent)
+//       Text(defaultAddress.label.isEmpty ? defaultAddress.address : defaultAddress.label)
+//        .font(.caption2)
+//        .fontWeight(.medium)
+//        .foregroundStyle(Color.accent)
+//        .fontDesign(.monospaced)
+//        .kerning(-0.5)
+//      }
+//     }
 
     }
 
@@ -265,48 +258,58 @@ struct DashboardHeaderView: View {
 // MARK: - Job Status Carousel View
 struct JobStatusCarouselView: View {
  @Binding var currentIndex: Int
+ @Environment(ServicesStore.self) var servicesStore
  @State private var navigateToFeaturedService = false
  @State private var navigateToNewService = false
- @State private var featuredService: JobService?
- @State private var newService: JobService?
+ @State private var featuredService: JobService? = nil
+ @State private var newService: JobService? = nil
 
  var body: some View {
   VStack(spacing: 16) {
    TabView(selection: $currentIndex) {
-    if let featured = featuredService {
-     CarouselCard(
-      title: "Featured Services",
-      subtitle: "Get extra cash",
-      provider: "",
-      price: "Up to 10%",
-      onTapAction: {
-       navigateToFeaturedService = true
-      }
-     )
-     .tag(0)
+    Group {
+     if let featured = featuredService {
+      CarouselCard(
+       title: featured.title,
+       subtitle: "Get extra cash",
+       provider: "",
+       carouselImage: featured.image,
+       price: featured.formattedPrice,
+       colorBanner: .orange,
+       onTapAction: { navigateToFeaturedService = true }
+      )
+     } else {
+      CarouselCardSkeleton()
+     }
     }
+    .tag(0)
 
     CarouselCard(
      title: "Top Rated Users",
      subtitle: "5★ rated by customers",
      provider: "",
-     price: "Popular",
+     carouselImage: ServiceImage(assetName: "foodDelivery"),
+     price: "Popular", colorBanner: .green,
      onTapAction: {}
     )
-     .tag(1)
+    .tag(1)
 
-    if let new = newService {
-     CarouselCard(
-      title: "New Services",
-      subtitle: "Discover what's new",
-      provider: "",
-      price: "New",
-      onTapAction: {
-       navigateToNewService = true
-      }
-     )
-     .tag(2)
+    Group {
+     if let new = newService {
+      CarouselCard(
+       title: new.title,
+       subtitle: "Discover what's new",
+       provider: "",
+       carouselImage: new.image,
+       price: new.formattedPrice,
+       colorBanner: .yellow,
+       onTapAction: { navigateToNewService = true }
+      )
+     } else {
+      CarouselCardSkeleton()
+     }
     }
+    .tag(2)
    }
    .tabViewStyle(.page(indexDisplayMode: .never))
    .navigationDestination(isPresented: $navigateToFeaturedService) {
@@ -318,8 +321,10 @@ struct JobStatusCarouselView: View {
     if let new = newService {
      ServiceDetailView(service: new)
     }
-   }
-   .frame(height: 220)
+	 }
+	 .frame(height: 220)
+	 .cornerRadius(16)
+
 
    // Carousel Indicators
    HStack(spacing: 6) {
@@ -331,23 +336,64 @@ struct JobStatusCarouselView: View {
    }
    .padding(.bottom, 12)
   }
-  .padding(.horizontal, 20)
+	.padding(.horizontal, 8)
   .onAppear {
-   featuredService = JobService.sampleData.randomElement()
-   newService = JobService.sampleData.filter { Calendar.current.isDateInToday($0.createdAt) }.randomElement() ?? JobService.sampleData.randomElement()
+   updateCarouselServices()
   }
-  .onReceive(Timer.publish(every: 60, on: .main, in: .common).autoconnect()) { _ in
+  .onChange(of: servicesStore.services) {
+   if featuredService == nil || newService == nil {
+    updateCarouselServices()
+   }
+  }
+  .onReceive(Timer.publish(every: 5, on: .main, in: .common).autoconnect()) { _ in
    withAnimation {
     currentIndex = (currentIndex + 1) % 3
    }
   }
  }
+
+ private func updateCarouselServices() {
+  let services = servicesStore.services
+  guard !services.isEmpty else { return }
+  featuredService = services.filter { $0.isFeatured }.randomElement()
+  newService = services.filter { $0.isNew }.randomElement()
+ }
 }
 
 
+// MARK: - Carousel Skeleton
+struct CarouselCardSkeleton: View {
+ @State private var isAnimating = false
+
+ var body: some View {
+  ZStack(alignment: .bottomLeading) {
+   RoundedRectangle(cornerRadius: 16)
+    .fill(Color(.systemGray5))
+
+   VStack(alignment: .leading, spacing: 10) {
+    RoundedRectangle(cornerRadius: 6)
+     .fill(Color(.systemGray4))
+     .frame(width: 160, height: 20)
+    RoundedRectangle(cornerRadius: 4)
+     .fill(Color(.systemGray4))
+     .frame(width: 100, height: 14)
+    Spacer()
+    RoundedRectangle(cornerRadius: 4)
+     .fill(Color(.systemGray4))
+     .frame(width: 80, height: 18)
+   }
+   .padding(16)
+  }
+  .frame(height: 220)
+  .opacity(isAnimating ? 0.5 : 1)
+  .animation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true), value: isAnimating)
+  .onAppear { isAnimating = true }
+ }
+}
+
 // MARK: - Earnings View
 struct EarningsView: View {
-// @Binding var showWalletSheet: Bool
+  @Binding var showWalletSheet: Bool
  @Environment(ServicesStore.self) var servicesStore
  @Environment(AuthenticationManager.self) var authManager
  @State private var completedServices: [JobService] = []
@@ -391,9 +437,9 @@ struct EarningsView: View {
   .padding(16)
   .background(Color.accent)
   .cornerRadius(12)
-//  .onTapGesture {
-//   showWalletSheet = true
-//  }
+  .onTapGesture {
+   showWalletSheet = true
+  }
   .task {
    guard let userId = authManager.currentUser?.id else { return }
    let all = await servicesStore.fetchCompletedServices(userId: userId)
@@ -405,6 +451,19 @@ struct EarningsView: View {
 
 // MARK: - Recent Activity View
 struct RecentActivityView: View {
+ @Environment(ServicesStore.self) var servicesStore
+ @Environment(ApplicationsStore.self) var applicationsStore
+ @Environment(DashboardViewModel.self) var dashboardVM
+ @State private var showAllActivities = false
+
+ private var activities: [ServiceActivity] {
+  dashboardVM.recentActivities(
+   applications: applicationsStore.myApplications,
+   services: servicesStore.services,
+   limit: 4
+  )
+ }
+
  var body: some View {
   VStack(alignment: .leading, spacing: 12) {
    HStack {
@@ -416,7 +475,7 @@ struct RecentActivityView: View {
 
     Spacer()
 
-    Button(action: {}) {
+    Button(action: { showAllActivities = true }) {
      Text("See All")
       .font(.subheadline)
       .foregroundStyle(.accent)
@@ -424,16 +483,33 @@ struct RecentActivityView: View {
       .kerning(-0.5)
     }
    }
+   .sheet(isPresented: $showAllActivities) {
+    AllActivitiesView()
+     .environment(servicesStore)
+     .environment(applicationsStore)
+     .environment(dashboardVM)
+   }
 
-   VStack(spacing: 12) {
-    ForEach(JobService.sampleActivities) { activity in
-     HomeActivityCard(
-      title: activity.activityType.rawValue,
-      serviceName: activity.service.title,
-      status: activity.status,
-      extraDetails: activity.extraDetails,
-      isHighlighted: activity.isHighlighted
-     )
+   if activities.isEmpty {
+    Text("No activity yet — apply to a job to get started.")
+     .font(.subheadline)
+     .foregroundStyle(.secondary)
+     .fontDesign(.monospaced)
+     .kerning(-0.5)
+     .multilineTextAlignment(.center)
+     .frame(maxWidth: .infinity)
+     .padding(.vertical, 20)
+   } else {
+    VStack(spacing: 12) {
+     ForEach(activities) { activity in
+      HomeActivityCard(
+       title: activity.activityType.rawValue,
+       serviceName: activity.service.title,
+       status: activity.status,
+       extraDetails: activity.extraDetails,
+       isHighlighted: activity.isHighlighted
+      )
+     }
     }
    }
   }
@@ -449,5 +525,8 @@ struct RecentActivityView: View {
         .environment(UserCache())
         .environment(authManager)
         .environment(ServicesStore())
+        .environment(ApplicationsStore())
         .environment(NotificationsStore())
+        .environment(StudentCoordinator())
+        .environment(DashboardViewModel())
 }

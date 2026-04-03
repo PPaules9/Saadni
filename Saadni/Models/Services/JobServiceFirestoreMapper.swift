@@ -79,6 +79,9 @@ struct JobServiceFirestoreMapper {
         // Completion fields
         if let hiredApplicantId = service.hiredApplicantId { dict["hiredApplicantId"] = hiredApplicantId }
         if let completedAt = service.completedAt { dict["completedAt"] = Timestamp(date: completedAt) }
+        if let completionRequestedAt = service.completionRequestedAt { dict["completionRequestedAt"] = Timestamp(date: completionRequestedAt) }
+        if let completionNote = service.completionNote { dict["completionNote"] = completionNote }
+        if let disputeReason = service.disputeReason { dict["disputeReason"] = disputeReason }
 
         return dict
     }
@@ -122,6 +125,9 @@ struct JobServiceFirestoreMapper {
         let hiredApplicantId = data["hiredApplicantId"] as? String
         let completedAt = (data["completedAt"] as? Timestamp)?.dateValue()
         let isArchived = data["isArchived"] as? Bool ?? false
+        let completionRequestedAt = (data["completionRequestedAt"] as? Timestamp)?.dateValue()
+        let completionNote = data["completionNote"] as? String
+        let disputeReason = data["disputeReason"] as? String
 
         let address = data["address"] as? String ?? ""
         let floor = data["floor"] as? String ?? ""
@@ -172,7 +178,10 @@ struct JobServiceFirestoreMapper {
             applicationCount: applicationCount,
             hiredApplicantId: hiredApplicantId,
             completedAt: completedAt,
-            isArchived: isArchived
+            isArchived: isArchived,
+            completionRequestedAt: completionRequestedAt,
+            completionNote: completionNote,
+            disputeReason: disputeReason
         )
     }
 }

@@ -68,4 +68,60 @@ final class AppCoordinator {
             coordinator.selectTabAndNavigate(to: .chat, destination: .chatDetail(conversationId: conversationId))
         }
     }
+
+    // MARK: - Notification Navigation
+
+    func handleNotificationNavigation(_ notification: Notification) {
+        if let coordinator = providerCoordinator {
+            handleJobSeekerNavigation(notification, coordinator: coordinator)
+        } else if let coordinator = studentCoordinator {
+            handleServiceProviderNavigation(notification, coordinator: coordinator)
+        }
+    }
+
+    private func handleJobSeekerNavigation(_ notification: Notification, coordinator: ProviderCoordinator) {
+        switch notification.type {
+        case .newMessageFromProvider:
+            if let conversationId = notification.payload?.conversationId {
+                coordinator.selectTabAndNavigate(to: .chat, destination: .chatDetail(conversationId: conversationId))
+            } else {
+                coordinator.selectTab(.chat)
+            }
+        case .applicationStatus, .applicationWithdrawnAck, .jobReminder, .jobCancelledByProvider:
+            coordinator.selectTab(.myJobs)
+        case .reviewPostedByProvider:
+            coordinator.selectTab(.profile)
+        case .earningReceived, .topupSuccess, .withdrawalProcessed, .matchingJob:
+            coordinator.selectTab(.dashboard)
+        default:
+            break
+        }
+    }
+
+    private func handleServiceProviderNavigation(_ notification: Notification, coordinator: StudentCoordinator) {
+        switch notification.type {
+        case .newMessageFromSeeker:
+            if let conversationId = notification.payload?.conversationId {
+                coordinator.selectTabAndNavigate(to: .chat, destination: .chatDetail(conversationId: conversationId))
+            } else {
+                coordinator.selectTab(.chat)
+            }
+        case .newApplicationReceived:
+            coordinator.selectTab(.myJobs)
+            if let serviceId = notification.payload?.serviceId,
+               let serviceName = notification.payload?.serviceName {
+                DispatchQueue.main.async {
+                    coordinator.presentSheet(.applicationsList(serviceId: serviceId, serviceTitle: serviceName))
+                }
+            }
+        case .applicationAcceptedBySeeker, .applicationWithdrawnBySeeker, .jobStartsSoon, .jobExpiringSoon:
+            coordinator.selectTab(.myJobs)
+        case .paymentReceived, .withdrawalPending:
+            coordinator.selectTab(.home)
+        case .reviewPostedBySeeker, .lowRatingAlert:
+            coordinator.selectTab(.profile)
+        default:
+            break
+        }
+    }
 }

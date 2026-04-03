@@ -21,9 +21,13 @@ struct ServiceDetailView: View {
 	@State private var showingApplySheet = false
 	@State private var showingApplications = false
 	@State private var showingCompletionView = false
+	@State private var showingMarkDoneView = false
+	@State private var showingReviewSheet = false
 	@State private var selectedConversationId: String?
 	@State private var isNavigatingToChat = false
 	@State private var isCreatingChat = false
+	@State private var showDeleteConfirmation = false
+	@State private var isBoostingJob = false
 	
 	var reviews: [Review] {
 		reviewsStore.serviceReviews[service.id] ?? []
@@ -281,33 +285,126 @@ struct ServiceDetailView: View {
 					
 					// MARK: - Action Buttons
 					VStack(spacing: 12) {
+
+						// --- Student (non-owner) actions ---
 						if !isOwnService {
-							if hasAlreadyApplied {
-								HStack(spacing: 8) {
-									Image(systemName: "checkmark.circle.fill")
-									Text("Already Applied")
-										.fontWeight(.semibold)
+
+							// Student is the hired worker
+							if isHiredStudent {
+								switch service.status {
+								case .active:
+									BrandButton(
+										"I'm Done — Mark as Complete",
+										size: .large,
+										isDisabled: false,
+										hasIcon: true,
+										icon: "checkmark.circle.fill",
+										secondary: false
+									) {
+										showingMarkDoneView = true
+									}
+
+								case .pendingCompletion:
+									HStack(spacing: 10) {
+										Image(systemName: "clock.badge.checkmark.fill")
+											.foregroundStyle(.purple)
+										VStack(alignment: .leading, spacing: 2) {
+											Text("Awaiting Provider Confirmation")
+												.font(.subheadline)
+												.fontWeight(.semibold)
+												.foregroundStyle(Colors.swiftUIColor(.textMain))
+											if let requestedAt = service.completionRequestedAt {
+												Text("Submitted \(requestedAt, style: .relative)")
+													.font(.caption)
+													.foregroundStyle(Colors.swiftUIColor(.textSecondary))
+											}
+										}
+										Spacer()
+									}
+									.padding(14)
+									.background(Color.purple.opacity(0.08))
+									.cornerRadius(14)
+									.overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.purple.opacity(0.3), lineWidth: 1))
+
+								case .completed:
+									BrandButton(
+										"Leave a Review",
+										size: .large,
+										isDisabled: false,
+										hasIcon: true,
+										icon: "star.fill",
+										secondary: false
+									) {
+										showingReviewSheet = true
+									}
+
+								case .disputed:
+									HStack(spacing: 10) {
+										Image(systemName: "exclamationmark.triangle.fill")
+											.foregroundStyle(.red)
+										VStack(alignment: .leading, spacing: 2) {
+											Text("Provider Has a Concern")
+												.font(.subheadline)
+												.fontWeight(.semibold)
+												.foregroundStyle(Colors.swiftUIColor(.textMain))
+											if let reason = service.disputeReason, !reason.isEmpty {
+												Text(reason)
+													.font(.caption)
+													.foregroundStyle(Colors.swiftUIColor(.textSecondary))
+											}
+										}
+										Spacer()
+									}
+									.padding(14)
+									.background(Color.red.opacity(0.08))
+									.cornerRadius(14)
+									.overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.red.opacity(0.3), lineWidth: 1))
+
+									BrandButton(
+										"Resubmit Completion",
+										size: .large,
+										isDisabled: false,
+										hasIcon: true,
+										icon: "arrow.clockwise",
+										secondary: true
+									) {
+										showingMarkDoneView = true
+									}
+
+								default:
+									EmptyView()
 								}
-								.frame(maxWidth: .infinity)
-								.frame(height: 56)
-								.foregroundStyle(.accent)
-								.background(Color.accent.opacity(0.1))
-								.cornerRadius(14)
-								.overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.accent, lineWidth: 1))
+
 							} else {
-								BrandButton(
-									"Apply Now",
-									size: .large,
-									isDisabled: false,
-									hasIcon: true,
-									icon: "hand.raised.fill",
-									secondary: false
-								) {
-									showingApplySheet = true
+								// Regular student — apply or already applied
+								if hasAlreadyApplied {
+									HStack(spacing: 8) {
+										Image(systemName: "checkmark.circle.fill")
+										Text("Already Applied")
+											.fontWeight(.semibold)
+									}
+									.frame(maxWidth: .infinity)
+									.frame(height: 56)
+									.foregroundStyle(.accent)
+									.background(Color.accent.opacity(0.1))
+									.cornerRadius(14)
+									.overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.accent, lineWidth: 1))
+								} else if service.status == .published {
+									BrandButton(
+										"Apply Now",
+										size: .large,
+										isDisabled: false,
+										hasIcon: true,
+										icon: "hand.raised.fill",
+										secondary: false
+									) {
+										showingApplySheet = true
+									}
 								}
 							}
 						}
-						
+
+						// --- Provider (own service) actions ---
 						if isOwnService && service.status == .active {
 							BrandButton(
 								"Mark as Completed",
@@ -320,19 +417,22 @@ struct ServiceDetailView: View {
 								showingCompletionView = true
 							}
 						}
-						
-						BrandButton(
-							isOwnService ? "View Applications" : "Contact Provider",
-							size: .large,
-							isDisabled: isCreatingChat,
-							hasIcon: true,
-							icon: isOwnService ? "person.3.fill" : "bubble.left.fill",
-							secondary: true
-						) {
-							if isOwnService {
-								showingApplications = true
-							} else {
-								startChatWithProvider()
+
+						// View Applications / Contact Provider
+						if !isHiredStudent || isOwnService {
+							BrandButton(
+								isOwnService ? "View Applications" : "Contact Provider",
+								size: .large,
+								isDisabled: isCreatingChat,
+								hasIcon: true,
+								icon: isOwnService ? "person.3.fill" : "bubble.left.fill",
+								secondary: true
+							) {
+								if isOwnService {
+									showingApplications = true
+								} else {
+									startChatWithProvider()
+								}
 							}
 						}
 					}
@@ -346,11 +446,46 @@ struct ServiceDetailView: View {
 		.navigationBarTitleDisplayMode(.inline)
 		.toolbar {
 			ToolbarItem(placement: .topBarTrailing) {
-				Button(action: {}) {
-					Image(systemName: "heart")
-						.foregroundStyle(.red)
+				if isOwnService {
+					Menu {
+						Button {
+							Task { await boostJob() }
+						} label: {
+							Label(
+								service.isFeatured ? "Already Featured" : "Boost Job",
+								systemImage: "bolt.fill"
+							)
+						}
+						.disabled(service.isFeatured || isBoostingJob)
+
+						Button(role: .destructive) {
+							showDeleteConfirmation = true
+						} label: {
+							Label("Delete Job", systemImage: "trash.fill")
+						}
+					} label: {
+						Image(systemName: "ellipsis.circle")
+							.foregroundStyle(.accent)
+					}
+				} else {
+					Button(action: {}) {
+						Image(systemName: "heart")
+							.foregroundStyle(.red)
+					}
 				}
 			}
+		}
+		.confirmationDialog(
+			"Delete this job?",
+			isPresented: $showDeleteConfirmation,
+			titleVisibility: .visible
+		) {
+			Button("Delete", role: .destructive) {
+				Task { await deleteJob() }
+			}
+			Button("Cancel", role: .cancel) {}
+		} message: {
+			Text("This action cannot be undone.")
 		}
 		.sheet(isPresented: $showingCompletionView) {
 			ServiceCompletionView(service: service)
@@ -373,13 +508,34 @@ struct ServiceDetailView: View {
 			ServiceApplicationsSheet(service: service)
 				.environment(applicationsStore)
 		}
+		.sheet(isPresented: $showingMarkDoneView) {
+			MarkJobDoneView(service: service)
+				.environment(applicationsStore)
+				.environment(conversationsStore)
+		}
+		.sheet(isPresented: $showingReviewSheet) {
+			PostJobReviewSheet(
+				service: service,
+				revieweeId: service.providerId,
+				revieweeName: service.providerName ?? "Provider",
+				reviewerRole: .seeker
+			)
+			.environment(authManager)
+			.environment(reviewsStore)
+		}
 	}
 	
 	private var isOwnService: Bool {
 		guard let currentUserId = authManager.currentUserId else { return false }
 		return service.providerId == currentUserId
 	}
-	
+
+	private var isHiredStudent: Bool {
+		guard let currentUserId = authManager.currentUserId,
+			  let hiredId = service.hiredApplicantId else { return false }
+		return hiredId == currentUserId && !isOwnService
+	}
+
 	private var hasAlreadyApplied: Bool {
 		return applicationsStore.hasApplied(to: service.id)
 	}
@@ -409,6 +565,20 @@ struct ServiceDetailView: View {
 		}
 	}
 	
+	private func boostJob() async {
+		guard !service.isFeatured else { return }
+		isBoostingJob = true
+		var boosted = service
+		boosted.isFeatured = true
+		try? await servicesStore.updateService(boosted)
+		isBoostingJob = false
+	}
+
+	private func deleteJob() async {
+		try? await servicesStore.removeService(id: service.id)
+		dismiss()
+	}
+
 	private func formatDate(_ date: Date) -> String {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "MMM d, yyyy"
@@ -999,6 +1169,7 @@ struct ServiceApplicationsSheet: View {
 			case .accepted: return ("Accepted", .green)
 			case .rejected: return ("Rejected", .red)
 			case .withdrawn: return ("Withdrawn", .gray)
+			case .completed: return ("Completed", .purple)
 			}
 		}()
 		

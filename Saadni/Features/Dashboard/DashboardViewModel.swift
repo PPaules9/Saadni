@@ -16,7 +16,7 @@ final class DashboardViewModel {
 
     // MARK: - Computed Statistics
     var averageRating: Double {
-        guard !reviewsStore?.reviewsIReceived.isEmpty ?? true else { return 0 }
+        guard !(reviewsStore?.reviewsIReceived.isEmpty ?? true) else { return 0 }
         let reviews = reviewsStore?.reviewsIReceived ?? []
         let sum = reviews.reduce(0) { $0 + Double($1.rating) }
         return sum / Double(max(reviews.count, 1))
@@ -75,5 +75,29 @@ final class DashboardViewModel {
     func getRecentReviews(limit: Int = 3) -> [Review] {
         guard let reviews = reviewsStore?.reviewsIReceived else { return [] }
         return Array(reviews.prefix(limit))
+    }
+
+    // MARK: - Recent Activity (Student / JobSeeker)
+
+    /// Derives displayable activities by joining the student's applications with
+    /// their associated services. No Firestore writes — pure derivation from
+    /// already-live real-time data. Returns at most `limit` items, newest first.
+    func recentActivities(
+        applications: [JobApplication],
+        services: [JobService],
+        limit: Int? = 5
+    ) -> [ServiceActivity] {
+        let sorted = applications.sorted { $0.appliedAt > $1.appliedAt }
+        let scanned = limit.map { sorted.prefix($0 * 3) }.map(Array.init) ?? sorted
+        let matched = scanned.compactMap { application -> ServiceActivity? in
+            guard let service = services.first(where: { $0.id == application.serviceId }) else {
+                return nil
+            }
+            return ServiceActivity(application: application, service: service)
+        }
+        if let limit {
+            return Array(matched.prefix(limit))
+        }
+        return matched
     }
 }

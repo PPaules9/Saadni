@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.swift$|^d\")",
+      "Bash(gem list:*)",
+      "Bash(gem install:*)",
+      "Bash(xcodebuild -scheme Saadni -destination 'platform=iOS Simulator,name=iPhone 16' -configuration Debug build)",
+      "Bash(xcodebuild -scheme Saadni -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -configuration Debug build)",
+      "Bash(uuidgen)"
+    ]
+  }
+}

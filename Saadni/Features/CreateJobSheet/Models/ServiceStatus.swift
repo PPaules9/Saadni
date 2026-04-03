@@ -23,4 +23,10 @@ enum ServiceStatus: String, Codable {
 
     /// Service was cancelled before completion
     case cancelled = "cancelled"
+
+    /// Student marked job as done, waiting for provider confirmation
+    case pendingCompletion = "pending_completion"
+
+    /// Provider disputed the student's completion claim
+    case disputed = "disputed"
 }

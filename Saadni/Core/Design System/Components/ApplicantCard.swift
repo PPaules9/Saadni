@@ -127,6 +127,9 @@ struct ApplicantCard: View {
         case .withdrawn:
             statusText = "Withdrawn"
             statusColor = Color(.systemGray)
+        case .completed:
+            statusText = "Completed"
+            statusColor = Color(.systemPurple)
         }
 
         return Text(statusText)

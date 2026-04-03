@@ -36,25 +36,24 @@ class ReviewsStore: ListenerManaging {
 
     // MARK: - Listener Management Implementation
 
-    func addListener(id: String, listener: ListenerRegistration) {
-        removeListener(id: id)
-        activeListeners[id] = listener
-        print("📡 [Listener] Added: \(id) (total active: \(activeListeners.count))")
-    }
-
-    func removeListener(id: String) {
-        if let listener = activeListeners.removeValue(forKey: id) {
-            listener.remove()
-            print("🧹 [Listener] Removed: \(id) (total active: \(activeListeners.count))")
-        }
-    }
-
+    /// Clear all listeners and reset local data
     func removeAllListeners() {
-        print("🧹 [Listener] Removing all \(activeListeners.count) listeners...")
+        print("🧹 [ReviewsStore] Clearing all listeners and resetting state...")
+        
+        // Remove Firestore listeners
         activeListeners.values.forEach { $0.remove() }
         activeListeners.removeAll()
         listenerSetupState.removeAll()
-        print("🧹 [Listener] All listeners removed")
+        
+        // Clear local data for next session
+        reviewsIReceived = []
+        reviewsISubmitted = []
+        serviceReviews = [:]
+        isLoadingReviews = false
+        reviewsError = nil
+        currentUserId = nil
+        
+        print("🧹 [ReviewsStore] State cleared")
     }
 
     // MARK: - Setup & Teardown

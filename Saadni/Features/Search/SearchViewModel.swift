@@ -74,7 +74,7 @@ final class SearchViewModel {
         case .mostExpensive:
             return services.sorted { $0.price > $1.price }
         case .highestRated:
-            return services.sorted { $0.rating > $1.rating }
+            return services
         case .closestDistance:
             // Distance sorting would require user location
             // For now, just return as-is

@@ -29,6 +29,8 @@ final class ChatDetailViewModel {
         conversationId: String,
         senderId: String,
         senderName: String,
+        senderPhotoURL: String? = nil,
+        participantIds: [String],
         text: String
     ) async {
         guard let messagesStore = messagesStore else { return }
@@ -38,16 +40,14 @@ final class ChatDetailViewModel {
         sendError = nil
 
         do {
-            let message = Message(
-                id: UUID().uuidString,
-                conversationId: conversationId,
-                senderId: senderId,
+            try await messagesStore.sendMessage(
+                to: conversationId,
+                from: senderId,
                 senderName: senderName,
-                text: text,
-                timestamp: Date(),
-                isRead: false
+                senderPhotoURL: senderPhotoURL,
+                content: text,
+                participantIds: participantIds
             )
-            try await messagesStore.sendMessage(message)
             messageText = ""
             isSending = false
         } catch {
@@ -74,15 +74,13 @@ final class ChatDetailViewModel {
 
     /// Loads the other participant's user information
     func loadOtherUserInfo(userId: String) async {
-        guard let userCache = userCache else { return }
-
         isLoadingUser = true
         userLoadError = nil
 
         do {
-            if let user = try await userCache.fetchUser(id: userId) {
-                otherUserName = user.fullName
-                otherUserAvatar = user.profileImageURL ?? ""
+            if let user = try await FirestoreService.shared.fetchUser(id: userId) {
+                otherUserName = user.displayName ?? "User"
+                otherUserAvatar = user.photoURL ?? ""
                 isLoadingUser = false
             } else {
                 userLoadError = "User not found"
@@ -98,11 +96,9 @@ final class ChatDetailViewModel {
     /// Marks all messages in a conversation as read
     func markConversationAsRead(conversationId: String) async {
         guard let messagesStore = messagesStore else { return }
-
-        do {
-            try await messagesStore.markConversationAsRead(conversationId)
-        } catch {
-            print("⚠️ Failed to mark conversation as read: \(error)")
+        let unread = messagesStore.messages[conversationId]?.filter { !$0.isRead } ?? []
+        for message in unread {
+            try? await messagesStore.markAsRead(messageId: message.id, conversationId: conversationId)
         }
     }
 }

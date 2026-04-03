@@ -8,7 +8,7 @@
 import FirebaseFirestore
 
 @Observable
-class ServicesStore {
+class ServicesStore: ListenerManaging {
  var services: [JobService] = []
 
  // MARK: - Error States
@@ -19,6 +19,10 @@ class ServicesStore {
  private var lastDocument: QueryDocumentSnapshot?
  private(set) var hasMoreServices: Bool = true
  private let pageSize = 20
+
+ // MARK: - Listener Management (from ListenerManaging protocol)
+ var activeListeners: [String: ListenerRegistration] = [:]
+ var listenerSetupState: [String: Bool] = [:]
 
  private var db: Firestore {
   Firestore.firestore()
@@ -329,7 +333,33 @@ class ServicesStore {
 
  // MARK: - Retry Logic
 
- func retryLoadingServices() {
-  Task { await fetchServicesPage(reset: true) }
- }
+
+  func retryLoadingServices() {
+    Task { await fetchServicesPage(reset: true) }
+  }
+
+  // MARK: - Cleanup Implementation
+
+  /// Clear all services and reset pagination state
+  func removeAllListeners() {
+    print("🧹 [ServicesStore] Clearing data and resetting state...")
+
+    // Remove Firestore listeners (if any were added in the future)
+    activeListeners.values.forEach { $0.remove() }
+    activeListeners.removeAll()
+    listenerSetupState.removeAll()
+
+    // Clear local data
+    services = []
+    lastDocument = nil
+    hasMoreServices = true
+    isLoadingServices = false
+    servicesError = nil
+    
+    print("🧹 [ServicesStore] State cleared")
+  }
+
+  deinit {
+    removeAllListeners()
+  }
 }

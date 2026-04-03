@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		15D268A29E1CF5BCE1F3DE1A /* ServiceDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769A5D0A3BE0DA1958836649 /* ServiceDetailViewModel.swift */; };
+		2210B20B2F7EC8760015CB1A /* Date+ActivityFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210B20A2F7EC8760015CB1A /* Date+ActivityFormatting.swift */; };
+		2210B20E2F7EC8AE0015CB1A /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210B20C2F7EC8AE0015CB1A /* DashboardViewModel.swift */; };
+		2210B2222F7FFB7D0015CB1A /* PostJobReviewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210B2202F7FFB7D0015CB1A /* PostJobReviewSheet.swift */; };
+		2210B2232F7FFB7D0015CB1A /* CompletionConfirmationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210B21E2F7FFB7D0015CB1A /* CompletionConfirmationSheet.swift */; };
+		2210B2242F7FFB7D0015CB1A /* MarkJobDoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210B21F2F7FFB7D0015CB1A /* MarkJobDoneView.swift */; };
+		2210B2282F7FFBEE0015CB1A /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210B2272F7FFBEE0015CB1A /* SearchViewModel.swift */; };
+		2210B22A2F7FFBF40015CB1A /* ChatDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210B2292F7FFBF40015CB1A /* ChatDetailViewModel.swift */; };
+		2210B22C2F7FFC030015CB1A /* CompletionRequestBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210B22B2F7FFC030015CB1A /* CompletionRequestBanner.swift */; };
+		2210B2312F7FFC190015CB1A /* MockStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210B22E2F7FFC190015CB1A /* MockStorageService.swift */; };
+		2210B2322F7FFC190015CB1A /* MockFirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210B22D2F7FFC190015CB1A /* MockFirestoreService.swift */; };
 		2224E8DE2F6837BE008B556F /* ServiceCategoryGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2224E8DC2F6837BE008B556F /* ServiceCategoryGroup.swift */; };
 		2224E8DF2F6837BE008B556F /* ServiceValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2224E8DD2F6837BE008B556F /* ServiceValidator.swift */; };
 		2224E8E12F6837DA008B556F /* ListenerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2224E8E02F6837DA008B556F /* ListenerManager.swift */; };
@@ -84,7 +95,6 @@
 		224422202F63523F00241E1C /* StudentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244221B2F63523F00241E1C /* StudentCoordinator.swift */; };
 		224422252F64397F00241E1C /* JobServiceFirestoreMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422232F64397F00241E1C /* JobServiceFirestoreMapper.swift */; };
 		224422262F64397F00241E1C /* ServiceActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422242F64397F00241E1C /* ServiceActivity.swift */; };
-		224422272F64397F00241E1C /* JobService+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422212F64397F00241E1C /* JobService+Formatting.swift */; };
 		224422282F64397F00241E1C /* JobService+SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422222F64397F00241E1C /* JobService+SampleData.swift */; };
 		2244222D2F6439AD00241E1C /* User+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224422292F6439AD00241E1C /* User+Formatting.swift */; };
 		2244222E2F6439AD00241E1C /* UserScoreCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2244222B2F6439AD00241E1C /* UserScoreCalculator.swift */; };
@@ -112,7 +122,6 @@
 		226B50152F65D05900C09676 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50112F65D05900C09676 /* AppError.swift */; };
 		226B501B2F65D0B600C09676 /* StorageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50182F65D0B600C09676 /* StorageProvider.swift */; };
 		226B501C2F65D0B600C09676 /* FirestoreProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50172F65D0B600C09676 /* FirestoreProvider.swift */; };
-		226B50212F65E01E00C09676 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		226B50262F66234D00C09676 /* ErrorStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50242F66234D00C09676 /* ErrorStateView.swift */; };
 		226B50272F66234D00C09676 /* ServiceCategoryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226B50252F66234D00C09676 /* ServiceCategoryCard.swift */; };
 		227C499B2F6D5982001E2381 /* MyAddressesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227C499A2F6D5981001E2381 /* MyAddressesView.swift */; };
@@ -153,10 +162,22 @@
 		22FD36F92F57418600AF3127 /* CreateJobTab5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36F32F57418600AF3127 /* CreateJobTab5.swift */; };
 		22FD36FA2F57418600AF3127 /* CreateJobTab2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36F02F57418600AF3127 /* CreateJobTab2.swift */; };
 		22FD36FC2F5741B200AF3127 /* CreateJobViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FD36FB2F5741B200AF3127 /* CreateJobViewModel.swift */; };
+		67F896F47A8A27668A50486B /* ApplyJobSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BC149627222C2D5C260DB3 /* ApplyJobSheet.swift */; };
+		AA11B3102F9EC1230015CB1A /* AllActivitiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11B30F2F9EC1230015CB1A /* AllActivitiesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		221716782F7C3A9400C52617 /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Downloads/important Folder/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
+		2210B20A2F7EC8760015CB1A /* Date+ActivityFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+ActivityFormatting.swift"; sourceTree = "<group>"; };
+		2210B20C2F7EC8AE0015CB1A /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
+		2210B21D2F7FF8FE0015CB1A /* Saadni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Saadni.app; path = "/Users/pavlypaules/Downloads/important Folder/Saadni/build/Debug-iphoneos/Saadni.app"; sourceTree = "<absolute>"; };
+		2210B21E2F7FFB7D0015CB1A /* CompletionConfirmationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionConfirmationSheet.swift; sourceTree = "<group>"; };
+		2210B21F2F7FFB7D0015CB1A /* MarkJobDoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkJobDoneView.swift; sourceTree = "<group>"; };
+		2210B2202F7FFB7D0015CB1A /* PostJobReviewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostJobReviewSheet.swift; sourceTree = "<group>"; };
+		2210B2272F7FFBEE0015CB1A /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		2210B2292F7FFBF40015CB1A /* ChatDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatDetailViewModel.swift; sourceTree = "<group>"; };
+		2210B22B2F7FFC030015CB1A /* CompletionRequestBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionRequestBanner.swift; sourceTree = "<group>"; };
+		2210B22D2F7FFC190015CB1A /* MockFirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFirestoreService.swift; sourceTree = "<group>"; };
+		2210B22E2F7FFC190015CB1A /* MockStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStorageService.swift; sourceTree = "<group>"; };
 		2224E8DC2F6837BE008B556F /* ServiceCategoryGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCategoryGroup.swift; sourceTree = "<group>"; };
 		2224E8DD2F6837BE008B556F /* ServiceValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceValidator.swift; sourceTree = "<group>"; };
 		2224E8E02F6837DA008B556F /* ListenerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenerManager.swift; sourceTree = "<group>"; };
@@ -225,7 +246,6 @@
 		224422182F63523F00241E1C /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		2244221A2F63523F00241E1C /* NavigationDestinations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationDestinations.swift; sourceTree = "<group>"; };
 		2244221B2F63523F00241E1C /* StudentCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentCoordinator.swift; sourceTree = "<group>"; };
-		224422212F64397F00241E1C /* JobService+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobService+Formatting.swift"; sourceTree = "<group>"; };
 		224422222F64397F00241E1C /* JobService+SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobService+SampleData.swift"; sourceTree = "<group>"; };
 		224422232F64397F00241E1C /* JobServiceFirestoreMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobServiceFirestoreMapper.swift; sourceTree = "<group>"; };
 		224422242F64397F00241E1C /* ServiceActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceActivity.swift; sourceTree = "<group>"; };
@@ -297,6 +317,9 @@
 		22FD36F32F57418600AF3127 /* CreateJobTab5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobTab5.swift; sourceTree = "<group>"; };
 		22FD36FB2F5741B200AF3127 /* CreateJobViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateJobViewModel.swift; sourceTree = "<group>"; };
 		30DA4D8FE38E6191DE8527BE /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
+		45BC149627222C2D5C260DB3 /* ApplyJobSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ApplyJobSheet.swift; sourceTree = "<group>"; };
+		769A5D0A3BE0DA1958836649 /* ServiceDetailViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ServiceDetailViewModel.swift; sourceTree = "<group>"; };
+		AA11B30F2F9EC1230015CB1A /* AllActivitiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllActivitiesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -318,6 +341,58 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2210B20D2F7EC8AE0015CB1A /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				2210B20C2F7EC8AE0015CB1A /* DashboardViewModel.swift */,
+				AA11B30F2F9EC1230015CB1A /* AllActivitiesView.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		2210B2212F7FFB7D0015CB1A /* JobCompletion */ = {
+			isa = PBXGroup;
+			children = (
+				2210B21E2F7FFB7D0015CB1A /* CompletionConfirmationSheet.swift */,
+				2210B21F2F7FFB7D0015CB1A /* MarkJobDoneView.swift */,
+				2210B2202F7FFB7D0015CB1A /* PostJobReviewSheet.swift */,
+			);
+			path = JobCompletion;
+			sourceTree = "<group>";
+		};
+		2210B2252F7FFBD50015CB1A /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				2210B2292F7FFBF40015CB1A /* ChatDetailViewModel.swift */,
+			);
+			path = Chat;
+			sourceTree = "<group>";
+		};
+		2210B2262F7FFBD50015CB1A /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				2210B2272F7FFBEE0015CB1A /* SearchViewModel.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		2210B22F2F7FFC190015CB1A /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				2210B22D2F7FFC190015CB1A /* MockFirestoreService.swift */,
+				2210B22E2F7FFC190015CB1A /* MockStorageService.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
+		2210B2302F7FFC190015CB1A /* DI */ = {
+			isa = PBXGroup;
+			children = (
+				2210B22F2F7FFC190015CB1A /* Mocks */,
+			);
+			path = DI;
+			sourceTree = "<group>";
+		};
 		222517552F7C18D600F99714 /* General */ = {
 			isa = PBXGroup;
 			children = (
@@ -361,6 +436,8 @@
 		2236A1442F50949000A7A19F /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				2210B22B2F7FFC030015CB1A /* CompletionRequestBanner.swift */,
+				224422352F643AB700241E1C /* Profile */,
 				222517552F7C18D600F99714 /* General */,
 				222517562F7C18FA00F99714 /* StudentsViewsRelated */,
 				222517572F7C190900F99714 /* ProviderViewsRelated */,
@@ -429,6 +506,7 @@
 		2236A14B2F50949000A7A19F /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				2210B2302F7FFC190015CB1A /* DI */,
 				2225174B2F7AD40C00F99714 /* StateKey.swift */,
 				22C198C12F7974E100555D41 /* Notifications */,
 				226B50132F65D05900C09676 /* Error */,
@@ -445,6 +523,8 @@
 			children = (
 				224421D82F6337CC00241E1C /* ServiceCompletionView.swift */,
 				2236A1612F50949000A7A19F /* ServiceDetailView.swift */,
+				45BC149627222C2D5C260DB3 /* ApplyJobSheet.swift */,
+				769A5D0A3BE0DA1958836649 /* ServiceDetailViewModel.swift */,
 			);
 			path = ServiceDetail;
 			sourceTree = "<group>";
@@ -452,6 +532,10 @@
 		2236A1642F50949000A7A19F /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				2210B2252F7FFBD50015CB1A /* Chat */,
+				2210B2262F7FFBD50015CB1A /* Search */,
+				2210B2212F7FFB7D0015CB1A /* JobCompletion */,
+				2210B20D2F7EC8AE0015CB1A /* Dashboard */,
 				22FD35F42F55F5CE00AF3127 /* LaunchScreen */,
 				227C499D2F6D7ED7001E2381 /* Onboarding */,
 				2236A1D22F53281E00A7A19F /* Authentication */,
@@ -482,7 +566,7 @@
 			isa = PBXGroup;
 			children = (
 				22FD36DA2F57168300AF3127 /* App */,
-				22FD35F62F56E83E00AF3127 /* Modules */,
+				22FD35F62F56E83E00AF3127 /* Models */,
 				2236A14B2F50949000A7A19F /* Core */,
 				2236A1642F50949000A7A19F /* Features */,
 				2236A16A2F50949000A7A19F /* MainViews */,
@@ -606,7 +690,7 @@
 			path = Navigation;
 			sourceTree = "<group>";
 		};
-		224422352F643AB700241E1C /* Components */ = {
+		224422352F643AB700241E1C /* Profile */ = {
 			isa = PBXGroup;
 			children = (
 				22C198B52F78099D00555D41 /* ProfileCompletionPopup.swift */,
@@ -615,7 +699,7 @@
 				224422332F643AB700241E1C /* RoleSwitcherView.swift */,
 				224422342F643AB700241E1C /* WorkManagementSection.swift */,
 			);
-			path = Components;
+			path = Profile;
 			sourceTree = "<group>";
 		};
 		224422372F643AB700241E1C /* Profile */ = {
@@ -624,7 +708,6 @@
 				22C198B72F7809AE00555D41 /* EditProfileSheet.swift */,
 				22C198B82F7809AE00555D41 /* UserProfileSheet.swift */,
 				227C499A2F6D5981001E2381 /* MyAddressesView.swift */,
-				224422352F643AB700241E1C /* Components */,
 				224422362F643AB700241E1C /* ProfileViewModel.swift */,
 			);
 			path = Profile;
@@ -748,7 +831,7 @@
 			path = LaunchScreen;
 			sourceTree = "<group>";
 		};
-		22FD35F62F56E83E00AF3127 /* Modules */ = {
+		22FD35F62F56E83E00AF3127 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				2236A1AF2F5321E300A7A19F /* Account */,
@@ -760,15 +843,15 @@
 				22FD35F72F56E8B600AF3127 /* Services */,
 				2244224B2F643FE000241E1C /* Wallet */,
 			);
-			path = Modules;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		22FD35F72F56E8B600AF3127 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				2210B20A2F7EC8760015CB1A /* Date+ActivityFormatting.swift */,
 				2224E8DC2F6837BE008B556F /* ServiceCategoryGroup.swift */,
 				2224E8DD2F6837BE008B556F /* ServiceValidator.swift */,
-				224422212F64397F00241E1C /* JobService+Formatting.swift */,
 				224422222F64397F00241E1C /* JobService+SampleData.swift */,
 				224422232F64397F00241E1C /* JobServiceFirestoreMapper.swift */,
 				224422242F64397F00241E1C /* ServiceActivity.swift */,
@@ -875,7 +958,7 @@
 				226B500F2F65A5F700C09676 /* Kingfisher */,
 			);
 			productName = Saadni;
-			productReference = 221716782F7C3A9400C52617 /* Saadni.app */;
+			productReference = 2210B21D2F7FF8FE0015CB1A /* Saadni.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -944,12 +1027,17 @@
 				22FD36D22F5714F900AF3127 /* RoleSelectionView.swift in Sources */,
 				22EFE4002F6AA98C00C5EBBB /* AppDelegate.swift in Sources */,
 				224421C22F62CD8800241E1C /* ImagePickerSheet.swift in Sources */,
+				2210B2312F7FFC190015CB1A /* MockStorageService.swift in Sources */,
+				2210B2322F7FFC190015CB1A /* MockFirestoreService.swift in Sources */,
 				224421C42F62D1F800241E1C /* ProfileMenuRow.swift in Sources */,
 				22FD36D32F5714F900AF3127 /* NeedWork.swift in Sources */,
 				2244220A2F634EEC00241E1C /* MessagesStore.swift in Sources */,
 				22FD36D42F5714F900AF3127 /* JobProvider.swift in Sources */,
 				2224E8DE2F6837BE008B556F /* ServiceCategoryGroup.swift in Sources */,
+				2210B20B2F7EC8760015CB1A /* Date+ActivityFormatting.swift in Sources */,
 				22C198B92F7809AE00555D41 /* UserProfileSheet.swift in Sources */,
+				2210B20E2F7EC8AE0015CB1A /* DashboardViewModel.swift in Sources */,
+				AA11B3102F9EC1230015CB1A /* AllActivitiesView.swift in Sources */,
 				22C198BA2F7809AE00555D41 /* EditProfileSheet.swift in Sources */,
 				2224E8E12F6837DA008B556F /* ListenerManager.swift in Sources */,
 				2224E8DF2F6837BE008B556F /* ServiceValidator.swift in Sources */,
@@ -971,7 +1059,6 @@
 				224422082F634EBE00241E1C /* Message.swift in Sources */,
 				224422252F64397F00241E1C /* JobServiceFirestoreMapper.swift in Sources */,
 				224422262F64397F00241E1C /* ServiceActivity.swift in Sources */,
-				224422272F64397F00241E1C /* JobService+Formatting.swift in Sources */,
 				224422282F64397F00241E1C /* JobService+SampleData.swift in Sources */,
 				224422162F63500B00241E1C /* ChatDetailView.swift in Sources */,
 				224422172F63500B00241E1C /* ChatListView.swift in Sources */,
@@ -1011,6 +1098,7 @@
 				2244224C2F643FE000241E1C /* Transaction.swift in Sources */,
 				2244224D2F643FE000241E1C /* WalletStore.swift in Sources */,
 				224421D72F63368D00241E1C /* ReviewsStore.swift in Sources */,
+				2210B2282F7FFBEE0015CB1A /* SearchViewModel.swift in Sources */,
 				2236A1B52F5321E300A7A19F /* StorageService.swift in Sources */,
 				22FD36F42F57418600AF3127 /* ConfettiView.swift in Sources */,
 				22FD36F52F57418600AF3127 /* CreateJobSheet.swift in Sources */,
@@ -1055,8 +1143,8 @@
 				22FD36E22F571CE800AF3127 /* HomeView.swift in Sources */,
 				224421D92F6337CC00241E1C /* ServiceCompletionView.swift in Sources */,
 				22FD35F52F55F5CE00AF3127 /* LaunchScreen.swift in Sources */,
+				2210B22C2F7FFC030015CB1A /* CompletionRequestBanner.swift in Sources */,
 				224421B12F60784600241E1C /* RoleOptionCard.swift in Sources */,
-				226B50212F65E01E00C09676 /* (null) in Sources */,
 				22FD36DB2F57168300AF3127 /* AppStateManager.swift in Sources */,
 				22FD36DC2F57168300AF3127 /* MainView.swift in Sources */,
 				22FD36DD2F57168300AF3127 /* SaadniApp.swift in Sources */,
@@ -1070,6 +1158,12 @@
 				2236A18B2F50949000A7A19F /* ProfileView.swift in Sources */,
 				224421FE2F633B0000241E1C /* CompletedServicesView.swift in Sources */,
 				224421FF2F633B0000241E1C /* UserReviewsView.swift in Sources */,
+				2210B2222F7FFB7D0015CB1A /* PostJobReviewSheet.swift in Sources */,
+				2210B2232F7FFB7D0015CB1A /* CompletionConfirmationSheet.swift in Sources */,
+				2210B2242F7FFB7D0015CB1A /* MarkJobDoneView.swift in Sources */,
+				67F896F47A8A27668A50486B /* ApplyJobSheet.swift in Sources */,
+				15D268A29E1CF5BCE1F3DE1A /* ServiceDetailViewModel.swift in Sources */,
+				2210B22A2F7FFBF40015CB1A /* ChatDetailViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

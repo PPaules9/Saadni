@@ -24,7 +24,6 @@ class WalletStore: ListenerManaging {
     var listenerSetupState: [String: Bool] = [:]
 
     private var currentUserId: String?
-    private var balanceListener: ListenerRegistration?
 
     private var db: Firestore {
         Firestore.firestore()
@@ -32,30 +31,26 @@ class WalletStore: ListenerManaging {
 
     deinit {
         removeAllListeners()
-        balanceListener?.remove()
     }
 
     // MARK: - Listener Management Implementation
 
-    func addListener(id: String, listener: ListenerRegistration) {
-        removeListener(id: id)
-        activeListeners[id] = listener
-        print("📡 [Listener] Added: \(id) (total active: \(activeListeners.count))")
-    }
-
-    func removeListener(id: String) {
-        if let listener = activeListeners.removeValue(forKey: id) {
-            listener.remove()
-            print("🧹 [Listener] Removed: \(id) (total active: \(activeListeners.count))")
-        }
-    }
-
+    /// Clear all listeners and reset local data
     func removeAllListeners() {
-        print("🧹 [Listener] Removing all \(activeListeners.count) listeners...")
+        print("🧹 [WalletStore] Clearing all listeners and resetting state...")
+        
+        // Remove Firestore listeners
         activeListeners.values.forEach { $0.remove() }
         activeListeners.removeAll()
         listenerSetupState.removeAll()
-        print("🧹 [Listener] All listeners removed")
+        
+        // Clear local data for next session
+        transactions = []
+        walletBalance = 0.0
+        isLoadingTransactions = false
+        transactionsError = nil
+        
+        print("🧹 [WalletStore] State cleared")
     }
 
     // MARK: - Setup & Teardown
@@ -65,8 +60,6 @@ class WalletStore: ListenerManaging {
     /// - Throws: Firestore errors during listener setup
     func setupListeners(userId: String) async throws {
         removeAllListeners()
-        balanceListener?.remove()
-        balanceListener = nil
 
         currentUserId = userId
         isLoadingTransactions = true
@@ -116,15 +109,18 @@ class WalletStore: ListenerManaging {
 
         // Listen to the authoritative walletBalance on the User document.
         // This is kept accurate by FieldValue.increment in addTransaction().
-        balanceListener = db.collection("users").document(userId)
+        let balanceListenerId = "balance"
+        let balanceListener = db.collection("users").document(userId)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self, let data = snapshot?.data() else { return }
                 let balance = data["walletBalance"] as? Double ?? 0.0
                 Task { @MainActor in
                     self.walletBalance = balance
-                    print("💰 Wallet balance updated: EGP \(String(format: "%.2f", balance))")
+                    print("💰 [WalletStore] Balance updated: EGP \(String(format: "%.2f", balance))")
                 }
             }
+        
+        addListener(id: balanceListenerId, listener: balanceListener)
 
         print("🔄 [WalletStore] Listeners setup for user: \(userId)")
     }

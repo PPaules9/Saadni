@@ -57,6 +57,7 @@ struct MainView: View {
   .environment(container.messagesStore)
   .environment(container.reviewsStore)
   .environment(container.walletStore)
+  .environment(container.dashboardViewModel)
   .alert("Error", isPresented: Binding(
    get: { container.errorHandler.isPresented },
    set: { newValue in

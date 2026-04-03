@@ -9,9 +9,10 @@ import SwiftUI
 
 struct NotificationCardView: View {
 	let notification: Notification
+	let onTap: () -> Void
 	let onMarkAsRead: () -> Void
 	let onDelete: () -> Void
-	
+
 	@State private var isShowingDeleteConfirmation = false
 	
 	var body: some View {
@@ -104,6 +105,8 @@ struct NotificationCardView: View {
 			.opacity(notification.read ? 0.6 : 1.0)
 	
 		}
+		.contentShape(Rectangle())
+		.onTapGesture { onTap() }
 		.confirmationDialog(
 			"Delete Notification",
 			isPresented: $isShowingDeleteConfirmation,
@@ -186,6 +189,7 @@ struct NotificationCardView: View {
 			priority: .high,
 			category: .applications
 		),
+		onTap: {},
 		onMarkAsRead: {},
 		onDelete: {}
 	)

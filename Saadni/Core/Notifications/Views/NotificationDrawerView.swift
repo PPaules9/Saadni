@@ -10,7 +10,8 @@ import SwiftUI
 struct NotificationDrawerView: View {
 	@Environment(\.notificationsStore) var notificationsStore
 	@Environment(\.dismiss) var dismiss
-	
+	@Environment(AppCoordinator.self) var appCoordinator
+
 	let userRole: UserRole
 	@State private var selectedFilter: NotificationCategory? = nil
 	@State private var searchText = ""
@@ -105,6 +106,9 @@ struct NotificationDrawerView: View {
 								ForEach(filteredNotifications, id: \.id) { notification in
 									NotificationCardView(
 										notification: notification,
+										onTap: {
+											handleNotificationTap(notification)
+										},
 										onMarkAsRead: {
 											Task {
 												await notificationsStore.markAsRead(notification)
@@ -209,6 +213,17 @@ struct NotificationDrawerView: View {
 	}
 	
 	// MARK: - Actions
+
+	private func handleNotificationTap(_ notification: Notification) {
+		if !notification.read {
+			Task { await notificationsStore.markAsRead(notification) }
+		}
+		dismiss()
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+			appCoordinator.handleNotificationNavigation(notification)
+		}
+	}
+
 	private func markAllAsRead() {
 		Task {
 			await notificationsStore.markAllAsRead()
@@ -246,7 +261,11 @@ struct FilterPill: View {
 // MARK: - Preview
 
 #Preview {
-	NotificationDrawerView(userRole: .jobSeeker)
+	let userCache = UserCache()
+	let authManager = AuthenticationManager(userCache: userCache)
+	let coordinator = AppCoordinator(authManager: authManager, userCache: userCache)
+	return NotificationDrawerView(userRole: .jobSeeker)
 		.environment(\.notificationsStore, NotificationsStore())
+		.environment(coordinator)
 }
 

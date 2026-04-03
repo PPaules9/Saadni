@@ -90,9 +90,10 @@ struct JobApplication: Codable, Identifiable, Hashable {
 // MARK: - Job Application Status
 enum JobApplicationStatus: String, Codable {
     case pending = "pending"        // Waiting for provider response
-    case accepted = "accepted"      // Provider accepted
+    case accepted = "accepted"      // Provider accepted (hired)
     case rejected = "rejected"      // Provider rejected
     case withdrawn = "withdrawn"    // Applicant cancelled
+    case completed = "completed"    // Job fully done and confirmed by provider
 }
 
 // MARK: - Computed Properties
@@ -105,12 +106,17 @@ extension JobApplication {
         return status == .accepted
     }
 
+    var isCompleted: Bool {
+        return status == .completed
+    }
+
     var statusDisplayText: String {
         switch status {
         case .pending: return "Pending"
         case .accepted: return "Accepted"
         case .rejected: return "Rejected"
         case .withdrawn: return "Withdrawn"
+        case .completed: return "Completed"
         }
     }
 
@@ -120,6 +126,7 @@ extension JobApplication {
         case .accepted: return "green"
         case .rejected: return "red"
         case .withdrawn: return "gray"
+        case .completed: return "purple"
         }
     }
 }

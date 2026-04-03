@@ -10,7 +10,7 @@ import FirebaseFirestore
 import SwiftUI
 
 @Observable
-class ConversationsStore {
+class ConversationsStore: ListenerManaging {
     // MARK: - State
 
     /// All conversations for the current user
@@ -27,7 +27,10 @@ class ConversationsStore {
 
     // MARK: - Private Properties
 
-    private var listener: ListenerRegistration?
+    // MARK: - Listener Management (from ListenerManaging protocol)
+    var activeListeners: [String: ListenerRegistration] = [:]
+    var listenerSetupState: [String: Bool] = [:]
+
     private let db: Firestore
 
     init() {
@@ -35,18 +38,24 @@ class ConversationsStore {
     }
 
     deinit {
-        stopListening()
+        removeAllListeners()
     }
 
     // MARK: - Setup & Teardown
 
     /// Setup real-time listener for user's conversations
     func setupListeners(userId: String) {
-        stopListening()
+        let listenerId = "userConversations"
+        
+        // Skip if already listening
+        guard !isListenerActive(id: listenerId) else {
+            print("⚠️ Listener already active for conversations")
+            return
+        }
 
         isLoading = true
 
-        listener = db.collection("conversations")
+        let listener = db.collection("conversations")
             .whereField("participantIds", arrayContains: userId)
             .order(by: "lastMessageTime", descending: true)
             .limit(to: 30)
@@ -77,14 +86,33 @@ class ConversationsStore {
                     }
                 }
 
-                print("✅ Loaded \(fetchedConversations.count) conversations")
+                print("✅ [ConversationsStore] Loaded \(fetchedConversations.count) conversations")
             }
+        
+        addListener(id: listenerId, listener: listener)
     }
 
-    /// Stop listening for conversations
+    /// Stop listening for conversations and clear local state
+    func removeAllListeners() {
+        print("🧹 [ConversationsStore] Removing all listeners and clearing state...")
+        
+        // Remove Firestore listeners
+        activeListeners.values.forEach { $0.remove() }
+        activeListeners.removeAll()
+        listenerSetupState.removeAll()
+        
+        // Clear local data for next session
+        conversations = []
+        conversationsByUserId = [:]
+        error = nil
+        isLoading = false
+        
+        print("🧹 [ConversationsStore] State cleared")
+    }
+
+    @available(*, deprecated, renamed: "removeAllListeners")
     func stopListening() {
-        listener?.remove()
-        listener = nil
+        removeAllListeners()
     }
 
     // MARK: - Conversation Operations

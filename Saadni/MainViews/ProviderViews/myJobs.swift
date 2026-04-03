@@ -18,6 +18,7 @@ struct myJobs: View {
     @Environment(ServicesStore.self) var servicesStore
     @Environment(ApplicationsStore.self) var applicationsStore
     @Environment(AppCoordinator.self) var appCoordinator
+    @Environment(ReviewsStore.self) var reviewsStore
 
     @State private var selectedTab: MyJobsTab = .myJobs
     @State private var userServices: [JobService] = []
@@ -27,6 +28,13 @@ struct myJobs: View {
     @State private var filterOption: ServiceFilterOption = .active
     @State private var selectedApplicantID: ApplicantID?
     @State private var selectedCalendarDate: Date = Date()
+    @State private var selectedCompletionService: JobService?
+    @State private var actionError: String?
+    @State private var showActionError = false
+
+    var pendingCompletionServices: [JobService] {
+        userServices.filter { $0.status == .pendingCompletion }
+    }
 
     var filteredServices: [JobService] {
         switch filterOption {
@@ -34,7 +42,8 @@ struct myJobs: View {
             return userServices
         case .active:
             return userServices.filter {
-                $0.status == .published || $0.status == .active
+                $0.status == .published || $0.status == .active ||
+                $0.status == .pendingCompletion || $0.status == .disputed
             }
         case .completed:
             return userServices.filter { $0.status == .completed }
@@ -80,6 +89,27 @@ struct myJobs: View {
         .sheet(item: $selectedApplicantID) { identifier in
             UserProfileSheet(userId: identifier.id)
         }
+        .sheet(item: $selectedCompletionService) { service in
+            if let application = applicationsStore.receivedApplications.first(where: {
+                $0.serviceId == service.id && $0.status == .accepted
+            }) {
+                CompletionConfirmationSheet(service: service, application: application)
+                    .environment(applicationsStore)
+                    .environment(authManager)
+                    .environment(reviewsStore)
+            } else {
+                ContentUnavailableView(
+                    "Application Not Found",
+                    systemImage: "person.fill.questionmark",
+                    description: Text("Could not load the hired applicant's details.")
+                )
+            }
+        }
+        .alert("Error", isPresented: $showActionError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(actionError ?? "An error occurred")
+        }
         .task {
             await loadData()
         }
@@ -111,6 +141,13 @@ struct myJobs: View {
                 .padding(.top, 100)
             } else {
                 LazyVStack(spacing: 16) {
+                    // Completion banners at the top
+                    ForEach(pendingCompletionServices) { service in
+                        CompletionRequestBanner(service: service) {
+                            openCompletionConfirmation(for: service)
+                        }
+                    }
+
                     ForEach(filteredServices) { service in
                         NavigationLink(value: ServiceProviderDestination.serviceDetail(service)) {
                             ServiceCard(service: service)
@@ -148,16 +185,53 @@ struct myJobs: View {
                 LazyVStack(spacing: 12) {
                     ForEach(receivedApplications) { application in
                         if let service = userServices.first(where: { $0.id == application.serviceId }) {
-                            Button(action: {
-                                selectedApplicantID = ApplicantID(id: application.applicantId)
-                            }) {
-                                ApplicantCard(
-                                    application: application,
-                                    service: service,
-                                    applicant: applicantUsers[application.applicantId]
-                                )
+                            VStack(spacing: 0) {
+                                Button(action: {
+                                    selectedApplicantID = ApplicantID(id: application.applicantId)
+                                }) {
+                                    ApplicantCard(
+                                        application: application,
+                                        service: service,
+                                        applicant: applicantUsers[application.applicantId]
+                                    )
+                                }
+                                .foregroundColor(.primary)
+
+                                // Accept / Reject row for pending applications
+                                if application.status == .pending {
+                                    HStack(spacing: 10) {
+                                        Button {
+                                            Task { await accept(application, service: service) }
+                                        } label: {
+                                            Label("Accept", systemImage: "checkmark")
+                                                .font(.system(size: 13, weight: .semibold))
+                                                .frame(maxWidth: .infinity)
+                                                .padding(.vertical, 10)
+                                                .background(Color.green)
+                                                .foregroundColor(.white)
+                                                .cornerRadius(10)
+                                        }
+                                        .buttonStyle(.plain)
+
+                                        Button {
+                                            Task { await reject(application) }
+                                        } label: {
+                                            Label("Reject", systemImage: "xmark")
+                                                .font(.system(size: 13, weight: .semibold))
+                                                .frame(maxWidth: .infinity)
+                                                .padding(.vertical, 10)
+                                                .background(Color.red)
+                                                .foregroundColor(.white)
+                                                .cornerRadius(10)
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                    .padding(.horizontal, 12)
+                                    .padding(.bottom, 12)
+                                    .background(Color(.systemGray6))
+                                    .cornerRadius(12)
+                                }
                             }
-                            .foregroundColor(.primary)
                         }
                     }
                 }
@@ -234,6 +308,35 @@ struct myJobs: View {
                     // Continue loading other users even if one fails
                 }
             }
+        }
+    }
+
+    private func openCompletionConfirmation(for service: JobService) {
+        selectedCompletionService = service
+    }
+
+    private func accept(_ application: JobApplication, service: JobService) async {
+        do {
+            try await applicationsStore.acceptApplication(
+                applicationId: application.id,
+                serviceId: service.id
+            )
+            await loadData()
+        } catch {
+            actionError = error.localizedDescription
+            showActionError = true
+        }
+    }
+
+    private func reject(_ application: JobApplication) async {
+        do {
+            try await applicationsStore.updateApplicationStatus(
+                applicationId: application.id,
+                newStatus: .rejected
+            )
+        } catch {
+            actionError = error.localizedDescription
+            showActionError = true
         }
     }
 

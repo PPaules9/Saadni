@@ -20,6 +20,8 @@ struct ApplicationStatusBadge: View {
             return ("Rejected", .red, "xmark.circle.fill")
         case .withdrawn:
             return ("Withdrawn", .gray, "arrow.uturn.backward")
+        case .completed:
+            return ("Completed", .purple, "checkmark.seal.fill")
         }
     }
 

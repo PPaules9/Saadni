@@ -11,6 +11,11 @@ struct AppliedJobsView: View {
 	@Environment(AuthenticationManager.self) var authManager
 	@Environment(ApplicationsStore.self) var applicationsStore
 	@Environment(ServicesStore.self) var servicesStore
+	@Environment(ReviewsStore.self) var reviewsStore
+	@Environment(ConversationsStore.self) var conversationsStore
+
+	@State private var markDoneService: JobService?
+	@State private var reviewService: JobService?
 	
 	var applications: [JobApplication] {
 		applicationsStore.myApplications
@@ -70,13 +75,72 @@ struct AppliedJobsView: View {
 						LazyVStack(spacing: 12) {
 							ForEach(applications) { application in
 								if let service = serviceMap[application.serviceId] {
-									NavigationLink(destination: ServiceDetailView(service: service)) {
-										AppliedServiceCard(
-											service: service,
-											application: application
-										)
+									VStack(spacing: 0) {
+										NavigationLink(destination: ServiceDetailView(service: service)) {
+											AppliedServiceCard(
+												service: service,
+												application: application
+											)
+										}
+										.buttonStyle(.plain)
+
+										// Quick action for hired student
+										if application.status == .accepted {
+											if service.status == .active {
+												Button {
+													markDoneService = service
+												} label: {
+													HStack(spacing: 8) {
+														Image(systemName: "checkmark.circle.fill")
+														Text("Mark as Done")
+															.fontWeight(.semibold)
+													}
+													.font(.subheadline)
+													.frame(maxWidth: .infinity)
+													.padding(.vertical, 12)
+													.background(Color.green)
+													.foregroundColor(.white)
+													.cornerRadius(10)
+													.padding([.horizontal, .bottom], 12)
+												}
+												.buttonStyle(.plain)
+											} else if service.status == .pendingCompletion {
+												HStack(spacing: 8) {
+													Image(systemName: "clock.badge.checkmark.fill")
+														.foregroundStyle(.purple)
+													Text("Awaiting Confirmation")
+														.font(.subheadline)
+														.fontWeight(.semibold)
+														.foregroundStyle(.purple)
+												}
+												.frame(maxWidth: .infinity)
+												.padding(.vertical, 12)
+												.background(Color.purple.opacity(0.08))
+												.cornerRadius(10)
+												.padding([.horizontal, .bottom], 12)
+											}
+										}
+
+										if application.status == .completed || service.status == .completed {
+											Button {
+												reviewService = service
+											} label: {
+												HStack(spacing: 8) {
+													Image(systemName: "star.fill")
+													Text("Leave a Review")
+														.fontWeight(.semibold)
+												}
+												.font(.subheadline)
+												.frame(maxWidth: .infinity)
+												.padding(.vertical, 12)
+												.background(Color.yellow.opacity(0.15))
+												.foregroundColor(.orange)
+												.cornerRadius(10)
+												.padding([.horizontal, .bottom], 12)
+											}
+											.buttonStyle(.plain)
+										}
 									}
-									.buttonStyle(.plain)
 								}
 							}
 						}
@@ -89,6 +153,21 @@ struct AppliedJobsView: View {
 			}
 			.navigationTitle("My Jobs")
 			.background(Colors.swiftUIColor(.appBackground))
+		}
+		.sheet(item: $markDoneService) { service in
+			MarkJobDoneView(service: service)
+				.environment(applicationsStore)
+				.environment(conversationsStore)
+		}
+		.sheet(item: $reviewService) { service in
+			PostJobReviewSheet(
+				service: service,
+				revieweeId: service.providerId,
+				revieweeName: service.providerName ?? "Provider",
+				reviewerRole: .seeker
+			)
+			.environment(authManager)
+			.environment(reviewsStore)
 		}
 	}
 	

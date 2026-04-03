@@ -12,7 +12,7 @@ import Foundation
 import FirebaseFirestore
 
 /// Protocol for consistent listener management across all stores
-protocol ListenerManaging {
+protocol ListenerManaging: AnyObject {
     /// Store all active listeners with their IDs for cleanup
     var activeListeners: [String: ListenerRegistration] { get set }
 
@@ -37,5 +37,29 @@ protocol ListenerManaging {
 extension ListenerManaging {
     func isListenerActive(id: String) -> Bool {
         return activeListeners[id] != nil
+    }
+
+    /// Default implementation for adding a listener (replaces existing if any)
+    func addListener(id: String, listener: ListenerRegistration) {
+        removeListener(id: id)
+        activeListeners[id] = listener
+        print("📡 [Listener] Added: \(id) (total active: \(activeListeners.count))")
+    }
+
+    /// Default implementation for removing a specific listener
+    func removeListener(id: String) {
+        if let listener = activeListeners.removeValue(forKey: id) {
+            listener.remove()
+            print("🧹 [Listener] Removed: \(id) (total active: \(activeListeners.count))")
+        }
+    }
+
+    /// Default implementation for removing all listeners
+    func removeAllListeners() {
+        print("🧹 [Listener] Removing all \(activeListeners.count) listeners...")
+        activeListeners.values.forEach { $0.remove() }
+        activeListeners.removeAll()
+        listenerSetupState.removeAll()
+        print("🧹 [Listener] All listeners removed")
     }
 }

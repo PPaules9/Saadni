@@ -137,7 +137,7 @@ final class ServiceDetailViewModel {
     /// Gets reviews for a service
     func getReviewsForService(_ serviceId: String) -> [Review] {
         guard let reviewsStore = reviewsStore else { return [] }
-        return reviewsStore.getReviewsForService(serviceId)
+        return reviewsStore.reviewsIReceived.filter { $0.serviceId == serviceId }
     }
 
     /// Checks if current user has reviewed the service

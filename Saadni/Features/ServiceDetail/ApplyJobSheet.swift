@@ -365,7 +365,7 @@ struct ApplyJobSheet: View {
                 serviceId: service.id,
                 providerId: service.providerId,
                 applicantId: currentUserId,
-                applicantName: currentUser.displayName,
+                applicantName: currentUser.displayName ?? "User",
                 applicantPhotoURL: currentUser.photoURL,
                 coverMessage: coverMessage.isEmpty ? nil : coverMessage
             )
