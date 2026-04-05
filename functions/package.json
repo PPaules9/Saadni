@@ -1,6 +1,6 @@
 {
-  "name": "saadni-functions",
-  "description": "Cloud Functions for Saadni push notifications",
+  "name": "goodshift-functions",
+  "description": "Cloud Functions for GoodShift push notifications",
   "scripts": {
     "build": "tsc",
     "serve": "npm run build && firebase emulators:start --only functions",

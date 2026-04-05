@@ -1,0 +1,3734 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+
+    },
+    "(%lld)" : {
+
+    },
+    "*" : {
+
+    },
+    "/ 5" : {
+
+    },
+    "/ 100" : {
+
+    },
+    "%" : {
+
+    },
+    "%@" : {
+
+    },
+    "%@ " : {
+
+    },
+    "%@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "%@ • Floor %@, Unit %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ • الدور %2$@, شقة %3$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ • Floor %2$@, Unit %3$@"
+          }
+        }
+      }
+    },
+    "%@ says they've finished the work." : {
+
+    },
+    "%lld" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
+    },
+    "%lld %@%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld %2$@%3$@"
+          }
+        }
+      }
+    },
+    "%lld shift(s) successfully published." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم نشر %lld شيفت(ات) بنجاح."
+          }
+        }
+      }
+    },
+    "%lld shift%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld shift%2$@"
+          }
+        }
+      }
+    },
+    "%lld/500" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/500"
+          }
+        }
+      }
+    },
+    "%lld%%" : {
+
+    },
+    "•" : {
+
+    },
+    "👤" : {
+
+    },
+    "🖼️" : {
+
+    },
+    "4.76" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4.76"
+          }
+        }
+      }
+    },
+    "99+" : {
+
+    },
+    "About" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عن"
+          }
+        }
+      }
+    },
+    "About This Job" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عن الشغلانة"
+          }
+        }
+      }
+    },
+    "Accept" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "موافق"
+          }
+        }
+      }
+    },
+    "Activity" : {
+
+    },
+    "Add" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ضيف"
+          }
+        }
+      }
+    },
+    "Add Service View" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ضيف خدمة"
+          }
+        }
+      }
+    },
+    "Added" : {
+
+    },
+    "Added to Calendar" : {
+
+    },
+    "Address" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عنوان"
+          }
+        }
+      }
+    },
+    "Address Saved" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العنوان اتحفظ"
+          }
+        }
+      }
+    },
+    "Address Type" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نوع العنوان"
+          }
+        }
+      }
+    },
+    "Age" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سنك"
+          }
+        }
+      }
+    },
+    "Air Conditioner" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تكيف"
+          }
+        }
+      }
+    },
+    "All" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كله"
+          }
+        }
+      }
+    },
+    "All fields here are optional. Provide details if your shift requires them." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كل الحاجات دي اختياري. حط تفاصيل لو الشيفت محتاجها."
+          }
+        }
+      }
+    },
+    "Already Applied" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قدمت قبل كده"
+          }
+        }
+      }
+    },
+    "Already Featured" : {
+
+    },
+    "Already have an account? " : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عندك حساب؟ "
+          }
+        }
+      }
+    },
+    "Applicants will appear here once someone applies to your jobs" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اي حد قدم علي شغلك هيظهرلك هنا"
+          }
+        }
+      }
+    },
+    "Application Detail Sheet" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تفاصيل التقديم"
+          }
+        }
+      }
+    },
+    "Application Not Found" : {
+
+    },
+    "Application Sent!" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "طلبك اتبعت!"
+          }
+        }
+      }
+    },
+    "Applications (%lld)" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التقديمات (%lld)"
+          }
+        }
+      }
+    },
+    "Applications List for %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لستة التقديمات لـ %@"
+          }
+        }
+      }
+    },
+    "Applications List Sheet" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لستة التقديمات"
+          }
+        }
+      }
+    },
+    "Applied" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قدمت"
+          }
+        }
+      }
+    },
+    "Apply for Job" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قدم على الشغلانة"
+          }
+        }
+      }
+    },
+    "Apply for This Job" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قدم على الشغلانة دي"
+          }
+        }
+      }
+    },
+    "Apply Sheet for %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تقديم لـ %@"
+          }
+        }
+      }
+    },
+    "Apply to a job to see your activity here." : {
+
+    },
+    "Archive" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أرشيف"
+          }
+        }
+      }
+    },
+    "Are you sure you want to delete this notification?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متأكد من مسح الاشعار ده ؟"
+          }
+        }
+      }
+    },
+    "Assembly & Other" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تركيب وحاجات تانية"
+          }
+        }
+      }
+    },
+    "Available Shifts Near You" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شيفتات متاحة قريبة منك"
+          }
+        }
+      }
+    },
+    "Awaiting Confirmation" : {
+
+    },
+    "Awaiting Provider Confirmation" : {
+
+    },
+    "Baby Sitting" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جليسة أطفال"
+          }
+        }
+      }
+    },
+    "Barista" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "باريستا"
+          }
+        }
+      }
+    },
+    "Beach Baby Setting" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جليسة أطفال على الشاطئ"
+          }
+        }
+      }
+    },
+    "Boost Job" : {
+
+    },
+    "Branch" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الفرع"
+          }
+        }
+      }
+    },
+    "Branch Name (Optional)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسم الفرع (اختياري)"
+          }
+        }
+      }
+    },
+    "Break" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بريك"
+          }
+        }
+      }
+    },
+    "Break (Optional)" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بريك (اختياري)"
+          }
+        }
+      }
+    },
+    "Break Duration" : {
+
+    },
+    "Briefly describe the tasks..." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اشرح المهام باختصار..."
+          }
+        }
+      }
+    },
+    "Browse Jobs...." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دور على شغل..."
+          }
+        }
+      }
+    },
+    "Calendar" : {
+
+    },
+    "Call" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اتصل"
+          }
+        }
+      }
+    },
+    "Camera Installation" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تركيب كاميرات"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إلغاء"
+          }
+        }
+      }
+    },
+    "Car Wash Assistant" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مساعد غسيل عربيات"
+          }
+        }
+      }
+    },
+    "Car Wash Attendant" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عامل غسيل عربيات"
+          }
+        }
+      }
+    },
+    "Carpet Cleaning" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غسيل سجاد"
+          }
+        }
+      }
+    },
+    "Cashier" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كاشير"
+          }
+        }
+      }
+    },
+    "Category: %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الفئة: %@"
+          }
+        }
+      }
+    },
+    "Chat" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شات"
+          }
+        }
+      }
+    },
+    "Chats" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رسايل"
+          }
+        }
+      }
+    },
+    "Check all details before publishing" : {
+
+    },
+    "Choose how you want to use %@" : {
+
+    },
+    "Choose how you want to use Saadni" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختار عايز تستخدم ساعدني إزاي"
+          }
+        }
+      }
+    },
+    "Choose Photo" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختار صورة"
+          }
+        }
+      }
+    },
+    "City" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المدينة"
+          }
+        }
+      }
+    },
+    "Cleaning" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تنظيف"
+          }
+        }
+      }
+    },
+    "Cleaning Member Boy" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عامل تنظيف"
+          }
+        }
+      }
+    },
+    "Cleaning Services" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خدمات تنظيف"
+          }
+        }
+      }
+    },
+    "Clear search" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسح البحث"
+          }
+        }
+      }
+    },
+    "Close" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اقفل"
+          }
+        }
+      }
+    },
+    "Color Tokens" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ألوان التصميم"
+          }
+        }
+      }
+    },
+    "Common Area Cleaning" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تنظيف المناطق المشتركة"
+          }
+        }
+      }
+    },
+    "Community" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المجتمع"
+          }
+        }
+      }
+    },
+    "Company/Brand Name" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسم الشركة أو البراند"
+          }
+        }
+      }
+    },
+    "Complete Profile" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كمّل البروفايل"
+          }
+        }
+      }
+    },
+    "Complete Service" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خلص الخدمة"
+          }
+        }
+      }
+    },
+    "Complete Your Profile to Continue" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كمّل بروفايلك عشان تكمل"
+          }
+        }
+      }
+    },
+    "Completed %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خلصت %@"
+          }
+        }
+      }
+    },
+    "Completed Services" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خدمات خلصانة"
+          }
+        }
+      }
+    },
+    "Completion Note (Optional)" : {
+
+    },
+    "Compressing image..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيضغط الصورة..."
+          }
+        }
+      }
+    },
+    "Confirm Completion" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أكد التنفيذ"
+          }
+        }
+      }
+    },
+    "Confirm Location" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أكد المكان"
+          }
+        }
+      }
+    },
+    "Confirming…" : {
+
+    },
+    "Contact Person Name" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسم الشخص المسؤول"
+          }
+        }
+      }
+    },
+    "Contact Phone" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رقم التليفون"
+          }
+        }
+      }
+    },
+    "Continue" : {
+
+    },
+    "Continue as Guest" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كمل كزائر"
+          }
+        }
+      }
+    },
+    "Could not load names" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معرفناش نجيب الأسامي"
+          }
+        }
+      }
+    },
+    "Could not load the hired applicant's details." : {
+
+    },
+    "Counter-offer a different price if needed" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ممكن تفاصل وتحط سعر تاني لو حابب"
+          }
+        }
+      }
+    },
+    "Cover Message (Optional)" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رسالة تقديم (اختياري)"
+          }
+        }
+      }
+    },
+    "Cover Photo (Optional)" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صورة كفر (اختياري)"
+          }
+        }
+      }
+    },
+    "Create your account" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اعمل حسابك"
+          }
+        }
+      }
+    },
+    "Currency" : {
+
+    },
+    "Current Role" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دورك الحالي"
+          }
+        }
+      }
+    },
+    "Curtain Installation" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تركيب ستائر"
+          }
+        }
+      }
+    },
+    "Dashboard" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الرئيسية"
+          }
+        }
+      }
+    },
+    "Date" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التاريخ"
+          }
+        }
+      }
+    },
+    "Dates" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المواعيد"
+          }
+        }
+      }
+    },
+    "Default" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الأساسي"
+          }
+        }
+      }
+    },
+    "Delete" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "امسح"
+          }
+        }
+      }
+    },
+    "Delete Account" : {
+
+    },
+    "Delete Conversation" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "امسح الشات"
+          }
+        }
+      }
+    },
+    "Delete Job" : {
+
+    },
+    "Delete My Account" : {
+
+    },
+    "Delete Notification" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "امسح الإشعار"
+          }
+        }
+      }
+    },
+    "Delete this job?" : {
+
+    },
+    "Delivery" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دليفري"
+          }
+        }
+      }
+    },
+    "Delivery Hero" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مندوب دليفري"
+          }
+        }
+      }
+    },
+    "Describe what you completed or anything the provider should know." : {
+
+    },
+    "Details" : {
+
+    },
+    "Detecting..." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيشوف..."
+          }
+        }
+      }
+    },
+    "Dismiss" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شيل"
+          }
+        }
+      }
+    },
+    "Dispute — Work Not Done" : {
+
+    },
+    "Don't have an account? " : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معندكش حساب؟ "
+          }
+        }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خلاص"
+          }
+        }
+      }
+    },
+    "Door Installation" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تركيب باب"
+          }
+        }
+      }
+    },
+    "Drag the map to adjust the pin" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جر الخريطة عشان تضبط الدبوس"
+          }
+        }
+      }
+    },
+    "Dress Code" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اللبس المطلوب"
+          }
+        }
+      }
+    },
+    "Duration" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المدة"
+          }
+        }
+      }
+    },
+    "e.g., 22" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مثلا: 22"
+          }
+        }
+      }
+    },
+    "e.g., a barista, a cashier, an event helper..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مثلا: باريستا، كاشير، مساعد في إيفنت..."
+          }
+        }
+      }
+    },
+    "Earnings per month" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أرباحك في الشهر"
+          }
+        }
+      }
+    },
+    "Edit" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عدّل"
+          }
+        }
+      }
+    },
+    "Edit Profile" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عدّل البروفايل"
+          }
+        }
+      }
+    },
+    "EGP" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جنيه"
+          }
+        }
+      }
+    },
+    "EGP " : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جنيه "
+          }
+        }
+      }
+    },
+    "EGP %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ جنيه"
+          }
+        }
+      }
+    },
+    "Electric Work" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شغل كهربا"
+          }
+        }
+      }
+    },
+    "Employer" : {
+
+    },
+    "Empowering Students" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بنعزز الطلاب"
+          }
+        }
+      }
+    },
+    "End" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "النهاية"
+          }
+        }
+      }
+    },
+    "Enter price" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حط السعر"
+          }
+        }
+      }
+    },
+    "Error" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غلطة"
+          }
+        }
+      }
+    },
+    "Event Catering" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كيترنج للفعاليات"
+          }
+        }
+      }
+    },
+    "Event Setup Crew" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فريق تجهيز فعاليات"
+          }
+        }
+      }
+    },
+    "Everyone deserves access to quality assistance. Get expert help for a simple, low, and fixed price with no hidden fees or complications." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كل واحد محتاج مساعدة كويسة. بسعر ثابت ومنخفض ومفيش رسوم خفية."
+          }
+        }
+      }
+    },
+    "Failed to load messages" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الرسايل مش راضية تحمل"
+          }
+        }
+      }
+    },
+    "Failed to load profile" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معرفناش نحمل البروفايل"
+          }
+        }
+      }
+    },
+    "Female" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بنت"
+          }
+        }
+      }
+    },
+    "Fill in your profile details to post jobs or apply" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كمّل بياناتك عشان تنشر شغل أو تقدم"
+          }
+        }
+      }
+    },
+    "Filter" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فلتر"
+          }
+        }
+      }
+    },
+    "Filtered by Date: %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متفلترة بتاريخ: %@"
+          }
+        }
+      }
+    },
+    "Find your next Job" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دور على شغلانتك الجاية"
+          }
+        }
+      }
+    },
+    "Find your next job!" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تلاقي شغلانتك الجاية!"
+          }
+        }
+      }
+    },
+    "Fitting Room Attendant" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسؤول غرف القياس"
+          }
+        }
+      }
+    },
+    "Fixing" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صيانة"
+          }
+        }
+      }
+    },
+    "Flooring Installation" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تركيب أرضيات"
+          }
+        }
+      }
+    },
+    "Food Truck Helper" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مساعد فود ترك"
+          }
+        }
+      }
+    },
+    "For: %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عشان: %@"
+          }
+        }
+      }
+    },
+    "Full Address" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العنوان بالكامل"
+          }
+        }
+      }
+    },
+    "Furniture" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أثاث"
+          }
+        }
+      }
+    },
+    "Furniture Assembly" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تركيب أثاث"
+          }
+        }
+      }
+    },
+    "Gardening" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حدائق"
+          }
+        }
+      }
+    },
+    "Gender" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "النوع"
+          }
+        }
+      }
+    },
+    "Gender Preference" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "النوع المطلوب"
+          }
+        }
+      }
+    },
+    "Get the academic support you need, exactly when you need it. Connect with peers and mentors to excel in your studies quickly and easily." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لاقي الدعم الدراسي لما تحتاجه. تواصل مع زمايلك والمرشدين وتتفوق في مذاكرتك بسهولة."
+          }
+        }
+      }
+    },
+    "Gym Floor Assistant" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مساعد جيم"
+          }
+        }
+      }
+    },
+    "Have a Business?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عندك بيزنس؟"
+          }
+        }
+      }
+    },
+    "Having a Business?" : {
+
+    },
+    "Heavy Moving" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نقل تقيل"
+          }
+        }
+      }
+    },
+    "Hello, %@" : {
+
+    },
+    "Help at a Fixed Low Price" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مساعدة بسعر ثابت ومنخفض"
+          }
+        }
+      }
+    },
+    "Help Moving" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مساعدة في النقل"
+          }
+        }
+      }
+    },
+    "Hi, %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أهلا، %@"
+          }
+        }
+      }
+    },
+    "Hire" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عيّن"
+          }
+        }
+      }
+    },
+    "Home" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "البيت"
+          }
+        }
+      }
+    },
+    "Home Cleaning" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تنظيف بيت"
+          }
+        }
+      }
+    },
+    "Hotel Housekeeping" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تنظيف فندق"
+          }
+        }
+      }
+    },
+    "How would you rate this experience?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إيه رأيك في التجربة دي؟"
+          }
+        }
+      }
+    },
+    "I Need Help Hire" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عايز أعيّن"
+          }
+        }
+      }
+    },
+    "I Need to Hire, e.g., a barista, a cashier,..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عايز أعيّن، مثلا: باريستا، كاشير..."
+          }
+        }
+      }
+    },
+    "I represent a company" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بمثل شركة"
+          }
+        }
+      }
+    },
+    "I'm Done — Mark as Complete" : {
+
+    },
+    "IKEA Assembly" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تركيب IKEA"
+          }
+        }
+      }
+    },
+    "IKEA Assembly, Hire a Specialist for easy Installment" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تركيب IKEA – عيّن متخصص بسهولة"
+          }
+        }
+      }
+    },
+    "Industry Category (Optional)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مجال الشغل (اختياري)"
+          }
+        }
+      }
+    },
+    "Info" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معلومات"
+          }
+        }
+      }
+    },
+    "Installation & Mounting" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تركيب وتثبيت"
+          }
+        }
+      }
+    },
+    "Inventory Counter" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حصر البضاعة"
+          }
+        }
+      }
+    },
+    "Job Completion Requested" : {
+
+    },
+    "Job Details" : {
+
+    },
+    "Job Name" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسم الشغل"
+          }
+        }
+      }
+    },
+    "Job Poster" : {
+
+    },
+    "Job Title" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المسمى الوظيفي"
+          }
+        }
+      }
+    },
+    "Jobs" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شغل"
+          }
+        }
+      }
+    },
+    "Keep going!" : {
+
+    },
+    "Kitchen Installation" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تركيب مطبخ"
+          }
+        }
+      }
+    },
+    "Language" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اللغة"
+          }
+        }
+      }
+    },
+    "Language Needed" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اللغة المطلوبة"
+          }
+        }
+      }
+    },
+    "Last-Mile Delivery" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دليفري آخر ميل"
+          }
+        }
+      }
+    },
+    "Learn more" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اعرف أكتر"
+          }
+        }
+      }
+    },
+    "Leave a Review" : {
+
+    },
+    "Let the provider know you've completed the work." : {
+
+    },
+    "Loading applicants..." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيحمل المتقدمين..."
+          }
+        }
+      }
+    },
+    "Loading applications..." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيحمل التقديمات..."
+          }
+        }
+      }
+    },
+    "Loading completed services..." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيحمل الخدمات اللي خلصت..."
+          }
+        }
+      }
+    },
+    "Loading messages..." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيحمل الرسايل..."
+          }
+        }
+      }
+    },
+    "Loading poster info..." : {
+
+    },
+    "Loading reviews..." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيحمل التقييمات..."
+          }
+        }
+      }
+    },
+    "Loading transactions..." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيحمل المعاملات..."
+          }
+        }
+      }
+    },
+    "Loading your jobs..." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيحمل شغلك..."
+          }
+        }
+      }
+    },
+    "Loading..." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيحمل..."
+          }
+        }
+      }
+    },
+    "Locate me" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حدد مكاني"
+          }
+        }
+      }
+    },
+    "Location" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المكان"
+          }
+        }
+      }
+    },
+    "Location Details" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تفاصيل المكان"
+          }
+        }
+      }
+    },
+    "Location Selected" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم اختيار المكان"
+          }
+        }
+      }
+    },
+    "Location Zone" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "منطقة المكان"
+          }
+        }
+      }
+    },
+    "Male" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ولد"
+          }
+        }
+      }
+    },
+    "Malls" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مولات"
+          }
+        }
+      }
+    },
+    "Mark all as read" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "علّم الكل كمقروء"
+          }
+        }
+      }
+    },
+    "Mark as Complete" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "علم إنها خلصت"
+          }
+        }
+      }
+    },
+    "Mark as Done" : {
+
+    },
+    "Mark as Read" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "علّمه مقروء"
+          }
+        }
+      }
+    },
+    "Mark as Unread" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "علّمه غير مقروء"
+          }
+        }
+      }
+    },
+    "Mark Job as Done" : {
+
+    },
+    "Mark Service as Complete?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نأكد إن الخدمة دي خلصت؟"
+          }
+        }
+      }
+    },
+    "Mark this service as complete? Both parties will be able to leave reviews." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متأكد إن الخدمة دي خلصت؟ الطرفين هيقدروا يقيموا بعض بعدها."
+          }
+        }
+      }
+    },
+    "Maybe Later" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بعدين"
+          }
+        }
+      }
+    },
+    "Method" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الطريقة"
+          }
+        }
+      }
+    },
+    "Minimum Age" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أقل سن"
+          }
+        }
+      }
+    },
+    "Moving" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نقل"
+          }
+        }
+      }
+    },
+    "My Account" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حسابي"
+          }
+        }
+      }
+    },
+    "My Addresses" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عناويني"
+          }
+        }
+      }
+    },
+    "My Jobs" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شغلي"
+          }
+        }
+      }
+    },
+    "My Reviews" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تقييماتي"
+          }
+        }
+      }
+    },
+    "My Work" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شغلي"
+          }
+        }
+      }
+    },
+    "Nearest Landmark" : {
+
+    },
+    "Nearest Landmark (Optional)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أقرب علامة مميزة (اختياري)"
+          }
+        }
+      }
+    },
+    "NEW" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جديد"
+          }
+        }
+      }
+    },
+    "No activity yet" : {
+
+    },
+    "No activity yet — apply to a job to get started." : {
+
+    },
+    "No Applicants Yet" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "محدش تقدم لسه"
+          }
+        }
+      }
+    },
+    "No Applications Yet" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "محدش تقديمات لسه"
+          }
+        }
+      }
+    },
+    "No Completed Services" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مفيش خدمات خلصت"
+          }
+        }
+      }
+    },
+    "No conversations yet" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مفيش شات لغاية دلوقتي"
+          }
+        }
+      }
+    },
+    "No Image" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مفيش صورة"
+          }
+        }
+      }
+    },
+    "No Jobs Found" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مفيش شغل لاقيناه"
+          }
+        }
+      }
+    },
+    "No Jobs on This Day" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "محدش شغل اليوم ده"
+          }
+        }
+      }
+    },
+    "No messages yet" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مفيش رسايل لسه"
+          }
+        }
+      }
+    },
+    "No notifications match your search" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "محدش إشعارات تطابق بحثك"
+          }
+        }
+      }
+    },
+    "No one has applied to this job yet" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "محدش حد قدم على الشغلانة دي لسه"
+          }
+        }
+      }
+    },
+    "No ratings" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مفيش تقييمات"
+          }
+        }
+      }
+    },
+    "No Reviews Yet" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مفيش تقييمات لسه"
+          }
+        }
+      }
+    },
+    "No saved addresses yet." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مفيش عناوين محفوظة."
+          }
+        }
+      }
+    },
+    "No Sort" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "من غير ترتيب"
+          }
+        }
+      }
+    },
+    "No transactions yet" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مفيش معاملات لسه"
+          }
+        }
+      }
+    },
+    "Notifications" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إشعارات"
+          }
+        }
+      }
+    },
+    "Office Cleaning Shift" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شيفت تنظيف مكتب"
+          }
+        }
+      }
+    },
+    "Office Secretary" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سكرتير مكتب"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تمام"
+          }
+        }
+      }
+    },
+    "Once marked complete, both you and the worker will be able to leave reviews. This action cannot be undone." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أول ما تتأكد، هتقدروا تقيموا بعض. الخطوة دي مش هينفع ترجع فيها."
+          }
+        }
+      }
+    },
+    "Online" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أونلاين"
+          }
+        }
+      }
+    },
+    "Order Sorter" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مرتب طلبات"
+          }
+        }
+      }
+    },
+    "Outdoor Cleaning" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تنظيف خارجي"
+          }
+        }
+      }
+    },
+    "Painting" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دهان"
+          }
+        }
+      }
+    },
+    "Pay" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ادفع"
+          }
+        }
+      }
+    },
+    "Payment" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الدفع"
+          }
+        }
+      }
+    },
+    "Payment Method" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "طريقة الدفع"
+          }
+        }
+      }
+    },
+    "Payment Timing" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ميعاد الدفع"
+          }
+        }
+      }
+    },
+    "Performance" : {
+
+    },
+    "Pet Setting" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رعاية حيوانات"
+          }
+        }
+      }
+    },
+    "Petrol Station Attendant" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عامل محطة بنزين"
+          }
+        }
+      }
+    },
+    "Physical Requirements" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متطلبات بدنية"
+          }
+        }
+      }
+    },
+    "Pick from calendar" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختار من النتيجة"
+          }
+        }
+      }
+    },
+    "Pin" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دبوس"
+          }
+        }
+      }
+    },
+    "Pinpoint on Map" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حدد على الخريطة"
+          }
+        }
+      }
+    },
+    "Please enter a valid number" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتب رقم شغال"
+          }
+        }
+      }
+    },
+    "Plumbing" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سباكة"
+          }
+        }
+      }
+    },
+    "Post-Event Cleaning" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تنظيف بعد الفعالية"
+          }
+        }
+      }
+    },
+    "Posted By" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نشر بواسطة"
+          }
+        }
+      }
+    },
+    "Prefer not to say" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مابحبش أقول"
+          }
+        }
+      }
+    },
+    "Preview and publish %lld shift(s)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "راجع وانشر %lld شيفت(ات)"
+          }
+        }
+      }
+    },
+    "Price" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "السعر"
+          }
+        }
+      }
+    },
+    "Profile" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "البروفايل"
+          }
+        }
+      }
+    },
+    "Profile Complete!" : {
+
+    },
+    "Proposed Price (Optional)" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "السعر المقترح (اختياري)"
+          }
+        }
+      }
+    },
+    "Provider Has a Concern" : {
+
+    },
+    "Publishing Error" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مشكلة في النشر"
+          }
+        }
+      }
+    },
+    "Rate" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قيّم"
+          }
+        }
+      }
+    },
+    "Rate Your Experience" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قيم تجربتك"
+          }
+        }
+      }
+    },
+    "Reason for Dispute (Optional)" : {
+
+    },
+    "Recent Activities" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آخر الحركات"
+          }
+        }
+      }
+    },
+    "Recent Activity" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آخر حركة"
+          }
+        }
+      }
+    },
+    "Reject" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ارفض"
+          }
+        }
+      }
+    },
+    "Repairs & Maintenance" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إصلاح وصيانة"
+          }
+        }
+      }
+    },
+    "Requirements" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المتطلبات"
+          }
+        }
+      }
+    },
+    "Respect everyone and provide genuine help. Our community thrives on trust, kindness, and mutual support." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "احترم الكل واعمل بجد. مجتمعنا قايم على الثقة والطيبة."
+          }
+        }
+      }
+    },
+    "Restaurants" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مطاعم"
+          }
+        }
+      }
+    },
+    "Retail Sales Associate" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مساعد مبيعات"
+          }
+        }
+      }
+    },
+    "Retry" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حاول تاني"
+          }
+        }
+      }
+    },
+    "Review" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التقييم"
+          }
+        }
+      }
+    },
+    "Review Completion" : {
+
+    },
+    "Review for: %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تقييم لـ: %@"
+          }
+        }
+      }
+    },
+    "Review Shift(s)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "راجع الشيفت(ات)"
+          }
+        }
+      }
+    },
+    "Review Your Job" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "راجع شغلك"
+          }
+        }
+      }
+    },
+    "Review Your Job(s)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "راجع شغلك"
+          }
+        }
+      }
+    },
+    "Review Your Shift" : {
+
+    },
+    "Reviews" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التقييمات"
+          }
+        }
+      }
+    },
+    "Reviews will appear here after you complete services" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التقييمات هتظهر هنا بعد ما تخلص خدمات"
+          }
+        }
+      }
+    },
+    "Role" : {
+
+    },
+    "Saadni" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ساعدني"
+          }
+        }
+      }
+    },
+    "Saedni" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ساعدني"
+          }
+        }
+      }
+    },
+    "Saving job details..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيحفظ تفاصيل الشغلانة..."
+          }
+        }
+      }
+    },
+    "Search Location" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دوّر على مكان"
+          }
+        }
+      }
+    },
+    "Security" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أمن"
+          }
+        }
+      }
+    },
+    "See All" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شوف كله"
+          }
+        }
+      }
+    },
+    "See All Reviews" : {
+
+    },
+    "See what others say" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شوف الناس بتقول إيه"
+          }
+        }
+      }
+    },
+    "Select from Library" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختار من المعرض"
+          }
+        }
+      }
+    },
+    "Select Language" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختار اللغة"
+          }
+        }
+      }
+    },
+    "Select Location" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختار المكان"
+          }
+        }
+      }
+    },
+    "Select location from map" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختار مكان من الخريطة"
+          }
+        }
+      }
+    },
+    "Select Shift Date" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختار تاريخ الشيفت"
+          }
+        }
+      }
+    },
+    "Select Shift Date(s)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختار تواريخ الشيفتات"
+          }
+        }
+      }
+    },
+    "Service" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الخدمة"
+          }
+        }
+      }
+    },
+    "Service Category" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فئة الخدمة"
+          }
+        }
+      }
+    },
+    "Service Provider" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مقدم الخدمة"
+          }
+        }
+      }
+    },
+    "Service: %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الخدمة: %@"
+          }
+        }
+      }
+    },
+    "Set Default" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خليه الأساسي"
+          }
+        }
+      }
+    },
+    "Shift Details" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تفاصيل الشيفت"
+          }
+        }
+      }
+    },
+    "Shift Pay Output (Total/Fixed)" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دفع الشيفت (توتال/ثابت)"
+          }
+        }
+      }
+    },
+    "Shift Timing" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مواعيد الشيفت"
+          }
+        }
+      }
+    },
+    "Shifts Created" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شيفتات اتعملت"
+          }
+        }
+      }
+    },
+    "shop assistant" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مساعد محل"
+          }
+        }
+      }
+    },
+    "Sign In" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تسجيل دخول"
+          }
+        }
+      }
+    },
+    "Sign Up" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حساب جديد"
+          }
+        }
+      }
+    },
+    "Skip for now" : {
+
+    },
+    "Someone Will Be Around" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "في حد هيكون موجود"
+          }
+        }
+      }
+    },
+    "Sort A-Z" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رتب أبجدي"
+          }
+        }
+      }
+    },
+    "Sort by Price" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رتب بالسعر"
+          }
+        }
+      }
+    },
+    "Start" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "البداية"
+          }
+        }
+      }
+    },
+    "Start a conversation by clicking the chat icon on a service page" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح شات من أيقونة الرسايل في صفحة الخدمة"
+          }
+        }
+      }
+    },
+    "Start Hiring Essential Roles" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ابدأ في تعيين المناصب المهمة"
+          }
+        }
+      }
+    },
+    "Start the conversation" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ابدأ الكلام"
+          }
+        }
+      }
+    },
+    "Status" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الحالة"
+          }
+        }
+      }
+    },
+    "Step %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Step %1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "Stock Replenisher" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعبئة الرفوف"
+          }
+        }
+      }
+    },
+    "Student's Note" : {
+
+    },
+    "Submit Application" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قدم الطلب"
+          }
+        }
+      }
+    },
+    "Submit Dispute" : {
+
+    },
+    "Submit Review" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ابعت التقييم"
+          }
+        }
+      }
+    },
+    "Submitted %@" : {
+
+    },
+    "Submitting..." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيبعت..."
+          }
+        }
+      }
+    },
+    "Submitting…" : {
+
+    },
+    "Success!" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عاش!"
+          }
+        }
+      }
+    },
+    "Tab" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تبويب"
+          }
+        }
+      }
+    },
+    "Tap to add a photo" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دوس عشان تحط صورة"
+          }
+        }
+      }
+    },
+    "Tap to open map" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دوس عشان تفتح الخريطة"
+          }
+        }
+      }
+    },
+    "Tell the job poster why you're interested and why you're a good fit" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قول لصاحب الشغلانة ليه إنت مهتم وليه إنت مناسب ليها"
+          }
+        }
+      }
+    },
+    "The client will be present during the service" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العميل هيكون موجود وقت الخدمة"
+          }
+        }
+      }
+    },
+    "This action cannot be undone." : {
+
+    },
+    "This information will be associated with your shift postings to help students verify employers." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المعلومات دي هتبان عشان تساعد الطلبة يثقوا في أصحاب الشغل."
+          }
+        }
+      }
+    },
+    "This Month" : {
+
+    },
+    "This will permanently delete the conversation and all its messages. This action cannot be undone." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ده هيحذف الشات وكل رسايله نهائياً. الخطوة دي مش هينفع ترجع فيها."
+          }
+        }
+      }
+    },
+    "This will permanently delete your account and all your data. This action cannot be undone." : {
+
+    },
+    "Timing" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التوقيت"
+          }
+        }
+      }
+    },
+    "to" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لـ"
+          }
+        }
+      }
+    },
+    "Tools & Equipment Needed" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العدد والأدوات المطلوبة"
+          }
+        }
+      }
+    },
+    "Top up" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اشحن محفظتك"
+          }
+        }
+      }
+    },
+    "Total Earnings" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إجمالي الأرباح"
+          }
+        }
+      }
+    },
+    "Trusted Provider" : {
+
+    },
+    "Try adjusting your filters" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جرب تغير الفلاتر"
+          }
+        }
+      }
+    },
+    "TV Mounting" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعليق تليفزيون"
+          }
+        }
+      }
+    },
+    "Two Simple Rules" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قاعدتين بس"
+          }
+        }
+      }
+    },
+    "Type a message..." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتب رسالة..."
+          }
+        }
+      }
+    },
+    "Unpin" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شيل الدبوس"
+          }
+        }
+      }
+    },
+    "Uploading image... %lld%%" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيرفع الصورة... %lld%%"
+          }
+        }
+      }
+    },
+    "Use my current location" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استخدم مكاني الحالي"
+          }
+        }
+      }
+    },
+    "User Type" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نوع المستخدم"
+          }
+        }
+      }
+    },
+    "View All" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شوف كله"
+          }
+        }
+      }
+    },
+    "View finished services" : {
+
+    },
+    "View Profile" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شوف البروفايل"
+          }
+        }
+      }
+    },
+    "View Requests" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شوف الطلبات"
+          }
+        }
+      }
+    },
+    "View your finished work" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شوف الشغل اللي خلصته"
+          }
+        }
+      }
+    },
+    "Waiter" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نادل"
+          }
+        }
+      }
+    },
+    "Warehouse" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مستودع"
+          }
+        }
+      }
+    },
+    "Warehouse Work" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شغل مستودع"
+          }
+        }
+      }
+    },
+    "Welcome back" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يا هلا بيك"
+          }
+        }
+      }
+    },
+    "What brings you here?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إيه اللي جابك هنا؟"
+          }
+        }
+      }
+    },
+    "What to bring" : {
+
+    },
+    "What to bring? (Optional)" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مطلوب تجيب إيه؟ (اختياري)"
+          }
+        }
+      }
+    },
+    "What will the worker do" : {
+
+    },
+    "What will the worker do? (Optional)" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العامل هيعمل إيه؟ (اختياري)"
+          }
+        }
+      }
+    },
+    "Window Installation" : {
+
+    },
+    "Withdraw" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسحب"
+          }
+        }
+      }
+    },
+    "Work on a Shift" : {
+
+    },
+    "Worker" : {
+
+    },
+    "Workers Needed" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عمال مطلوبين"
+          }
+        }
+      }
+    },
+    "Write a Review" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتب تقييم"
+          }
+        }
+      }
+    },
+    "You can check saved address in profile tab under my Account section" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ممكن تلاقي عناوينك في حسابي في البروفايل"
+          }
+        }
+      }
+    },
+    "You currently have no open applications" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معندكش تقديمات مفتوحة دلوقتي"
+          }
+        }
+      }
+    },
+    "You have no posted jobs on %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معندكش شغل منشور في %@"
+          }
+        }
+      }
+    },
+    "You're all caught up!" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خلصت كله!"
+          }
+        }
+      }
+    },
+    "You're Hired" : {
+
+    },
+    "You're Hired!" : {
+
+    },
+    "Your application has been submitted successfully. The job poster will review it soon." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "طلبك اتقدم بنجاح. صاحب الشغلانة هيشوفه قريب."
+          }
+        }
+      }
+    },
+    "Your Company Information" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معلومات شركتك"
+          }
+        }
+      }
+    },
+    "Your completed services will appear here" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خدماتك اللي خلصت هتبان هنا"
+          }
+        }
+      }
+    },
+    "Your job location will be here" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مكان شغلك هيبان هنا"
+          }
+        }
+      }
+    },
+    "Your Review (Optional)" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تقييمك (اختياري)"
+          }
+        }
+      }
+    },
+    "Your Wallet" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "محفظتك"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}

@@ -1,12 +1,12 @@
 <div align="center">
 
-# Saadni 🤝
+# GoodShift 🤝
 
 ### The On-Demand Services Marketplace for Your Community
 
 **Post a task. Get it done. Earn on your schedule.**
 
-Saadni connects people who need everyday services with trusted local providers — instantly. Whether you need a hand around the house or want to earn extra income with your skills, Saadni makes it effortless.
+GoodShift connects people who need everyday services with trusted local providers — instantly. Whether you need a hand around the house or want to earn extra income with your skills, GoodShift makes it effortless.
 
 [![Swift](https://img.shields.io/badge/Swift-5.9%2B-F05138?logo=swift&logoColor=white)](https://swift.org)
 [![iOS](https://img.shields.io/badge/iOS-17%2B-007AFF?logo=apple&logoColor=white)](https://www.apple.com/ios)
@@ -22,7 +22,7 @@ Saadni connects people who need everyday services with trusted local providers �
 
 ## Overview
 
-**Saadni** (Arabic: ساعدني — *"Help Me"*) is a native iOS marketplace that eliminates the friction between needing a service and getting it done. The platform operates on a simple principle: **anyone can post a task, and anyone with the right skills can fulfill it.**
+**GoodShift** (Arabic: ساعدني — *"Help Me"*) is a native iOS marketplace that eliminates the friction between needing a service and getting it done. The platform operates on a simple principle: **anyone can post a task, and anyone with the right skills can fulfill it.**
 
 The app serves two audiences through a single, unified experience:
 
@@ -31,7 +31,7 @@ The app serves two audiences through a single, unified experience:
 | **Task Poster** | Describe what you need, set your budget, and choose from applicants who respond in real time. |
 | **Service Provider** | Browse open tasks in your area, apply to the ones that match your skills, and earn money on your own terms. |
 
-Saadni is purpose-built for communities where trusted, affordable help is hard to find — and where students, freelancers, and skilled workers are ready to earn. No agencies. No middlemen. Just people helping people.
+GoodShift is purpose-built for communities where trusted, affordable help is hard to find — and where students, freelancers, and skilled workers are ready to earn. No agencies. No middlemen. Just people helping people.
 
 ---
 
@@ -39,7 +39,7 @@ Saadni is purpose-built for communities where trusted, affordable help is hard t
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                    SAADNI FLOW                      │
+│                    GoodShift FLOW                      │
 ├─────────────────────────────────────────────────────┤
 │                                                     │
 │   1. Sign Up       →  Google or Apple Sign-In       │
