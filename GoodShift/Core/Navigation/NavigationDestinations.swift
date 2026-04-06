@@ -67,6 +67,9 @@ enum ServiceProviderDestination: Hashable {
     case categoryDetail(ServiceCategoryType)
     case chatDetail(conversationId: String)
     case createJob(category: String, initialJobName: String?, initialServiceImageName: String?)
+    case performance
+    case completedServices
+    case userReviews(userId: String)
 }
 
 // MARK: - Sheet Destinations
@@ -79,6 +82,10 @@ enum SheetDestination: Hashable, Identifiable {
     case applicationsList(serviceId: String, serviceTitle: String)
     case imagePicker
     case myAddresses
+    case walletSheet
+    case notificationDrawer(role: UserRole)
+    case allActivities
+    case userProfile(userId: String)
 
     var id: String {
         switch self {
@@ -89,6 +96,10 @@ enum SheetDestination: Hashable, Identifiable {
         case .applicationsList(let serviceId, _): return "appList_\(serviceId)"
         case .imagePicker: return "imagePicker"
         case .myAddresses: return "myAddresses"
+        case .walletSheet: return "walletSheet"
+        case .notificationDrawer(let role): return "notificationDrawer_\(role)"
+        case .allActivities: return "allActivities"
+        case .userProfile(let userId): return "userProfile_\(userId)"
         }
     }
 }

@@ -18,13 +18,13 @@ struct ServiceDetailView: View {
 	@Environment(ConversationsStore.self) var conversationsStore
 	@Environment(ReviewsStore.self) var reviewsStore
 	
+	@Environment(AppCoordinator.self) var appCoordinator
+
 	@State private var showingApplySheet = false
 	@State private var showingApplications = false
 	@State private var showingCompletionView = false
 	@State private var showingMarkDoneView = false
 	@State private var showingReviewSheet = false
-	@State private var selectedConversationId: String?
-	@State private var isNavigatingToChat = false
 	@State private var isCreatingChat = false
 	@State private var showDeleteConfirmation = false
 	@State private var isBoostingJob = false
@@ -494,14 +494,6 @@ struct ServiceDetailView: View {
 				.environment(servicesStore)
 				.environment(walletStore)
 		}
-		.navigationDestination(isPresented: $isNavigatingToChat) {
-			if let conversationId = selectedConversationId,
-				 let conversation = conversationsStore.getConversationById(conversationId) {
-				ChatDetailView(conversation: conversation)
-					.environment(conversationsStore)
-					.environment(MessagesStore())
-			}
-		}
 		.sheet(isPresented: $showingApplySheet) {
 			ApplyJobSheetContent(service: service)
 				.environment(applicationsStore)
@@ -524,6 +516,9 @@ struct ServiceDetailView: View {
 			.environment(authManager)
 			.environment(reviewsStore)
 		}
+		.onAppear {
+			trackJobViewed()
+		}
 	}
 	
 	private var isOwnService: Bool {
@@ -543,20 +538,19 @@ struct ServiceDetailView: View {
 	
 	private func startChatWithProvider() {
 		guard let currentUserId = authManager.currentUserId else { return }
-		
+
 		isCreatingChat = true
-		
+
 		Task {
 			do {
 				let conversationId = try await conversationsStore.getOrCreateConversation(
 					with: service.providerId,
 					currentUserId: currentUserId
 				)
-				
+
 				await MainActor.run {
-					selectedConversationId = conversationId
-					isNavigatingToChat = true
 					isCreatingChat = false
+					appCoordinator.navigateToChat(conversationId: conversationId)
 				}
 			} catch {
 				await MainActor.run {
@@ -566,6 +560,14 @@ struct ServiceDetailView: View {
 		}
 	}
 	
+	private func trackJobViewed() {
+		AnalyticsService.shared.track(.jobViewed(
+			jobId: service.id,
+			category: service.category?.rawValue ?? "",
+			price: service.price
+		))
+	}
+
 	private func boostJob() async {
 		guard !service.isFeatured else { return }
 		isBoostingJob = true
@@ -1210,6 +1212,7 @@ struct ServiceApplicationsSheet: View {
 				applicationId: application.id,
 				newStatus: .rejected
 			)
+			AnalyticsService.shared.track(.applicationRejected(jobId: application.serviceId))
 		} catch {
 			actionError = error.localizedDescription
 			showError = true

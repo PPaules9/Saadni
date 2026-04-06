@@ -359,8 +359,6 @@ struct ApplyJobSheet: View {
         isSubmitting = true
 
         do {
-            let proposedPriceDouble = proposedPrice.isEmpty ? nil : Double(proposedPrice)
-
             try await applicationsStore.submitApplication(
                 serviceId: service.id,
                 providerId: service.providerId,

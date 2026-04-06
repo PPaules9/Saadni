@@ -170,7 +170,7 @@ struct CustomCalendarWithJobIndicators: View {
 }
 
 #Preview {
-	@State var selectedDate = Date()
+	@Previewable @State var selectedDate = Date()
 	
 	return CustomCalendarWithJobIndicators(
 		selectedDate: $selectedDate,

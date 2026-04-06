@@ -76,29 +76,29 @@ class WalletStore: ListenerManaging {
             .order(by: "createdAt", descending: true)
             .limit(to: 50)
             .addSnapshotListener { [weak self] snapshot, error in
-                guard let self = self else { return }
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
 
-                if let error = error {
-                    self.transactionsError = AppError.from(error)
-                    self.isLoadingTransactions = false
-                    print("❌ Error fetching transactions: \(error)")
-                    return
-                }
-
-                guard let documents = snapshot?.documents else { return }
-
-                let decoded = documents.compactMap { doc in
-                    do {
-                        return try Transaction.fromFirestore(id: doc.documentID, data: doc.data())
-                    } catch {
-                        print("⚠️ Failed to decode transaction \(doc.documentID): \(error)")
-                        return nil
+                    if let error = error {
+                        self.transactionsError = AppError.from(error)
+                        self.isLoadingTransactions = false
+                        print("❌ Error fetching transactions: \(error)")
+                        return
                     }
-                }
 
-                Task { @MainActor in
-                    self.transactions = decoded
+                    guard let documents = snapshot?.documents else { return }
+
+                    let decoded = documents.compactMap { doc in
+                        do {
+                            return try Transaction.fromFirestore(id: doc.documentID, data: doc.data())
+                        } catch {
+                            print("⚠️ Failed to decode transaction \(doc.documentID): \(error)")
+                            return nil
+                        }
+                    }
+
                     // Balance is read from User document via balanceListener — not calculated here
+                    self.transactions = decoded
                     self.transactionsError = nil
                     self.isLoadingTransactions = false
                     print("✅ Loaded \(self.transactions.count) transactions")

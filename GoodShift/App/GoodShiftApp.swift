@@ -10,7 +10,7 @@ import FirebaseCore
 import FirebaseMessaging
 import UserNotifications
 import Kingfisher
-
+import AmplitudeSwift
 
 @main
 struct GoodShiftApp: App {
@@ -22,6 +22,7 @@ struct GoodShiftApp: App {
 	init() {
 		
 		FirebaseApp.configure()
+		_ = AnalyticsService.shared // initialize early
 		
 		// Configure Kingfisher image cache, the actual loading happens wherever you use something like KFImage(URL(string: ...)) in your views.
 		let cache = ImageCache.default
@@ -50,7 +51,7 @@ struct GoodShiftApp: App {
 				}
 				.onChange(of: container.authManager.currentUserId) { _, newValue in
 					if let userId = newValue {
-						Task { await container.setupUserSession(userId: userId) }
+						container.setupUserSession(userId: userId)
 					} else {
 						container.clearUserSession()
 					}

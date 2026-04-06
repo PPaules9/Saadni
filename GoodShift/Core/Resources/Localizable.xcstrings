@@ -62,7 +62,14 @@
       }
     },
     "%@ says they've finished the work." : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ قال إنه خلّص الشغل."
+          }
+        }
+      }
     },
     "%lld" : {
       "localizations" : {
@@ -171,7 +178,14 @@
       }
     },
     "Activity" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "النشاط"
+          }
+        }
+      }
     },
     "Add" : {
       "extractionState" : "stale",
@@ -195,10 +209,24 @@
       }
     },
     "Added" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اتضاف"
+          }
+        }
+      }
     },
     "Added to Calendar" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اتضاف للتقويم"
+          }
+        }
+      }
     },
     "Address" : {
       "localizations" : {
@@ -281,7 +309,14 @@
       }
     },
     "Already Featured" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مميز بالفعل"
+          }
+        }
+      }
     },
     "Already have an account? " : {
       "localizations" : {
@@ -304,6 +339,7 @@
       }
     },
     "Application Detail Sheet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -314,7 +350,14 @@
       }
     },
     "Application Not Found" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الطلب مش موجود"
+          }
+        }
+      }
     },
     "Application Sent!" : {
       "localizations" : {
@@ -337,6 +380,7 @@
       }
     },
     "Applications List for %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -347,6 +391,7 @@
       }
     },
     "Applications List Sheet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -388,6 +433,7 @@
       }
     },
     "Apply Sheet for %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -398,7 +444,14 @@
       }
     },
     "Apply to a job to see your activity here." : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قدّم على شغلانة عشان تشوف نشاطك هنا."
+          }
+        }
+      }
     },
     "Archive" : {
       "localizations" : {
@@ -442,10 +495,24 @@
       }
     },
     "Awaiting Confirmation" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بينتظر التأكيد"
+          }
+        }
+      }
     },
     "Awaiting Provider Confirmation" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بينتظر تأكيد صاحب الشغل"
+          }
+        }
+      }
     },
     "Baby Sitting" : {
       "localizations" : {
@@ -478,7 +545,14 @@
       }
     },
     "Boost Job" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عزز الشغلانة"
+          }
+        }
+      }
     },
     "Branch" : {
       "localizations" : {
@@ -523,7 +597,14 @@
       }
     },
     "Break Duration" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مدة البريك"
+          }
+        }
+      }
     },
     "Briefly describe the tasks..." : {
       "localizations" : {
@@ -546,7 +627,14 @@
       }
     },
     "Calendar" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التقويم"
+          }
+        }
+      }
     },
     "Call" : {
       "localizations" : {
@@ -639,7 +727,6 @@
       }
     },
     "Chats" : {
-      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -650,10 +737,24 @@
       }
     },
     "Check all details before publishing" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تأكد من كل التفاصيل قبل النشر"
+          }
+        }
+      }
     },
     "Choose how you want to use %@" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختار عايز تستخدم %@ إزاي"
+          }
+        }
+      }
     },
     "Choose how you want to use Saadni" : {
       "extractionState" : "stale",
@@ -829,7 +930,14 @@
       }
     },
     "Completion Note (Optional)" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ملاحظة الإنهاء (اختياري)"
+          }
+        }
+      }
     },
     "Compressing image..." : {
       "extractionState" : "stale",
@@ -863,7 +971,14 @@
       }
     },
     "Confirming…" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيتأكد…"
+          }
+        }
+      }
     },
     "Contact Person Name" : {
       "extractionState" : "stale",
@@ -888,7 +1003,14 @@
       }
     },
     "Continue" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كمّل"
+          }
+        }
+      }
     },
     "Continue as Guest" : {
       "localizations" : {
@@ -911,7 +1033,14 @@
       }
     },
     "Could not load the hired applicant's details." : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مقدرش يحمل تفاصيل المقبول."
+          }
+        }
+      }
     },
     "Counter-offer a different price if needed" : {
       "localizations" : {
@@ -954,7 +1083,14 @@
       }
     },
     "Currency" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العملة"
+          }
+        }
+      }
     },
     "Current Role" : {
       "localizations" : {
@@ -1027,7 +1163,14 @@
       }
     },
     "Delete Account" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسح الحساب"
+          }
+        }
+      }
     },
     "Delete Conversation" : {
       "localizations" : {
@@ -1040,10 +1183,24 @@
       }
     },
     "Delete Job" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسح الشغلانة"
+          }
+        }
+      }
     },
     "Delete My Account" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسح حسابي"
+          }
+        }
+      }
     },
     "Delete Notification" : {
       "localizations" : {
@@ -1056,7 +1213,14 @@
       }
     },
     "Delete this job?" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تمسح الشغلانة دي؟"
+          }
+        }
+      }
     },
     "Delivery" : {
       "localizations" : {
@@ -1079,10 +1243,24 @@
       }
     },
     "Describe what you completed or anything the provider should know." : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اشرح اللي خلّصته أو أي حاجة صاحب الشغل لازم يعرفها."
+          }
+        }
+      }
     },
     "Details" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التفاصيل"
+          }
+        }
+      }
     },
     "Detecting..." : {
       "localizations" : {
@@ -1105,7 +1283,14 @@
       }
     },
     "Dispute — Work Not Done" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خلاف — الشغل ما اتعملش"
+          }
+        }
+      }
     },
     "Don't have an account? " : {
       "localizations" : {
@@ -1263,7 +1448,14 @@
       }
     },
     "Employer" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صاحب العمل"
+          }
+        }
+      }
     },
     "Empowering Students" : {
       "localizations" : {
@@ -1537,6 +1729,16 @@
         }
       }
     },
+    "GoodShift" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جودشيفت"
+          }
+        }
+      }
+    },
     "Gym Floor Assistant" : {
       "localizations" : {
         "ar" : {
@@ -1558,7 +1760,14 @@
       }
     },
     "Having a Business?" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عندك شركة؟"
+          }
+        }
+      }
     },
     "Heavy Moving" : {
       "localizations" : {
@@ -1571,7 +1780,14 @@
       }
     },
     "Hello, %@" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أهلاً، %@"
+          }
+        }
+      }
     },
     "Help at a Fixed Low Price" : {
       "localizations" : {
@@ -1687,7 +1903,14 @@
       }
     },
     "I'm Done — Mark as Complete" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خلّصت — علّم كـ مكتمل"
+          }
+        }
+      }
     },
     "IKEA Assembly" : {
       "localizations" : {
@@ -1751,10 +1974,24 @@
       }
     },
     "Job Completion Requested" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "طُلب إنهاء الشغلانة"
+          }
+        }
+      }
     },
     "Job Details" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تفاصيل الشغلانة"
+          }
+        }
+      }
     },
     "Job Name" : {
       "localizations" : {
@@ -1767,7 +2004,14 @@
       }
     },
     "Job Poster" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ناشر الشغلانة"
+          }
+        }
+      }
     },
     "Job Title" : {
       "localizations" : {
@@ -1790,7 +2034,14 @@
       }
     },
     "Keep going!" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كمّل!"
+          }
+        }
+      }
     },
     "Kitchen Installation" : {
       "localizations" : {
@@ -1843,10 +2094,24 @@
       }
     },
     "Leave a Review" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتب مراجعة"
+          }
+        }
+      }
     },
     "Let the provider know you've completed the work." : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قول لصاحب الشغل إنك خلّصت الشغل."
+          }
+        }
+      }
     },
     "Loading applicants..." : {
       "localizations" : {
@@ -1889,7 +2154,14 @@
       }
     },
     "Loading poster info..." : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيحمل بيانات الناشر..."
+          }
+        }
+      }
     },
     "Loading reviews..." : {
       "localizations" : {
@@ -2022,7 +2294,14 @@
       }
     },
     "Mark as Done" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "علّم كـ منتهي"
+          }
+        }
+      }
     },
     "Mark as Read" : {
       "localizations" : {
@@ -2045,7 +2324,14 @@
       }
     },
     "Mark Job as Done" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "علّم الشغلانة كـ منتهية"
+          }
+        }
+      }
     },
     "Mark Service as Complete?" : {
       "localizations" : {
@@ -2159,7 +2445,14 @@
       }
     },
     "Nearest Landmark" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أقرب معلم"
+          }
+        }
+      }
     },
     "Nearest Landmark (Optional)" : {
       "extractionState" : "stale",
@@ -2183,10 +2476,24 @@
       }
     },
     "No activity yet" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مفيش نشاط لسه"
+          }
+        }
+      }
     },
     "No activity yet — apply to a job to get started." : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مفيش نشاط لسه — قدّم على شغلانة عشان تبدأ."
+          }
+        }
+      }
     },
     "No Applicants Yet" : {
       "localizations" : {
@@ -2470,7 +2777,14 @@
       }
     },
     "Performance" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الأداء"
+          }
+        }
+      }
     },
     "Pet Setting" : {
       "localizations" : {
@@ -2615,7 +2929,14 @@
       }
     },
     "Profile Complete!" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "البروفايل اكتمل!"
+          }
+        }
+      }
     },
     "Proposed Price (Optional)" : {
       "localizations" : {
@@ -2628,7 +2949,14 @@
       }
     },
     "Provider Has a Concern" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صاحب الشغل عنده مشكلة"
+          }
+        }
+      }
     },
     "Publishing Error" : {
       "localizations" : {
@@ -2661,7 +2989,14 @@
       }
     },
     "Reason for Dispute (Optional)" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سبب الخلاف (اختياري)"
+          }
+        }
+      }
     },
     "Recent Activities" : {
       "localizations" : {
@@ -2764,7 +3099,14 @@
       }
     },
     "Review Completion" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مراجعة الإنهاء"
+          }
+        }
+      }
     },
     "Review for: %@" : {
       "localizations" : {
@@ -2810,7 +3152,14 @@
       }
     },
     "Review Your Shift" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "راجع شيفتك"
+          }
+        }
+      }
     },
     "Reviews" : {
       "localizations" : {
@@ -2833,7 +3182,14 @@
       }
     },
     "Role" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الدور"
+          }
+        }
+      }
     },
     "Saadni" : {
       "extractionState" : "stale",
@@ -2847,6 +3203,7 @@
       }
     },
     "Saedni" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2898,7 +3255,14 @@
       }
     },
     "See All Reviews" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شوف كل المراجعات"
+          }
+        }
+      }
     },
     "See what others say" : {
       "localizations" : {
@@ -3093,7 +3457,14 @@
       }
     },
     "Skip for now" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تخطي دلوقتي"
+          }
+        }
+      }
     },
     "Someone Will Be Around" : {
       "localizations" : {
@@ -3177,6 +3548,12 @@
     },
     "Step %lld of %lld" : {
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الخطوة %lld من %lld"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -3196,7 +3573,14 @@
       }
     },
     "Student's Note" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ملاحظة الطالب"
+          }
+        }
+      }
     },
     "Submit Application" : {
       "localizations" : {
@@ -3209,7 +3593,14 @@
       }
     },
     "Submit Dispute" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قدم الخلاف"
+          }
+        }
+      }
     },
     "Submit Review" : {
       "localizations" : {
@@ -3222,7 +3613,14 @@
       }
     },
     "Submitted %@" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اتقدم %@"
+          }
+        }
+      }
     },
     "Submitting..." : {
       "localizations" : {
@@ -3235,7 +3633,14 @@
       }
     },
     "Submitting…" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيتقدم…"
+          }
+        }
+      }
     },
     "Success!" : {
       "localizations" : {
@@ -3298,7 +3703,14 @@
       }
     },
     "This action cannot be undone." : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإجراء ده مش ممكن يتراجع عنه."
+          }
+        }
+      }
     },
     "This information will be associated with your shift postings to help students verify employers." : {
       "extractionState" : "stale",
@@ -3312,7 +3724,14 @@
       }
     },
     "This Month" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الشهر ده"
+          }
+        }
+      }
     },
     "This will permanently delete the conversation and all its messages. This action cannot be undone." : {
       "localizations" : {
@@ -3325,7 +3744,14 @@
       }
     },
     "This will permanently delete your account and all your data. This action cannot be undone." : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ده هيمسح حسابك وكل بياناتك للأبد. الإجراء ده مش ممكن يتراجع عنه."
+          }
+        }
+      }
     },
     "Timing" : {
       "extractionState" : "stale",
@@ -3379,7 +3805,14 @@
       }
     },
     "Trusted Provider" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مقدم خدمة موثوق"
+          }
+        }
+      }
     },
     "Try adjusting your filters" : {
       "localizations" : {
@@ -3473,7 +3906,14 @@
       }
     },
     "View finished services" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شوف الخدمات المنتهية"
+          }
+        }
+      }
     },
     "View Profile" : {
       "localizations" : {
@@ -3556,7 +3996,14 @@
       }
     },
     "What to bring" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إيه اللي تجيب معاك"
+          }
+        }
+      }
     },
     "What to bring? (Optional)" : {
       "localizations" : {
@@ -3569,7 +4016,14 @@
       }
     },
     "What will the worker do" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إيه اللي العامل هيعمله"
+          }
+        }
+      }
     },
     "What will the worker do? (Optional)" : {
       "localizations" : {
@@ -3582,7 +4036,14 @@
       }
     },
     "Window Installation" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تركيب شبابيك"
+          }
+        }
+      }
     },
     "Withdraw" : {
       "localizations" : {
@@ -3595,10 +4056,24 @@
       }
     },
     "Work on a Shift" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اشتغل في شيفت"
+          }
+        }
+      }
     },
     "Worker" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عامل"
+          }
+        }
+      }
     },
     "Workers Needed" : {
       "extractionState" : "stale",
@@ -3662,10 +4137,24 @@
       }
     },
     "You're Hired" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اتوظفت"
+          }
+        }
+      }
     },
     "You're Hired!" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اتوظفت!"
+          }
+        }
+      }
     },
     "Your application has been submitted successfully. The job poster will review it soon." : {
       "localizations" : {

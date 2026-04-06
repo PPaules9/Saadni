@@ -68,11 +68,12 @@ class ProfileViewModel {
             isAnimating = true
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(300))
             self.isAnimating = false
         }
 
-        Task {
+        Task { @MainActor in
             // Create updated user with switched role
             var updatedUser = currentUser
             updatedUser.isJobSeeker = !updatedUser.isJobSeeker
@@ -81,19 +82,20 @@ class ProfileViewModel {
             // Use UserCache for optimistic update + Firestore sync
             await self.userCache.updateUser(updatedUser)
 
+            let newRole = updatedUser.isJobSeeker ? "job_seeker" : "service_provider"
+            AnalyticsService.shared.track(.roleSwitched(to: newRole))
+            AnalyticsService.shared.setUserProperties(role: newRole)
+
             // Trigger coordinator to switch role (will recreate fresh coordinator)
             self.appCoordinator.switchUserRole()
 
-            // Update UI state
-            await MainActor.run {
-                self.isSwitching = false
-            }
+            self.isSwitching = false
         }
     }
 
     func logout() async throws {
         // signOut() now handles all cleanup: auth logout + AppState reset
-        try await authManager.signOut()
+        try authManager.signOut()
     }
     
 }

@@ -38,6 +38,7 @@ class AppContainer {
 			print("🚀 [AppContainer] Starting session setup for user: \(userId)")
 
 			NotificationService.shared.setCurrentUser(userId)
+		AnalyticsService.shared.identify(userId: userId)
 
 			await withTaskGroup(of: (String, Error?).self) { group in
 				group.addTask {
@@ -94,6 +95,7 @@ class AppContainer {
 		sessionTask = nil
 
 		// Stop all Firestore listeners and clear store state
+		AnalyticsService.shared.reset()
 		applicationsStore.removeAllListeners()
 		reviewsStore.removeAllListeners()
 		walletStore.removeAllListeners()

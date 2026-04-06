@@ -49,6 +49,7 @@ struct RoleSelectionView: View {
                         title: "Need help with something",
                         iconColor: .accent
                     ) {
+                        AnalyticsService.shared.track(.roleSelected(role: "job_seeker"))
                         roleChoice = RoleChoice(isJobSeeker: true)
                     }
 
@@ -57,6 +58,7 @@ struct RoleSelectionView: View {
                         title: "Need work and earn some cash",
                         iconColor: .accent
                     ) {
+                        AnalyticsService.shared.track(.roleSelected(role: "service_provider"))
                         roleChoice = RoleChoice(isJobSeeker: false)
                     }
                 }

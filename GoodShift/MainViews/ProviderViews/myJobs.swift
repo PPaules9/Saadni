@@ -26,7 +26,7 @@ struct myJobs: View {
     @State private var applicantUsers: [String: User] = [:]
     @State private var isLoading: Bool = true
     @State private var filterOption: ServiceFilterOption = .active
-    @State private var selectedApplicantID: ApplicantID?
+    @Environment(ProviderCoordinator.self) var coordinator
     @State private var selectedCalendarDate: Date = Date()
     @State private var selectedCompletionService: JobService?
     @State private var actionError: String?
@@ -86,9 +86,6 @@ struct myJobs: View {
             }
         }
         .background(Colors.swiftUIColor(.appBackground))
-        .sheet(item: $selectedApplicantID) { identifier in
-            UserProfileSheet(userId: identifier.id)
-        }
         .sheet(item: $selectedCompletionService) { service in
             if let application = applicationsStore.receivedApplications.first(where: {
                 $0.serviceId == service.id && $0.status == .accepted
@@ -185,7 +182,7 @@ struct myJobs: View {
                         if let service = userServices.first(where: { $0.id == application.serviceId }) {
                             VStack(spacing: 0) {
                                 Button(action: {
-                                    selectedApplicantID = ApplicantID(id: application.applicantId)
+                                    coordinator.presentSheet(.userProfile(userId: application.applicantId))
                                 }) {
                                     ApplicantCard(
                                         application: application,

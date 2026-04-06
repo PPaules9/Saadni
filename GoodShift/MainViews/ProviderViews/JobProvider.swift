@@ -10,6 +10,7 @@ import SwiftUI
 struct JobProvider: View {
  @Environment(AppCoordinator.self) var appCoordinator
  @Environment(ConversationsStore.self) var conversationsStore
+ @Environment(ServicesStore.self) var servicesStore
 
 	var body: some View {
 		if #available(iOS 26, *) {
@@ -89,8 +90,12 @@ struct JobProvider: View {
   switch destination {
   case .serviceDetail(let service):
    ServiceDetailView(service: service)
-  case .applicationsList(let serviceId, let title):
-   Text("Applications List for \(title)")
+  case .applicationsList(let serviceId, _):
+   if let service = servicesStore.services.first(where: { $0.id == serviceId }) {
+    ServiceApplicationsSheet(service: service)
+   } else {
+    ProgressView()
+   }
   case .categoryDetail(let category):
    Text("Category: \(category.rawValue)")
   case .chatDetail(let conversationId):
@@ -101,6 +106,12 @@ struct JobProvider: View {
    }
   case .createJob(let category, let initialName, let imageName):
    CreateJobSheet(selectedCategory: category, initialJobName: initialName, initialServiceImageName: imageName)
+  case .performance:
+   UserPerformanceView()
+  case .completedServices:
+   CompletedServicesView()
+  case .userReviews(let userId):
+   UserReviewsView(userId: userId)
   }
  }
 
@@ -127,18 +138,38 @@ struct JobProvider: View {
    CreateJobSheet(selectedCategory: category, initialJobName: initialName, initialServiceImageName: imageName)
   case .addService:
    Text("Add Service View")
-  case .applyToService(let title, let id):
-   Text("Apply Sheet for \(title)")
-  case .applicationDetail:
-   Text("Application Detail Sheet")
-  case .applicationsList:
-   Text("Applications List Sheet")
+  case .applyToService(_, let serviceId):
+   if let service = servicesStore.services.first(where: { $0.id == serviceId }) {
+    ApplyJobSheet(service: service)
+   } else {
+    ProgressView()
+   }
+  case .applicationDetail(let app):
+   if let service = servicesStore.services.first(where: { $0.id == app.serviceId }) {
+    ServiceDetailView(service: service)
+   } else {
+    ProgressView()
+   }
+  case .applicationsList(let serviceId, _):
+   if let service = servicesStore.services.first(where: { $0.id == serviceId }) {
+    ServiceApplicationsSheet(service: service)
+   } else {
+    ProgressView()
+   }
   case .imagePicker:
    ImagePickerSheet(selectedImage: .constant(nil))
   case .myAddresses:
    NavigationStack {
     MyAddressesView()
    }
+  case .walletSheet:
+   WalletSheet()
+  case .notificationDrawer(let role):
+   NotificationDrawerView(userRole: role)
+  case .allActivities:
+   AllActivitiesView()
+  case .userProfile(let userId):
+   UserProfileSheet(userId: userId)
   }
  }
 }

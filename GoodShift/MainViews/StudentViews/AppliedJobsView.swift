@@ -12,6 +12,7 @@ struct AppliedJobsView: View {
 	@Environment(ApplicationsStore.self) var applicationsStore
 	@Environment(ServicesStore.self) var servicesStore
 	@Environment(ReviewsStore.self) var reviewsStore
+	@Environment(AppCoordinator.self) var appCoordinator
 
 	@State private var reviewService: JobService?
 
@@ -47,82 +48,80 @@ struct AppliedJobsView: View {
 	}
 
 	var body: some View {
-		NavigationStack {
-			Group {
-				if let error = applicationsStore.applicationsError {
-					ErrorStateView(
-						message: error.errorDescription ?? "Failed to load applications",
-						retryAction: { await applicationsStore.retryLoadingApplications() }
-					)
-				} else if applicationsStore.isLoadingApplications || isLoading {
-					VStack(spacing: 12) {
-						ProgressView()
-							.tint(.accent)
-						Text("Loading applications...")
+		Group {
+			if let error = applicationsStore.applicationsError {
+				ErrorStateView(
+					message: error.errorDescription ?? "Failed to load applications",
+					retryAction: { await applicationsStore.retryLoadingApplications() }
+				)
+			} else if applicationsStore.isLoadingApplications || isLoading {
+				VStack(spacing: 12) {
+					ProgressView()
+						.tint(.accent)
+					Text("Loading applications...")
+						.font(.subheadline)
+						.foregroundStyle(Colors.swiftUIColor(.textSecondary))
+				}
+				.frame(maxWidth: .infinity, maxHeight: .infinity)
+			} else if applications.isEmpty {
+				VStack(spacing: 24) {
+					Spacer()
+
+					Image(systemName: "bag")
+						.font(.system(size: 60))
+						.foregroundStyle(.accent.opacity(0.3))
+
+					VStack(spacing: 8) {
+						Text("Find your next job!")
+							.font(.headline)
+							.foregroundStyle(Colors.swiftUIColor(.textMain))
+						Text("You currently have no open applications")
 							.font(.subheadline)
 							.foregroundStyle(Colors.swiftUIColor(.textSecondary))
 					}
-					.frame(maxWidth: .infinity, maxHeight: .infinity)
-				} else if applications.isEmpty {
-					VStack(spacing: 24) {
-						Spacer()
 
-						Image(systemName: "bag")
-							.font(.system(size: 60))
-							.foregroundStyle(.accent.opacity(0.3))
+					Spacer()
+				}
+				.frame(maxWidth: .infinity, maxHeight: .infinity)
+			} else {
+				ScrollView {
+					LazyVStack(spacing: 16, pinnedViews: [.sectionHeaders]) {
 
-						VStack(spacing: 8) {
-							Text("Find your next job!")
-								.font(.headline)
-								.foregroundStyle(Colors.swiftUIColor(.textMain))
-							Text("You currently have no open applications")
-								.font(.subheadline)
-								.foregroundStyle(Colors.swiftUIColor(.textSecondary))
-						}
-
-						Spacer()
-					}
-					.frame(maxWidth: .infinity, maxHeight: .infinity)
-				} else {
-					ScrollView {
-						LazyVStack(spacing: 16, pinnedViews: [.sectionHeaders]) {
-
-							// MARK: Active / Hired Jobs
-							if !activeApplications.isEmpty {
-								Section {
-									ForEach(activeApplications) { application in
-										if let service = serviceMap[application.serviceId] {
-											applicationRow(application: application, service: service)
-										}
+						// MARK: Active / Hired Jobs
+						if !activeApplications.isEmpty {
+							Section {
+								ForEach(activeApplications) { application in
+									if let service = serviceMap[application.serviceId] {
+										applicationRow(application: application, service: service)
 									}
-								} header: {
-									sectionHeader(title: "Active Jobs", systemImage: "briefcase.fill", color: .green)
 								}
-							}
-
-							// MARK: Other Applications
-							if !otherApplications.isEmpty {
-								Section {
-									ForEach(otherApplications) { application in
-										if let service = serviceMap[application.serviceId] {
-											applicationRow(application: application, service: service)
-										}
-									}
-								} header: {
-									sectionHeader(title: "Applications", systemImage: "tray.full.fill", color: .accent)
-								}
+							} header: {
+								sectionHeader(title: "Active Jobs", systemImage: "briefcase.fill", color: .green)
 							}
 						}
-						.padding()
+
+						// MARK: Other Applications
+						if !otherApplications.isEmpty {
+							Section {
+								ForEach(otherApplications) { application in
+									if let service = serviceMap[application.serviceId] {
+										applicationRow(application: application, service: service)
+									}
+								}
+							} header: {
+								sectionHeader(title: "Applications", systemImage: "tray.full.fill", color: .accent)
+							}
+						}
 					}
-					.refreshable {
-						try? await Task.sleep(nanoseconds: 500_000_000)
-					}
+					.padding()
+				}
+				.refreshable {
+					try? await Task.sleep(nanoseconds: 500_000_000)
 				}
 			}
-			.navigationTitle("My Jobs")
-			.background(Colors.swiftUIColor(.appBackground))
 		}
+		.navigationTitle("My Jobs")
+		.background(Colors.swiftUIColor(.appBackground))
 		.sheet(item: $reviewService) { service in
 			PostJobReviewSheet(
 				service: service,
@@ -157,7 +156,9 @@ struct AppliedJobsView: View {
 	@ViewBuilder
 	private func applicationRow(application: JobApplication, service: JobService) -> some View {
 		VStack(spacing: 0) {
-			NavigationLink(destination: ServiceDetailView(service: service)) {
+			Button {
+				appCoordinator.navigateToServiceDetail(service)
+			} label: {
 				AppliedServiceCard(service: service, application: application)
 			}
 			.buttonStyle(.plain)

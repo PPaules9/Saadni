@@ -28,7 +28,7 @@ struct StarRatingPicker: View {
 }
 
 #Preview {
-    @State var rating = 0
+    @Previewable @State var rating = 0
 
     return VStack(spacing: 20) {
         Text("Rate this experience")

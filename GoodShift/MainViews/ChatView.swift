@@ -10,9 +10,8 @@ import SwiftUI
 struct ChatView: View {
 	@Environment(ConversationsStore.self) var conversationsStore
 	@Environment(AuthenticationManager.self) var authManager
+	@Environment(AppCoordinator.self) var appCoordinator
 	@State private var searchText = ""
-	@State private var selectedConversation: Conversation?
-	@State private var showChatDetail = false
 	@State private var conversationToDelete: Conversation?
 	@State private var showDeleteAlert = false
 	
@@ -24,96 +23,95 @@ struct ChatView: View {
 	}
 	
 	var body: some View {
-		NavigationStack {
-			ZStack {
-				Color(Colors.swiftUIColor(.appBackground))
-					.ignoresSafeArea()
-				
-				VStack(spacing: 0) {
-					
-					BrandTextField(
-						hasTitle: false,
-						title: "",
-						placeholder: "Search conversations...",
-						text: $searchText
-					)
-					.padding()
-					.onSubmit {
-					}
-					
-					
-					// Conversations List
-					if conversationsStore.isLoading {
-						ProgressView()
-							.frame(maxWidth: .infinity, maxHeight: .infinity)
-					} else if filteredConversations.isEmpty {
-						VStack(spacing: 16) {
-							Image(systemName: "bubble.left")
-								.font(.system(size: 48))
-								.foregroundStyle(Colors.swiftUIColor(.textSecondary))
-							
-							Text("No conversations yet")
-								.font(.headline)
-								.foregroundStyle(Colors.swiftUIColor(.textMain))
-							
-							Text("Start a conversation by clicking the chat icon on a service page")
-								.font(.caption)
-								.foregroundStyle(Colors.swiftUIColor(.textSecondary))
-								.multilineTextAlignment(.center)
-								.padding(.horizontal)
-						}
+		ZStack {
+			Color(Colors.swiftUIColor(.appBackground))
+				.ignoresSafeArea()
+
+			VStack(spacing: 0) {
+
+				BrandTextField(
+					hasTitle: false,
+					title: "",
+					placeholder: "Search conversations...",
+					text: $searchText
+				)
+				.padding()
+				.onSubmit {}
+
+				// Conversations List
+				if conversationsStore.isLoading {
+					ProgressView()
 						.frame(maxWidth: .infinity, maxHeight: .infinity)
-					} else {
-						List {
-							ForEach(filteredConversations) { conversation in
-								NavigationLink(destination: ChatDetailView(conversation: conversation)) {
-									ConversationRow(conversation: conversation, currentUserId: authManager.currentUserId ?? "")
-								}
-								.listRowBackground(Color.clear)
-								.listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
-								// Swipe right → Delete
-								.swipeActions(edge: .trailing, allowsFullSwipe: false) {
-									Button(role: .destructive) {
-										conversationToDelete = conversation
-										showDeleteAlert = true
-									} label: {
-										Label("Delete", systemImage: "trash")
-									}
-								}
-								// Swipe left → Pin / Unpin
-								.swipeActions(edge: .leading, allowsFullSwipe: true) {
-									Button {
-										Task {
-											try? await conversationsStore.pinConversation(
-												conversation.id,
-												isPinned: !conversation.isPinned
-											)
-										}
-									} label: {
-										Label(
-											conversation.isPinned ? "Unpin" : "Pin",
-											systemImage: conversation.isPinned ? "pin.slash" : "pin"
-										)
-									}
-									.tint(.yellow)
+				} else if filteredConversations.isEmpty {
+					VStack(spacing: 16) {
+						Image(systemName: "bubble.left")
+							.font(.system(size: 48))
+							.foregroundStyle(Colors.swiftUIColor(.textSecondary))
+
+						Text("No conversations yet")
+							.font(.headline)
+							.foregroundStyle(Colors.swiftUIColor(.textMain))
+
+						Text("Start a conversation by clicking the chat icon on a service page")
+							.font(.caption)
+							.foregroundStyle(Colors.swiftUIColor(.textSecondary))
+							.multilineTextAlignment(.center)
+							.padding(.horizontal)
+					}
+					.frame(maxWidth: .infinity, maxHeight: .infinity)
+				} else {
+					List {
+						ForEach(filteredConversations) { conversation in
+							Button {
+								appCoordinator.navigateToChat(conversationId: conversation.id)
+							} label: {
+								ConversationRow(conversation: conversation, currentUserId: authManager.currentUserId ?? "")
+							}
+							.listRowBackground(Color.clear)
+							.listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+							// Swipe right → Delete
+							.swipeActions(edge: .trailing, allowsFullSwipe: false) {
+								Button(role: .destructive) {
+									conversationToDelete = conversation
+									showDeleteAlert = true
+								} label: {
+									Label("Delete", systemImage: "trash")
 								}
 							}
+							// Swipe left → Pin / Unpin
+							.swipeActions(edge: .leading, allowsFullSwipe: true) {
+								Button {
+									Task {
+										try? await conversationsStore.pinConversation(
+											conversation.id,
+											isPinned: !conversation.isPinned
+										)
+									}
+								} label: {
+									Label(
+										conversation.isPinned ? "Unpin" : "Pin",
+										systemImage: conversation.isPinned ? "pin.slash" : "pin"
+									)
+								}
+								.tint(.yellow)
+							}
 						}
-						.listStyle(.plain)
-						.scrollContentBackground(.hidden)
 					}
+					.listStyle(.plain)
+					.scrollContentBackground(.hidden)
 				}
 			}
-			.alert("Delete Conversation", isPresented: $showDeleteAlert, presenting: conversationToDelete) { conversation in
-				Button("Delete", role: .destructive) {
-					Task {
-						try? await conversationsStore.deleteConversation(conversation.id)
-					}
+		}
+		.navigationTitle("Chats")
+		.alert("Delete Conversation", isPresented: $showDeleteAlert, presenting: conversationToDelete) { conversation in
+			Button("Delete", role: .destructive) {
+				Task {
+					try? await conversationsStore.deleteConversation(conversation.id)
 				}
-				Button("Cancel", role: .cancel) {}
-			} message: { _ in
-				Text("This will permanently delete the conversation and all its messages. This action cannot be undone.")
 			}
+			Button("Cancel", role: .cancel) {}
+		} message: { _ in
+			Text("This will permanently delete the conversation and all its messages. This action cannot be undone.")
 		}
 	}
 }

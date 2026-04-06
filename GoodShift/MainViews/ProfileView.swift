@@ -13,68 +13,62 @@ struct ProfileView: View {
 	@Environment(UserCache.self) var userCache
 	@Environment(AppCoordinator.self) var appCoordinator
 	
-	// Local UI State replacing the ProfileViewModel
+	// Local UI State
 	@State private var isAnimating: Bool = false
 	@State private var isSwitching: Bool = false
-	@State private var showPerformance: Bool = false
-	
+
 	var body: some View {
 		ZStack {
 			Color(Colors.swiftUIColor(.appBackground))
 				.ignoresSafeArea()
-			
-			NavigationStack {
-				ScrollView {
-					VStack(alignment: .leading, spacing: 24) {
-						// Profile Header
-						if let user = authManager.currentUser {
-							let currentRole: UserRole = user.isServiceProvider ? .provider : .jobSeeker
-							let completionPercentage = user.getCompletionPercentage(forRole: currentRole)
-							
-							ProfileHeaderView(
-								displayName: user.displayName ?? "User",
-								email: user.email,
-								photoURL: user.photoURL,
-								completionPercentage: completionPercentage
-							)
-						}
-						
-						// Account Menu
-						AccountMenuSection(
-							onLogout: {
-								Task {
-									try await authManager.signOut()
-								}
+
+			ScrollView {
+				VStack(alignment: .leading, spacing: 24) {
+					// Profile Header
+					if let user = authManager.currentUser {
+						let currentRole: UserRole = user.isServiceProvider ? .provider : .jobSeeker
+						let completionPercentage = user.getCompletionPercentage(forRole: currentRole)
+
+						ProfileHeaderView(
+							displayName: user.displayName ?? "User",
+							email: user.email,
+							photoURL: user.photoURL,
+							completionPercentage: completionPercentage
+						)
+					}
+
+					// Account Menu
+					AccountMenuSection(
+						onLogout: {
+							Task {
+								try authManager.signOut()
 							}
-						)
-						
-						// Role Switcher
-						RoleSwitcherView(
-							currentRoleLabel: currentUserTypeLabel,
-							currentRoleIcon: currentUserTypeIcon,
-							isAnimating: isAnimating,
-							isSwitching: isSwitching,
-							onSwitch: switchUserType
-						)
-						
-						Spacer()
-							.frame(height: 20)
-					}
-				}
-				.scrollIndicators(.hidden)
-				.navigationTitle("Profile")
-				.toolbar {
-					ToolbarItem(placement: .topBarTrailing) {
-						Button {
-							showPerformance = true
-						} label: {
-							Image(systemName: "chart.bar.fill")
-								.foregroundStyle(.accent)
 						}
-					}
+					)
+
+					// Role Switcher
+					RoleSwitcherView(
+						currentRoleLabel: currentUserTypeLabel,
+						currentRoleIcon: currentUserTypeIcon,
+						isAnimating: isAnimating,
+						isSwitching: isSwitching,
+						onSwitch: switchUserType
+					)
+
+					Spacer()
+						.frame(height: 20)
 				}
-				.navigationDestination(isPresented: $showPerformance) {
-					UserPerformanceView()
+			}
+			.scrollIndicators(.hidden)
+		}
+		.navigationTitle("Profile")
+		.toolbar {
+			ToolbarItem(placement: .topBarTrailing) {
+				Button {
+					appCoordinator.navigateToPerformance()
+				} label: {
+					Image(systemName: "chart.bar.fill")
+						.foregroundStyle(.accent)
 				}
 			}
 		}

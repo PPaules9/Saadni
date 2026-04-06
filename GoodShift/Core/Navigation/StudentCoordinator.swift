@@ -49,7 +49,7 @@ final class StudentCoordinator: Equatable {
         selectedTab = tab
         if let destination = destination {
             // Ensure we're operating on the correct path after tab switch
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.navigate(to: destination)
             }
         }

@@ -224,6 +224,9 @@ struct WalletSheet: View {
    Spacer()
   }
   .background(Color.white)
+  .onAppear {
+   AnalyticsService.shared.track(.walletViewed)
+  }
  }
 }
 

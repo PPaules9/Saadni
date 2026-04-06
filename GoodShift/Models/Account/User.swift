@@ -252,7 +252,7 @@ struct User: Codable, Identifiable, Hashable {
 
 // MARK: - Profile Completion Extension
 
-enum UserRole {
+enum UserRole: Hashable {
     case jobSeeker
     case provider
 }

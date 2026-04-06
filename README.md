@@ -1,12 +1,12 @@
 <div align="center">
 
-# GoodShift 🤝
+# GoodShift
 
-### The On-Demand Services Marketplace for Your Community
+### The On-Demand Gig Services Marketplace
 
-**Post a task. Get it done. Earn on your schedule.**
+**Post a shift. Get it filled. Earn on your schedule.**
 
-GoodShift connects people who need everyday services with trusted local providers — instantly. Whether you need a hand around the house or want to earn extra income with your skills, GoodShift makes it effortless.
+GoodShift connects businesses and individuals who need reliable, short-notice workers with skilled local providers — instantly. Whether you need staff for a shift or want to earn income on your own terms, GoodShift makes it seamless.
 
 [![Swift](https://img.shields.io/badge/Swift-5.9%2B-F05138?logo=swift&logoColor=white)](https://swift.org)
 [![iOS](https://img.shields.io/badge/iOS-17%2B-007AFF?logo=apple&logoColor=white)](https://www.apple.com/ios)
@@ -14,7 +14,7 @@ GoodShift connects people who need everyday services with trusted local provider
 [![Firebase](https://img.shields.io/badge/Firebase-Backend-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com)
 [![License](https://img.shields.io/badge/License-MIT-34C759.svg)](LICENSE)
 
-[Overview](#overview) · [How It Works](#how-it-works) · [Features](#-core-features) · [Tech Stack](#-tech-stack) · [Architecture](#-architecture) · [Roadmap](#-roadmap) · [Future Vision](#-future-vision) · [Contributing](#-contributing)
+[Overview](#overview) · [How It Works](#how-it-works) · [Features](#-core-features) · [Tech Stack](#-tech-stack) · [Architecture](#-architecture) · [Roadmap](#-roadmap) · [Contributing](#-contributing)
 
 </div>
 
@@ -22,284 +22,316 @@ GoodShift connects people who need everyday services with trusted local provider
 
 ## Overview
 
-**GoodShift** (Arabic: ساعدني — *"Help Me"*) is a native iOS marketplace that eliminates the friction between needing a service and getting it done. The platform operates on a simple principle: **anyone can post a task, and anyone with the right skills can fulfill it.**
+**GoodShift** is a native iOS two-sided marketplace built for the gig economy. It connects **Job Posters** — businesses and individuals needing workers for shifts and tasks — with **Service Providers** — freelancers, students, and skilled workers ready to earn flexibly.
 
-The app serves two audiences through a single, unified experience:
+The platform targets industries that rely on short-notice staffing: food & beverage, retail, logistics, hospitality, security, cleaning, and more. No recruitment agencies, no middlemen — just direct connections between people who need work done and people ready to do it.
 
 | Role | What You Do |
 |---|---|
-| **Task Poster** | Describe what you need, set your budget, and choose from applicants who respond in real time. |
-| **Service Provider** | Browse open tasks in your area, apply to the ones that match your skills, and earn money on your own terms. |
-
-GoodShift is purpose-built for communities where trusted, affordable help is hard to find — and where students, freelancers, and skilled workers are ready to earn. No agencies. No middlemen. Just people helping people.
+| **Job Poster** | Describe the shift, set pay, location, and requirements — then choose from applicants who respond in real time. |
+| **Service Provider** | Browse available shifts across 25+ categories, apply with optional cover messages or counter-offers, and earn on your schedule. |
 
 ---
 
 ## How It Works
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                    GoodShift FLOW                      │
-├─────────────────────────────────────────────────────┤
-│                                                     │
-│   1. Sign Up       →  Google or Apple Sign-In       │
-│   2. Choose Role   →  "I need help" or "I can help" │
-│   3. Post / Browse →  Create a task or find one     │
-│   4. Connect       →  In-app messaging & details    │
-│   5. Complete      →  Rate, review, and get paid    │
-│                                                     │
-└─────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                    GoodShift Flow                        │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  1. Sign Up        →  Google or Apple Sign-In           │
+│  2. Choose Role    →  "I need help" or "I can help"     │
+│  3. Post / Browse  →  Create a shift or find one        │
+│  4. Apply & Hire   →  Review applicants, accept, chat   │
+│  5. Complete       →  Mark done, rate, and get paid     │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
 ```
 
-**For Task Posters:**
-1. Tap **"Post a Task"** and describe what you need
-2. Select a category from **25+ service types**
-3. Set your budget and preferred timing
-4. Review incoming applications and choose a provider
-5. Communicate directly through **in-app messaging**
-6. Mark the task complete and leave a review
+**For Job Posters:**
+1. Tap **"Post a Job"** and fill in the shift details
+2. Specify category, pay, location, schedule, dress code, and number of workers needed
+3. Review incoming applications from providers with profiles and ratings
+4. Accept an applicant and coordinate via **in-app messaging**
+5. Confirm completion and leave a review — payment is tracked in-app
 
 **For Service Providers:**
-1. Browse available tasks filtered by category, location, and budget
-2. Apply to tasks that match your skills
-3. Coordinate details with the task poster via chat
-4. Complete the work, get rated, and build your reputation
+1. Browse available shifts filtered by category, location, and pay rate
+2. Apply with an optional cover message or counter-offer price
+3. Communicate with the job poster and confirm shift details via chat
+4. Complete the shift, request payment confirmation, and build your reputation
 
 ---
 
 ## ✨ Core Features
 
 ### Dual-Role System
-Switch seamlessly between posting tasks and offering services — no need for separate accounts. Each role gets its own tailored dashboard, navigation, and workflows.
+One account, two modes. Switch seamlessly between posting jobs and offering services. Each role gets a tailored dashboard, navigation, and workflow without requiring separate accounts.
 
 ### 25+ Service Categories
-From home maintenance to personal errands, Saadni covers a wide range of everyday needs:
+GoodShift covers industry-specific shift categories organized into 9 groups:
 
-> 🏠 Home Cleaning · ⚡ Electrical Work · 🔧 Plumbing · 🪑 Furniture Assembly · 🎨 Painting · 🌿 Gardening · 🐾 Pet Care · 👶 Babysitting · 📦 Moving Assistance · 🚗 Car Services · 🍳 Cooking · 📸 Photography · 💻 Tech Support · 🧹 Laundry · and more...
+| Group | Examples |
+|---|---|
+| Food & Beverage | Baristas, kitchen staff, servers, delivery |
+| Retail & Malls | Sales associates, stockroom, cashiers |
+| Logistics & Warehousing | Packing, sorting, loading, inventory |
+| Cleaning & Maintenance | Office cleaning, deep cleaning, maintenance |
+| Petrol & Automotive | Fuel attendants, car wash, detailing |
+| Security & Crowd Management | Event security, access control, guards |
+| Hospitality & Events | Event setup, hosting, catering, cleanup |
+| Moving & Labour | Heavy lifting, relocation, furniture assembly |
+| Community & Outdoor | Landscaping, community events, outdoor work |
 
-### Smart Job Discovery
-Browse, search, and filter available tasks by category, urgency, and budget. Real-time updates ensure you see new opportunities the moment they go live.
+### Job Posting Wizard
+A guided 6-step creation flow captures everything a provider needs: title, description, category, pay rate, payment timing, location (with floor/unit/landmark support), dress code, break duration, branch name, and number of workers required.
 
-### Service Portfolio Management
-Providers can create and manage their service listings — complete with descriptions, pricing, and availability — building a professional profile that attracts more work.
+### Application System
+Providers apply with optional cover messages and counter-offer pricing. Job posters review applications, view provider profiles and ratings, and accept or reject with a response message. Application status updates are tracked end-to-end.
 
-### Personal Dashboard
-Track your active tasks, pending applications, earnings history, and performance metrics — all from a unified, role-aware dashboard.
-
-### In-App Messaging
-Secure, real-time chat between task posters and providers. Coordinate scheduling, share requirements, and confirm details without leaving the app.
+### Real-Time In-App Messaging
+Firestore-powered chat between job posters and providers. Conversations are sorted by most recent activity. Tapping a push notification deep-links directly into the relevant conversation.
 
 ### Ratings & Reviews
-Every completed task generates a two-way review. Over time, top-rated providers stand out — and task posters build a track record of fair, reliable postings.
+Two-way reviews after every completed shift. 5-star rating with optional text comments. Review history tracked separately for received and submitted reviews. Providers build verified reputations over time.
+
+### Push Notifications
+Full Firebase Cloud Messaging (FCM) integration covering 14+ notification types:
+- New application received, accepted, or rejected
+- New message from a provider or poster
+- Shift start reminders and expiry warnings
+- Completion requests, disputes, and confirmations
+- Earnings received, withdrawals processed, top-ups completed
+- Low rating alerts
 
 ### Digital Wallet
-Track earnings, view transaction history, and manage your balance directly within the app.
+Real-time transaction history covering earnings, withdrawals, top-ups, and platform fees. Balance tracking with the last 50 transactions displayed, categorized by transaction type.
 
-### Modern Authentication
-Fast, secure sign-in with **Google** and **Apple** — powered by Firebase Authentication. No passwords to remember.
+### User Profiles
+Provider profiles include ratings, review counts, response time, completion rate, acceptance rate, verification level, and badge indicators. Task posters have their own profile with posting history and trust signals.
+
+### Multi-Language Support
+Full localization for English and Arabic, including RTL layout support.
 
 ---
 
 ## 🛠 Tech Stack
 
-| Layer | Technology | Purpose |
+### Core
+
+| Layer | Technology | Details |
 |---|---|---|
-| **UI** | SwiftUI | Declarative, reactive interface with iOS 17+ capabilities |
-| **Language** | Swift 5.9+ | Type-safe, modern concurrency with `async/await` |
-| **Architecture** | MVVM + `@Observable` | Clean separation of concerns with feature-based modules |
-| **Backend** | Firebase Firestore | Real-time NoSQL database for tasks, users, and messages |
-| **Auth** | Firebase Auth | Secure Google & Apple Sign-In |
-| **Storage** | Firebase Storage | Image uploads for service portfolios and profiles |
-| **Messaging** | Firestore Listeners | Real-time chat with live message delivery |
-| **DI** | Custom Container | Lightweight dependency injection for testability |
-| **Navigation** | Coordinator Pattern | Centralized, type-safe navigation management |
+| **Language** | Swift 5.9+ | `async/await`, `@Observable`, strict concurrency |
+| **UI Framework** | SwiftUI | Declarative UI, iOS 17+ features, `@Observable` state |
+| **Minimum Target** | iOS 17.0+ | Required for `@Observable` macro support |
+| **IDE** | Xcode 15.0+ | Swift Package Manager for dependencies |
+
+### Backend & Infrastructure
+
+| Service | Provider | Purpose |
+|---|---|---|
+| **Database** | Firebase Firestore | Real-time NoSQL — all app data (users, jobs, messages, reviews, wallet) |
+| **Authentication** | Firebase Auth | Google Sign-In, Apple Sign-In, session management |
+| **File Storage** | Firebase Storage | Profile photos, service/job images |
+| **Push Notifications** | Firebase Cloud Messaging (FCM) | 14+ notification types, multi-device token management, deep linking |
+| **Cloud Functions** | Firebase Functions (Node.js) | Server-side logic, notification dispatch, business rule enforcement |
+| **Remote Config** | Firebase Remote Config | Feature flags and remote configuration |
+
+### Third-Party Libraries
+
+| Library | Version | Purpose |
+|---|---|---|
+| **Kingfisher** | Latest | Async image loading with in-memory (100 MB) and disk (500 MB, 7-day) caching |
+| **AmplitudeSwift** | 7.x | Product analytics — event tracking, user identification, session management |
+
+### Architecture & Patterns
+
+| Pattern | Implementation |
+|---|---|
+| **MVVM** | `@Observable` ViewModels with `@MainActor` isolation |
+| **Coordinator** | `AppCoordinator` → `ProviderCoordinator` / `StudentCoordinator` |
+| **Dependency Injection** | `AppContainer` — centralized store and service initialization |
+| **Repository Pattern** | `FirestoreService`, `StorageService`, `AuthenticationManager` |
+| **Store Pattern** | Real-time `@Observable` stores with Firestore snapshot listeners |
 
 ---
 
 ## 📋 Requirements
 
-| Requirement | Minimum Version |
+| Requirement | Version |
 |---|---|
 | Xcode | 15.0+ |
 | Swift | 5.9+ |
 | iOS Deployment Target | 17.0+ |
-| Firebase Account | Required |
+| Firebase Project | Required (Firestore, Auth, Storage, FCM enabled) |
 
 ---
 
 ## 🏗 Architecture
 
-Saadni follows a **feature-first MVVM architecture** powered by Swift's `@Observable` macro for efficient, automatic state management.
+GoodShift is built on a **feature-first MVVM + Coordinator** architecture, using Swift's `@Observable` macro for automatic, efficient state propagation throughout the app.
 
 ```
-┌──────────────────────────────────────────────────┐
-│                   View Layer                     │
-│          (SwiftUI Views & Components)            │
-├──────────────────────────────────────────────────┤
-│                ViewModel Layer                   │
-│      (@Observable classes, business logic)       │
-├──────────────────────────────────────────────────┤
-│                  Model Layer                     │
-│       (Data models, StateKey system)             │
-├──────────────────────────────────────────────────┤
-│                  Data Layer                      │
-│     (Firebase Services, Local Persistence)       │
-└──────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                      View Layer                         │
+│             (SwiftUI Views & Components)                │
+├─────────────────────────────────────────────────────────┤
+│                   ViewModel Layer                       │
+│        (@Observable classes, @MainActor isolated)       │
+├─────────────────────────────────────────────────────────┤
+│                     Store Layer                         │
+│    (Real-time @Observable stores, Firestore listeners)  │
+├─────────────────────────────────────────────────────────┤
+│                     Data Layer                          │
+│        (FirestoreService, StorageService, Auth)         │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ### Key Design Decisions
 
-- **Feature-Based Modules** — Code is organized by feature (`Chat`, `Dashboard`, `ServiceManagement`, etc.), not by architectural layer. Each module owns its views, view models, and models.
-- **Type-Safe StateKey System** — A custom `StateKey<T>` pattern eliminates magic strings and ensures compile-time safety for all app-state operations.
-- **Coordinator Navigation** — Centralized `AppCoordinator` manages the full navigation graph, keeping views decoupled from routing logic.
-- **Dependency Injection Container** — A lightweight `AppContainer` provides all dependencies, enabling clean initialization and testability.
-- **`@MainActor` Concurrency** — All UI-bound state is isolated to the main actor, ensuring thread-safe updates without boilerplate.
+- **Feature-Based Modules** — Code organized by feature (`Chat`, `Dashboard`, `ServiceDetail`, etc.). Each module owns its views, view models, and any local models.
+- **Coordinator Navigation** — `AppCoordinator` delegates to role-specific coordinators (`ProviderCoordinator`, `StudentCoordinator`), keeping views completely decoupled from routing logic.
+- **AppContainer (DI)** — A central `AppContainer` initializes and owns all stores and services. Session setup (`setupUserSession`) activates all real-time listeners concurrently. Logout (`clearUserSession`) removes listeners and clears state cleanly.
+- **`@Observable` + `@MainActor`** — All ViewModels and Stores use Swift's `@Observable` macro, ensuring automatic SwiftUI re-renders with zero boilerplate. `@MainActor` isolation guarantees thread-safe UI updates.
+- **ListenerManaging Protocol** — All Firestore-backed stores implement a common `ListenerManaging` protocol, ensuring consistent listener lifecycle (attach, detach, cleanup).
 
 ### Project Structure
 
 ```
-Saadni/
-├── App/                    # App entry point, AppCoordinator, AppContainer
+GoodShift/
+├── App/
+│   ├── Bootstrap/
+│   │   ├── AppDelegate.swift          # FCM setup, notification handling
+│   │   ├── AppContainer.swift         # Central DI container
+│   │   └── AppStateManager.swift      # App-level state
+│   ├── GoodShiftApp.swift             # Main entry point
+│   └── MainView.swift                 # Auth state routing
 ├── Core/
-│   ├── Constants/          # StateKey definitions, app-wide constants
-│   ├── DI/                 # Dependency injection container
-│   ├── Design System/      # Reusable UI components, brand tokens
-│   ├── Error/              # Centralized error handling
-│   ├── Navigation/         # Coordinator and routing logic
-│   └── Resources/          # Assets, colors, fonts
+│   ├── Analytics/                     # Amplitude event tracking
+│   ├── Design System/                 # UI components, color tokens, typography
+│   ├── DI/                            # Mock services for testing
+│   ├── Error/                         # Centralized error handling
+│   ├── Navigation/                    # Coordinators and routing destinations
+│   ├── Notifications/                 # FCM, notification types, NotificationsStore
+│   ├── Protocols/                     # Shared abstract interfaces
+│   └── Resources/                     # GoogleService-Info.plist, Info.plist, assets
 ├── Features/
-│   ├── Authentication/     # Sign-in flows (Google, Apple)
-│   ├── Chat/               # Real-time messaging
-│   ├── CreateJobSheet/     # Task creation wizard
-│   ├── Dashboard/          # Role-specific dashboards
-│   ├── Onboarding/         # First-launch experience
-│   ├── Profile/            # User profile management
-│   ├── Reviews/            # Ratings & review system
-│   ├── Search/             # Task discovery & filtering
-│   ├── ServiceDetail/      # Task detail views
-│   ├── ServiceManagement/  # Provider service listings
-│   └── WalletView/         # Earnings & transaction tracking
+│   ├── Authentication/                # Sign-in flows (Google, Apple)
+│   ├── Chat/                          # Chat ViewModels
+│   ├── ChatViews/                     # Chat UI (list + detail)
+│   ├── CreateJobSheet/                # 6-step job posting wizard
+│   ├── Dashboard/                     # Role-specific dashboards
+│   ├── JobCompletion/                 # Completion request and dispute flow
+│   ├── Onboarding/                    # First-launch experience
+│   ├── Profile/                       # User profile and account management
+│   ├── Reviews/                       # Review submission UI
+│   ├── Role Selection/                # Role picker
+│   ├── Search/                        # Search filters and discovery
+│   ├── ServiceDetail/                 # Job detail view + application flow
+│   ├── ServiceManagement/             # Provider service listing management
+│   └── WalletView/                    # Earnings and transaction history
 ├── MainViews/
-│   ├── JobProviderViews/   # Task poster UI
-│   ├── NeedWorkViews/      # Service provider UI
-│   └── ChatViews/          # Messaging UI
-└── Modules/
-    ├── Account/            # User account services
-    ├── Applications/       # Job application logic
-    ├── Authentication/     # Auth service layer
-    ├── Firebase/           # Firebase configuration
-    ├── Messaging/          # Chat backend services
-    ├── Reviews/            # Review data services
-    ├── Services/           # Service listing management
-    └── Wallet/             # Wallet & transaction services
+│   ├── ProviderViews/                 # Job poster tab UI
+│   ├── StudentViews/                  # Service provider tab UI
+│   └── Shared/                        # Shared tab views (Chat, Profile)
+└── Models/                            # Data models, Firestore stores, service layer
 ```
 
 ---
 
 ## 🗺 Roadmap
 
-### ✅ Phase 1 — Foundation *(Complete)*
-- [x] Dual-role authentication (Google & Apple Sign-In)
-- [x] Role-based onboarding with guided walkthroughs
-- [x] Type-safe state management with `StateKey` + `@Observable`
-- [x] 25+ service category system
-- [x] Task creation and posting workflow
-- [x] Service provider portfolio and listing management
-- [x] Real-time in-app messaging with Firestore
-- [x] Dashboard with active tasks, earnings, and metrics
-- [x] Ratings and reviews system
-- [x] Digital wallet and transaction history
-- [x] User profile and account management
-- [x] Search and discovery with category filtering
+### ✅ Phase 1 — Core Platform *(Shipped)*
 
-### 🔄 Phase 2 — Enhancement *(In Progress)*
-- [ ] Map-based location discovery and proximity filtering
-- [ ] Push notifications for new tasks, messages, and status updates
-- [ ] Advanced search with multi-filter support (price, distance, rating)
-- [ ] Payment gateway integration
-- [ ] Media sharing in chat (images, voice notes)
+**Authentication & Onboarding**
+- [x] Google Sign-In and Apple Sign-In via Firebase Auth
+- [x] Role selection at first launch (Job Poster / Service Provider)
+- [x] Guided onboarding flow per role
 
-### 📅 Phase 3 — Scale *(Planned — Q3 2026)*
-- [ ] Provider verification and badge system
+**Job Posting & Discovery**
+- [x] 6-step job creation wizard (title, category, pay, location, schedule, requirements)
+- [x] 25+ service categories across 9 industry groups
+- [x] Paginated job feed (infinite scroll, 20 items per page)
+- [x] Category-based filtering and real-time search
+
+**Application & Hiring Flow**
+- [x] Apply to jobs with optional cover message and counter-offer pricing
+- [x] Job poster reviews applicants, views profiles and ratings
+- [x] Accept / reject applications with response messages
+- [x] End-to-end application status tracking
+
+**Communication**
+- [x] Real-time in-app messaging via Firestore snapshot listeners
+- [x] Conversation list sorted by most recent activity
+- [x] Push notification deep-linking directly to conversations
+
+**Completion & Payments**
+- [x] Completion request flow with dispute handling
+- [x] Two-way ratings and reviews (5-star + text)
+- [x] Digital wallet with transaction history (earnings, fees, withdrawals, top-ups)
+
+**Notifications**
+- [x] Firebase Cloud Messaging (FCM) with 14+ notification types
+- [x] Multi-device FCM token management
+- [x] Foreground notification handling (banners, sounds, badges)
+- [x] Notification preferences management
+
+**Profiles & Trust**
+- [x] Provider stats: response time, completion rate, acceptance rate
+- [x] User verification levels and account status
+- [x] Profile completion percentage per role
+- [x] Multi-address management (saved addresses per user)
+
+**Platform**
+- [x] Multi-language support (English + Arabic, RTL layout)
+- [x] Firebase Cloud Functions (server-side logic and notification dispatch)
+- [x] Amplitude analytics integration
+- [x] Kingfisher image caching
+
+---
+
+### 🔄 Phase 2 — Growth & Payments *(In Progress)*
+
+**Payments**
+- [ ] Payment gateway integration (in-app payments, not just tracking)
+- [ ] Escrow: funds held until both parties confirm completion
+- [ ] Automated payout scheduling
+
+**Discovery**
+- [ ] Map-based job discovery with proximity radius filtering
+- [ ] Advanced multi-filter search (distance, pay range, rating, availability)
+- [ ] Saved searches and job alerts
+
+**Messaging**
+- [ ] Image sharing in chat
+- [ ] Voice messages
+
+**Trust & Verification**
+- [ ] Government or university ID verification for providers
+- [ ] Background check badge (optional, third-party integrated)
+- [ ] Dispute resolution and mediation flow
+
+---
+
+### 📅 Phase 3 — Scale & Intelligence *(Planned — Q4 2026)*
+
+**Provider Growth**
+- [ ] Provider analytics dashboard (earnings trends, completion rates, category breakdown)
+- [ ] Performance coaching tips based on ratings, response time, and completion rate
+- [ ] Priority listing for high-performing providers
+- [ ] Skill badge certifications (e.g., "Verified Barista", "Top-Rated Security")
+
+**Automation & Intelligence**
+- [ ] Recurring shift automation ("Re-post this shift every Friday")
+- [ ] Smart shift suggestions based on past activity and seasonal trends
+- [ ] AI-assisted job description generation for posters
+
+**Platform**
+- [ ] Provider storefronts with branded pages, portfolio, availability calendar
+- [ ] Referral rewards program for both roles
 - [ ] Scheduling and calendar integration
-- [ ] Repeat task automation
-- [ ] Analytics dashboard for top providers
-- [ ] Referral rewards program
-
----
-
-## 🔮 Future Vision
-
-Beyond the current roadmap, Saadni is evolving into a **context-aware services platform** — one that doesn't just list tasks, but actively anticipates what users need and connects them to help in seconds. Here's where we're headed:
-
----
-
-### 🎯 Instant Task Matching — *"Need It Now" Scenarios*
-
-Saadni will introduce **smart, contextual prompts** that surface the right service at the right time — turning common needs into one-tap actions.
-
-#### 🎪 Event Staffing On Demand
-
-> **Organizing an event?** Whether it's a private party, a corporate gathering, or a campus event — you shouldn't have to scramble for staff. Saadni will let event organizers instantly post shifts for **security personnel, event setup crews, servers, photographers, or cleanup teams**. Providers in the area see the shift, claim it, and show up. No agencies, no phone calls — just tap, post, and staff your event in minutes.
->
-> **How it works:**
-> - Select **"I'm organizing an event"** from the quick-action menu
-> - Choose the type of help you need (security, catering staff, setup crew, etc.)
-> - Set the date, time, location, and pay rate
-> - The shift goes live immediately — nearby providers can claim it in real time
-> - Track confirmations and communicate with your team directly in-app
-
-#### 🚗 On-Demand Car Care
-
-> **Need your car washed but don't have time to drive to a car wash?** Saadni will bring the service to you. Post a mobile car wash request, and a nearby provider handles it at your location — at home, at the office, or wherever your car is parked. It's convenient for you and it's income for students and freelancers looking to earn on a flexible schedule.
->
-> **How it works:**
-> - Tap **"Car Care"** and select the service (exterior wash, interior detailing, full service)
-> - Drop a pin or share your current location
-> - Set your preferred time window
-> - A verified provider accepts and heads to your location
-> - Track their arrival, confirm completion, and pay — all in-app
-
----
-
-### 🧠 Smart Service Suggestions
-
-Over time, Saadni will learn from usage patterns and proactively suggest services:
-
-- **Recurring tasks** — "You booked a home cleaning last month. Want to schedule another?"
-- **Seasonal prompts** — "Summer's here — need your garden maintained?"
-- **Event-aware** — "Graduation season is coming. Looking for photographers or caterers?"
-- **Time-of-day awareness** — "Running late? Get someone to handle your errands."
-
-The goal is to reduce friction to zero: **you think it, Saadni offers it.**
-
----
-
-### 🏪 Service Provider Storefronts
-
-Top-rated providers will be able to create **branded storefronts** — a dedicated page showcasing their services, pricing tiers, availability calendar, portfolio images, and reviews. Clients will be able to browse storefronts, compare providers, and book directly.
-
----
-
-### 🤝 Community Trust Layer
-
-Saadni will introduce an **enhanced trust system** designed to make both sides of every transaction feel safe:
-
-- **Identity verification** — Government ID or university ID verification for providers
-- **Background check badges** — Optional, verified badges that signal trustworthiness
-- **Escrow payments** — Funds held securely until the task is marked complete by both parties
-- **Dispute resolution** — Built-in mediation for edge cases, protecting both posters and providers
-
----
-
-### 📊 Provider Growth Tools
-
-For providers who treat Saadni as a primary income source, we'll offer:
-
-- **Earnings analytics** — Weekly and monthly breakdowns with trend insights
-- **Performance coaching** — Tips based on response time, completion rate, and review scores
-- **Priority listing** — High-performing providers surface first in search results
-- **Skill badges** — Earn certifications for categories (e.g., "Verified Electrician", "Top-Rated Cleaner")
+- [ ] Android app
 
 ---
 
@@ -308,23 +340,24 @@ For providers who treat Saadni as a primary income source, we'll offer:
 Contributions are welcome. Here's how to get involved:
 
 1. **Fork** the repository
-2. **Branch** from `main`: `git checkout -b feature/your-feature`
+2. **Branch** from `Develop`: `git checkout -b feature/your-feature`
 3. **Implement** your changes following the conventions below
 4. **Commit** with clear messages: `git commit -m "Add: clear description"`
 5. **Push** to your fork: `git push origin feature/your-feature`
-6. **Open** a Pull Request with a detailed description
+6. **Open** a Pull Request against `Develop` with a detailed description
 
 ### Code Conventions
 
 - Follow the [Swift API Design Guidelines](https://swift.org/documentation/api-design-guidelines/)
-- Use `@Observable` + `@MainActor` for all view models
-- Organize code by feature, not by layer
+- Use `@Observable` + `@MainActor` for all ViewModels
+- Organize code by feature, not by architectural layer
 - Use `async/await` for all asynchronous operations
-- Ensure zero compiler warnings before submitting
+- Activate and deactivate Firestore listeners through the `ListenerManaging` protocol
+- Zero compiler warnings required before submitting
 
 ### Reporting Issues
 
-Use [GitHub Issues](https://github.com/PPaules9/Saadni/issues) — include device model, iOS version, and clear reproduction steps. Screenshots and screen recordings are always helpful.
+Use [GitHub Issues](https://github.com/PPaules9/GoodShift/issues) — include device model, iOS version, and clear reproduction steps. Screenshots or screen recordings are always helpful.
 
 ---
 
@@ -338,14 +371,14 @@ This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for f
 
 **Built by [Pavly Paules](https://github.com/PPaules9)**
 
-📧 [GitHub Issues](https://github.com/PPaules9/Saadni/issues) · 💬 [Discussions](https://github.com/PPaules9/Saadni/discussions)
+[GitHub Issues](https://github.com/PPaules9/GoodShift/issues) · [Discussions](https://github.com/PPaules9/GoodShift/discussions)
 
-⭐ If Saadni is useful to you, consider starring the repository.
+If GoodShift is useful to you, consider starring the repository.
 
 ---
 
-*Saadni — Help Made Simple. Connections Made Easy.*
+*GoodShift — Work Made Simple. Connections Made Easy.*
 
-[⬆ Back to Top](#saadni-)
+[Back to Top](#goodshift)
 
 </div>

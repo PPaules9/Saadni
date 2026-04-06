@@ -264,6 +264,7 @@ struct ChatDetailView: View {
 		}
 		.navigationBarBackButtonHidden(true)
 		.onAppear {
+			AnalyticsService.shared.track(.chatOpened)
 			setupMessagesListener()
 			loadOtherParticipantInfo()
 		}
@@ -284,18 +285,16 @@ struct ChatDetailView: View {
 		messagesStore.setupTypingListener(conversationId: conversation.id)
 		
 		// Give Firestore a moment to start loading, then log status
-		Task {
+		Task { @MainActor in
 			try? await Task.sleep(for: .milliseconds(500))
-			await MainActor.run {
-				if let error = messagesStore.error {
-					print("❌ [ChatDetail] Message listener error: \(error)")
-					print("   If this mentions 'Missing or insufficient permissions':")
-					print("   1. Deploy Firestore rules from FIRESTORE_RULES_DEPLOYMENT_GUIDE.txt")
-					print("   2. Wait 2 minutes for rules to propagate")
-					print("   3. Restart the app and try again")
-				} else {
-					print("✅ [ChatDetail] Message listeners setup successfully")
-				}
+			if let error = messagesStore.error {
+				print("❌ [ChatDetail] Message listener error: \(error)")
+				print("   If this mentions 'Missing or insufficient permissions':")
+				print("   1. Deploy Firestore rules from FIRESTORE_RULES_DEPLOYMENT_GUIDE.txt")
+				print("   2. Wait 2 minutes for rules to propagate")
+				print("   3. Restart the app and try again")
+			} else {
+				print("✅ [ChatDetail] Message listeners setup successfully")
 			}
 		}
 	}
@@ -318,7 +317,7 @@ struct ChatDetailView: View {
 			// Load current user's name
 			if let currentUser = userCache.currentUser {
 				await MainActor.run {
-					currentUserName = currentUser.displayName ?? currentUser.email ?? "You"
+					currentUserName = currentUser.displayName ?? currentUser.email
 					print("✅ [ChatDetail] Loaded current user name: \(currentUserName)")
 				}
 			}
@@ -328,7 +327,7 @@ struct ChatDetailView: View {
 				print("🔄 [ChatDetail] Fetching other participant info for: \(otherUserId)")
 				if let otherUser = try await FirestoreService.shared.fetchUser(id: otherUserId) {
 					await MainActor.run {
-						otherParticipantName = otherUser.displayName ?? otherUser.email ?? "Provider"
+						otherParticipantName = otherUser.displayName ?? otherUser.email
 						isLoadingNames = false
 						print("✅ [ChatDetail] Loaded other participant name: \(otherParticipantName)")
 					}

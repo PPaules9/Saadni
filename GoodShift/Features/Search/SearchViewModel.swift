@@ -93,6 +93,12 @@ final class SearchViewModel {
     /// Sets the search text and triggers filter update
     func search(text: String) {
         searchText = text
+        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        AnalyticsService.shared.track(.searchPerformed(
+            query: text,
+            resultsCount: resultsCount,
+            category: selectedCategory?.rawValue
+        ))
     }
 
     /// Filters by category

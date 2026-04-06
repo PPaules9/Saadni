@@ -10,7 +10,6 @@ import SwiftUI
 struct HomeView: View {
 	@State private var needHelpWith: String = ""
 	@FocusState private var isFocused: Bool
-	@State private var showNotificationDrawer = false
 
 	// Animated placeholder state
 	private let placeholderPrefix = "I Need to Hire, "
@@ -48,7 +47,8 @@ struct HomeView: View {
 			} else {
 				// Fully typed — wait 3s then move to next example
 				charTimer?.invalidate()
-				DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+				Task { @MainActor in
+					try? await Task.sleep(for: .seconds(2))
 					placeholderExampleIndex = (placeholderExampleIndex + 1) % placeholderExamples.count
 					placeholderTypedCount = 0
 					startPlaceholderAnimation()
@@ -87,7 +87,7 @@ struct HomeView: View {
 							Spacer()
 
 							ZStack(alignment: .topTrailing) {
-								Button(action: { showNotificationDrawer = true }) {
+								Button(action: { coordinator.presentSheet(.notificationDrawer(role: .provider)) }) {
 									Image(systemName: "bell")
 										.font(.system(size: 18, weight: .semibold))
 										.foregroundStyle(.white)
@@ -381,9 +381,6 @@ struct HomeView: View {
 
 			}
 
-		}
-		.sheet(isPresented: $showNotificationDrawer) {
-			NotificationDrawerView(userRole: .provider)
 		}
 	}
 }

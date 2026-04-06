@@ -148,9 +148,7 @@ struct UserPerformanceView: View {
 
         // 5. Completed Work
         sectionCard(title: "Completed Work", icon: "checkmark.circle.fill") {
-            NavigationLink {
-                CompletedServicesView()
-            } label: {
+            NavigationLink(value: ServiceProviderDestination.completedServices) {
                 HStack(spacing: 12) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("\(user.totalJobsCompleted)")
@@ -244,9 +242,7 @@ struct UserPerformanceView: View {
     private func reputationCard(userId: String, avgRating: Double?, totalReviews: Int, reviewLabel: String) -> some View {
         sectionCard(title: "Reputation", icon: "star.fill") {
             VStack(alignment: .leading, spacing: 0) {
-                NavigationLink {
-                    UserReviewsView(userId: userId)
-                } label: {
+                NavigationLink(value: ServiceProviderDestination.userReviews(userId: userId)) {
                     HStack(alignment: .center, spacing: 12) {
                         VStack(alignment: .leading, spacing: 4) {
                             HStack(alignment: .firstTextBaseline, spacing: 4) {
@@ -273,9 +269,7 @@ struct UserPerformanceView: View {
 
                 if totalReviews > 0 {
                     divider()
-                    NavigationLink {
-                        UserReviewsView(userId: userId)
-                    } label: {
+                    NavigationLink(value: ServiceProviderDestination.userReviews(userId: userId)) {
                         HStack {
                             Text("See All Reviews")
                                 .font(.subheadline.weight(.semibold))

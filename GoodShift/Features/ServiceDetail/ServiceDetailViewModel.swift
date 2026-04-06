@@ -54,11 +54,14 @@ final class ServiceDetailViewModel {
                 applicantPhotoURL: applicantPhotoURL,
                 coverMessage: message
             )
+            AnalyticsService.shared.track(.jobApplied(jobId: serviceId, category: ""))
             showApplicationSuccess = true
             isSubmittingApplication = false
         } catch {
-            applicationError = AppError.from(error).errorDescription ?? "Failed to submit application"
+            let errMsg = AppError.from(error).errorDescription ?? "Failed to submit application"
+            applicationError = errMsg
             isSubmittingApplication = false
+            AnalyticsService.shared.track(.applicationFailed(errorType: errMsg))
             print("❌ Failed to submit application: \(error)")
         }
     }
@@ -91,6 +94,7 @@ final class ServiceDetailViewModel {
                 serviceName: serviceName
             )
 
+            AnalyticsService.shared.track(.jobCompleted(jobId: serviceId, category: "", price: servicePrice))
             showCompletionSuccess = true
             isMarkingComplete = false
         } catch {

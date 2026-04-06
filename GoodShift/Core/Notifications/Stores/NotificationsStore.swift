@@ -57,37 +57,39 @@ final class NotificationsStore: ListenerManaging {
 			.order(by: "timestamp", descending: true)
 			.limit(to: 50)
 			.addSnapshotListener { [weak self] snapshot, error in
-				guard let self = self else { return }
-				
-				// Handle errors safely without crashing
-				if let error = error {
-					self.error = error.localizedDescription
-					print("❌ Notifications listener error: \(self.error ?? "")")
-					return
-				}
-				
-				guard let snapshot = snapshot else { return }
-				
-				// Safely decode notifications
-				self.notifications = snapshot.documents.compactMap { doc in
-					do {
-						var notification = try doc.data(as: Notification.self)
-						if notification.id == nil {
-							notification.id = doc.documentID
-						}
-						// Filter out deleted and expired notifications
-						if !notification.deleted && !notification.isExpired {
-							return notification
-						}
-						return nil
-					} catch {
-						print("⚠️ Could not decode notification \(doc.documentID): \(error)")
-						return nil
+				Task { @MainActor [weak self] in
+					guard let self else { return }
+
+					// Handle errors safely without crashing
+					if let error = error {
+						self.error = error.localizedDescription
+						print("❌ Notifications listener error: \(self.error ?? "")")
+						return
 					}
+
+					guard let snapshot = snapshot else { return }
+
+					// Safely decode notifications
+					self.notifications = snapshot.documents.compactMap { doc in
+						do {
+							var notification = try doc.data(as: Notification.self)
+							if notification.id == nil {
+								notification.id = doc.documentID
+							}
+							// Filter out deleted and expired notifications
+							if !notification.deleted && !notification.isExpired {
+								return notification
+							}
+							return nil
+						} catch {
+							print("⚠️ Could not decode notification \(doc.documentID): \(error)")
+							return nil
+						}
+					}
+
+					self.updateUnreadCount()
+					print("✅ [NotificationsStore] Loaded \(self.notifications.count) notifications")
 				}
-				
-				self.updateUnreadCount()
-				print("✅ [NotificationsStore] Loaded \(self.notifications.count) notifications")
 			}
 		
 		addListener(id: listenerId, listener: listener)
@@ -107,25 +109,27 @@ final class NotificationsStore: ListenerManaging {
 			.collection("notificationPreferences")
 			.document("settings")
 			.addSnapshotListener { [weak self] snapshot, error in
-				guard let self = self else { return }
-				
-				if let error = error {
-					print("❌ Error loading preferences: \(error.localizedDescription)")
-					return
-				}
-				
-				guard let snapshot = snapshot, snapshot.exists else {
-					print("⚠️ No notification preferences found, using defaults")
-					self.preferences = NotificationPreferences()
-					return
-				}
-				
-				do {
-					self.preferences = try snapshot.data(as: NotificationPreferences.self)
-					print("✅ [NotificationsStore] Loaded preferences")
-				} catch {
-					print("❌ Error decoding preferences: \(error)")
-					self.preferences = NotificationPreferences()
+				Task { @MainActor [weak self] in
+					guard let self else { return }
+
+					if let error = error {
+						print("❌ Error loading preferences: \(error.localizedDescription)")
+						return
+					}
+
+					guard let snapshot = snapshot, snapshot.exists else {
+						print("⚠️ No notification preferences found, using defaults")
+						self.preferences = NotificationPreferences()
+						return
+					}
+
+					do {
+						self.preferences = try snapshot.data(as: NotificationPreferences.self)
+						print("✅ [NotificationsStore] Loaded preferences")
+					} catch {
+						print("❌ Error decoding preferences: \(error)")
+						self.preferences = NotificationPreferences()
+					}
 				}
 			}
 		

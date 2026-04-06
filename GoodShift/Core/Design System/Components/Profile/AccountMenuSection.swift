@@ -271,7 +271,8 @@ struct LanguageSelectionView: View {
         }
 
         // Give the UI a tiny moment to process the state change before popping back
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(150))
             dismiss()
         }
     }
@@ -345,7 +346,8 @@ struct CurrencySelectionView: View {
         withAnimation {
             appCurrency = currency.rawValue
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(150))
             dismiss()
         }
     }

@@ -197,7 +197,8 @@ struct NotificationDrawerView: View {
 			Task { await notificationsStore.markAsRead(notification) }
 		}
 		dismiss()
-		DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+		Task { @MainActor in
+			try? await Task.sleep(for: .milliseconds(350))
 			appCoordinator.handleNotificationNavigation(notification)
 		}
 	}

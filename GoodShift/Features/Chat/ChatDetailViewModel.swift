@@ -48,6 +48,7 @@ final class ChatDetailViewModel {
                 content: text,
                 participantIds: participantIds
             )
+            AnalyticsService.shared.track(.messageSent)
             messageText = ""
             isSending = false
         } catch {

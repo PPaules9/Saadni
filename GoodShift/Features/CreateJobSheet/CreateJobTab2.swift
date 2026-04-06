@@ -314,7 +314,7 @@ struct MapSelectionView: View {
 					.padding(.top, 8)
 					.padding(.bottom, 8)
 					.onAppear {
-						DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+						Task { @MainActor in
 							isSearchFocused = true
 						}
 					}

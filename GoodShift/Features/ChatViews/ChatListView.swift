@@ -71,12 +71,10 @@ struct ConversationRow: View {
   guard let otherUserId = conversation.otherParticipantId(currentUserId: currentUserId) else { return }
   
   isLoadingName = true
-  Task {
+  Task { @MainActor in
    do {
     if let user = try await FirestoreService.shared.fetchUser(id: otherUserId) {
-     await MainActor.run {
-			 otherUserName = user.displayName ?? user.email
-     }
+     otherUserName = user.displayName ?? user.email
     }
    } catch {
     print("⚠️ Failed to load user name: \(error)")

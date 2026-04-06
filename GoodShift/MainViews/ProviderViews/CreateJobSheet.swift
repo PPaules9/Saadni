@@ -34,7 +34,10 @@ struct CreateJobSheet: View {
     // Progress Indicator
     VStack(spacing: 8) {
      HStack(spacing: 4) {
-			 Button(action: { dismiss() }) {
+			 Button(action: {
+                AnalyticsService.shared.track(.jobCreationAbandoned(lastStep: viewModel.currentTab, category: selectedCategory))
+                dismiss()
+             }) {
 				 Image(systemName: "chevron.left")
 					 .font(.system(size: 18, weight: .semibold))
 					 .foregroundStyle(Colors.swiftUIColor(.textMain))
@@ -116,6 +119,7 @@ struct CreateJobSheet: View {
       ) {
        if viewModel.isCurrentTabValid {
         viewModel.showValidationError = false
+        AnalyticsService.shared.track(.jobCreationStepCompleted(step: viewModel.currentTab + 1, category: selectedCategory))
         if viewModel.currentTab == 1 {
          let didSave = saveAddressIfNeeded()
          if didSave {
@@ -199,6 +203,7 @@ struct CreateJobSheet: View {
    Text(viewModel.publishError ?? "An unknown error occurred")
   }
   .onAppear {
+   AnalyticsService.shared.track(.jobCreationStarted(category: selectedCategory))
    if let initialName = initialJobName {
     viewModel.jobName = initialName
    }
@@ -304,6 +309,12 @@ struct CreateJobSheet: View {
    }
    viewModel.uploadState = .completed
    viewModel.showSummary = false
+   AnalyticsService.shared.track(.jobPublished(
+    category: selectedCategory,
+    price: Double(viewModel.price) ?? 0,
+    city: viewModel.city,
+    numDates: viewModel.selectedDates.count
+   ))
    withAnimation {
     viewModel.showSuccessModal = true
    }
@@ -312,6 +323,7 @@ struct CreateJobSheet: View {
    viewModel.publishError = errorMessage
    viewModel.uploadState = .idle
    showErrorAlert = true
+   AnalyticsService.shared.track(.jobPublishFailed(step: viewModel.currentTab + 1, error: errorMessage))
    print("❌ Error publishing service: \(error)")
   }
 

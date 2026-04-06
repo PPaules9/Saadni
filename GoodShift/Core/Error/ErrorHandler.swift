@@ -31,8 +31,9 @@ final class ErrorHandler {
         isPresented = false
         retryAction = nil
         // Keep error for a moment so it can be accessed if needed
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.currentError = nil
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .milliseconds(300))
+            self?.currentError = nil
         }
     }
 

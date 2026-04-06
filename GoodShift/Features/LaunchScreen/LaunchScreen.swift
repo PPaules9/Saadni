@@ -30,7 +30,7 @@ struct LaunchScreen: View {
 		 .frame(width: 300, height: 300)
      
      // App Name
-     Text("Saedni")
+     Text("GoodShift")
 				 .font(.title)
 				 .fontDesign(.monospaced)
 				 .fontWeight(.regular)

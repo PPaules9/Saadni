@@ -9,8 +9,6 @@ internal import Combine
 
 struct DashboardView: View {
 	@State private var currentCarouselIndex: Int = 0
-	@State private var showWalletSheet: Bool = false
-	@State private var showNotificationDrawer: Bool = false
 	@State private var calendarSelection: Date = Date()
 	@State private var isCalendarVisible: Bool = false
 	@State private var markDoneService: JobService?
@@ -54,7 +52,7 @@ struct DashboardView: View {
 			ScrollView {
 				VStack(spacing: 0) {
 					// Dashboard Header (Toolbar)
-					DashboardHeaderView(showNotificationDrawer: $showNotificationDrawer)
+					DashboardHeaderView()
 
 					// Active job banner — shown only when hired
 					if let job = activeJob {
@@ -107,7 +105,7 @@ struct DashboardView: View {
 
 					
 					// Earnings Section
-					EarningsView(showWalletSheet: $showWalletSheet)
+					EarningsView(onWalletTap: { coordinator.presentSheet(.walletSheet) })
 						.padding(.horizontal, 20)
 						.padding(.bottom, 32)
 					
@@ -130,12 +128,6 @@ struct DashboardView: View {
 			}
 			.animation(.spring(duration: 0.4), value: calendarSuccessEvent?.id)
 			.allowsHitTesting(false)
-		}
-		.sheet(isPresented: $showWalletSheet) {
-			WalletSheet()
-		}
-		.sheet(isPresented: $showNotificationDrawer) {
-			NotificationDrawerView(userRole: .jobSeeker)
 		}
 		.sheet(item: $markDoneService) { service in
 			MarkJobDoneView(service: service, onSuccess: { markedDoneIds.insert(service.id) })
@@ -256,7 +248,7 @@ struct ShiftPickerCalendarView: View {
 struct DashboardHeaderView: View {
 	@Environment(AuthenticationManager.self) var authManager
 	@Environment(\.notificationsStore) var notificationsStore
-	@Binding var showNotificationDrawer: Bool
+	@Environment(StudentCoordinator.self) var coordinator
 	
 	var body: some View {
 		VStack(alignment: .leading, spacing: 8) {
@@ -289,7 +281,7 @@ struct DashboardHeaderView: View {
 					}
 					
 					ZStack(alignment: .topTrailing) {
-						Button(action: { showNotificationDrawer = true }) {
+						Button(action: { coordinator.presentSheet(.notificationDrawer(role: .jobSeeker)) }) {
 							Image(systemName: "bell.fill")
 								.font(.system(size: 18, weight: .semibold))
 								.foregroundStyle(.white)
@@ -462,7 +454,7 @@ struct CarouselCardSkeleton: View {
 
 // MARK: - Earnings View
 struct EarningsView: View {
-	@Binding var showWalletSheet: Bool
+	let onWalletTap: () -> Void
 	@Environment(ServicesStore.self) var servicesStore
 	@Environment(AuthenticationManager.self) var authManager
 	@State private var completedServices: [JobService] = []
@@ -509,7 +501,7 @@ struct EarningsView: View {
 		.background(Color.accent)
 		.cornerRadius(12)
 		.onTapGesture {
-			showWalletSheet = true
+			onWalletTap()
 		}
 		.task {
 			guard let userId = authManager.currentUser?.id else { return }
@@ -525,7 +517,7 @@ struct RecentActivityView: View {
 	@Environment(ServicesStore.self) var servicesStore
 	@Environment(ApplicationsStore.self) var applicationsStore
 	@Environment(DashboardViewModel.self) var dashboardVM
-	@State private var showAllActivities = false
+	@Environment(StudentCoordinator.self) var coordinator
 	
 	private var activities: [ServiceActivity] {
 		dashboardVM.recentActivities(
@@ -546,19 +538,13 @@ struct RecentActivityView: View {
 				
 				Spacer()
 				
-				Button(action: { showAllActivities = true }) {
+				Button(action: { coordinator.presentSheet(.allActivities) }) {
 					Text("See All")
 						.font(.subheadline)
 						.foregroundStyle(.accent)
 						.fontDesign(.monospaced)
 						.kerning(-0.5)
 				}
-			}
-			.sheet(isPresented: $showAllActivities) {
-				AllActivitiesView()
-					.environment(servicesStore)
-					.environment(applicationsStore)
-					.environment(dashboardVM)
 			}
 			
 			if activities.isEmpty {

@@ -167,6 +167,7 @@ struct SubmitReviewSheet: View {
 
         do {
             try await reviewsStore.submitReview(review)
+            AnalyticsService.shared.track(.reviewSubmitted(rating: rating, role: reviewerRole.rawValue))
             dismiss()
         } catch {
             errorMessage = "Failed to submit review: \(error.localizedDescription)"

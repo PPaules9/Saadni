@@ -86,26 +86,28 @@ class MessagesStore: ListenerManaging {
 			.order(by: "createdAt", descending: true)
 			.limit(to: initialPageSize)
 			.addSnapshotListener { [weak self] snapshot, error in
-				guard let self = self else { return }
-				
-				self.isLoading = false
-				
-				if let error = error {
-					self.error = AppError.from(error)
-					print("❌ Error loading messages: \(error)")
-					return
+				Task { @MainActor [weak self] in
+					guard let self else { return }
+
+					self.isLoading = false
+
+					if let error = error {
+						self.error = AppError.from(error)
+						print("❌ Error loading messages: \(error)")
+						return
+					}
+
+					guard let documents = snapshot?.documents else { return }
+
+					let fetchedMessages = documents.compactMap { doc in
+						Message.fromFirestore(id: doc.documentID, data: doc.data())
+					}
+
+					// Reverse so messages are in chronological order (oldest first)
+					self.messages[conversationId] = fetchedMessages.reversed()
+					self.hasOlderMessages[conversationId] = fetchedMessages.count == self.initialPageSize
+					print("✅ Loaded \(fetchedMessages.count) messages for conversation \(conversationId)")
 				}
-				
-				guard let documents = snapshot?.documents else { return }
-				
-				let fetchedMessages = documents.compactMap { doc in
-					Message.fromFirestore(id: doc.documentID, data: doc.data())
-				}
-				
-				// Reverse so messages are in chronological order (oldest first)
-				self.messages[conversationId] = fetchedMessages.reversed()
-				self.hasOlderMessages[conversationId] = fetchedMessages.count == self.initialPageSize
-				print("✅ Loaded \(fetchedMessages.count) messages for conversation \(conversationId)")
 			}
 		
 		addListener(id: listenerId, listener: listener)
@@ -125,26 +127,28 @@ class MessagesStore: ListenerManaging {
 			.document(conversationId)
 			.collection("typingIndicators")
 			.addSnapshotListener { [weak self] snapshot, error in
-				guard let self = self else { return }
-				
-				if let error = error {
-					print("❌ Error loading typing indicators: \(error)")
-					return
-				}
-				
-				guard let documents = snapshot?.documents else { return }
-				
-				var typingUserIds: Set<String> = []
-				
-				for doc in documents {
-					if let indicator = TypingIndicator.fromFirestore(id: doc.documentID, data: doc.data()) {
-						if indicator.isActive {
-							typingUserIds.insert(indicator.userId)
+				Task { @MainActor [weak self] in
+					guard let self else { return }
+
+					if let error = error {
+						print("❌ Error loading typing indicators: \(error)")
+						return
+					}
+
+					guard let documents = snapshot?.documents else { return }
+
+					var typingUserIds: Set<String> = []
+
+					for doc in documents {
+						if let indicator = TypingIndicator.fromFirestore(id: doc.documentID, data: doc.data()) {
+							if indicator.isActive {
+								typingUserIds.insert(indicator.userId)
+							}
 						}
 					}
+
+					self.typingUsers[conversationId] = typingUserIds
 				}
-				
-				self.typingUsers[conversationId] = typingUserIds
 			}
 		
 		addListener(id: listenerId, listener: listener)

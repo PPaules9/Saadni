@@ -372,6 +372,10 @@ struct ProfileSetupView: View {
 
         await userCache.updateUser(updatedUser)
 
+        let role = isJobSeeker ? "job_seeker" : "service_provider"
+        AnalyticsService.shared.track(.profileSetupCompleted(role: role, skipped: skip))
+        AnalyticsService.shared.setUserProperties(role: role)
+
         await MainActor.run { isSaving = false }
     }
 }

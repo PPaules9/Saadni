@@ -82,6 +82,7 @@ struct OnboardingView: View {
     currentPage += 1
    }
   } else {
+   AnalyticsService.shared.track(.onboardingCompleted)
    Task {
     try await appStateManager.completeOnboarding()
    }

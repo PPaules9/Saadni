@@ -44,7 +44,7 @@ final class AppCoordinator {
     }
 
     func switchUserRole() {
-        guard let currentUser = authManager.currentUser else { return }
+        guard authManager.currentUser != nil else { return }
 
         // Wait for userCache to update, then recreate coordinator
         Task { @MainActor in
@@ -56,6 +56,42 @@ final class AppCoordinator {
                 setupCoordinator(for: updatedUser)
             }
         }
+    }
+
+    // MARK: - Convenience Navigation (cross-role passthrough)
+
+    func navigateToChat(conversationId: String) {
+        if let c = providerCoordinator {
+            c.navigate(to: JobSeekerDestination.chatDetail(conversationId: conversationId))
+        } else if let c = studentCoordinator {
+            c.navigate(to: ServiceProviderDestination.chatDetail(conversationId: conversationId))
+        }
+    }
+
+    func navigateToServiceDetail(_ service: JobService) {
+        if let c = providerCoordinator {
+            c.navigate(to: JobSeekerDestination.serviceDetail(service))
+        } else if let c = studentCoordinator {
+            c.navigate(to: ServiceProviderDestination.serviceDetail(service))
+        }
+    }
+
+    func navigateToPerformance() {
+        if let c = providerCoordinator {
+            c.navigate(to: ServiceProviderDestination.performance)
+        } else if let c = studentCoordinator {
+            c.navigate(to: ServiceProviderDestination.performance)
+        }
+    }
+
+    func presentSheet(_ sheet: SheetDestination) {
+        providerCoordinator?.presentSheet(sheet)
+        studentCoordinator?.presentSheet(sheet)
+    }
+
+    func dismissSheet() {
+        providerCoordinator?.dismissSheet()
+        studentCoordinator?.dismissSheet()
     }
 
     // MARK: - Deep Linking
@@ -110,7 +146,7 @@ final class AppCoordinator {
             coordinator.selectTab(.myJobs)
             if let serviceId = notification.payload?.serviceId,
                let serviceName = notification.payload?.serviceName {
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     coordinator.presentSheet(.applicationsList(serviceId: serviceId, serviceTitle: serviceName))
                 }
             }

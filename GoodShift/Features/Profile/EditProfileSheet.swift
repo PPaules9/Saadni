@@ -309,14 +309,9 @@ struct EditProfileSheet: View {
 
 		currentUser.recalculateProfileCompletion()
 
-		do {
-			await userCache.updateUser(currentUser)
-			isSaving = false
-			dismiss()
-		} catch {
-			saveError = "Failed to save changes. Please try again."
-			isSaving = false
-		}
+		await userCache.updateUser(currentUser)
+		isSaving = false
+		dismiss()
 	}
 }
 

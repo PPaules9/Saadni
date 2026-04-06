@@ -80,27 +80,27 @@ class ApplicationsStore: ListenerManaging {
    .order(by: "appliedAt", descending: true)
    .limit(to: 50)
    .addSnapshotListener { [weak self] snapshot, error in
-    guard let self = self else { return }
+    Task { @MainActor [weak self] in
+     guard let self else { return }
 
-    if let error = error {
-     self.applicationsError = AppError.from(error)
-     self.isLoadingApplications = false
-     print("❌ Error fetching my applications: \(error)")
-     return
-    }
-
-    guard let documents = snapshot?.documents else { return }
-
-    let decoded = documents.compactMap { doc in
-     do {
-      return try Firestore.Decoder().decode(JobApplication.self, from: doc.data())
-     } catch {
-      print("⚠️ Failed to decode my application \(doc.documentID): \(error)")
-      return nil
+     if let error = error {
+      self.applicationsError = AppError.from(error)
+      self.isLoadingApplications = false
+      print("❌ Error fetching my applications: \(error)")
+      return
      }
-    }
 
-    Task { @MainActor in
+     guard let documents = snapshot?.documents else { return }
+
+     let decoded = documents.compactMap { doc in
+      do {
+       return try Firestore.Decoder().decode(JobApplication.self, from: doc.data())
+      } catch {
+       print("⚠️ Failed to decode my application \(doc.documentID): \(error)")
+       return nil
+      }
+     }
+
      self.myApplications = decoded
      self.applicationsError = nil
      print("✅ Loaded \(self.myApplications.count) my applications")
@@ -130,27 +130,27 @@ class ApplicationsStore: ListenerManaging {
    .order(by: "appliedAt", descending: true)
    .limit(to: 50)
    .addSnapshotListener { [weak self] snapshot, error in
-    guard let self = self else { return }
+    Task { @MainActor [weak self] in
+     guard let self else { return }
 
-    if let error = error {
-     self.applicationsError = AppError.from(error)
-     self.isLoadingApplications = false
-     print("❌ Error fetching received applications: \(error)")
-     return
-    }
-
-    guard let documents = snapshot?.documents else { return }
-
-    let decoded = documents.compactMap { doc in
-     do {
-      return try Firestore.Decoder().decode(JobApplication.self, from: doc.data())
-     } catch {
-      print("⚠️ Failed to decode received application \(doc.documentID): \(error)")
-      return nil
+     if let error = error {
+      self.applicationsError = AppError.from(error)
+      self.isLoadingApplications = false
+      print("❌ Error fetching received applications: \(error)")
+      return
      }
-    }
 
-    Task { @MainActor in
+     guard let documents = snapshot?.documents else { return }
+
+     let decoded = documents.compactMap { doc in
+      do {
+       return try Firestore.Decoder().decode(JobApplication.self, from: doc.data())
+      } catch {
+       print("⚠️ Failed to decode received application \(doc.documentID): \(error)")
+       return nil
+      }
+     }
+
      self.receivedApplications = decoded
      print("✅ Loaded \(decoded.count) received applications")
     }
@@ -244,6 +244,8 @@ class ApplicationsStore: ListenerManaging {
    "hiredApplicantId": acceptedApplication.applicantId
   ])
 
+  let totalApplicants = receivedApplications.filter { $0.serviceId == serviceId }.count
+  AnalyticsService.shared.track(.applicationAccepted(jobId: serviceId, numApplicants: totalApplicants))
   print("✅ Service marked as active with hired applicant: \(acceptedApplication.applicantId)")
 
   // Reject all other pending applications for this service

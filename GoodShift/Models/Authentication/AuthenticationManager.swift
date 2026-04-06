@@ -119,13 +119,14 @@ class AuthenticationManager: AuthProvider {
     }
     await updateUserInFirestore(user)
    }
+   AnalyticsService.shared.track(.loggedIn)
   } catch {
    authState = .unauthenticated
    errorMessage = error.localizedDescription
    throw error
   }
  }
- 
+
  /// Create account with email and password
  func signUp(email: String, password: String, fullName: String) async throws {
   isAuthFlowActive = true
@@ -153,13 +154,14 @@ class AuthenticationManager: AuthProvider {
 
    // Save to Firestore
    await updateUserInFirestore(user)
+   AnalyticsService.shared.track(.signedUp)
   } catch {
    authState = .unauthenticated
    errorMessage = error.localizedDescription
    throw error
   }
  }
- 
+
  /// Sign in anonymously (useful for testing)
  func signInAnonymously() async throws {
   isAuthFlowActive = true
@@ -185,15 +187,18 @@ class AuthenticationManager: AuthProvider {
     }
     await updateUserInFirestore(user)
    }
+   AnalyticsService.shared.track(.guestSignIn)
   } catch {
    authState = .unauthenticated
    errorMessage = error.localizedDescription
    throw error
   }
  }
- 
+
  /// Sign out
  func signOut() throws {
+  AnalyticsService.shared.track(.loggedOut)
+  AnalyticsService.shared.reset()
   userCache.clearCache()
   try Auth.auth().signOut()
   authState = .unauthenticated

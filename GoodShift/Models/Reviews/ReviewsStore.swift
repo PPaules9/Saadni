@@ -80,27 +80,27 @@ class ReviewsStore: ListenerManaging {
             .order(by: "createdAt", descending: true)
             .limit(to: 50)
             .addSnapshotListener { [weak self] snapshot, error in
-                guard let self = self else { return }
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
 
-                if let error = error {
-                    self.reviewsError = AppError.from(error)
-                    self.isLoadingReviews = false
-                    print("❌ Error fetching received reviews: \(error)")
-                    return
-                }
-
-                guard let documents = snapshot?.documents else { return }
-
-                let decoded = documents.compactMap { doc in
-                    do {
-                        return try Review.fromFirestore(id: doc.documentID, data: doc.data())
-                    } catch {
-                        print("⚠️ Failed to decode received review \(doc.documentID): \(error)")
-                        return nil
+                    if let error = error {
+                        self.reviewsError = AppError.from(error)
+                        self.isLoadingReviews = false
+                        print("❌ Error fetching received reviews: \(error)")
+                        return
                     }
-                }
 
-                Task { @MainActor in
+                    guard let documents = snapshot?.documents else { return }
+
+                    let decoded = documents.compactMap { doc in
+                        do {
+                            return try Review.fromFirestore(id: doc.documentID, data: doc.data())
+                        } catch {
+                            print("⚠️ Failed to decode received review \(doc.documentID): \(error)")
+                            return nil
+                        }
+                    }
+
                     self.reviewsIReceived = decoded
                     print("✅ Loaded \(self.reviewsIReceived.count) reviews received")
                 }
@@ -120,27 +120,27 @@ class ReviewsStore: ListenerManaging {
             .order(by: "createdAt", descending: true)
             .limit(to: 50)
             .addSnapshotListener { [weak self] snapshot, error in
-                guard let self = self else { return }
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
 
-                if let error = error {
-                    self.reviewsError = AppError.from(error)
-                    self.isLoadingReviews = false
-                    print("❌ Error fetching submitted reviews: \(error)")
-                    return
-                }
-
-                guard let documents = snapshot?.documents else { return }
-
-                let decoded = documents.compactMap { doc in
-                    do {
-                        return try Review.fromFirestore(id: doc.documentID, data: doc.data())
-                    } catch {
-                        print("⚠️ Failed to decode submitted review \(doc.documentID): \(error)")
-                        return nil
+                    if let error = error {
+                        self.reviewsError = AppError.from(error)
+                        self.isLoadingReviews = false
+                        print("❌ Error fetching submitted reviews: \(error)")
+                        return
                     }
-                }
 
-                Task { @MainActor in
+                    guard let documents = snapshot?.documents else { return }
+
+                    let decoded = documents.compactMap { doc in
+                        do {
+                            return try Review.fromFirestore(id: doc.documentID, data: doc.data())
+                        } catch {
+                            print("⚠️ Failed to decode submitted review \(doc.documentID): \(error)")
+                            return nil
+                        }
+                    }
+
                     self.reviewsISubmitted = decoded
                     self.reviewsError = nil
                     self.isLoadingReviews = false
