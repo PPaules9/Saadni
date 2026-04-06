@@ -7,13 +7,27 @@
 
 import SwiftUI
 
+// MARK: - State Holder (keeps FirestoreService out of the View)
+@Observable private final class ApplicantUsersCache {
+    var users: [String: User] = [:]
+
+    func load(applications: [JobApplication]) async {
+        for application in applications {
+            guard users[application.applicantId] == nil else { continue }
+            if let user = try? await FirestoreService.shared.fetchUser(id: application.applicantId) {
+                users[application.applicantId] = user
+            }
+        }
+    }
+}
+
 enum MyJobsTab: String, CaseIterable {
     case myJobs = "My Jobs"
     case applicants = "Applicants"
     case calendar = "Calendar"
 }
 
-struct myJobs: View {
+struct MyJobsView: View {
     @Environment(AuthenticationManager.self) var authManager
     @Environment(ServicesStore.self) var servicesStore
     @Environment(ApplicationsStore.self) var applicationsStore
@@ -23,7 +37,8 @@ struct myJobs: View {
     @State private var selectedTab: MyJobsTab = .myJobs
     @State private var userServices: [JobService] = []
     @State private var receivedApplications: [JobApplication] = []
-    @State private var applicantUsers: [String: User] = [:]
+    @State private var applicantCache = ApplicantUsersCache()
+    private var applicantUsers: [String: User] { applicantCache.users }
     @State private var isLoading: Bool = true
     @State private var filterOption: ServiceFilterOption = .active
     @Environment(ProviderCoordinator.self) var coordinator
@@ -31,6 +46,7 @@ struct myJobs: View {
     @State private var selectedCompletionService: JobService?
     @State private var actionError: String?
     @State private var showActionError = false
+    @State private var expandedGroups: Set<String> = []
 
     var pendingCompletionServices: [JobService] {
         userServices.filter { $0.status == .pendingCompletion }
@@ -62,6 +78,26 @@ struct myJobs: View {
             guard let serviceDate = service.serviceDate else { return false }
             return Calendar.current.isDate(serviceDate, inSameDayAs: selectedCalendarDate)
         }
+    }
+
+    /// Collapses shifts that share a jobGroupId into a single group entry.
+    /// Services without a group ID stay as individual entries.
+    var groupedEntries: [JobGroupEntry] {
+        var result: [JobGroupEntry] = []
+        var seen: Set<String> = []
+
+        for service in filteredServices {
+            if let groupId = service.jobGroupId {
+                guard !seen.contains(groupId) else { continue }
+                seen.insert(groupId)
+                let siblings = filteredServices.filter { $0.jobGroupId == groupId }
+                    .sorted { ($0.serviceDate ?? .distantPast) < ($1.serviceDate ?? .distantPast) }
+                result.append(.group(id: groupId, shifts: siblings))
+            } else {
+                result.append(.single(service))
+            }
+        }
+        return result
     }
 
     var body: some View {
@@ -143,9 +179,28 @@ struct myJobs: View {
                         }
                     }
 
-                    ForEach(filteredServices) { service in
-                        NavigationLink(value: ServiceProviderDestination.serviceDetail(service)) {
-                            ServiceCard(service: service)
+                    ForEach(groupedEntries) { entry in
+                        switch entry {
+                        case .single(let service):
+                            NavigationLink(value: ServiceProviderDestination.serviceDetail(service)) {
+                                ServiceCard(service: service)
+                            }
+                        case .group(let groupId, let shifts):
+                            JobGroupCard(
+                                groupId: groupId,
+                                shifts: shifts,
+                                isExpanded: expandedGroups.contains(groupId),
+                                onToggle: {
+                                    if expandedGroups.contains(groupId) {
+                                        expandedGroups.remove(groupId)
+                                    } else {
+                                        expandedGroups.insert(groupId)
+                                    }
+                                },
+                                onSelectShift: { service in
+                                    coordinator.navigate(to: ServiceProviderDestination.serviceDetail(service))
+                                }
+                            )
                         }
                     }
                 }
@@ -293,17 +348,8 @@ struct myJobs: View {
         receivedApplications = applicationsStore.receivedApplications
             .sorted { $0.appliedAt > $1.appliedAt }
 
-        // Load applicant user data
-        for application in receivedApplications {
-            if applicantUsers[application.applicantId] == nil {
-                do {
-                    let user = try await FirestoreService.shared.fetchUser(id: application.applicantId)
-                    applicantUsers[application.applicantId] = user
-                } catch {
-                    // Continue loading other users even if one fails
-                }
-            }
-        }
+        // Load applicant user data through the state holder — not directly from Firestore
+        await applicantCache.load(applications: receivedApplications)
     }
 
     private func openCompletionConfirmation(for service: JobService) {
@@ -352,6 +398,168 @@ struct myJobs: View {
     }
 }
 
+// MARK: - Job Group Entry
+
+enum JobGroupEntry: Identifiable {
+    case single(JobService)
+    case group(id: String, shifts: [JobService])
+
+    var id: String {
+        switch self {
+        case .single(let s): return s.id
+        case .group(let id, _): return id
+        }
+    }
+}
+
+// MARK: - Job Group Card
+
+struct JobGroupCard: View {
+    let groupId: String
+    let shifts: [JobService]
+    let isExpanded: Bool
+    let onToggle: () -> Void
+    let onSelectShift: (JobService) -> Void
+
+    private var representative: JobService? { shifts.first }
+
+    private var dateRangeText: String {
+        let dates = shifts.compactMap { $0.serviceDate }.sorted()
+        guard let first = dates.first, let last = dates.last else { return "Multiple dates" }
+        if Calendar.current.isDate(first, inSameDayAs: last) {
+            return first.formatted(.dateTime.day().month(.abbreviated).year())
+        }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMM"
+        return "\(formatter.string(from: first)) – \(formatter.string(from: last))"
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // Group header — tap to expand/collapse
+            Button(action: onToggle) {
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(spacing: 8) {
+                            Text(representative?.title ?? "Job")
+                                .font(.headline)
+                                .foregroundStyle(Colors.swiftUIColor(.textPrimary))
+                            Text("\(shifts.count) shifts")
+                                .font(.caption.weight(.semibold))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 3)
+                                .background(Color.accentColor.opacity(0.15))
+                                .foregroundStyle(Color.accentColor)
+                                .clipShape(Capsule())
+                        }
+                        HStack(spacing: 4) {
+                            Image(systemName: "calendar")
+                                .font(.caption2)
+                            Text(dateRangeText)
+                                .font(.caption)
+                        }
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                        if let price = representative?.formattedPrice {
+                            Text(price)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(Colors.swiftUIColor(.textPrimary))
+                        }
+                    }
+                    Spacer()
+                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                        .animation(.easeInOut(duration: 0.2), value: isExpanded)
+                }
+                .padding(14)
+                .background(Colors.swiftUIColor(.cardBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+            }
+            .buttonStyle(.plain)
+
+            // Expanded individual shift rows
+            if isExpanded {
+                VStack(spacing: 8) {
+                    ForEach(shifts) { shift in
+                        Button {
+                            onSelectShift(shift)
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    if let date = shift.serviceDate {
+                                        Text(date.formatted(.dateTime.weekday(.wide).day().month(.abbreviated)))
+                                            .font(.subheadline.weight(.medium))
+                                            .foregroundStyle(Colors.swiftUIColor(.textPrimary))
+                                        Text(date.formatted(.dateTime.hour().minute()))
+                                            .font(.caption)
+                                            .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                                    } else {
+                                        Text("No date set")
+                                            .font(.subheadline)
+                                            .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                                    }
+                                }
+                                Spacer()
+                                ShiftStatusBadge(status: shift.status)
+                                Image(systemName: "chevron.right")
+                                    .font(.caption2)
+                                    .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(Colors.swiftUIColor(.cardBackground).opacity(0.6))
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.top, 6)
+                .padding(.horizontal, 4)
+                .transition(.opacity.combined(with: .move(edge: .top)))
+                .animation(.easeInOut(duration: 0.2), value: isExpanded)
+            }
+        }
+    }
+}
+
+struct ShiftStatusBadge: View {
+    let status: ServiceStatus
+
+    var body: some View {
+        Text(label)
+            .font(.caption2.weight(.semibold))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(color.opacity(0.15))
+            .foregroundStyle(color)
+            .clipShape(Capsule())
+    }
+
+    private var label: String {
+        switch status {
+        case .published: return "Open"
+        case .active: return "Active"
+        case .pendingCompletion: return "Pending"
+        case .completed: return "Done"
+        case .disputed: return "Disputed"
+        case .cancelled: return "Cancelled"
+        case .draft: return "Draft"
+        }
+    }
+
+    private var color: Color {
+        switch status {
+        case .published: return .blue
+        case .active: return .green
+        case .pendingCompletion: return .orange
+        case .completed: return .gray
+        case .disputed: return .red
+        case .cancelled: return .red
+        case .draft: return .gray
+        }
+    }
+}
+
 enum ServiceFilterOption: String, CaseIterable {
     case all = "All"
     case active = "Active"
@@ -363,7 +571,7 @@ enum ServiceFilterOption: String, CaseIterable {
 #Preview {
     let userCache = UserCache()
     let authManager = AuthenticationManager(userCache: userCache)
-    return myJobs()
+    return MyJobsView()
         .environment(authManager)
         .environment(ServicesStore())
         .environment(ApplicationsStore())

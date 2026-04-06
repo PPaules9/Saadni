@@ -21,6 +21,8 @@ enum ColorToken {
  // AppColors
  case backgroundLight
  case backgroundDark
+ case cardBackgroundLight
+ case cardBackgroundDark
  
  case primary
  case primaryDark
@@ -38,8 +40,10 @@ enum ColorToken {
   case .error:        return "#E53935"
   case .warning:      return "#FACC15"
    
-  case .backgroundLight:   return "E8F2EE"
-  case .backgroundDark:   return "#1C1D1F"
+  case .backgroundLight:        return "#E8F2EE"
+  case .backgroundDark:         return "#1C1D1F"
+  case .cardBackgroundLight:    return "#F8FBFA"
+  case .cardBackgroundDark:     return "#39393B"
    
   case .primary:        return "#37857D"
   case .primaryDark:     return "#2A8A47"

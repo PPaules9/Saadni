@@ -96,30 +96,24 @@ struct ProfileView: View {
 	
 	private func switchUserType() {
 		guard let currentUser = authManager.currentUser else { return }
-		
+
 		isSwitching = true
-		withAnimation(.easeInOut(duration: 0.6)) {
-			isAnimating = true
-		}
-		
-		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+		withAnimation(.easeInOut(duration: 0.6)) { isAnimating = true }
+
+		Task { @MainActor in
+			try? await Task.sleep(for: .milliseconds(300))
 			isAnimating = false
-		}
-		
-		Task {
+
 			var updatedUser = currentUser
 			updatedUser.isJobSeeker.toggle()
 			updatedUser.isServiceProvider.toggle()
-			
-			// Use UserCache for optimistic update + Firestore sync
+
+			// Optimistic update + Firestore sync
 			await userCache.updateUser(updatedUser)
-			
-			// Trigger coordinator to switch role
-			appCoordinator.switchUserRole()
-			
-			await MainActor.run {
-				isSwitching = false
-			}
+
+			// Pass the updated user directly — no timing race
+			appCoordinator.switchUserRole(to: updatedUser)
+			isSwitching = false
 		}
 	}
 }

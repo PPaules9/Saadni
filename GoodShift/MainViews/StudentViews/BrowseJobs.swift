@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BrowseJobs: View {
+struct BrowseJobsView: View {
  @State private var searchText = ""
  @State private var sortOption: SortOption = .none
  @State private var selectedCategory: ServiceCategoryType? = nil
@@ -236,7 +236,7 @@ struct BrowseJobs: View {
 
 #Preview {
  let userCache = UserCache()
- return BrowseJobs()
+ return BrowseJobsView()
   .environment(ServicesStore())
   .environment(AuthenticationManager(userCache: userCache))
   .environment(userCache)

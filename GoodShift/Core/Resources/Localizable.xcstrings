@@ -111,6 +111,9 @@
         }
       }
     },
+    "%lld shifts" : {
+
+    },
     "%lld/500" : {
       "localizations" : {
         "ar" : {
@@ -411,6 +414,12 @@
           }
         }
       }
+    },
+    "Apply Changes to All Shifts" : {
+
+    },
+    "Apply changes to all shifts?" : {
+
     },
     "Apply for Job" : {
       "localizations" : {
@@ -2535,6 +2544,9 @@
         }
       }
     },
+    "No date set" : {
+
+    },
     "No Image" : {
       "localizations" : {
         "ar" : {
@@ -3733,6 +3745,9 @@
         }
       }
     },
+    "This will overwrite the title, pay, location, requirements, and description on every shift in this job." : {
+
+    },
     "This will permanently delete the conversation and all its messages. This action cannot be undone." : {
       "localizations" : {
         "ar" : {
@@ -3863,6 +3878,12 @@
           }
         }
       }
+    },
+    "Update All Shifts" : {
+
+    },
+    "Updating..." : {
+
     },
     "Uploading image... %lld%%" : {
       "extractionState" : "stale",

@@ -18,6 +18,7 @@ public enum SemanticColor {
 
  // Background colors
  case appBackground
+ case cardBackground
  case buttonBackground
  case surfaceWhite
 

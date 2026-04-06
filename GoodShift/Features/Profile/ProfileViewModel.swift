@@ -9,93 +9,73 @@ import Foundation
 import SwiftUI
 
 @Observable
-class ProfileViewModel {
+final class ProfileViewModel {
     var isAnimating = false
     var showError = false
     var errorMessage = ""
     var isSwitching = false
 
+    // Closure called after role switch completes — wired by the View to the coordinator.
+    // ViewModels must never hold a reference to a Coordinator directly.
+    var onRoleSwitched: ((User) -> Void)?
+
     private let authManager: AuthenticationManager
     private let userCache: UserCache
-    private let appCoordinator: AppCoordinator
     private let appStateManager: AppStateManager
 
     init(
         authManager: AuthenticationManager,
         userCache: UserCache,
-        appCoordinator: AppCoordinator,
         appStateManager: AppStateManager
     ) {
         self.authManager = authManager
         self.userCache = userCache
-        self.appCoordinator = appCoordinator
         self.appStateManager = appStateManager
     }
 
     // MARK: - Computed Properties
 
     var currentUserTypeLabel: String {
-        if let user = authManager.currentUser {
-            if user.isJobSeeker {
-                return "Need Help With Something"
-            } else if user.isServiceProvider {
-                return "Earn Some Cash"
-            }
-        }
-        return "Unknown"
+        guard let user = authManager.currentUser else { return "Unknown" }
+        return user.isJobSeeker ? "Need Help With Something" : "Earn Some Cash"
     }
 
     var currentUserTypeIcon: String {
-        if let user = authManager.currentUser {
-            if user.isJobSeeker {
-                return "magnifyingglass.circle.fill"
-            } else if user.isServiceProvider {
-                return "briefcase.circle.fill"
-            }
-        }
-        return "questionmark.circle"
+        guard let user = authManager.currentUser else { return "questionmark.circle" }
+        return user.isJobSeeker ? "magnifyingglass.circle.fill" : "briefcase.circle.fill"
     }
 
-    // MARK: - Methods
+    // MARK: - Actions
 
     func switchUserType() {
         guard let currentUser = authManager.currentUser else { return }
-
         isSwitching = true
 
-        // Trigger animation
-        withAnimation(.easeInOut(duration: 0.6)) {
-            isAnimating = true
-        }
+        withAnimation(.easeInOut(duration: 0.6)) { isAnimating = true }
 
         Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(300))
-            self.isAnimating = false
+            isAnimating = false
         }
 
         Task { @MainActor in
-            // Create updated user with switched role
             var updatedUser = currentUser
-            updatedUser.isJobSeeker = !updatedUser.isJobSeeker
-            updatedUser.isServiceProvider = !updatedUser.isServiceProvider
+            updatedUser.isJobSeeker.toggle()
+            updatedUser.isServiceProvider.toggle()
 
-            // Use UserCache for optimistic update + Firestore sync
-            await self.userCache.updateUser(updatedUser)
+            await userCache.updateUser(updatedUser)
 
             let newRole = updatedUser.isJobSeeker ? "job_seeker" : "service_provider"
             AnalyticsService.shared.track(.roleSwitched(to: newRole))
             AnalyticsService.shared.setUserProperties(role: newRole)
 
-            // Trigger coordinator to switch role (will recreate fresh coordinator)
-            self.appCoordinator.switchUserRole()
-
-            self.isSwitching = false
+            // Notify the coordinator through the closure — no direct dependency
+            onRoleSwitched?(updatedUser)
+            isSwitching = false
         }
     }
 
     func logout() async throws {
-        // signOut() now handles all cleanup: auth logout + AppState reset
         try authManager.signOut()
     }
-    
 }

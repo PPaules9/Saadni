@@ -111,12 +111,16 @@ struct JobService: Codable, Hashable, Identifiable {
 	var contactPersonName: String?
 	var contactPersonPhone: String?
 	
+	// MARK: - Job Group (links multiple shifts created together)
+	/// Shared ID assigned to all shifts created in the same batch. Nil for single-shift jobs.
+	var jobGroupId: String?
+
 	// MARK: - Legacy / Other Fields (Keeping for compatibility if needed)
 	var someoneAround: Bool = false
 	var specialTools: String?
 	var serviceDate: Date?
 	var estimatedDurationHours: Double?
-	
+
 	var isFeatured: Bool
 	
 	// MARK: - Initializers
@@ -154,7 +158,8 @@ struct JobService: Codable, Hashable, Identifiable {
 		specialTools: String? = nil,
 		serviceDate: Date? = nil,
 		estimatedDurationHours: Double? = nil,
-		status: ServiceStatus = .draft
+		status: ServiceStatus = .draft,
+		jobGroupId: String? = nil
 	) {
 		self.id = UUID().uuidString
 		self.title = title
@@ -194,6 +199,7 @@ struct JobService: Codable, Hashable, Identifiable {
 		self.isFeatured = false
 		self.applicationCount = 0
 		self.createdAt = Date()
+		self.jobGroupId = jobGroupId
 	}
 	
 	/// Full initializer (for Firebase decoding)
@@ -241,7 +247,8 @@ struct JobService: Codable, Hashable, Identifiable {
 		isArchived: Bool = false,
 		completionRequestedAt: Date? = nil,
 		completionNote: String? = nil,
-		disputeReason: String? = nil
+		disputeReason: String? = nil,
+		jobGroupId: String? = nil
 	) {
 		self.id = id
 		self.title = title
@@ -287,6 +294,7 @@ struct JobService: Codable, Hashable, Identifiable {
 		self.completionRequestedAt = completionRequestedAt
 		self.completionNote = completionNote
 		self.disputeReason = disputeReason
+		self.jobGroupId = jobGroupId
 	}
 }
 

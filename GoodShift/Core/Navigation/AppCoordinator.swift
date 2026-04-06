@@ -43,19 +43,11 @@ final class AppCoordinator {
         }
     }
 
-    func switchUserRole() {
-        guard authManager.currentUser != nil else { return }
-
-        // Wait for userCache to update, then recreate coordinator
-        Task { @MainActor in
-            // Give userCache a moment to update
-            try? await Task.sleep(for: .milliseconds(100))
-
-            // Fetch updated user
-            if let updatedUser = userCache.currentUser {
-                setupCoordinator(for: updatedUser)
-            }
-        }
+    /// Call this with the already-updated User after the cache has been written.
+    /// Receives the user directly to avoid any timing race between the cache write
+    /// and reading it back (previously required a fragile Task.sleep workaround).
+    func switchUserRole(to updatedUser: User) {
+        setupCoordinator(for: updatedUser)
     }
 
     // MARK: - Convenience Navigation (cross-role passthrough)

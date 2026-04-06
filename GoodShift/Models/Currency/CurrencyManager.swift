@@ -82,10 +82,10 @@ enum Currency: String, CaseIterable, Identifiable {
     }
 }
 
-// MARK: - Currency Manager
+// MARK: - Currency Service
 
 @Observable
-final class CurrencyManager {
+final class CurrencyService {
     @ObservationIgnored
     @AppStorage("appCurrency") private var _currencyCode: String = "EGP"
 

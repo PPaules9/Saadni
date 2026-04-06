@@ -272,11 +272,14 @@ struct CreateJobSheet: View {
 
    viewModel.uploadState = .uploading(progress: 0.0)
 
-   if let data = imageData {
+   if imageData != nil {
     do {
-     let imageId = UUID().uuidString
-     let imageURL = try await StorageService.shared.uploadServiceImageData(data, imageId: imageId, providerId: user.id)
-     resolvedImage = ServiceImage(remoteURL: imageURL.absoluteString)
+     // Delegate upload to the ViewModel — the View never touches StorageService directly
+     if let imageURL = try await viewModel.uploadSelectedImage(userId: user.id) {
+      resolvedImage = ServiceImage(remoteURL: imageURL.absoluteString)
+     } else {
+      resolvedImage = ServiceImage()
+     }
     } catch {
      viewModel.publishError = error.localizedDescription
      viewModel.isPublishing = false
@@ -363,11 +366,8 @@ struct CreateJobSheet: View {
    
    currentUser.defaultAddressId = newAddress.id
    
-   Task {
-    try? await FirestoreService.shared.saveUser(currentUser)
-    await userCache.updateUser(currentUser)
-   }
-   
+   // Delegate persistence to the ViewModel — the View never touches FirestoreService directly
+   Task { await viewModel.saveNewAddressIfNeeded(for: currentUser, cache: userCache) }
    return true
   }
   return false

@@ -23,7 +23,11 @@ class AppContainer {
 	let notificationsStore: NotificationsStore
 	let reviewsStore: ReviewsStore
 	let walletStore: WalletStore
-	let dashboardViewModel: DashboardViewModel
+
+	// Service layer — owned by the container so session lifecycle uses container references,
+	// not scattered .shared calls. These are the canonical instances across the app.
+	let analyticsService: AnalyticsService
+	let notificationService: NotificationService
 
 	let errorHandler: ErrorHandler
 	
@@ -37,8 +41,8 @@ class AppContainer {
 			let startTime = Date()
 			print("🚀 [AppContainer] Starting session setup for user: \(userId)")
 
-			NotificationService.shared.setCurrentUser(userId)
-		AnalyticsService.shared.identify(userId: userId)
+			notificationService.setCurrentUser(userId)
+		analyticsService.identify(userId: userId)
 
 			await withTaskGroup(of: (String, Error?).self) { group in
 				group.addTask {
@@ -95,7 +99,7 @@ class AppContainer {
 		sessionTask = nil
 
 		// Stop all Firestore listeners and clear store state
-		AnalyticsService.shared.reset()
+		analyticsService.reset()
 		applicationsStore.removeAllListeners()
 		reviewsStore.removeAllListeners()
 		walletStore.removeAllListeners()
@@ -122,7 +126,9 @@ class AppContainer {
 		self.errorHandler = errorHandler
 		self.reviewsStore = ReviewsStore()
 		self.walletStore = WalletStore()
-		self.dashboardViewModel = DashboardViewModel()
+		// Services initialized last — they depend on Firebase which is configured before AppContainer.init()
+		self.analyticsService = AnalyticsService.shared
+		self.notificationService = NotificationService.shared
 	}
 }
 

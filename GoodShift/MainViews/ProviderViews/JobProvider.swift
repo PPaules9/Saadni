@@ -7,23 +7,22 @@
 
 import SwiftUI
 
-struct JobProvider: View {
+struct JobProviderView: View {
  @Environment(AppCoordinator.self) var appCoordinator
  @Environment(ConversationsStore.self) var conversationsStore
  @Environment(ServicesStore.self) var servicesStore
 
 	var body: some View {
 		if #available(iOS 26, *) {
-			JobProviderView()
-
+			tabContainerView()
 		}
 		else{
-			JobProviderView()
+			tabContainerView()
 		}
 	}
 
 	@ViewBuilder
-	private func JobProviderView() -> some View {
+	private func tabContainerView() -> some View {
 		if let coordinator = appCoordinator.providerCoordinator {
 			TabView(
 				selection: Binding(
@@ -79,7 +78,7 @@ struct JobProvider: View {
 //   CreateJobSheet(selectedCategory: "homeCleaning", initialJobName: nil)
 //    .environment(coordinator)
   case .myJobs:
-   myJobs()
+   MyJobsView()
   case .profile:
    ProfileView()
   }
@@ -175,7 +174,7 @@ struct JobProvider: View {
 }
 
 #Preview {
- JobProvider()
+ JobProviderView()
   .environment(AppCoordinator(
    authManager: AuthenticationManager(userCache: UserCache()),
    userCache: UserCache()

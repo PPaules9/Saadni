@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NeedWork: View {
+struct NeedWorkView: View {
  @Environment(AppCoordinator.self) var appCoordinator
  @Environment(ConversationsStore.self) var conversationsStore
  @Environment(ServicesStore.self) var servicesStore
@@ -47,12 +47,12 @@ struct NeedWork: View {
 				.environment(coordinator)
 			}
 		} else {
-			NeedWorkView()
+			legacyTabContainerView()
 		}
 	}
 
 	@ViewBuilder
-	private func NeedWorkView() -> some View {
+	private func legacyTabContainerView() -> some View {
 		
 			if let coordinator = appCoordinator.studentCoordinator {
 				TabView(
@@ -117,7 +117,7 @@ struct NeedWork: View {
   case .myJobs:
    AppliedJobsView()
 	case .search:
-		BrowseJobs()
+		BrowseJobsView()
   case .profile:
    ProfileView()
   }
@@ -234,7 +234,7 @@ struct NeedWork: View {
 	let userCache = UserCache()
 	let authManager = AuthenticationManager(userCache: userCache)
 
- NeedWork()
+ NeedWorkView()
   .environment(AppCoordinator(
    authManager: AuthenticationManager(userCache: UserCache()),
    userCache: UserCache()

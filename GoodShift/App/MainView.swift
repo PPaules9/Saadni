@@ -57,7 +57,6 @@ struct MainView: View {
   .environment(container.messagesStore)
   .environment(container.reviewsStore)
   .environment(container.walletStore)
-  .environment(container.dashboardViewModel)
   .alert("Error", isPresented: Binding(
    get: { container.errorHandler.isPresented },
    set: { newValue in
@@ -125,9 +124,9 @@ struct MainView: View {
  @ViewBuilder
  private func authenticatedContent(for user: User) -> some View {
   if user.isJobSeeker {
-   JobProvider()
+   JobProviderView()
   } else if user.isServiceProvider {
-   NeedWork()
+   NeedWorkView()
   }
  }
 }

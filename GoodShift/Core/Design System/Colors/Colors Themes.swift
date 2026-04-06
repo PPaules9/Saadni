@@ -41,10 +41,15 @@ struct ColorPalette {
   case (.default, .textSecondary, true):
    return .textSecondary
    
-  case (.default, .appBackground , false):
+  case (.default, .appBackground, false):
    return .backgroundLight
-  case (.default, .appBackground , true):
+  case (.default, .appBackground, true):
    return .backgroundDark
+
+  case (.default, .cardBackground, false):
+   return .cardBackgroundLight
+  case (.default, .cardBackground, true):
+   return .cardBackgroundDark
    
    
   case (.default, .buttonBackground, false):

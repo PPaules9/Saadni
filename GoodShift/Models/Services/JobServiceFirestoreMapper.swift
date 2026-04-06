@@ -83,6 +83,9 @@ struct JobServiceFirestoreMapper {
         if let completionNote = service.completionNote { dict["completionNote"] = completionNote }
         if let disputeReason = service.disputeReason { dict["disputeReason"] = disputeReason }
 
+        // Job group
+        if let jobGroupId = service.jobGroupId { dict["jobGroupId"] = jobGroupId }
+
         return dict
     }
 
@@ -181,7 +184,8 @@ struct JobServiceFirestoreMapper {
             isArchived: isArchived,
             completionRequestedAt: completionRequestedAt,
             completionNote: completionNote,
-            disputeReason: disputeReason
+            disputeReason: disputeReason,
+            jobGroupId: data["jobGroupId"] as? String
         )
     }
 }

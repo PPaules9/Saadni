@@ -10,7 +10,6 @@ import FirebaseCore
 import FirebaseMessaging
 import UserNotifications
 import Kingfisher
-import AmplitudeSwift
 
 @main
 struct GoodShiftApp: App {
@@ -22,7 +21,7 @@ struct GoodShiftApp: App {
 	init() {
 		
 		FirebaseApp.configure()
-		_ = AnalyticsService.shared // initialize early
+		// AnalyticsService is initialized inside AppContainer — no need to touch .shared here
 		
 		// Configure Kingfisher image cache, the actual loading happens wherever you use something like KFImage(URL(string: ...)) in your views.
 		let cache = ImageCache.default

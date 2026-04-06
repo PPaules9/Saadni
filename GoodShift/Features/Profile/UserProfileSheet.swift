@@ -7,13 +7,32 @@
 
 import SwiftUI
 
+// MARK: - State Holder (keeps FirestoreService out of the View)
+@Observable private final class UserProfileLoader {
+    var user: User?
+    var isLoading = true
+    var error: String?
+
+    func load(userId: String) async {
+        isLoading = true
+        error = nil
+        do {
+            user = try await FirestoreService.shared.fetchUser(id: userId)
+        } catch {
+            self.error = error.localizedDescription
+        }
+        isLoading = false
+    }
+}
+
 struct UserProfileSheet: View {
     let userId: String
     @Environment(\.dismiss) var dismiss
 
-    @State private var user: User?
-    @State private var isLoading = true
-    @State private var loadError: String?
+    @State private var loader = UserProfileLoader()
+    private var user: User? { loader.user }
+    private var isLoading: Bool { loader.isLoading }
+    private var loadError: String? { loader.error }
 
     var body: some View {
         NavigationStack {
@@ -126,7 +145,7 @@ struct UserProfileSheet: View {
             }
         }
         .task {
-            await loadUser()
+            await loader.load(userId: userId)
         }
     }
 
@@ -154,17 +173,6 @@ struct UserProfileSheet: View {
             if let phone = user?.phoneNumber {
                 InfoRow(icon: "📞", label: "Phone", value: phone)
             }
-        }
-    }
-
-    private func loadUser() async {
-        do {
-            let fetchedUser = try await FirestoreService.shared.fetchUser(id: userId)
-            user = fetchedUser
-            isLoading = false
-        } catch {
-            loadError = error.localizedDescription
-            isLoading = false
         }
     }
 

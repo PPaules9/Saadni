@@ -7,6 +7,18 @@
 
 import SwiftUI
 
+// MARK: - State Holder (keeps FirestoreService out of the View)
+@Observable private final class PosterInfoLoader {
+    var poster: User?
+    var isLoading = false
+
+    func load(providerId: String) async {
+        isLoading = true
+        poster = try? await FirestoreService.shared.fetchUser(id: providerId)
+        isLoading = false
+    }
+}
+
 struct ApplyJobSheet: View {
     let service: JobService
 
@@ -24,8 +36,9 @@ struct ApplyJobSheet: View {
     @State private var profileCompletionPercentage = 0
     @State private var showEditProfile = false
     @State private var showPosterProfile = false
-    @State private var posterUser: User?
-    @State private var isLoadingPoster = false
+    @State private var posterLoader = PosterInfoLoader()
+    private var posterUser: User? { posterLoader.poster }
+    private var isLoadingPoster: Bool { posterLoader.isLoading }
 
     var isFormValid: Bool {
         // Form is always valid since both fields are optional
@@ -311,18 +324,8 @@ struct ApplyJobSheet: View {
             }
         }
         .task {
-            await loadPosterInfo()
+            await posterLoader.load(providerId: service.providerId)
         }
-    }
-
-    private func loadPosterInfo() async {
-        isLoadingPoster = true
-        do {
-            posterUser = try await FirestoreService.shared.fetchUser(id: service.providerId)
-        } catch {
-            // Silently fail - poster info is optional
-        }
-        isLoadingPoster = false
     }
 
     private func handleSubmit() {

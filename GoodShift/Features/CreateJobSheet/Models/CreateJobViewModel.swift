@@ -198,12 +198,15 @@ class CreateJobViewModel {
 
 		var generatedServices: [JobService] = []
 		let calendar = Calendar.current
-		
+
+		// Assign a shared groupId when creating multiple shifts together
+		let groupId: String? = selectedDates.count > 1 ? UUID().uuidString : nil
+
 		var estDuration = endTime.timeIntervalSince(startTime) / 3600.0
 		if estDuration < 0 {
 			estDuration += 24.0 // Handle over-midnight shifts
 		}
-		
+
 		for dateComp in selectedDates {
 			guard let date = calendar.date(from: dateComp) else { continue }
 			
@@ -247,7 +250,8 @@ class CreateJobViewModel {
 				specialTools: nil,
 				serviceDate: finalServiceDate,
 				estimatedDurationHours: estDuration > 0 ? estDuration : 1.0,
-				status: .published
+				status: .published,
+				jobGroupId: groupId
 			)
 			generatedServices.append(job)
 		}
@@ -255,6 +259,47 @@ class CreateJobViewModel {
 		return generatedServices
 	}
 	
+	// MARK: - Image Upload
+	/// Uploads the user-selected image to Firebase Storage and returns the remote URL.
+	/// The View delegates here so it never touches StorageService directly.
+	func uploadSelectedImage(userId: String) async throws -> URL? {
+		guard let selectedImage else { return nil }
+		uploadState = .compressing
+		let imageData = await Task.detached(priority: .userInitiated) {
+			selectedImage.jpegData(compressionQuality: 0.7)
+		}.value
+		guard let data = imageData else { return nil }
+		uploadState = .uploading(progress: 0.0)
+		let imageId = UUID().uuidString
+		let url = try await StorageService.shared.uploadServiceImageData(data, imageId: imageId, providerId: userId)
+		return url
+	}
+
+	// MARK: - Address Persistence
+	/// Saves a new address to the user's profile if it doesn't already exist.
+	/// Returns true if a new address was added. The View delegates here
+	/// so it never touches FirestoreService directly.
+	@discardableResult
+	func saveNewAddressIfNeeded(for user: User, cache: UserCache) async -> Bool {
+		var updatedUser = user
+		let exists = (updatedUser.savedAddresses ?? []).contains {
+			$0.address == address && $0.city == city
+		}
+		guard !exists else { return false }
+
+		let newAddress = SavedAddress(address: address, floor: "", unit: "", city: city)
+		if updatedUser.savedAddresses == nil {
+			updatedUser.savedAddresses = [newAddress]
+		} else {
+			updatedUser.savedAddresses?.append(newAddress)
+		}
+		updatedUser.defaultAddressId = newAddress.id
+
+		try? await FirestoreService.shared.saveUser(updatedUser)
+		await cache.updateUser(updatedUser)
+		return true
+	}
+
 	// MARK: - Address Auto-fill
 	func applyDefaultAddress(_ addressData: SavedAddress?) {
 		guard let addressData = addressData else { return }

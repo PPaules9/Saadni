@@ -316,6 +316,63 @@ class ServicesStore: ListenerManaging {
   }
  }
 
+ // MARK: - Job Group Operations
+
+ /// Fetches all shifts that share the same jobGroupId.
+ func fetchServicesByGroupId(_ groupId: String) async throws -> [JobService] {
+  let snapshot = try await db.collection("services")
+   .whereField("jobGroupId", isEqualTo: groupId)
+   .order(by: "serviceDate", descending: false)
+   .getDocuments()
+
+  return snapshot.documents.compactMap { doc in
+   try? JobService.fromFirestore(id: doc.documentID, data: doc.data())
+  }
+ }
+
+ /// Updates the shared fields on every shift in a group.
+ /// Per-shift fields (serviceDate, status, hiredApplicantId, applicationCount, id) are preserved.
+ func bulkUpdateSharedFields(groupId: String, from updated: JobService) async throws {
+  let siblings = try await fetchServicesByGroupId(groupId)
+  let batch = db.batch()
+
+  for sibling in siblings {
+   var patched = sibling
+   patched.title = updated.title
+   patched.price = updated.price
+   patched.location = updated.location
+   patched.description = updated.description
+   patched.image = updated.image
+   patched.address = updated.address
+   patched.floor = updated.floor
+   patched.unit = updated.unit
+   patched.branchName = updated.branchName
+   patched.nearestLandmark = updated.nearestLandmark
+   patched.breakDuration = updated.breakDuration
+   patched.paymentMethod = updated.paymentMethod
+   patched.paymentTiming = updated.paymentTiming
+   patched.dressCode = updated.dressCode
+   patched.minimumAge = updated.minimumAge
+   patched.genderPreference = updated.genderPreference
+   patched.physicalRequirements = updated.physicalRequirements
+   patched.languageNeeded = updated.languageNeeded
+   patched.whatToBring = updated.whatToBring
+   patched.companyName = updated.companyName
+   patched.companyLogoURL = updated.companyLogoURL
+   patched.industryCategory = updated.industryCategory
+   patched.contactPersonName = updated.contactPersonName
+   patched.contactPersonPhone = updated.contactPersonPhone
+   patched.someoneAround = updated.someoneAround
+   patched.specialTools = updated.specialTools
+
+   let ref = db.collection("services").document(sibling.id)
+   batch.setData(patched.toFirestore(), forDocument: ref)
+  }
+
+  try await batch.commit()
+  print("✅ Bulk updated \(siblings.count) shifts in group \(groupId)")
+ }
+
  // MARK: - Retry Logic
 
 

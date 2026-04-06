@@ -28,6 +28,8 @@ struct ServiceDetailView: View {
 	@State private var isCreatingChat = false
 	@State private var showDeleteConfirmation = false
 	@State private var isBoostingJob = false
+	@State private var isBulkUpdating = false
+	@State private var showBulkUpdateConfirmation = false
 	
 	var reviews: [Review] {
 		reviewsStore.serviceReviews[service.id] ?? []
@@ -460,6 +462,18 @@ struct ServiceDetailView: View {
 						}
 						.disabled(service.isFeatured || isBoostingJob)
 
+						if service.jobGroupId != nil {
+							Button {
+								showBulkUpdateConfirmation = true
+							} label: {
+								Label(
+									isBulkUpdating ? "Updating..." : "Apply Changes to All Shifts",
+									systemImage: "arrow.triangle.2.circlepath"
+								)
+							}
+							.disabled(isBulkUpdating)
+						}
+
 						Button(role: .destructive) {
 							showDeleteConfirmation = true
 						} label: {
@@ -488,6 +502,18 @@ struct ServiceDetailView: View {
 			Button("Cancel", role: .cancel) {}
 		} message: {
 			Text("This action cannot be undone.")
+		}
+		.confirmationDialog(
+			"Apply changes to all shifts?",
+			isPresented: $showBulkUpdateConfirmation,
+			titleVisibility: .visible
+		) {
+			Button("Update All Shifts") {
+				Task { await bulkUpdateAllShifts() }
+			}
+			Button("Cancel", role: .cancel) {}
+		} message: {
+			Text("This will overwrite the title, pay, location, requirements, and description on every shift in this job.")
 		}
 		.sheet(isPresented: $showingCompletionView) {
 			ServiceCompletionView(service: service)
@@ -580,6 +606,13 @@ struct ServiceDetailView: View {
 	private func deleteJob() async {
 		try? await servicesStore.removeService(id: service.id)
 		dismiss()
+	}
+
+	private func bulkUpdateAllShifts() async {
+		guard let groupId = service.jobGroupId else { return }
+		isBulkUpdating = true
+		try? await servicesStore.bulkUpdateSharedFields(groupId: groupId, from: service)
+		isBulkUpdating = false
 	}
 
 	private func formatDate(_ date: Date) -> String {
@@ -1005,12 +1038,27 @@ struct ApplicantID: Identifiable {
 	let id: String
 }
 
+// MARK: - State Holder (keeps FirestoreService out of the View)
+@Observable private final class ApplicantUsersLoader {
+	var users: [String: User] = [:]
+
+	func load(applications: [JobApplication]) async {
+		for application in applications {
+			guard users[application.applicantId] == nil else { continue }
+			if let user = try? await FirestoreService.shared.fetchUser(id: application.applicantId) {
+				users[application.applicantId] = user
+			}
+		}
+	}
+}
+
 struct ServiceApplicationsSheet: View {
 	let service: JobService
 	@Environment(\.dismiss) var dismiss
 	@Environment(ApplicationsStore.self) var applicationsStore
-	
-	@State private var applicantUsers: [String: User] = [:]
+
+	@State private var applicantLoader = ApplicantUsersLoader()
+	private var applicantUsers: [String: User] { applicantLoader.users }
 	@State private var isLoading = true
 	@State private var selectedApplicantID: ApplicantID?
 	@State private var actionError: String?
@@ -1061,7 +1109,7 @@ struct ServiceApplicationsSheet: View {
 			}
 		}
 		.task {
-			await loadApplicantUsers()
+			await applicantLoader.load(applications: applications)
 			isLoading = false
 		}
 		.sheet(item: $selectedApplicantID) { identifier in
@@ -1183,15 +1231,6 @@ struct ServiceApplicationsSheet: View {
 			.padding(.vertical, 4)
 			.background(color)
 			.cornerRadius(6)
-	}
-	
-	private func loadApplicantUsers() async {
-		for application in applications {
-			guard applicantUsers[application.applicantId] == nil else { continue }
-			if let user = try? await FirestoreService.shared.fetchUser(id: application.applicantId) {
-				applicantUsers[application.applicantId] = user
-			}
-		}
 	}
 	
 	private func accept(_ application: JobApplication) async {

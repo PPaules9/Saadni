@@ -13,13 +13,16 @@ struct ChatDetailView: View {
 	@Environment(ConversationsStore.self) var conversationsStore
 	@Environment(AuthenticationManager.self) var authManager
 	@Environment(UserCache.self) var userCache
+	@State private var viewModel = ChatDetailViewModel()
 	@State private var messageText = ""
 	@State private var isTyping = false
 	@State private var scrollPosition: String?
-	@State private var otherParticipantName: String = "User"
-	@State private var currentUserName: String = "You"
-	@State private var isLoadingNames: Bool = true
-	@State private var namesLoadError: String?
+
+	// Participant name state now lives in the ViewModel — not in the View
+	private var otherParticipantName: String { viewModel.otherUserName }
+	private var isLoadingNames: Bool { viewModel.isLoadingUser }
+	private var namesLoadError: String? { viewModel.userLoadError }
+	private var currentUserName: String { userCache.currentUser?.displayName ?? "You" }
 	
 	let conversation: Conversation
 	
@@ -103,7 +106,12 @@ struct ChatDetailView: View {
 							
 							Spacer()
 							
-							Button(action: { loadOtherParticipantInfo() }) {
+							Button(action: {
+								Task {
+									guard let otherUserId = conversation.otherParticipantId(currentUserId: currentUserId) else { return }
+									await viewModel.loadOtherUserInfo(userId: otherUserId)
+								}
+							}) {
 								Image(systemName: "arrow.clockwise")
 									.foregroundStyle(.orange)
 									.font(.caption)
@@ -266,7 +274,11 @@ struct ChatDetailView: View {
 		.onAppear {
 			AnalyticsService.shared.track(.chatOpened)
 			setupMessagesListener()
-			loadOtherParticipantInfo()
+		}
+		.task {
+			// Load participant name through the ViewModel — not directly from Firestore
+			guard let otherUserId = conversation.otherParticipantId(currentUserId: currentUserId) else { return }
+			await viewModel.loadOtherUserInfo(userId: otherUserId)
 		}
 		.onDisappear {
 			messagesStore.stopListener(conversationId: conversation.id)
@@ -295,60 +307,6 @@ struct ChatDetailView: View {
 				print("   3. Restart the app and try again")
 			} else {
 				print("✅ [ChatDetail] Message listeners setup successfully")
-			}
-		}
-	}
-	
-	private func loadOtherParticipantInfo() {
-		// Get the other participant's ID
-		guard let otherUserId = conversation.otherParticipantId(currentUserId: currentUserId) else {
-			print("⚠️ [ChatDetail] Could not determine other participant")
-			print("   Conversation participantIds: \(conversation.participantIds)")
-			print("   Current user ID: \(currentUserId)")
-			namesLoadError = "Could not find other participant in conversation"
-			isLoadingNames = false
-			return
-		}
-		
-		isLoadingNames = true
-		namesLoadError = nil
-		
-		Task {
-			// Load current user's name
-			if let currentUser = userCache.currentUser {
-				await MainActor.run {
-					currentUserName = currentUser.displayName ?? currentUser.email
-					print("✅ [ChatDetail] Loaded current user name: \(currentUserName)")
-				}
-			}
-			
-			// Fetch other participant's name from Firestore
-			do {
-				print("🔄 [ChatDetail] Fetching other participant info for: \(otherUserId)")
-				if let otherUser = try await FirestoreService.shared.fetchUser(id: otherUserId) {
-					await MainActor.run {
-						otherParticipantName = otherUser.displayName ?? otherUser.email
-						isLoadingNames = false
-						print("✅ [ChatDetail] Loaded other participant name: \(otherParticipantName)")
-					}
-				} else {
-					await MainActor.run {
-						otherParticipantName = "Provider"
-						isLoadingNames = false
-						namesLoadError = "User not found"
-						print("⚠️ [ChatDetail] Other participant not found in Firestore")
-					}
-				}
-			} catch {
-				await MainActor.run {
-					otherParticipantName = "Provider"
-					isLoadingNames = false
-					namesLoadError = "Permission denied or network error"
-					print("❌ [ChatDetail] Failed to fetch other participant info:")
-					print("   Error: \(error.localizedDescription)")
-					print("   This is often due to Firestore security rules not allowing user reads")
-					print("   Solution: Deploy Firestore rules from FIRESTORE_RULES_DEPLOYMENT_GUIDE.txt")
-				}
 			}
 		}
 	}

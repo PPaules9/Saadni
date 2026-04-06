@@ -7,12 +7,21 @@
 
 import SwiftUI
 
+// MARK: - State Holder (keeps FirestoreService out of the View)
+@Observable private final class ConversationNameLoader {
+    var name: String = "User"
+
+    func load(otherUserId: String) async {
+        if let user = try? await FirestoreService.shared.fetchUser(id: otherUserId) {
+            name = user.displayName ?? user.email
+        }
+    }
+}
 
 struct ConversationRow: View {
  let conversation: Conversation
  let currentUserId: String
- @State private var otherUserName: String = "User"
- @State private var isLoadingName = false
+ @State private var nameLoader = ConversationNameLoader()
  
  var body: some View {
   VStack(alignment: .leading, spacing: 8) {
@@ -27,7 +36,7 @@ struct ConversationRow: View {
      )
     
     VStack(alignment: .leading, spacing: 4) {
-     Text(otherUserName)
+     Text(nameLoader.name)
       .font(.headline)
       .foregroundStyle(Colors.swiftUIColor(.textMain))
      
@@ -62,24 +71,9 @@ struct ConversationRow: View {
    }
   }
   .padding(8)
-  .onAppear {
-   loadOtherUserName()
-  }
- }
- 
- private func loadOtherUserName() {
-  guard let otherUserId = conversation.otherParticipantId(currentUserId: currentUserId) else { return }
-  
-  isLoadingName = true
-  Task { @MainActor in
-   do {
-    if let user = try await FirestoreService.shared.fetchUser(id: otherUserId) {
-     otherUserName = user.displayName ?? user.email
-    }
-   } catch {
-    print("⚠️ Failed to load user name: \(error)")
-   }
-   isLoadingName = false
+  .task {
+   guard let otherUserId = conversation.otherParticipantId(currentUserId: currentUserId) else { return }
+   await nameLoader.load(otherUserId: otherUserId)
   }
  }
 }
