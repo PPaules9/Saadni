@@ -7,14 +7,15 @@
 
 import SwiftUI
 
-struct NeedWorkView: View {
+struct ServiceProviderRootView: View {
  @Environment(AppCoordinator.self) var appCoordinator
  @Environment(ConversationsStore.self) var conversationsStore
  @Environment(ServicesStore.self) var servicesStore
+ @Environment(MessagesStore.self) var messagesStore
 
 	var body: some View {
 		if #available(iOS 26, *) {
-			if let coordinator = appCoordinator.studentCoordinator {
+			if let coordinator = appCoordinator.serviceProviderCoordinator {
 				TabView(selection: Binding(
 					get: { coordinator.selectedTab },
 					set: { coordinator.selectedTab = $0 }
@@ -54,7 +55,7 @@ struct NeedWorkView: View {
 	@ViewBuilder
 	private func legacyTabContainerView() -> some View {
 		
-			if let coordinator = appCoordinator.studentCoordinator {
+			if let coordinator = appCoordinator.serviceProviderCoordinator {
 				TabView(
 					selection: Binding(
 						get: { coordinator.selectedTab },
@@ -86,22 +87,11 @@ struct NeedWorkView: View {
 	}
 	
  @ViewBuilder
- private func tabContent(for tab: ServiceProviderTab, coordinator: StudentCoordinator) -> some View {
+ private func tabContent(for tab: ServiceProviderTab, coordinator: ServiceProviderCoordinator) -> some View {
   let binding = coordinator.pathBinding(for: tab)
   NavigationStack(path: binding) {
    rootView(for: tab)
     .navigationDestination(for: ServiceProviderDestination.self) { destination in
-     destinationView(for: destination)
-    }
-  }
- }
-
- @ViewBuilder
- private func tabContent(for tab: JobSeekerTab, coordinator: ProviderCoordinator) -> some View {
-  let binding = coordinator.pathBinding(for: tab)
-  NavigationStack(path: binding) {
-   rootView(for: tab)
-    .navigationDestination(for: JobSeekerDestination.self) { destination in
      destinationView(for: destination)
     }
   }
@@ -124,22 +114,6 @@ struct NeedWorkView: View {
  }
 
  @ViewBuilder
- private func rootView(for tab: JobSeekerTab) -> some View {
-  switch tab {
-  case .dashboard:
-   DashboardView()
-  case .chat:
-   ChatView()
-//  case .addJob:
-   CreateJobSheet(selectedCategory: ServiceCategoryType.communityAndOutdoor.rawValue, initialJobName: nil, initialServiceImageName: nil)
-  case .myJobs:
-   AppliedJobsView()
-  case .profile:
-   ProfileView()
-  }
- }
-
- @ViewBuilder
  private func destinationView(for destination: ServiceProviderDestination) -> some View {
   switch destination {
   case .serviceDetail(let service):
@@ -156,7 +130,7 @@ struct NeedWorkView: View {
    if let conversation = conversationsStore.getConversationById(conversationId) {
     ChatDetailView(conversation: conversation)
      .environment(conversationsStore)
-     .environment(MessagesStore())
+     .environment(messagesStore)
    } else {
     ProgressView()
    }
@@ -168,25 +142,9 @@ struct NeedWorkView: View {
    CompletedServicesView()
   case .userReviews(let userId):
    UserReviewsView(userId: userId)
+  case .filteredServices(let filter):
+   FilteredServicesView(filter: filter, wrapInNavigationStack: false)
   }
- }
-
- @ViewBuilder
- private func destinationView(for destination: JobSeekerDestination) -> some View {
-  switch destination {
-  case .serviceDetail(let service):
-   ServiceDetailView(service: service)
-  case .categoryDetail(let category):
-   Text("Category: \(category.rawValue)") // Placeholder
-  case .chatDetail(let conversationId):
-   if let conversation = conversationsStore.getConversationById(conversationId) {
-    ChatDetailView(conversation: conversation)
-     .environment(conversationsStore)
-     .environment(MessagesStore())
-   } else {
-    ProgressView()
-   }
-  } 
  }
 
  @ViewBuilder
@@ -226,6 +184,8 @@ struct NeedWorkView: View {
    AllActivitiesView()
   case .userProfile(let userId):
    UserProfileSheet(userId: userId)
+  case .filteredServices(let filter):
+   FilteredServicesView(filter: filter)
   }
  }
 }
@@ -234,7 +194,7 @@ struct NeedWorkView: View {
 	let userCache = UserCache()
 	let authManager = AuthenticationManager(userCache: userCache)
 
- NeedWorkView()
+ ServiceProviderRootView()
   .environment(AppCoordinator(
    authManager: AuthenticationManager(userCache: UserCache()),
    userCache: UserCache()

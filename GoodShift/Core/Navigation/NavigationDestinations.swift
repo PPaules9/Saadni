@@ -1,5 +1,75 @@
 import Foundation
 
+// MARK: - Service Time Filter
+
+enum ServiceTimeFilter: Hashable {
+    case thisWeek
+    case tomorrow
+    case nextTwoWeeks
+    case thisMonth
+    case nextMonth
+    case byDate(Date)
+    case byTag(String)
+    case all
+
+    /// Human-readable title for navigation bar
+    var displayTitle: String {
+        switch self {
+        case .thisWeek:     return "This Week"
+        case .tomorrow:     return "Tomorrow"
+        case .nextTwoWeeks: return "Next Two Weeks"
+        case .thisMonth:    return "This Month"
+        case .nextMonth:    return "Next Month"
+        case .byDate(let d): return d.formatted(date: .abbreviated, time: .omitted)
+        case .byTag(let t): return t
+        case .all:          return "All Services"
+        }
+    }
+
+    /// The date range this filter covers, nil means no date filter (show all / tag only)
+    var dateRange: ClosedRange<Date>? {
+        let cal = Calendar.current
+        let now = Date()
+        switch self {
+        case .tomorrow:
+            let start = cal.startOfDay(for: cal.date(byAdding: .day, value: 1, to: now)!)
+            let end   = cal.date(byAdding: .day, value: 1, to: start)!
+            return start...end
+        case .thisWeek:
+            let start = cal.startOfDay(for: now)
+            let end   = cal.date(byAdding: .day, value: 7, to: start)!
+            return start...end
+        case .nextTwoWeeks:
+            let start = cal.startOfDay(for: now)
+            let end   = cal.date(byAdding: .day, value: 14, to: start)!
+            return start...end
+        case .thisMonth:
+            let comps = cal.dateComponents([.year, .month], from: now)
+            let start = cal.date(from: comps)!
+            let end   = cal.date(byAdding: .month, value: 1, to: start)!
+            return start...end
+        case .nextMonth:
+            let comps = cal.dateComponents([.year, .month], from: now)
+            let thisMonthStart = cal.date(from: comps)!
+            let start = cal.date(byAdding: .month, value: 1, to: thisMonthStart)!
+            let end   = cal.date(byAdding: .month, value: 1, to: start)!
+            return start...end
+        case .byDate(let d):
+            let start = cal.startOfDay(for: d)
+            let end   = cal.date(byAdding: .day, value: 1, to: start)!
+            return start...end
+        case .byTag, .all:
+            return nil
+        }
+    }
+
+    /// serviceTag to filter on, nil means no tag filter
+    var tag: String? {
+        if case .byTag(let t) = self { return t }
+        return nil
+    }
+}
+
 enum JobSeekerTab: String, CaseIterable {
     case dashboard
     case chat
@@ -70,6 +140,7 @@ enum ServiceProviderDestination: Hashable {
     case performance
     case completedServices
     case userReviews(userId: String)
+    case filteredServices(filter: ServiceTimeFilter)
 }
 
 // MARK: - Sheet Destinations
@@ -86,6 +157,7 @@ enum SheetDestination: Hashable, Identifiable {
     case notificationDrawer(role: UserRole)
     case allActivities
     case userProfile(userId: String)
+    case filteredServices(filter: ServiceTimeFilter)
 
     var id: String {
         switch self {
@@ -100,6 +172,7 @@ enum SheetDestination: Hashable, Identifiable {
         case .notificationDrawer(let role): return "notificationDrawer_\(role)"
         case .allActivities: return "allActivities"
         case .userProfile(let userId): return "userProfile_\(userId)"
+        case .filteredServices(let filter): return "filteredServices_\(filter.displayTitle)"
         }
     }
 }

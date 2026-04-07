@@ -19,9 +19,18 @@ enum AppError: Error, LocalizedError, Identifiable {
     case validation(String)
     case unknown(Error)
 
-    // UUID generated at enum creation — stable, collision-free id
-    // (string-based ids collide when two errors share the same message)
-    var id: String { UUID().uuidString }
+    // Stable identity derived from the error's content.
+    // Using a computed var is safe here because the value is deterministic
+    // for a given case+message — SwiftUI .alert(item:) can track it correctly.
+    var id: String {
+        switch self {
+        case .authentication(let m): return "auth:\(m)"
+        case .network(let m):        return "net:\(m)"
+        case .firestore(let m):      return "db:\(m)"
+        case .validation(let m):     return "val:\(m)"
+        case .unknown(let e):        return "unk:\(e.localizedDescription)"
+        }
+    }
 
     // MARK: LocalizedError
 

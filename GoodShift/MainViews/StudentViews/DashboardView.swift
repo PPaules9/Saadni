@@ -23,7 +23,7 @@ struct DashboardView: View {
 	@Environment(ApplicationsStore.self) var applicationsStore
 	@Environment(ConversationsStore.self) var conversationsStore
 	@Environment(\.notificationsStore) var notificationsStore
-	@Environment(StudentCoordinator.self) var coordinator
+	@Environment(ServiceProviderCoordinator.self) var coordinator
 
 	/// The active hired job (accepted + service is active), if any
 	var activeJob: (application: JobApplication, service: JobService)? {
@@ -76,17 +76,15 @@ struct DashboardView: View {
 						VStack{
 							// Shift-Picker Calendar
 							ShiftPickerCalendarView(isCalendarVisible: $isCalendarVisible) { date in
-								coordinator.filterDate = date
-								coordinator.selectTab(.search)
+								coordinator.presentSheet(.filteredServices(filter: .byDate(date)))
 							}
-							
+
 							if isCalendarVisible {
 								CustomCalendarWithJobIndicators(
 									selectedDate: $calendarSelection,
 									jobDates: jobDates,
 									onDateSelected: { date in
-										coordinator.filterDate = date
-										coordinator.selectTab(.search)
+										coordinator.presentSheet(.filteredServices(filter: .byDate(date)))
 									}
 								)
 								.padding(.horizontal, 20)
@@ -106,7 +104,8 @@ struct DashboardView: View {
 
 					
 					// Earnings Section
-					EarningsView(onWalletTap: { coordinator.presentSheet(.walletSheet) })
+//					EarningsView(onWalletTap: { coordinator.presentSheet(.walletSheet) })
+					EarningsView()
 						.padding(.horizontal, 20)
 						.padding(.bottom, 32)
 					
@@ -150,7 +149,7 @@ struct DashboardView: View {
 		}
 		.refreshable {
 			// Manual refresh: listeners update data automatically, but users can pull-to-refresh
-			try? await Task.sleep(nanoseconds: 500_000_000) // Brief pause for UX
+			try? await Task.sleep(for: .milliseconds(500)) // Brief pause for UX
 		}
 		.environment(dashboardViewModel)
 	}
@@ -232,16 +231,24 @@ struct ShiftPickerCalendarView: View {
 		Calendar.current.isDateInTomorrow(date)
 	}
 	
+	private static let dayOfWeekFormatter: DateFormatter = {
+		let f = DateFormatter()
+		f.dateFormat = "EEE"
+		return f
+	}()
+
+	private static let dayNumberFormatter: DateFormatter = {
+		let f = DateFormatter()
+		f.dateFormat = "d"
+		return f
+	}()
+
 	private func getDayOfWeek(_ date: Date) -> String {
-		let formatter = DateFormatter()
-		formatter.dateFormat = "EEE"
-		return formatter.string(from: date)
+		ShiftPickerCalendarView.dayOfWeekFormatter.string(from: date)
 	}
-	
+
 	private func getDayNumber(_ date: Date) -> String {
-		let formatter = DateFormatter()
-		formatter.dateFormat = "d"
-		return formatter.string(from: date)
+		ShiftPickerCalendarView.dayNumberFormatter.string(from: date)
 	}
 }
 
@@ -250,7 +257,7 @@ struct ShiftPickerCalendarView: View {
 struct DashboardHeaderView: View {
 	@Environment(AuthenticationManager.self) var authManager
 	@Environment(\.notificationsStore) var notificationsStore
-	@Environment(StudentCoordinator.self) var coordinator
+	@Environment(ServiceProviderCoordinator.self) var coordinator
 	
 	var body: some View {
 		VStack(alignment: .leading, spacing: 8) {
@@ -275,31 +282,40 @@ struct DashboardHeaderView: View {
 				
 				Spacer()
 				
-				HStack(spacing: 12) {
-					Button(action: {}) {
-						Image(systemName: "magnifyingglass")
-							.font(.system(size: 18, weight: .semibold))
-							.foregroundStyle(.white)
-					}
-					
+				HStack(spacing: 8) {
+//					Button(action: {}) {
+//						Image(systemName: "magnifyingglass")
+//							.font(.system(size: 18, weight: .semibold))
+//							.foregroundStyle(.white)
+//					}
+//					.frame(minWidth: 44, minHeight: 44)
+//					.accessibilityLabel("Search")
+
 					ZStack(alignment: .topTrailing) {
 						Button(action: { coordinator.presentSheet(.notificationDrawer(role: .jobSeeker)) }) {
 							Image(systemName: "bell.fill")
 								.font(.system(size: 18, weight: .semibold))
 								.foregroundStyle(.white)
 						}
-						
+						.frame(minWidth: 44, minHeight: 44)
+						.accessibilityLabel(
+							notificationsStore.unreadCount(for: .jobSeeker) > 0
+							? "Notifications, \(notificationsStore.unreadCount(for: .jobSeeker)) unread"
+							: "Notifications"
+						)
+
 						if notificationsStore.unreadCount(for: .jobSeeker) > 0 {
 							ZStack {
 								Circle()
-									.fill(Color(UIColor(hex: "#FF3B30")))
-								
+									.fill(Color.red)
+
 								Text(notificationsStore.unreadCount(for: .jobSeeker) > 99 ? "99+" : "\(notificationsStore.unreadCount(for: .jobSeeker))")
 									.font(.system(size: 10, weight: .bold))
 									.foregroundColor(.white)
 							}
 							.frame(width: 20, height: 20)
 							.offset(x: 8, y: -8)
+							.accessibilityHidden(true) // count already in the button label above
 						}
 					}
 				}
@@ -326,6 +342,8 @@ struct JobStatusCarouselView: View {
 	@State private var navigateToNewService = false
 	@State private var featuredService: JobService? = nil
 	@State private var newService: JobService? = nil
+	/// Pauses auto-scroll when the user taps a card — resumes on next tick
+	@State private var isAutoScrollPaused = false
 	
 	var body: some View {
 		VStack(spacing: 16) {
@@ -409,9 +427,18 @@ struct JobStatusCarouselView: View {
 			}
 		}
 		.onReceive(Timer.publish(every: 5, on: .main, in: .common).autoconnect()) { _ in
+			guard !isAutoScrollPaused else {
+				// Resume after one skipped tick
+				isAutoScrollPaused = false
+				return
+			}
 			withAnimation {
 				currentIndex = (currentIndex + 1) % 3
 			}
+		}
+		// Pause auto-scroll when user manually swipes
+		.onChange(of: currentIndex) {
+			isAutoScrollPaused = true
 		}
 	}
 	
@@ -456,11 +483,11 @@ struct CarouselCardSkeleton: View {
 
 // MARK: - Earnings View
 struct EarningsView: View {
-	let onWalletTap: () -> Void
+//	let onWalletTap: () -> Void
 	@Environment(ServicesStore.self) var servicesStore
 	@Environment(AuthenticationManager.self) var authManager
 	@State private var completedServices: [JobService] = []
-	@AppStorage("appCurrency") private var appCurrency: String = "EGP"
+	@AppStorage(AppConstants.Storage.appCurrency) private var appCurrency: String = "EGP"
 	private var currencySymbol: String { Currency(rawValue: appCurrency)?.symbol ?? appCurrency }
 	
 	private var totalEarnings: Double {
@@ -502,9 +529,9 @@ struct EarningsView: View {
 		.padding(16)
 		.background(Color.accent)
 		.cornerRadius(12)
-		.onTapGesture {
-			onWalletTap()
-		}
+//		.onTapGesture {
+//			onWalletTap()
+//		}
 		.task {
 			guard let userId = authManager.currentUser?.id else { return }
 			let all = await servicesStore.fetchCompletedServices(userId: userId)
@@ -519,7 +546,7 @@ struct RecentActivityView: View {
 	@Environment(ServicesStore.self) var servicesStore
 	@Environment(ApplicationsStore.self) var applicationsStore
 	@Environment(DashboardViewModel.self) var dashboardVM
-	@Environment(StudentCoordinator.self) var coordinator
+	@Environment(ServiceProviderCoordinator.self) var coordinator
 	
 	private var activities: [ServiceActivity] {
 		dashboardVM.recentActivities(
@@ -813,6 +840,6 @@ private struct RoundedCorner: Shape {
 		.environment(ServicesStore())
 		.environment(ApplicationsStore())
 		.environment(NotificationsStore())
-		.environment(StudentCoordinator())
+		.environment(ServiceProviderCoordinator())
 		.environment(DashboardViewModel())
 }

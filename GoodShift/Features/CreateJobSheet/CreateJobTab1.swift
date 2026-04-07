@@ -9,15 +9,16 @@ import SwiftUI
 
 struct CreateJobTab1: View {
 	@Bindable var viewModel: CreateJobViewModel
-	let selectedCategory: String
+	@Binding var selectedCategory: String
 	@State private var showCalendar = false
-
+	@State private var showTagPicker = false
+	
 	private static let displayDateFormatter: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "EEEE, d MMMM yyyy"
 		return formatter
 	}()
-
+	
 	private var selectedDatesLabel: String {
 		switch viewModel.selectedDates.count {
 		case 0:
@@ -25,7 +26,7 @@ struct CreateJobTab1: View {
 		case 1:
 			// MultiDatePicker uses Set<DateComponents>
 			if let comps = viewModel.selectedDates.first,
-			   let date = Calendar.current.date(from: comps) {
+				 let date = Calendar.current.date(from: comps) {
 				return Self.displayDateFormatter.string(from: date)
 			} else {
 				return "Select at least one shift date"
@@ -34,24 +35,51 @@ struct CreateJobTab1: View {
 			return "\(viewModel.selectedDates.count) dates selected"
 		}
 	}
-
+	
 	var body: some View {
 		ScrollView(showsIndicators: false) {
 			VStack(spacing: 24) {
-				// Category Display
-				HStack {
-					Text("Service Category")
-						.font(.subheadline)
-						.foregroundStyle(Colors.swiftUIColor(.textSecondary))
-					Spacer()
-					Text(selectedCategory)
-						.font(.subheadline)
-						.fontWeight(.semibold)
-						.foregroundStyle(Color.accent)
+				// Service Tag Picker
+				Button(action: { showTagPicker = true }) {
+					HStack {
+						Text("Service Type")
+							.font(.subheadline)
+							.foregroundStyle(Colors.swiftUIColor(.textSecondary))
+						Text("*").foregroundStyle(.red)
+						Spacer()
+						HStack(spacing: 6) {
+							if !viewModel.serviceTag.isEmpty {
+								if let option = ServiceTagOption(rawValue: viewModel.serviceTag) {
+									Image(systemName: option.icon)
+										.font(.caption)
+										.foregroundStyle(Color.accent)
+								}
+							}
+							Text(viewModel.serviceTag.isEmpty ? "Select type" : viewModel.serviceTag)
+								.font(.subheadline)
+								.fontWeight(.semibold)
+								.foregroundStyle(viewModel.serviceTag.isEmpty ? Colors.swiftUIColor(.textSecondary) : Color.accent)
+						}
+						Image(systemName: "chevron.right")
+							.font(.caption)
+							.foregroundStyle(Colors.swiftUIColor(.textSecondary))
+					}
 				}
+				.buttonStyle(.plain)
 				.padding()
 				.background(Colors.swiftUIColor(.textPrimary))
 				.cornerRadius(12)
+				.confirmationDialog("Select Service Type", isPresented: $showTagPicker, titleVisibility: .visible) {
+					ForEach(ServiceTagOption.allCases) { option in
+						Button(option.rawValue) {
+							viewModel.serviceTag = option.rawValue
+							if option != .other {
+								selectedCategory = option.derivedCategory.rawValue
+							}
+						}
+					}
+					Button("Cancel", role: .cancel) {}
+				}
 				
 				// Job Title
 				VStack(alignment: .leading, spacing: 8) {
@@ -103,7 +131,7 @@ struct CreateJobTab1: View {
 						)
 					}
 					.buttonStyle(.plain)
-
+					
 					if showCalendar {
 						MultiDatePicker("Dates", selection: $viewModel.selectedDates, in: Date()...)
 							.padding()
@@ -164,6 +192,6 @@ struct CreateJobTab1: View {
 #Preview {
 	CreateJobTab1(
 		viewModel: CreateJobViewModel(),
-		selectedCategory: "Food & Beverage"
+		selectedCategory: .constant("Food & Beverage")
 	)
 }

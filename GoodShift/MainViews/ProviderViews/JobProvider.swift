@@ -7,23 +7,19 @@
 
 import SwiftUI
 
-struct JobProviderView: View {
+struct JobSeekerRootView: View {
  @Environment(AppCoordinator.self) var appCoordinator
  @Environment(ConversationsStore.self) var conversationsStore
  @Environment(ServicesStore.self) var servicesStore
+ @Environment(MessagesStore.self) var messagesStore
 
 	var body: some View {
-		if #available(iOS 26, *) {
-			tabContainerView()
-		}
-		else{
-			tabContainerView()
-		}
+		tabContainerView()
 	}
 
 	@ViewBuilder
 	private func tabContainerView() -> some View {
-		if let coordinator = appCoordinator.providerCoordinator {
+		if let coordinator = appCoordinator.jobSeekerCoordinator {
 			TabView(
 				selection: Binding(
 					get: { coordinator.selectedTab },
@@ -54,7 +50,7 @@ struct JobProviderView: View {
 
 	}
  @ViewBuilder
- private func tabContent(for tab: JobSeekerTab, coordinator: ProviderCoordinator) -> some View {
+ private func tabContent(for tab: JobSeekerTab, coordinator: JobSeekerCoordinator) -> some View {
   let binding = coordinator.pathBinding(for: tab)
   NavigationStack(path: binding) {
    rootView(for: tab, coordinator: coordinator)
@@ -68,15 +64,12 @@ struct JobProviderView: View {
  }
 
  @ViewBuilder
- private func rootView(for tab: JobSeekerTab, coordinator: ProviderCoordinator) -> some View {
+ private func rootView(for tab: JobSeekerTab, coordinator: JobSeekerCoordinator) -> some View {
   switch tab {
   case .dashboard:
    HomeView()
   case .chat:
    ChatView()
-//  case .addJob:
-//   CreateJobSheet(selectedCategory: "homeCleaning", initialJobName: nil)
-//    .environment(coordinator)
   case .myJobs:
    MyJobsView()
   case .profile:
@@ -86,6 +79,7 @@ struct JobProviderView: View {
 
  @ViewBuilder
  private func destinationView(for destination: ServiceProviderDestination) -> some View {
+
   switch destination {
   case .serviceDetail(let service):
    ServiceDetailView(service: service)
@@ -101,7 +95,7 @@ struct JobProviderView: View {
    if let conversation = conversationsStore.getConversationById(conversationId) {
     ChatDetailView(conversation: conversation)
      .environment(conversationsStore)
-     .environment(MessagesStore())
+     .environment(messagesStore)
    }
   case .createJob(let category, let initialName, let imageName):
    CreateJobSheet(selectedCategory: category, initialJobName: initialName, initialServiceImageName: imageName)
@@ -111,6 +105,8 @@ struct JobProviderView: View {
    CompletedServicesView()
   case .userReviews(let userId):
    UserReviewsView(userId: userId)
+  case .filteredServices(let filter):
+   FilteredServicesView(filter: filter, wrapInNavigationStack: false)
   }
  }
 
@@ -125,7 +121,7 @@ struct JobProviderView: View {
    if let conversation = conversationsStore.getConversationById(conversationId) {
     ChatDetailView(conversation: conversation)
      .environment(conversationsStore)
-     .environment(MessagesStore())
+     .environment(messagesStore)
    }
   }
  }
@@ -169,12 +165,14 @@ struct JobProviderView: View {
    AllActivitiesView()
   case .userProfile(let userId):
    UserProfileSheet(userId: userId)
+  case .filteredServices(let filter):
+   FilteredServicesView(filter: filter)
   }
  }
 }
 
 #Preview {
- JobProviderView()
+ JobSeekerRootView()
   .environment(AppCoordinator(
    authManager: AuthenticationManager(userCache: UserCache()),
    userCache: UserCache()

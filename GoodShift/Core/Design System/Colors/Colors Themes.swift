@@ -86,6 +86,16 @@ struct ColorPalette {
    return .warning
   case (.default, .borderWarning, true):
    return .warning
+
+  case (.default, .selectionHighlight, false):
+   return .selectionHighlightLight
+  case (.default, .selectionHighlight, true):
+   return .selectionHighlightDark
+
+  case (.default, .successGreen, false):
+   return .successGreenToken
+  case (.default, .successGreen, true):
+   return .successGreenToken
   }
  }
 }

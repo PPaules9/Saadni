@@ -9,8 +9,8 @@
 import SwiftUI
 
 @Observable
-final class ProviderCoordinator: Equatable {
-    static func == (lhs: ProviderCoordinator, rhs: ProviderCoordinator) -> Bool {
+final class JobSeekerCoordinator: Equatable {
+    static func == (lhs: JobSeekerCoordinator, rhs: JobSeekerCoordinator) -> Bool {
         lhs === rhs
     }
     // Tab selection
@@ -19,7 +19,6 @@ final class ProviderCoordinator: Equatable {
     // Navigation paths per tab
     var dashboardPath = NavigationPath()
     var chatPath = NavigationPath()
-//    var addJobPath = NavigationPath()
     var myJobsPath = NavigationPath()
     var profilePath = NavigationPath()
 
@@ -91,7 +90,6 @@ final class ProviderCoordinator: Equatable {
             switch selectedTab {
             case .dashboard: return dashboardPath
             case .chat: return chatPath
-//            case .addJob: return addJobPath
             case .myJobs: return myJobsPath
             case .profile: return profilePath
             }
@@ -100,7 +98,6 @@ final class ProviderCoordinator: Equatable {
             switch selectedTab {
             case .dashboard: dashboardPath = newValue
             case .chat: chatPath = newValue
-//            case .addJob: addJobPath = newValue
             case .myJobs: myJobsPath = newValue
             case .profile: profilePath = newValue
             }
@@ -113,7 +110,6 @@ final class ProviderCoordinator: Equatable {
                 switch tab {
                 case .dashboard: return self.dashboardPath
                 case .chat: return self.chatPath
-//                case .addJob: return self.addJobPath
                 case .myJobs: return self.myJobsPath
                 case .profile: return self.profilePath
                 }
@@ -122,7 +118,6 @@ final class ProviderCoordinator: Equatable {
                 switch tab {
                 case .dashboard: self.dashboardPath = newValue
                 case .chat: self.chatPath = newValue
-//                case .addJob: self.addJobPath = newValue
                 case .myJobs: self.myJobsPath = newValue
                 case .profile: self.profilePath = newValue
                 }

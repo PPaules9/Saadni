@@ -87,6 +87,85 @@ class ServicesStore: ListenerManaging {
   isLoadingServices = false
  }
  
+ // MARK: - Filtered Fetch (tag / date range)
+
+ /// Search results shown when user types in BrowseJobsView search bar
+ var searchResults: [JobService] = []
+ var isSearching: Bool = false
+
+ /// Fetch services filtered by serviceTag and/or a date range. Pagination-aware.
+ func fetchServicesFiltered(
+  tag: String? = nil,
+  dateRange: ClosedRange<Date>? = nil,
+  reset: Bool = false
+ ) async {
+  guard hasMoreServices || reset else { return }
+  if reset {
+   lastDocument = nil
+   services = []
+   hasMoreServices = true
+  }
+  isLoadingServices = true
+  servicesError = nil
+
+  var query: Query = db.collection("services")
+   .whereField("status", in: ["published", "active"])
+
+  if let tag {
+   query = query.whereField("serviceTag", isEqualTo: tag)
+  }
+  if let range = dateRange {
+   query = query
+    .whereField("serviceDate", isGreaterThanOrEqualTo: Timestamp(date: range.lowerBound))
+    .whereField("serviceDate", isLessThanOrEqualTo: Timestamp(date: range.upperBound))
+  }
+  query = query.order(by: "serviceDate", descending: false).limit(to: pageSize)
+  if let last = lastDocument { query = query.start(afterDocument: last) }
+
+  do {
+   let snapshot = try await query.getDocuments()
+   lastDocument = snapshot.documents.last
+   hasMoreServices = snapshot.documents.count == pageSize
+   let newServices = snapshot.documents.compactMap { doc -> JobService? in
+    try? JobService.fromFirestore(id: doc.documentID, data: doc.data())
+   }
+   let existingIds = Set(services.map { $0.id })
+   services.append(contentsOf: newServices.filter { !existingIds.contains($0.id) })
+   servicesError = nil
+  } catch {
+   servicesError = "Failed to load services."
+   print("❌ fetchServicesFiltered error: \(error)")
+  }
+  isLoadingServices = false
+ }
+
+ /// Server-side text search — prefix match on title field.
+ func searchServices(query searchQuery: String) async {
+  guard !searchQuery.trimmingCharacters(in: .whitespaces).isEmpty else {
+   searchResults = []
+   return
+  }
+  isSearching = true
+  let lower = searchQuery
+  let upper = searchQuery + "\u{f8ff}"
+  do {
+   let snapshot = try await db.collection("services")
+    .whereField("status", in: ["published", "active"])
+    .whereField("title", isGreaterThanOrEqualTo: lower)
+    .whereField("title", isLessThan: upper)
+    .limit(to: 30)
+    .getDocuments()
+   searchResults = snapshot.documents.compactMap { doc -> JobService? in
+    try? JobService.fromFirestore(id: doc.documentID, data: doc.data())
+   }
+   print("🔍 Search '\(searchQuery)' returned \(searchResults.count) results")
+  } catch {
+   print("❌ searchServices error: \(error)")
+   searchResults = []
+  }
+  isSearching = false
+ }
+
  // MARK: - Add Services (with Image Upload)
  
  /// Save a service to Firestore. The image must already be resolved (remoteURL or assetName)
@@ -319,9 +398,12 @@ class ServicesStore: ListenerManaging {
  // MARK: - Job Group Operations
 
  /// Fetches all shifts that share the same jobGroupId.
- func fetchServicesByGroupId(_ groupId: String) async throws -> [JobService] {
+ /// `providerId` must be supplied so the Firestore rules engine can verify
+ /// `resource.data.providerId == uid()` on the collection query.
+ func fetchServicesByGroupId(_ groupId: String, providerId: String) async throws -> [JobService] {
   let snapshot = try await db.collection("services")
    .whereField("jobGroupId", isEqualTo: groupId)
+   .whereField("providerId", isEqualTo: providerId)
    .order(by: "serviceDate", descending: false)
    .getDocuments()
 
@@ -333,7 +415,7 @@ class ServicesStore: ListenerManaging {
  /// Updates the shared fields on every shift in a group.
  /// Per-shift fields (serviceDate, status, hiredApplicantId, applicationCount, id) are preserved.
  func bulkUpdateSharedFields(groupId: String, from updated: JobService) async throws {
-  let siblings = try await fetchServicesByGroupId(groupId)
+  let siblings = try await fetchServicesByGroupId(groupId, providerId: updated.providerId)
   let batch = db.batch()
 
   for sibling in siblings {

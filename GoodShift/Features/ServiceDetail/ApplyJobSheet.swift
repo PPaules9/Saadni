@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 // MARK: - State Holder (keeps FirestoreService out of the View)
 @Observable private final class PosterInfoLoader {
@@ -143,17 +144,11 @@ struct ApplyJobSheet: View {
                                 HStack(spacing: 12) {
                                     // Poster photo
                                     if let photoURL = poster.photoURL, let url = URL(string: photoURL) {
-                                        AsyncImage(url: url) { image in
-                                            image
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 50, height: 50)
-                                                .clipShape(Circle())
-                                        } placeholder: {
-                                            Circle()
-                                                .fill(Color(.systemGray5))
-                                                .frame(width: 50, height: 50)
-                                        }
+                                        KFImage(url)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 50, height: 50)
+                                            .clipShape(Circle())
                                     } else {
                                         Circle()
                                             .fill(Color(.systemGray5))
@@ -326,6 +321,15 @@ struct ApplyJobSheet: View {
         .task {
             await posterLoader.load(providerId: service.providerId)
         }
+        .onDisappear {
+            // Only track abandon if the sheet closed without a successful submission
+            if !showSuccess {
+                AnalyticsService.shared.track(.applicationAbandoned(
+                    jobId: service.id,
+                    category: service.category?.rawValue ?? ""
+                ))
+            }
+        }
     }
 
     private func handleSubmit() {
@@ -353,10 +357,17 @@ struct ApplyJobSheet: View {
         }
 
         // Validate proposed price if provided
-        if !proposedPrice.isEmpty, Double(proposedPrice) == nil {
-            errorMessage = "Please enter a valid price"
-            showError = true
-            return
+        if !proposedPrice.isEmpty {
+            guard let priceValue = Double(proposedPrice) else {
+                errorMessage = "Please enter a valid price"
+                showError = true
+                return
+            }
+            if priceValue <= 0 || priceValue > 100_000 {
+                errorMessage = "Please enter a realistic price (between 1 and 100,000)"
+                showError = true
+                return
+            }
         }
 
         isSubmitting = true
@@ -371,9 +382,14 @@ struct ApplyJobSheet: View {
                 coverMessage: coverMessage.isEmpty ? nil : coverMessage
             )
 
+            AnalyticsService.shared.track(.jobApplied(
+                jobId: service.id,
+                category: service.category?.rawValue ?? ""
+            ))
             showSuccess = true
             isSubmitting = false
         } catch {
+            AnalyticsService.shared.track(.applicationFailed(errorType: error.localizedDescription))
             errorMessage = "Failed to submit application: \(error.localizedDescription)"
             showError = true
             isSubmitting = false

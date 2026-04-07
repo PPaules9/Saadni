@@ -124,9 +124,9 @@ struct MainView: View {
  @ViewBuilder
  private func authenticatedContent(for user: User) -> some View {
   if user.isJobSeeker {
-   JobProviderView()
+   JobSeekerRootView()
   } else if user.isServiceProvider {
-   NeedWorkView()
+   ServiceProviderRootView()
   }
  }
 }

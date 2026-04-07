@@ -17,7 +17,7 @@ struct HomeView: View {
 	@State private var placeholderExampleIndex = 0
 	@State private var placeholderTypedCount = 0
 	@State private var placeholderTimer: Timer? = nil
-	@Environment(ProviderCoordinator.self) var coordinator
+	@Environment(JobSeekerCoordinator.self) var coordinator
 	@Environment(\.notificationsStore) var notificationsStore
 	@Environment(AuthenticationManager.self) var authManager
 
@@ -476,6 +476,6 @@ struct CircularService : View {
 
 #Preview {
 	HomeView()
-		.environment(ProviderCoordinator())
+		.environment(JobSeekerCoordinator())
 		.environment(AuthenticationManager(userCache: UserCache()))
 }

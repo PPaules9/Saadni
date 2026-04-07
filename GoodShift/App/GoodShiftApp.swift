@@ -16,7 +16,7 @@ struct GoodShiftApp: App {
 	
 	@UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 	@State private var container: AppContainer
-	@AppStorage("appLanguage") private var appLanguage = "en"
+	@AppStorage(AppConstants.Storage.appLanguage) private var appLanguage = "en"
 	
 	init() {
 		

@@ -11,7 +11,15 @@ import SwiftUI
 @Observable private final class ConversationNameLoader {
     var name: String = "User"
 
-    func load(otherUserId: String) async {
+    /// Resolves the other participant's display name.
+    /// Checks UserCache first to avoid a Firestore read when the user is already known.
+    func load(otherUserId: String, cache: UserCache) async {
+        // Fast path: user already in cache (e.g. the current user's own profile)
+        if let cached = cache.currentUser, cached.id == otherUserId {
+            name = cached.displayName ?? cached.email
+            return
+        }
+        // Slow path: fetch from Firestore
         if let user = try? await FirestoreService.shared.fetchUser(id: otherUserId) {
             name = user.displayName ?? user.email
         }
@@ -21,6 +29,7 @@ import SwiftUI
 struct ConversationRow: View {
  let conversation: Conversation
  let currentUserId: String
+ @Environment(UserCache.self) var userCache
  @State private var nameLoader = ConversationNameLoader()
  
  var body: some View {
@@ -73,7 +82,7 @@ struct ConversationRow: View {
   .padding(8)
   .task {
    guard let otherUserId = conversation.otherParticipantId(currentUserId: currentUserId) else { return }
-   await nameLoader.load(otherUserId: otherUserId)
+   await nameLoader.load(otherUserId: otherUserId, cache: userCache)
   }
  }
 }

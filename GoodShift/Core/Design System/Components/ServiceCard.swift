@@ -143,9 +143,9 @@ struct ServiceCard: View {
 
  private func navigateToDetail() {
   // Use appropriate coordinator based on context
-  if let coordinator = appCoordinator.providerCoordinator {
+  if let coordinator = appCoordinator.jobSeekerCoordinator {
    coordinator.navigate(to: ServiceProviderDestination.serviceDetail(service))
-  } else if let coordinator = appCoordinator.studentCoordinator {
+  } else if let coordinator = appCoordinator.serviceProviderCoordinator {
    coordinator.navigate(to: ServiceProviderDestination.serviceDetail(service))
   }
  }

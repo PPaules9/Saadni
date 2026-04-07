@@ -12,16 +12,22 @@ struct CreateJobSheet: View {
  @Environment(\.dismiss) var dismiss
  @Environment(AuthenticationManager.self) var authManager
  @Environment(ServicesStore.self) var servicesStore
- @Environment(ProviderCoordinator.self) var coordinator
+ @Environment(JobSeekerCoordinator.self) var coordinator
  @Environment(UserCache.self) var userCache
  @State private var viewModel = CreateJobViewModel()
  @State private var showErrorAlert = false
  @State private var showProfileCompletionPopup = false
  @State private var profileCompletionPercentage = 0
  @State private var showEditProfile = false
- let selectedCategory: String
+ @State private var selectedCategory: String
  let initialJobName: String?
  let initialServiceImageName: String?
+
+ init(selectedCategory: String, initialJobName: String?, initialServiceImageName: String?) {
+  _selectedCategory = State(initialValue: selectedCategory)
+  self.initialJobName = initialJobName
+  self.initialServiceImageName = initialServiceImageName
+ }
  
  var tabNames = ["Basic", "Location", "Pay", "Reqs", "Info"]
  
@@ -71,7 +77,7 @@ struct CreateJobSheet: View {
     Group {
      switch viewModel.currentTab {
      case 0:
-      CreateJobTab1(viewModel: viewModel, selectedCategory: selectedCategory)
+      CreateJobTab1(viewModel: viewModel, selectedCategory: $selectedCategory)
      case 1:
       CreateJobTab2(viewModel: viewModel)
      case 2:
@@ -206,6 +212,11 @@ struct CreateJobSheet: View {
    AnalyticsService.shared.track(.jobCreationStarted(category: selectedCategory))
    if let initialName = initialJobName {
     viewModel.jobName = initialName
+    // Pre-select matching service tag if it matches a known option
+    if let matchedTag = ServiceTagOption(rawValue: initialName) {
+     viewModel.serviceTag = matchedTag.rawValue
+     selectedCategory = matchedTag.derivedCategory.rawValue
+    }
    }
    if viewModel.selectedImage == nil, let imageName = initialServiceImageName {
     viewModel.selectedImage = UIImage(named: imageName)
@@ -231,7 +242,8 @@ struct CreateJobSheet: View {
   if freshUser.providerCompletionPercentage < 100 {
    profileCompletionPercentage = freshUser.providerCompletionPercentage
    viewModel.showSummary = false
-   DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+   Task { @MainActor in
+    try? await Task.sleep(for: .milliseconds(300))
     showProfileCompletionPopup = true
    }
    return
@@ -335,9 +347,9 @@ struct CreateJobSheet: View {
 
  private func navigateToMyJobs() {
   dismiss() // Dismiss sheet first
-
   // Wait for dismissal animation, then navigate
-  DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+  Task { @MainActor in
+   try? await Task.sleep(for: .milliseconds(300))
    coordinator.selectTab(.myJobs)
   }
  }
@@ -379,5 +391,5 @@ struct CreateJobSheet: View {
   .environment(UserCache())
   .environment(AuthenticationManager(userCache: UserCache()))
   .environment(ServicesStore())
-  .environment(ProviderCoordinator())
+  .environment(JobSeekerCoordinator())
 }

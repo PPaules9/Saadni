@@ -115,6 +115,9 @@ struct JobService: Codable, Hashable, Identifiable {
 	/// Shared ID assigned to all shifts created in the same batch. Nil for single-shift jobs.
 	var jobGroupId: String?
 
+	// MARK: - Service Tag (e.g. "Barista", "Cleaning", used for quick category browsing)
+	var serviceTag: String?
+
 	// MARK: - Legacy / Other Fields (Keeping for compatibility if needed)
 	var someoneAround: Bool = false
 	var specialTools: String?
@@ -159,7 +162,8 @@ struct JobService: Codable, Hashable, Identifiable {
 		serviceDate: Date? = nil,
 		estimatedDurationHours: Double? = nil,
 		status: ServiceStatus = .draft,
-		jobGroupId: String? = nil
+		jobGroupId: String? = nil,
+		serviceTag: String? = nil
 	) {
 		self.id = UUID().uuidString
 		self.title = title
@@ -200,8 +204,9 @@ struct JobService: Codable, Hashable, Identifiable {
 		self.applicationCount = 0
 		self.createdAt = Date()
 		self.jobGroupId = jobGroupId
+		self.serviceTag = serviceTag
 	}
-	
+
 	/// Full initializer (for Firebase decoding)
 	init(
 		id: String,
@@ -248,7 +253,8 @@ struct JobService: Codable, Hashable, Identifiable {
 		completionRequestedAt: Date? = nil,
 		completionNote: String? = nil,
 		disputeReason: String? = nil,
-		jobGroupId: String? = nil
+		jobGroupId: String? = nil,
+		serviceTag: String? = nil
 	) {
 		self.id = id
 		self.title = title
@@ -295,6 +301,7 @@ struct JobService: Codable, Hashable, Identifiable {
 		self.completionNote = completionNote
 		self.disputeReason = disputeReason
 		self.jobGroupId = jobGroupId
+		self.serviceTag = serviceTag
 	}
 }
 

@@ -1,8 +1,8 @@
 import SwiftUI
 
 @Observable
-final class StudentCoordinator: Equatable {
-    static func == (lhs: StudentCoordinator, rhs: StudentCoordinator) -> Bool {
+final class ServiceProviderCoordinator: Equatable {
+    static func == (lhs: ServiceProviderCoordinator, rhs: ServiceProviderCoordinator) -> Bool {
         lhs === rhs
     }
     // Tab selection
@@ -14,9 +14,6 @@ final class StudentCoordinator: Equatable {
     var myJobsPath = NavigationPath()
     var profilePath = NavigationPath()
     var searchPath = NavigationPath()
-
-    // Filter state passed from Dashboard to Browse tab
-    var filterDate: Date? = nil
 
     // Sheet state (stack for modal layering)
     var sheetStack: [SheetDestination] = []

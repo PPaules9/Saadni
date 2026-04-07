@@ -70,6 +70,7 @@ class CreateJobViewModel {
 	// MARK: - Metadata
 	var currentUserId: String?
 	var selectedCategoryTags: Set<String> = []
+	var serviceTag: String = ""
 	
 	// MARK: - UI State
 	var currentTab: Int = 0
@@ -92,12 +93,14 @@ class CreateJobViewModel {
 	// MARK: - Validation
 	@ObservationIgnored
 	var isTab1Valid: Bool {
+		!serviceTag.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
 		!jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
 		!selectedDates.isEmpty
 	}
-	
+
 	@ObservationIgnored
 	var tab1ValidationError: String? {
+		if serviceTag.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Please select a service type" }
 		if jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Job Title is required" }
 		if selectedDates.isEmpty { return "Please select at least one shift date" }
 		return nil
@@ -251,7 +254,8 @@ class CreateJobViewModel {
 				serviceDate: finalServiceDate,
 				estimatedDurationHours: estDuration > 0 ? estDuration : 1.0,
 				status: .published,
-				jobGroupId: groupId
+				jobGroupId: groupId,
+				serviceTag: serviceTag.isEmpty ? nil : serviceTag
 			)
 			generatedServices.append(job)
 		}

@@ -31,4 +31,8 @@ public enum SemanticColor {
  case primary
  case primaryDark
 
+ // Interaction colors
+ case selectionHighlight   // tinted bg for selected option rows
+ case successGreen         // accept/positive indicators (tinder swipe, checkmarks)
+
 }

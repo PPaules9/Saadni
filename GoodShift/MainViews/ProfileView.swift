@@ -16,6 +16,8 @@ struct ProfileView: View {
 	// Local UI State
 	@State private var isAnimating: Bool = false
 	@State private var isSwitching: Bool = false
+	@State private var logoutError: String?
+	@State private var showLogoutError: Bool = false
 
 	var body: some View {
 		ZStack {
@@ -41,7 +43,12 @@ struct ProfileView: View {
 					AccountMenuSection(
 						onLogout: {
 							Task {
-								try authManager.signOut()
+								do {
+									try authManager.signOut()
+								} catch {
+									logoutError = error.localizedDescription
+									showLogoutError = true
+								}
 							}
 						}
 					)
@@ -62,6 +69,11 @@ struct ProfileView: View {
 			.scrollIndicators(.hidden)
 		}
 		.navigationTitle("Profile")
+	.alert("Sign Out Failed", isPresented: $showLogoutError) {
+		Button("OK", role: .cancel) { showLogoutError = false }
+	} message: {
+		Text(logoutError ?? "Could not sign out. Please try again.")
+	}
 		.toolbar {
 			ToolbarItem(placement: .topBarTrailing) {
 				Button {

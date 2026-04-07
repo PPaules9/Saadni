@@ -1,14 +1,14 @@
 import SwiftUI
 
 // MARK: - App Coordinator (Root Navigation Hub)
-// Routes between JobSeekerCoordinator and ServiceProviderCoordinator based on user role
+// Routes between JobSeekerCoordinator and ServiceJobSeekerCoordinator based on user role
 // Also handles deep linking and global error presentation
 
 @Observable
 final class AppCoordinator {
     // Child coordinators (one active at a time)
-    var providerCoordinator: ProviderCoordinator?
-    var studentCoordinator: StudentCoordinator?
+    var jobSeekerCoordinator: JobSeekerCoordinator?
+    var serviceProviderCoordinator: ServiceProviderCoordinator?
 
     // Dependencies
     private let authManager: AuthenticationManager
@@ -25,20 +25,20 @@ final class AppCoordinator {
         // Create new coordinator based on role only if it doesn't exist
         // to prevent dropping navigation state when user model updates
         if user.isServiceProvider {
-            if studentCoordinator == nil {
-                studentCoordinator = StudentCoordinator()
-                providerCoordinator = nil
+            if serviceProviderCoordinator == nil {
+                serviceProviderCoordinator = ServiceProviderCoordinator()
+                jobSeekerCoordinator = nil
             }
         } else if user.isJobSeeker {
-            if providerCoordinator == nil {
-                providerCoordinator = ProviderCoordinator()
-                studentCoordinator = nil
+            if jobSeekerCoordinator == nil {
+                jobSeekerCoordinator = JobSeekerCoordinator()
+                serviceProviderCoordinator = nil
             }
         } else {
             // Default fallback
-            if providerCoordinator == nil {
-                providerCoordinator = ProviderCoordinator()
-                studentCoordinator = nil
+            if jobSeekerCoordinator == nil {
+                jobSeekerCoordinator = JobSeekerCoordinator()
+                serviceProviderCoordinator = nil
             }
         }
     }
@@ -53,46 +53,46 @@ final class AppCoordinator {
     // MARK: - Convenience Navigation (cross-role passthrough)
 
     func navigateToChat(conversationId: String) {
-        if let c = providerCoordinator {
+        if let c = jobSeekerCoordinator {
             c.navigate(to: JobSeekerDestination.chatDetail(conversationId: conversationId))
-        } else if let c = studentCoordinator {
+        } else if let c = serviceProviderCoordinator {
             c.navigate(to: ServiceProviderDestination.chatDetail(conversationId: conversationId))
         }
     }
 
     func navigateToServiceDetail(_ service: JobService) {
-        if let c = providerCoordinator {
+        if let c = jobSeekerCoordinator {
             c.navigate(to: JobSeekerDestination.serviceDetail(service))
-        } else if let c = studentCoordinator {
+        } else if let c = serviceProviderCoordinator {
             c.navigate(to: ServiceProviderDestination.serviceDetail(service))
         }
     }
 
     func navigateToPerformance() {
-        if let c = providerCoordinator {
+        if let c = jobSeekerCoordinator {
             c.navigate(to: ServiceProviderDestination.performance)
-        } else if let c = studentCoordinator {
+        } else if let c = serviceProviderCoordinator {
             c.navigate(to: ServiceProviderDestination.performance)
         }
     }
 
     func presentSheet(_ sheet: SheetDestination) {
-        providerCoordinator?.presentSheet(sheet)
-        studentCoordinator?.presentSheet(sheet)
+        jobSeekerCoordinator?.presentSheet(sheet)
+        serviceProviderCoordinator?.presentSheet(sheet)
     }
 
     func dismissSheet() {
-        providerCoordinator?.dismissSheet()
-        studentCoordinator?.dismissSheet()
+        jobSeekerCoordinator?.dismissSheet()
+        serviceProviderCoordinator?.dismissSheet()
     }
 
     // MARK: - Deep Linking
 
     func handleChatDeepLink(conversationId: String, conversationsStore: ConversationsStore) {
         // Determine which coordinator is active
-        if let coordinator = providerCoordinator {
+        if let coordinator = jobSeekerCoordinator {
             coordinator.selectTabAndNavigate(to: .chat, destination: .chatDetail(conversationId: conversationId))
-        } else if let coordinator = studentCoordinator {
+        } else if let coordinator = serviceProviderCoordinator {
             coordinator.selectTabAndNavigate(to: .chat, destination: .chatDetail(conversationId: conversationId))
         }
     }
@@ -100,14 +100,14 @@ final class AppCoordinator {
     // MARK: - Notification Navigation
 
     func handleNotificationNavigation(_ notification: Notification) {
-        if let coordinator = providerCoordinator {
+        if let coordinator = jobSeekerCoordinator {
             handleJobSeekerNavigation(notification, coordinator: coordinator)
-        } else if let coordinator = studentCoordinator {
+        } else if let coordinator = serviceProviderCoordinator {
             handleServiceProviderNavigation(notification, coordinator: coordinator)
         }
     }
 
-    private func handleJobSeekerNavigation(_ notification: Notification, coordinator: ProviderCoordinator) {
+    private func handleJobSeekerNavigation(_ notification: Notification, coordinator: JobSeekerCoordinator) {
         switch notification.type {
         case .newMessageFromProvider:
             if let conversationId = notification.payload?.conversationId {
@@ -126,7 +126,7 @@ final class AppCoordinator {
         }
     }
 
-    private func handleServiceProviderNavigation(_ notification: Notification, coordinator: StudentCoordinator) {
+    private func handleServiceProviderNavigation(_ notification: Notification, coordinator: ServiceProviderCoordinator) {
         switch notification.type {
         case .newMessageFromSeeker:
             if let conversationId = notification.payload?.conversationId {

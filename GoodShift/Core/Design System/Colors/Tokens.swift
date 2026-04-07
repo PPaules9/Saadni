@@ -27,9 +27,14 @@ enum ColorToken {
  case primary
  case primaryDark
  case surfaceWhite
- 
- 
- 
+
+ // Interaction
+ case selectionHighlightLight   // light teal tint for selected options in light mode
+ case selectionHighlightDark    // dark teal for selected options in dark mode
+ case successGreenToken         // positive/accept green
+
+
+
  /// Returns the hex string for this token.
  var hex: String {
   switch self {
@@ -48,6 +53,10 @@ enum ColorToken {
   case .primary:        return "#37857D"
   case .primaryDark:     return "#2A8A47"
   case .surfaceWhite:    return "#FEFEFE"
+
+  case .selectionHighlightLight: return "#D0EBE6"
+  case .selectionHighlightDark:  return "#1E3532"
+  case .successGreenToken:       return "#27AE60"
   }
  }
 }

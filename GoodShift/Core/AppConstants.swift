@@ -18,6 +18,15 @@ enum AppConstants {
         static let name: String = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "GoodShift"
     }
 
+    // MARK: UserDefaults / AppStorage Keys
+    // Always use these constants instead of inline string literals.
+    // A typo in a string key silently reads a nil value; a typo here is a build error.
+    enum Storage {
+        static let appCurrency       = "appCurrency"
+        static let appLanguage       = "appLanguage"
+        static let hasSeenOnboarding = "hasSeenOnboarding"
+    }
+
     // MARK: Firestore Collection Names
     // Always reference collections through these constants — never inline "users", "services", etc.
     // A typo here is a build error; a typo inline is a silent runtime failure.

@@ -77,7 +77,7 @@ enum Currency: String, CaseIterable, Identifiable {
     /// Reads the currently selected currency from UserDefaults.
     /// Use this in non-view contexts (e.g. model computed properties).
     static var current: Currency {
-        let code = UserDefaults.standard.string(forKey: "appCurrency") ?? "EGP"
+        let code = UserDefaults.standard.string(forKey: AppConstants.Storage.appCurrency) ?? "EGP"
         return Currency(rawValue: code) ?? .egp
     }
 }
@@ -87,7 +87,7 @@ enum Currency: String, CaseIterable, Identifiable {
 @Observable
 final class CurrencyService {
     @ObservationIgnored
-    @AppStorage("appCurrency") private var _currencyCode: String = "EGP"
+    @AppStorage(AppConstants.Storage.appCurrency) private var _currencyCode: String = "EGP"
 
     var selectedCurrency: Currency {
         get { Currency(rawValue: _currencyCode) ?? .egp }

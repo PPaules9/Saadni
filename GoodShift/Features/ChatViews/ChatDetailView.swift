@@ -17,6 +17,8 @@ struct ChatDetailView: View {
 	@State private var messageText = ""
 	@State private var isTyping = false
 	@State private var scrollPosition: String?
+	@State private var sendError: String?
+	@State private var showSendError = false
 
 	// Participant name state now lives in the ViewModel — not in the View
 	private var otherParticipantName: String { viewModel.otherUserName }
@@ -52,6 +54,8 @@ struct ChatDetailView: View {
 									.font(.system(size: 18, weight: .semibold))
 									.foregroundStyle(Colors.swiftUIColor(.textMain))
 							}
+							.frame(minWidth: 44, minHeight: 44)
+							.accessibilityLabel("Back")
 						Image(systemName: "person.crop.circle.fill")
 							.resizable()
 							.frame(width: 50, height: 50)
@@ -86,6 +90,7 @@ struct ChatDetailView: View {
 							Image(systemName: "ellipsis")
 								.foregroundStyle(Colors.swiftUIColor(.textMain))
 						}
+						.accessibilityLabel("More options")
 					}
 					.padding(16)
 					
@@ -126,14 +131,8 @@ struct ChatDetailView: View {
 				
 				// Messages List
 				if messagesStore.isLoading {
-					VStack(spacing: 16) {
-						ProgressView()
-							.tint(Colors.swiftUIColor(.primary))
-						Text("Loading messages...")
-							.font(.subheadline)
-							.foregroundStyle(Colors.swiftUIColor(.textSecondary))
-					}
-					.frame(maxWidth: .infinity, maxHeight: .infinity)
+					LoadingStateView(message: "Loading messages...")
+						.frame(maxHeight: .infinity)
 				} else if let error = messagesStore.error {
 					VStack(spacing: 16) {
 						Image(systemName: "exclamationmark.circle")
@@ -263,6 +262,8 @@ struct ChatDetailView: View {
 								.foregroundStyle(messageText.isEmpty ? Colors.swiftUIColor(.textSecondary) : Colors.swiftUIColor(.primary))
 						}
 						.disabled(messageText.trimmingCharacters(in: .whitespaces).isEmpty)
+						.accessibilityLabel("Send message")
+						.frame(minWidth: 44, minHeight: 44)
 					}
 					.padding(.horizontal)
 					.padding(.vertical)
@@ -287,34 +288,25 @@ struct ChatDetailView: View {
 				try? await messagesStore.setTyping(false, in: conversation.id, by: currentUserId)
 			}
 		}
+		.alert("Failed to Send", isPresented: $showSendError) {
+			Button("OK", role: .cancel) { showSendError = false }
+		} message: {
+			Text(sendError ?? "Your message could not be sent. Please try again.")
+		}
 	}
 	
 	// MARK: - Helper Methods
 	
 	private func setupMessagesListener() {
-		print("🔄 [ChatDetail] Setting up message and typing listeners for conversation: \(conversation.id)")
+		// Errors surface reactively via messagesStore.error observed in the view body — no polling needed.
 		messagesStore.setupListener(conversationId: conversation.id)
 		messagesStore.setupTypingListener(conversationId: conversation.id)
-		
-		// Give Firestore a moment to start loading, then log status
-		Task { @MainActor in
-			try? await Task.sleep(for: .milliseconds(500))
-			if let error = messagesStore.error {
-				print("❌ [ChatDetail] Message listener error: \(error)")
-				print("   If this mentions 'Missing or insufficient permissions':")
-				print("   1. Deploy Firestore rules from FIRESTORE_RULES_DEPLOYMENT_GUIDE.txt")
-				print("   2. Wait 2 minutes for rules to propagate")
-				print("   3. Restart the app and try again")
-			} else {
-				print("✅ [ChatDetail] Message listeners setup successfully")
-			}
-		}
 	}
 	
 	private func sendMessage() {
 		let trimmedMessage = messageText.trimmingCharacters(in: .whitespaces)
 		guard !trimmedMessage.isEmpty else { return }
-		
+
 		Task {
 			do {
 				try await messagesStore.sendMessage(
@@ -324,7 +316,7 @@ struct ChatDetailView: View {
 					content: trimmedMessage,
 					participantIds: conversation.participantIds
 				)
-				
+
 				// Update conversation last message
 				try await conversationsStore.updateLastMessage(
 					conversationId: conversation.id,
@@ -332,13 +324,15 @@ struct ChatDetailView: View {
 					timestamp: Date(),
 					senderId: currentUserId
 				)
-				
-				// Clear input
+
+				// Clear input only on success so the user doesn't lose their text
 				messageText = ""
 				isTyping = false
 				try await messagesStore.setTyping(false, in: conversation.id, by: currentUserId)
 			} catch {
-				print("❌ Failed to send message: \(error)")
+				sendError = error.localizedDescription
+				showSendError = true
+				// messageText is intentionally NOT cleared — user can retry
 			}
 		}
 	}
@@ -353,6 +347,12 @@ struct ChatDetailView: View {
 		}
 	}
 	
+	private static let dateDividerFormatter: DateFormatter = {
+		let f = DateFormatter()
+		f.dateFormat = "d MMMM"
+		return f
+	}()
+
 	private func formatDateDivider(_ date: Date) -> String {
 		let calendar = Calendar.current
 		if calendar.isDateInToday(date) {
@@ -360,9 +360,7 @@ struct ChatDetailView: View {
 		} else if calendar.isDateInYesterday(date) {
 			return "Yesterday"
 		} else {
-			let formatter = DateFormatter()
-			formatter.dateFormat = "d MMMM"
-			return formatter.string(from: date)
+			return ChatDetailView.dateDividerFormatter.string(from: date)
 		}
 	}
 }

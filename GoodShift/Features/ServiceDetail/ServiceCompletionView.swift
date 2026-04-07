@@ -164,6 +164,11 @@ struct ServiceCompletionView: View {
                 serviceName: service.title
             )
 
+            AnalyticsService.shared.track(.jobCompleted(
+                jobId: service.id,
+                category: service.category?.rawValue ?? "",
+                price: service.price
+            ))
             dismiss()
         } catch {
             errorMessage = "Failed to complete service: \(error.localizedDescription)"

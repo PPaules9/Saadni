@@ -4,10 +4,16 @@
     "" : {
 
     },
+    "·" : {
+
+    },
     "(%lld)" : {
 
     },
     "*" : {
+
+    },
+    "*Industry estimate, MENA gig workforce" : {
 
     },
     "/ 5" : {
@@ -71,12 +77,25 @@
         }
       }
     },
+    "%lf EGP" : {
+
+    },
     "%lld" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
+          }
+        }
+      }
+    },
+    "%lld / %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld / %2$lld"
           }
         }
       }
@@ -90,6 +109,9 @@
           }
         }
       }
+    },
+    "%lld EGP" : {
+
     },
     "%lld shift(s) successfully published." : {
       "localizations" : {
@@ -127,10 +149,16 @@
     "%lld%%" : {
 
     },
+    "%lldh" : {
+
+    },
     "•" : {
 
     },
     "👤" : {
+
+    },
+    "👥  3 applicants already matched" : {
 
     },
     "🖼️" : {
@@ -147,7 +175,19 @@
         }
       }
     },
+    "49 EGP / month" : {
+
+    },
+    "78%" : {
+
+    },
     "99+" : {
+
+    },
+    "250 EGP · 6h" : {
+
+    },
+    "299 EGP / month" : {
 
     },
     "About" : {
@@ -282,6 +322,7 @@
       }
     },
     "All" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -300,6 +341,9 @@
           }
         }
       }
+    },
+    "All Services" : {
+
     },
     "Already Applied" : {
       "localizations" : {
@@ -320,6 +364,9 @@
           }
         }
       }
+    },
+    "Already have an account?" : {
+
     },
     "Already have an account? " : {
       "localizations" : {
@@ -414,6 +461,9 @@
           }
         }
       }
+    },
+    "Apply" : {
+
     },
     "Apply Changes to All Shifts" : {
 
@@ -533,6 +583,9 @@
         }
       }
     },
+    "Back" : {
+
+    },
     "Barista" : {
       "localizations" : {
         "ar" : {
@@ -542,6 +595,12 @@
           }
         }
       }
+    },
+    "Barista · CFC Branch" : {
+
+    },
+    "Barista Shift — Evening Rush" : {
+
     },
     "Beach Baby Setting" : {
       "localizations" : {
@@ -626,6 +685,7 @@
       }
     },
     "Browse Jobs...." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1031,6 +1091,9 @@
         }
       }
     },
+    "Could Not Load Jobs" : {
+
+    },
     "Could not load names" : {
       "localizations" : {
         "ar" : {
@@ -1301,6 +1364,9 @@
         }
       }
     },
+    "Don't have an account?" : {
+
+    },
     "Don't have an account? " : {
       "localizations" : {
         "ar" : {
@@ -1467,6 +1533,7 @@
       }
     },
     "Empowering Students" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1527,6 +1594,7 @@
       }
     },
     "Everyone deserves access to quality assistance. Get expert help for a simple, low, and fixed price with no hidden fees or complications." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1535,6 +1603,9 @@
           }
         }
       }
+    },
+    "Everything you need to staff your business, at scale." : {
+
     },
     "Failed to load messages" : {
       "localizations" : {
@@ -1555,6 +1626,9 @@
           }
         }
       }
+    },
+    "Failed to Send" : {
+
     },
     "Female" : {
       "localizations" : {
@@ -1588,6 +1662,7 @@
       }
     },
     "Filtered by Date: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1596,6 +1671,9 @@
           }
         }
       }
+    },
+    "Find work that fits your life, or find the right people for the job — in minutes." : {
+
     },
     "Find your next Job" : {
       "extractionState" : "stale",
@@ -1728,7 +1806,11 @@
         }
       }
     },
+    "Get hired faster with\nGoodShift Featured" : {
+
+    },
     "Get the academic support you need, exactly when you need it. Connect with peers and mentors to excel in your studies quickly and easily." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1747,6 +1829,9 @@
           }
         }
       }
+    },
+    "GoodShift Pro —\nhire without limits" : {
+
     },
     "Gym Floor Assistant" : {
       "localizations" : {
@@ -1799,6 +1884,7 @@
       }
     },
     "Help at a Fixed Low Price" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1817,6 +1903,9 @@
           }
         }
       }
+    },
+    "Here's what you saved:" : {
+
     },
     "Hi, %@" : {
       "extractionState" : "stale",
@@ -1900,6 +1989,9 @@
           }
         }
       }
+    },
+    "I relate" : {
+
     },
     "I represent a company" : {
       "localizations" : {
@@ -2122,7 +2214,11 @@
         }
       }
     },
+    "Live" : {
+
+    },
     "Loading applicants..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2153,6 +2249,7 @@
       }
     },
     "Loading messages..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2193,6 +2290,7 @@
       }
     },
     "Loading your jobs..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2362,6 +2460,9 @@
         }
       }
     },
+    "Maybe later" : {
+
+    },
     "Maybe Later" : {
       "localizations" : {
         "ar" : {
@@ -2392,6 +2493,9 @@
           }
         }
       }
+    },
+    "More options" : {
+
     },
     "Moving" : {
       "localizations" : {
@@ -2558,6 +2662,7 @@
       }
     },
     "No Jobs Found" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2617,6 +2722,9 @@
         }
       }
     },
+    "No results for \"%@\"" : {
+
+    },
     "No Reviews Yet" : {
       "localizations" : {
         "ar" : {
@@ -2636,6 +2744,9 @@
           }
         }
       }
+    },
+    "No shifts this week" : {
+
     },
     "No Sort" : {
       "localizations" : {
@@ -2657,6 +2768,12 @@
         }
       }
     },
+    "Not me" : {
+
+    },
+    "Not now" : {
+
+    },
     "Notifications" : {
       "localizations" : {
         "ar" : {
@@ -2666,6 +2783,12 @@
           }
         }
       }
+    },
+    "Notifications, %lld unread" : {
+
+    },
+    "of businesses struggle to fill\nshort shifts reliably.*" : {
+
     },
     "Office Cleaning Shift" : {
       "localizations" : {
@@ -2827,6 +2950,9 @@
           }
         }
       }
+    },
+    "Pick a Date" : {
+
     },
     "Pick from calendar" : {
       "extractionState" : "stale",
@@ -3061,6 +3187,7 @@
       }
     },
     "Respect everyone and provide genuine help. Our community thrives on trust, kindness, and mutual support." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3079,6 +3206,9 @@
           }
         }
       }
+    },
+    "Restore purchases" : {
+
     },
     "Retail Sales Associate" : {
       "localizations" : {
@@ -3225,6 +3355,9 @@
         }
       }
     },
+    "Save your shifts —\ncreate your free account" : {
+
+    },
     "Saving job details..." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3245,6 +3378,9 @@
           }
         }
       }
+    },
+    "Search services..." : {
+
     },
     "Security" : {
       "localizations" : {
@@ -3326,6 +3462,9 @@
         }
       }
     },
+    "Select Service Type" : {
+
+    },
     "Select Shift Date" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3348,6 +3487,9 @@
         }
       }
     },
+    "Send message" : {
+
+    },
     "Service" : {
       "localizations" : {
         "ar" : {
@@ -3359,6 +3501,7 @@
       }
     },
     "Service Category" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3377,6 +3520,9 @@
           }
         }
       }
+    },
+    "Service Type" : {
+
     },
     "Service: %@" : {
       "localizations" : {
@@ -3397,6 +3543,9 @@
           }
         }
       }
+    },
+    "Share with a friend" : {
+
     },
     "Shift Details" : {
       "localizations" : {
@@ -3458,6 +3607,9 @@
         }
       }
     },
+    "Sign Out Failed" : {
+
+    },
     "Sign Up" : {
       "localizations" : {
         "ar" : {
@@ -3508,6 +3660,9 @@
         }
       }
     },
+    "Stand out from other applicants and get to the top of every employer's list." : {
+
+    },
     "Start" : {
       "localizations" : {
         "ar" : {
@@ -3537,6 +3692,9 @@
           }
         }
       }
+    },
+    "Start posting shifts —\nit's free" : {
+
     },
     "Start the conversation" : {
       "localizations" : {
@@ -3745,6 +3903,9 @@
         }
       }
     },
+    "This Week" : {
+
+    },
     "This will overwrite the title, pay, location, requirements, and description on every shift in this job." : {
 
     },
@@ -3819,6 +3980,9 @@
         }
       }
     },
+    "Total potential earnings" : {
+
+    },
     "Trusted Provider" : {
       "localizations" : {
         "ar" : {
@@ -3830,6 +3994,7 @@
       }
     },
     "Try adjusting your filters" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3838,6 +4003,12 @@
           }
         }
       }
+    },
+    "Try free for 7 days — cancel anytime" : {
+
+    },
+    "Try free for 14 days — cancel anytime" : {
+
     },
     "TV Mounting" : {
       "localizations" : {
@@ -3850,6 +4021,7 @@
       }
     },
     "Two Simple Rules" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3996,6 +4168,9 @@
         }
       }
     },
+    "We'll set things up for you." : {
+
+    },
     "Welcome back" : {
       "localizations" : {
         "ar" : {
@@ -4005,6 +4180,9 @@
           }
         }
       }
+    },
+    "What brings you\nto GoodShift?" : {
+
     },
     "What brings you here?" : {
       "localizations" : {
@@ -4075,6 +4253,9 @@
           }
         }
       }
+    },
+    "Without" : {
+
     },
     "Work on a Shift" : {
       "localizations" : {
@@ -4187,6 +4368,9 @@
         }
       }
     },
+    "Your Business" : {
+
+    },
     "Your Company Information" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4208,6 +4392,9 @@
         }
       }
     },
+    "Your first shift is one tap away." : {
+
+    },
     "Your job location will be here" : {
       "localizations" : {
         "ar" : {
@@ -4218,6 +4405,9 @@
         }
       }
     },
+    "Your next shift\nstarts here." : {
+
+    },
     "Your Review (Optional)" : {
       "localizations" : {
         "ar" : {
@@ -4227,6 +4417,12 @@
           }
         }
       }
+    },
+    "Your shift list is ready!" : {
+
+    },
+    "Your shift list is waiting for you." : {
+
     },
     "Your Wallet" : {
       "extractionState" : "stale",

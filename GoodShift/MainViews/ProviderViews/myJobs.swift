@@ -12,10 +12,18 @@ import SwiftUI
     var users: [String: User] = [:]
 
     func load(applications: [JobApplication]) async {
-        for application in applications {
-            guard users[application.applicantId] == nil else { continue }
-            if let user = try? await FirestoreService.shared.fetchUser(id: application.applicantId) {
-                users[application.applicantId] = user
+        // Fetch all unknown users concurrently instead of serially
+        await withTaskGroup(of: (String, User?).self) { group in
+            for application in applications {
+                guard users[application.applicantId] == nil else { continue }
+                let applicantId = application.applicantId
+                group.addTask {
+                    let user = try? await FirestoreService.shared.fetchUser(id: applicantId)
+                    return (applicantId, user)
+                }
+            }
+            for await (id, user) in group {
+                if let user { users[id] = user }
             }
         }
     }
@@ -41,11 +49,13 @@ struct MyJobsView: View {
     private var applicantUsers: [String: User] { applicantCache.users }
     @State private var isLoading: Bool = true
     @State private var filterOption: ServiceFilterOption = .active
-    @Environment(ProviderCoordinator.self) var coordinator
+    @Environment(JobSeekerCoordinator.self) var coordinator
     @State private var selectedCalendarDate: Date = Date()
     @State private var selectedCompletionService: JobService?
     @State private var actionError: String?
     @State private var showActionError = false
+    @State private var loadError: String?
+    @State private var showLoadError = false
     @State private var expandedGroups: Set<String> = []
 
     var pendingCompletionServices: [JobService] {
@@ -141,6 +151,12 @@ struct MyJobsView: View {
         } message: {
             Text(actionError ?? "An error occurred")
         }
+        .alert("Could Not Load Jobs", isPresented: $showLoadError) {
+            Button("Retry") { Task { await loadData() } }
+            Button("Dismiss", role: .cancel) { showLoadError = false }
+        } message: {
+            Text(loadError ?? "Please check your connection and try again.")
+        }
         .task {
             await loadData()
         }
@@ -154,15 +170,7 @@ struct MyJobsView: View {
     var myJobsContent: some View {
         ScrollView {
             if isLoading {
-                VStack(spacing: 12) {
-                    ProgressView()
-                        .tint(.accent)
-                    Text("Loading your jobs...")
-                        .font(.subheadline)
-                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.top, 100)
+                LoadingStateView(message: "Loading your jobs...")
             } else if filteredServices.isEmpty {
                 ContentUnavailableView(
                     emptyStateTitle,
@@ -215,15 +223,7 @@ struct MyJobsView: View {
     var applicantsContent: some View {
         ScrollView {
             if isLoading {
-                VStack(spacing: 12) {
-                    ProgressView()
-                        .tint(.accent)
-                    Text("Loading applicants...")
-                        .font(.subheadline)
-                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.top, 100)
+                LoadingStateView(message: "Loading applicants...")
             } else if receivedApplications.isEmpty {
                 ContentUnavailableView(
                     "No Applicants Yet",
@@ -332,15 +332,19 @@ struct MyJobsView: View {
 
     private func loadData() async {
         isLoading = true
-        await loadServices()
-        await loadReceivedApplications()
+        loadError = nil
+        do {
+            try await loadServices()
+            await loadReceivedApplications()
+        } catch {
+            loadError = error.localizedDescription
+            showLoadError = true
+        }
         isLoading = false
     }
 
-    private func loadServices() async {
-        guard let userId = authManager.currentUserId else {
-            return
-        }
+    private func loadServices() async throws {
+        guard let userId = authManager.currentUserId else { return }
         userServices = await servicesStore.fetchUserServices(userId: userId)
     }
 

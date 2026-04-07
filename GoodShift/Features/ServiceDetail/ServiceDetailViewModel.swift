@@ -35,7 +35,8 @@ final class ServiceDetailViewModel {
         by applicantId: String,
         applicantName: String,
         applicantPhotoURL: String?,
-        message: String = ""
+        message: String = "",
+        category: String = ""
     ) async {
         guard let applicationsStore = applicationsStore else {
             applicationError = "Applications service unavailable"
@@ -54,7 +55,7 @@ final class ServiceDetailViewModel {
                 applicantPhotoURL: applicantPhotoURL,
                 coverMessage: message
             )
-            AnalyticsService.shared.track(.jobApplied(jobId: serviceId, category: ""))
+            AnalyticsService.shared.track(.jobApplied(jobId: serviceId, category: category))
             showApplicationSuccess = true
             isSubmittingApplication = false
         } catch {
@@ -71,7 +72,8 @@ final class ServiceDetailViewModel {
         serviceId: String,
         providerId: String,
         serviceName: String,
-        servicePrice: Double
+        servicePrice: Double,
+        category: String = ""
     ) async {
         guard let servicesStore = servicesStore,
               let walletStore = walletStore else {
@@ -94,7 +96,7 @@ final class ServiceDetailViewModel {
                 serviceName: serviceName
             )
 
-            AnalyticsService.shared.track(.jobCompleted(jobId: serviceId, category: "", price: servicePrice))
+            AnalyticsService.shared.track(.jobCompleted(jobId: serviceId, category: category, price: servicePrice))
             showCompletionSuccess = true
             isMarkingComplete = false
         } catch {
