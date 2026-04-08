@@ -21,7 +21,7 @@
 
 /* Begin PBXFileReference section */
 		2264A02C2F4C6C110004B2B4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		22CAEB7F2F84EAB2003524DE /* GoodShift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoodShift.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		22CAEB7F2F84EAB2003524DE /* GoodShift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = GoodShift.app; path = "/Users/pavlypaules/Downloads/important Folder/GoodShift/build/Debug-iphoneos/GoodShift.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -71,7 +71,6 @@
 			children = (
 				2264A02C2F4C6C110004B2B4 /* README.md */,
 				22CAEC7F2F8575B8003524DE /* GoodShift */,
-				22CAEB7F2F84EAB2003524DE /* GoodShift.app */,
 			);
 			sourceTree = "<group>";
 		};

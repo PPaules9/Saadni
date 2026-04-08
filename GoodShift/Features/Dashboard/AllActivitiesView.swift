@@ -8,13 +8,15 @@ import SwiftUI
 struct AllActivitiesView: View {
     @Environment(ServicesStore.self) var servicesStore
     @Environment(ApplicationsStore.self) var applicationsStore
-    @Environment(DashboardViewModel.self) var dashboardVM
 
     private var activities: [ServiceActivity] {
-        dashboardVM.recentActivities(
-            applications: applicationsStore.myApplications,
-            services: servicesStore.services
-        )
+        let sorted = applicationsStore.myApplications.sorted { $0.appliedAt > $1.appliedAt }
+        return sorted.compactMap { application -> ServiceActivity? in
+            guard let service = servicesStore.services.first(where: { $0.id == application.serviceId }) else {
+                return nil
+            }
+            return ServiceActivity(application: application, service: service)
+        }
     }
 
     var body: some View {
