@@ -8,7 +8,7 @@
 import SwiftUI
 
 // MARK: - State Holder (keeps FirestoreService out of the View)
-@Observable private final class UserProfileLoader {
+@Observable final class UserProfileLoader {
     var user: User?
     var isLoading = true
     var error: String?

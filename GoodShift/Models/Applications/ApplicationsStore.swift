@@ -58,10 +58,20 @@ class ApplicationsStore: ListenerManaging {
 
  // MARK: - Setup Listeners
 
+ /// Guards against concurrent calls to setupListeners (e.g. two rapid logins).
+ @ObservationIgnored private var isSettingUp = false
+
  /// Sets up real-time listeners for user applications (submitted and received)
  /// - Parameter userId: The user ID to listen for applications
  /// - Throws: Firestore errors during listener setup
  func setupListeners(userId: String) async throws {
+  guard !isSettingUp else {
+   print("⚠️ [ApplicationsStore] Setup already in progress — skipping duplicate call")
+   return
+  }
+  isSettingUp = true
+  defer { isSettingUp = false }
+
   removeAllListeners()
 
   currentUserId = userId
@@ -268,15 +278,48 @@ class ApplicationsStore: ListenerManaging {
   print("✅ Rejected \(pendingApplications.count) other applications for service: \(serviceId)")
  }
 
+ // MARK: - Lock Payment (Provider pays upfront)
+
+ /// Marks the shift as paid and locks the amount in GoodShift escrow.
+ /// TODO: Replace with real payment gateway deduction when integrated.
+ func lockPayment(serviceId: String, amount: Double) async throws {
+  try await db.collection("services").document(serviceId).updateData([
+   "isPaid": true,
+   "lockedAmount": amount
+  ])
+  print("✅ Payment locked for service: \(serviceId) — amount: \(amount)")
+ }
+
+ // MARK: - Arrival Confirmation
+
+ /// Worker confirms they have arrived at the job site
+ func confirmWorkerArrival(serviceId: String) async throws {
+  try await db.collection("services").document(serviceId).updateData([
+   "workerConfirmedArrival": true
+  ])
+  print("✅ Worker confirmed arrival for service: \(serviceId)")
+ }
+
+ /// Provider confirms they see the worker on-site
+ func confirmWorkerPresence(serviceId: String) async throws {
+  try await db.collection("services").document(serviceId).updateData([
+   "providerConfirmedWorkerArrival": true
+  ])
+  print("✅ Provider confirmed worker presence for service: \(serviceId)")
+ }
+
  // MARK: - Request Completion (Student marks job as done)
 
- func requestCompletion(serviceId: String, note: String? = nil) async throws {
+ func requestCompletion(serviceId: String, note: String? = nil, photoURL: String? = nil) async throws {
   var updateData: [String: Any] = [
    "status": ServiceStatus.pendingCompletion.rawValue,
    "completionRequestedAt": Timestamp(date: Date())
   ]
   if let note = note, !note.isEmpty {
    updateData["completionNote"] = note
+  }
+  if let photoURL = photoURL {
+   updateData["completionPhotoURL"] = photoURL
   }
   try await db.collection("services").document(serviceId).updateData(updateData)
   print("✅ Completion requested for service: \(serviceId)")
@@ -358,6 +401,85 @@ class ApplicationsStore: ListenerManaging {
   // Filter out withdrawn applications
   let active = myApplications.filter { $0.status != .withdrawn }
   return active.sorted { $0.appliedAt > $1.appliedAt }
+ }
+
+ // MARK: - Report Worker No-Show
+
+ /// Called by provider when the hired worker fails to show up.
+ /// Effects:
+ ///   1. Adds a strike to the worker (bans at 3)
+ ///   2. Sets a pending strike notification on the worker
+ ///   3. Refunds the locked amount to provider's wallet
+ ///   4. Gives the provider +1 boost credit
+ ///   5. Re-publishes the service so provider can rehire
+ func reportWorkerNoShow(
+  serviceId: String,
+  workerId: String,
+  providerId: String,
+  lockedAmount: Double,
+  serviceTitle: String
+ ) async throws {
+  let batch = db.batch()
+
+  // 1. Add strike to worker + set pending notification
+  let workerRef = db.collection("users").document(workerId)
+  batch.updateData([
+   "strikes": FieldValue.increment(Int64(1)),
+   "pendingStrikeNotification": true,
+   "lastNoShowServiceTitle": serviceTitle
+  ], forDocument: workerRef)
+
+  // 2. Give provider a boost credit
+  let providerRef = db.collection("users").document(providerId)
+  batch.updateData([
+   "boostCredits": FieldValue.increment(Int64(1))
+  ], forDocument: providerRef)
+
+  // 3. Re-publish the service (clear hire data + payment lock so provider pays again for a new hire)
+  let serviceRef = db.collection("services").document(serviceId)
+  batch.updateData([
+   "status": ServiceStatus.published.rawValue,
+   "hiredApplicantId": NSNull(),
+   "isPaid": false,
+   "lockedAmount": NSNull(),
+   "workerConfirmedArrival": false,
+   "providerConfirmedWorkerArrival": false
+  ], forDocument: serviceRef)
+
+  try await batch.commit()
+  print("✅ Worker no-show reported — worker: \(workerId), service re-published: \(serviceId)")
+
+  // 4. Refund locked amount to provider wallet (separate from batch — uses existing wallet logic)
+  if lockedAmount > 0 {
+   let refundTx = Transaction(
+    userId: providerId,
+    amount: lockedAmount,
+    type: .topUp,
+    description: "Refund: worker no-show — \(serviceTitle)",
+    serviceId: serviceId,
+    serviceName: serviceTitle
+   )
+   try await db.batch().commit() // flush
+   let txBatch = db.batch()
+   let txRef = db.collection("transactions").document(refundTx.id)
+   txBatch.setData(refundTx.toFirestore(), forDocument: txRef)
+   txBatch.updateData(["walletBalance": FieldValue.increment(lockedAmount)], forDocument: providerRef)
+   try await txBatch.commit()
+   print("✅ Refund of \(lockedAmount) sent to provider: \(providerId)")
+  }
+
+  // 5. Reject the no-show worker's application
+  if let application = receivedApplications.first(where: { $0.serviceId == serviceId && $0.applicantId == workerId }) {
+   try await updateApplicationStatus(applicationId: application.id, newStatus: .rejected, responseMessage: "No-show reported by provider")
+  }
+ }
+
+ // MARK: - Dismiss Strike Notification (Worker)
+
+ func dismissStrikeNotification(userId: String) async throws {
+  try await db.collection("users").document(userId).updateData([
+   "pendingStrikeNotification": false
+  ])
  }
 
  // MARK: - Retry Logic

@@ -74,8 +74,27 @@ struct JobService: Codable, Hashable, Identifiable {
 	/// Optional note from student when submitting completion
 	var completionNote: String?
 
+	/// Proof-of-completion photo URL uploaded by worker
+	var completionPhotoURL: String?
+
 	/// Reason provided by provider when disputing completion
 	var disputeReason: String?
+
+	// MARK: - Payment / Escrow Fields
+
+	/// Whether the provider has paid upfront for this shift
+	var isPaid: Bool = false
+
+	/// Amount locked in GoodShift escrow (mirrors price at time of payment)
+	var lockedAmount: Double?
+
+	// MARK: - Arrival Confirmation Fields
+
+	/// Worker tapped "I've Arrived" at the job site
+	var workerConfirmedArrival: Bool = false
+
+	/// Provider tapped "Confirm Worker Arrived"
+	var providerConfirmedWorkerArrival: Bool = false
 	
 	// MARK: - Location Details
 	
@@ -252,7 +271,12 @@ struct JobService: Codable, Hashable, Identifiable {
 		isArchived: Bool = false,
 		completionRequestedAt: Date? = nil,
 		completionNote: String? = nil,
+		completionPhotoURL: String? = nil,
 		disputeReason: String? = nil,
+		isPaid: Bool = false,
+		lockedAmount: Double? = nil,
+		workerConfirmedArrival: Bool = false,
+		providerConfirmedWorkerArrival: Bool = false,
 		jobGroupId: String? = nil,
 		serviceTag: String? = nil
 	) {
@@ -299,7 +323,12 @@ struct JobService: Codable, Hashable, Identifiable {
 		self.isArchived = isArchived
 		self.completionRequestedAt = completionRequestedAt
 		self.completionNote = completionNote
+		self.completionPhotoURL = completionPhotoURL
 		self.disputeReason = disputeReason
+		self.isPaid = isPaid
+		self.lockedAmount = lockedAmount
+		self.workerConfirmedArrival = workerConfirmedArrival
+		self.providerConfirmedWorkerArrival = providerConfirmedWorkerArrival
 		self.jobGroupId = jobGroupId
 		self.serviceTag = serviceTag
 	}
@@ -373,6 +402,11 @@ extension JobService {
 	/// Check if service is currently active with someone hired
 	var isActive: Bool {
 		return status == .active && hiredApplicantId != nil
+	}
+
+	/// Both parties have confirmed the worker is on-site
+	var bothConfirmedArrival: Bool {
+		return workerConfirmedArrival && providerConfirmedWorkerArrival
 	}
 	
 	/// Formatted completion date for display

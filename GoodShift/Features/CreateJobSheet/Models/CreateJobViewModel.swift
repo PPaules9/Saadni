@@ -71,7 +71,14 @@ class CreateJobViewModel {
 	var currentUserId: String?
 	var selectedCategoryTags: Set<String> = []
 	var serviceTag: String = ""
-	
+
+	// MARK: - Edit Mode
+	var isEditMode: Bool = false
+	var editingServiceId: String? = nil
+	var editingGroupId: String? = nil
+	/// Original image kept so we don't re-upload if user doesn't change it
+	var editingOriginalImage: ServiceImage? = nil
+
 	// MARK: - UI State
 	var currentTab: Int = 0
 	var showValidationError: Bool = false
@@ -95,14 +102,14 @@ class CreateJobViewModel {
 	var isTab1Valid: Bool {
 		!serviceTag.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
 		!jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-		!selectedDates.isEmpty
+		(isEditMode || !selectedDates.isEmpty)
 	}
 
 	@ObservationIgnored
 	var tab1ValidationError: String? {
 		if serviceTag.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Please select a service type" }
 		if jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return "Job Title is required" }
-		if selectedDates.isEmpty { return "Please select at least one shift date" }
+		if !isEditMode && selectedDates.isEmpty { return "Please select at least one shift date" }
 		return nil
 	}
 	
@@ -302,6 +309,42 @@ class CreateJobViewModel {
 		try? await FirestoreService.shared.saveUser(updatedUser)
 		await cache.updateUser(updatedUser)
 		return true
+	}
+
+	// MARK: - Edit Mode Pre-fill
+	func prefill(from service: JobService, groupId: String? = nil) {
+		isEditMode = true
+		editingServiceId = service.id
+		editingGroupId = groupId
+		editingOriginalImage = service.image
+
+		jobName = service.title
+		price = String(Int(service.price))
+		address = service.address
+		city = service.location.name
+		branchName = service.branchName ?? ""
+		nearestLandmark = service.nearestLandmark ?? ""
+		paymentMethod = service.paymentMethod ?? "Cash"
+		paymentTiming = service.paymentTiming ?? "Same Day"
+		dressCode = service.dressCode ?? ""
+		minimumAge = service.minimumAge ?? ""
+		genderPreference = service.genderPreference ?? "Any"
+		physicalRequirements = service.physicalRequirements ?? ""
+		languageNeeded = service.languageNeeded ?? ""
+		whatToBring = service.whatToBring ?? ""
+		otherDetails = service.description
+		breakDuration = service.breakDuration ?? ""
+		serviceTag = service.serviceTag ?? ""
+
+		// Derive start/end times from serviceDate + estimatedDurationHours
+		if let date = service.serviceDate {
+			startTime = date
+			if let hours = service.estimatedDurationHours {
+				endTime = date.addingTimeInterval(hours * 3600)
+			} else {
+				endTime = date.addingTimeInterval(8 * 3600)
+			}
+		}
 	}
 
 	// MARK: - Address Auto-fill

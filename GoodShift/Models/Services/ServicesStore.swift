@@ -225,9 +225,18 @@ class ServicesStore: ListenerManaging {
  }
  
  // MARK: - Delete Service
- 
+
  func removeService(id: String) async throws {
   try await FirestoreService.shared.deleteService(id: id)
+ }
+
+ /// Deletes every shift that shares the given jobGroupId.
+ func bulkDeleteGroup(groupId: String, providerId: String) async throws {
+  let siblings = try await fetchServicesByGroupId(groupId, providerId: providerId)
+  for sibling in siblings {
+   try await FirestoreService.shared.deleteService(id: sibling.id)
+  }
+  print("✅ Bulk deleted \(siblings.count) shifts in group \(groupId)")
  }
  
  // MARK: - Fetch User's Services (for My Jobs view)
@@ -414,45 +423,68 @@ class ServicesStore: ListenerManaging {
 
  /// Updates the shared fields on every shift in a group.
  /// Per-shift fields (serviceDate, status, hiredApplicantId, applicationCount, id) are preserved.
+ ///
+ /// Uses `updateData` (not `setData`) so only the listed fields are touched — Firestore
+ /// merges them into the existing document without overwriting status, applicants, or any
+ /// per-shift field that wasn't included in this dictionary.
  func bulkUpdateSharedFields(groupId: String, from updated: JobService) async throws {
   let siblings = try await fetchServicesByGroupId(groupId, providerId: updated.providerId)
   let batch = db.batch()
 
-  for sibling in siblings {
-   var patched = sibling
-   patched.title = updated.title
-   patched.price = updated.price
-   patched.location = updated.location
-   patched.description = updated.description
-   patched.image = updated.image
-   patched.address = updated.address
-   patched.floor = updated.floor
-   patched.unit = updated.unit
-   patched.branchName = updated.branchName
-   patched.nearestLandmark = updated.nearestLandmark
-   patched.breakDuration = updated.breakDuration
-   patched.paymentMethod = updated.paymentMethod
-   patched.paymentTiming = updated.paymentTiming
-   patched.dressCode = updated.dressCode
-   patched.minimumAge = updated.minimumAge
-   patched.genderPreference = updated.genderPreference
-   patched.physicalRequirements = updated.physicalRequirements
-   patched.languageNeeded = updated.languageNeeded
-   patched.whatToBring = updated.whatToBring
-   patched.companyName = updated.companyName
-   patched.companyLogoURL = updated.companyLogoURL
-   patched.industryCategory = updated.industryCategory
-   patched.contactPersonName = updated.contactPersonName
-   patched.contactPersonPhone = updated.contactPersonPhone
-   patched.someoneAround = updated.someoneAround
-   patched.specialTools = updated.specialTools
+  // Build a dictionary of only the fields that are intentionally shared across shifts.
+  // Per-shift fields (serviceDate, status, hiredApplicantId, applicationCount, id)
+  // are intentionally excluded — they must not be overwritten.
+  let sharedFields: [String: Any] = [
+   "title": updated.title,
+   "price": updated.price,
+   "description": updated.description,
+   "image": ["localId": updated.image.localId as Any, "remoteURL": updated.image.remoteURL as Any],
+   "address": updated.address,
+   "floor": updated.floor,
+   "unit": updated.unit,
+   "branchName": updated.branchName ?? NSNull(),
+   "nearestLandmark": updated.nearestLandmark ?? NSNull(),
+   "breakDuration": updated.breakDuration ?? NSNull(),
+   "paymentMethod": updated.paymentMethod ?? NSNull(),
+   "paymentTiming": updated.paymentTiming ?? NSNull(),
+   "dressCode": updated.dressCode ?? NSNull(),
+   "minimumAge": updated.minimumAge ?? NSNull(),
+   "genderPreference": updated.genderPreference ?? NSNull(),
+   "physicalRequirements": updated.physicalRequirements ?? NSNull(),
+   "languageNeeded": updated.languageNeeded ?? NSNull(),
+   "whatToBring": updated.whatToBring ?? NSNull(),
+   "companyName": updated.companyName ?? NSNull(),
+   "companyLogoURL": updated.companyLogoURL ?? NSNull(),
+   "industryCategory": updated.industryCategory ?? NSNull(),
+   "contactPersonName": updated.contactPersonName ?? NSNull(),
+   "contactPersonPhone": updated.contactPersonPhone ?? NSNull(),
+   "someoneAround": updated.someoneAround,
+   "specialTools": updated.specialTools ?? NSNull(),
+   "location": updated.location
+  ]
 
+  for sibling in siblings {
    let ref = db.collection("services").document(sibling.id)
-   batch.setData(patched.toFirestore(), forDocument: ref)
+   batch.updateData(sharedFields, forDocument: ref)
   }
 
   try await batch.commit()
   print("✅ Bulk updated \(siblings.count) shifts in group \(groupId)")
+ }
+
+ /// Deletes Firebase Storage files for any image URLs that were removed from a service.
+ /// Call this when updating a service's imageURLs to avoid accumulating orphaned Storage files.
+ func deleteOrphanedImages(oldURLs: [String], newURLs: [String]) async {
+  let removed = Set(oldURLs).subtracting(Set(newURLs))
+  guard !removed.isEmpty else { return }
+  for url in removed {
+   do {
+    try await StorageService.shared.deleteServiceImage(url: url)
+    print("🗑️ Deleted orphaned image: \(url)")
+   } catch {
+    print("⚠️ Failed to delete orphaned image \(url): \(error)")
+   }
+  }
  }
 
  // MARK: - Retry Logic

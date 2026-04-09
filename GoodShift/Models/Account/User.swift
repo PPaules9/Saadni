@@ -55,6 +55,14 @@ struct User: Codable, Identifiable, Hashable {
     var verificationLevel: VerificationLevel = .unverified
     var accountStatus: AccountStatus = .active
 
+    // MARK: - Strike System (Job Seekers)
+    var strikes: Int = 0                       // 0–2 active, 3 = banned
+    var pendingStrikeNotification: Bool = false // Show dismissible strike card on dashboard
+    var lastNoShowServiceTitle: String?         // Name of the shift that caused last strike
+
+    // MARK: - Boost Credits (Providers)
+    var boostCredits: Int = 0  // Free boost credits earned from worker no-shows
+
     // MARK: - Rating & Statistics
     var rating: Double?  // Average rating (0-5)
     var totalReviews: Int = 0  // Number of reviews received
@@ -269,12 +277,12 @@ extension User {
         var completed = 0
         let totalFields = 6
 
-        if displayName != nil && !displayName!.isEmpty { completed += 1 }
+        if let displayName, !displayName.isEmpty { completed += 1 }
         if age != nil { completed += 1 }
         if gender != nil { completed += 1 }
-        if phoneNumber != nil && !phoneNumber!.isEmpty { completed += 1 }
-        if city != nil && !city!.isEmpty { completed += 1 }
-        if bio != nil && !bio!.isEmpty { completed += 1 }
+        if let phoneNumber, !phoneNumber.isEmpty { completed += 1 }
+        if let city, !city.isEmpty { completed += 1 }
+        if let bio, !bio.isEmpty { completed += 1 }
 
         return Int((Double(completed) / Double(totalFields)) * 100)
     }
@@ -285,14 +293,14 @@ extension User {
         let totalFields = 5
 
         if isCompany {
-            if companyName != nil && !companyName!.isEmpty { completed += 1 }
+            if let companyName, !companyName.isEmpty { completed += 1 }
         } else {
-            if displayName != nil && !displayName!.isEmpty { completed += 1 }
+            if let displayName, !displayName.isEmpty { completed += 1 }
         }
-        if phoneNumber != nil && !phoneNumber!.isEmpty { completed += 1 }
-        if bio != nil && !bio!.isEmpty { completed += 1 }
-        if contactPersonName != nil && !contactPersonName!.isEmpty { completed += 1 }
-        if contactPersonPhone != nil && !contactPersonPhone!.isEmpty { completed += 1 }
+        if let phoneNumber, !phoneNumber.isEmpty { completed += 1 }
+        if let bio, !bio.isEmpty { completed += 1 }
+        if let contactPersonName, !contactPersonName.isEmpty { completed += 1 }
+        if let contactPersonPhone, !contactPersonPhone.isEmpty { completed += 1 }
 
         return Int((Double(completed) / Double(totalFields)) * 100)
     }

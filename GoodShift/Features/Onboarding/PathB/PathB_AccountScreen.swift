@@ -122,7 +122,7 @@ struct PathB_AccountScreen: View {
         isLoading = true
         do {
             if isSignUp {
-                try await authManager.signUp(email: email, password: password, fullName: displayName)
+                try await authManager.signUp(email: email, password: password, fullName: displayName, role: .provider)
             } else {
                 try await authManager.signIn(email: email, password: password)
             }

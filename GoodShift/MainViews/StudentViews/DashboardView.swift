@@ -8,6 +8,9 @@ import SwiftUI
 internal import Combine
 
 struct DashboardView: View {
+	@AppStorage("hasSeenWorkerWelcome") private var hasSeenWorkerWelcome = false
+	@State private var showWelcome = false
+
 	@State private var dashboardViewModel = DashboardViewModel()
 	@State private var currentCarouselIndex: Int = 0
 	@State private var calendarSelection: Date = Date()
@@ -24,6 +27,7 @@ struct DashboardView: View {
 	@Environment(ConversationsStore.self) var conversationsStore
 	@Environment(\.notificationsStore) var notificationsStore
 	@Environment(ServiceProviderCoordinator.self) var coordinator
+	@Environment(AuthenticationManager.self) var authManager
 
 	/// The active hired job (accepted + service is active), if any
 	var activeJob: (application: JobApplication, service: JobService)? {
@@ -116,6 +120,29 @@ struct DashboardView: View {
 				}
 			}
 
+			// First-time welcome overlay (worker)
+			if showWelcome {
+				WelcomeCardsOverlay(cards: WelcomeCard.workerCards) {
+					hasSeenWorkerWelcome = true
+					showWelcome = false
+				}
+				.zIndex(1)
+			}
+
+			// Strike notification card
+			if let user = authManager.currentUser, user.pendingStrikeNotification {
+				StrikeNotificationCard(
+					strikes: user.strikes,
+					serviceTitle: user.lastNoShowServiceTitle
+				) {
+					Task {
+						try? await applicationsStore.dismissStrikeNotification(userId: user.id)
+					}
+				}
+				.zIndex(2)
+				.animation(.spring(response: 0.4, dampingFraction: 0.85), value: user.pendingStrikeNotification)
+			}
+
 			// Calendar success toast
 			VStack {
 				if let info = calendarSuccessEvent {
@@ -150,6 +177,15 @@ struct DashboardView: View {
 		.refreshable {
 			// Manual refresh: listeners update data automatically, but users can pull-to-refresh
 			try? await Task.sleep(for: .milliseconds(500)) // Brief pause for UX
+		}
+		.onAppear {
+			if !hasSeenWorkerWelcome {
+				DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+					withAnimation(.easeIn(duration: 0.3)) {
+						showWelcome = true
+					}
+				}
+			}
 		}
 		.environment(dashboardViewModel)
 	}

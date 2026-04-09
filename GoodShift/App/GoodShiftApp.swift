@@ -37,6 +37,7 @@ struct GoodShiftApp: App {
 		WindowGroup {
 			MainView()
 				.environment(container)
+				.environment(container.userFetchCache)
 				.environment(\.notificationsStore, container.notificationsStore)
 				.environment(\.locale, Locale(identifier: appLanguage))
 				.environment(\.layoutDirection, appLanguage == "ar" ? .rightToLeft : .leftToRight)

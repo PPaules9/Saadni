@@ -16,6 +16,8 @@ class AppContainer {
 	let authManager: AuthenticationManager
 	let appStateManager: AppStateManager
 	
+	let userFetchCache: UserFetchCache
+
 	let servicesStore: ServicesStore
 	let applicationsStore: ApplicationsStore
 	let messagesStore: MessagesStore
@@ -98,6 +100,10 @@ class AppContainer {
 		sessionTask?.cancel()
 		sessionTask = nil
 
+		// Clear cached user data so no stale data leaks to the next login session
+		userFetchCache.clearAll()
+		userCache.clearCache()
+
 		// Stop all Firestore listeners and clear store state
 		analyticsService.reset()
 		applicationsStore.removeAllListeners()
@@ -116,6 +122,7 @@ class AppContainer {
 		let errorHandler = ErrorHandler()
 		
 		self.userCache = cache
+		self.userFetchCache = UserFetchCache()
 		self.authManager = authManager
 		self.servicesStore = ServicesStore()
 		self.applicationsStore = ApplicationsStore()

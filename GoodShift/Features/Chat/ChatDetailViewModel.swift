@@ -12,6 +12,7 @@ final class ChatDetailViewModel {
     // MARK: - Dependencies
     @ObservationIgnored var messagesStore: MessagesStore?
     @ObservationIgnored var userCache: UserCache?
+    @ObservationIgnored var userFetchCache: UserFetchCache?
 
     // MARK: - UI State
     var messageText = ""
@@ -73,24 +74,30 @@ final class ChatDetailViewModel {
         }
     }
 
-    /// Loads the other participant's user information
+    /// Loads the other participant's user information.
+    /// @MainActor ensures all state assignments happen on the main thread,
+    /// preventing SwiftUI layout warnings from async context updates.
+    @MainActor
     func loadOtherUserInfo(userId: String) async {
         isLoadingUser = true
         userLoadError = nil
 
-        do {
-            if let user = try await FirestoreService.shared.fetchUser(id: userId) {
-                otherUserName = user.displayName ?? "User"
-                otherUserAvatar = user.photoURL ?? ""
-                isLoadingUser = false
-            } else {
-                userLoadError = "User not found"
-                isLoadingUser = false
-            }
-        } catch {
-            userLoadError = error.localizedDescription
+        // Use UserFetchCache when available — avoids duplicate Firestore reads
+        // if multiple chat views are open or if this user was already fetched elsewhere.
+        let user: User?
+        if let cache = userFetchCache {
+            user = await cache.fetchUser(id: userId)
+        } else {
+            user = try? await FirestoreService.shared.fetchUser(id: userId)
+        }
+
+        if let user {
+            otherUserName = user.displayName ?? "User"
+            otherUserAvatar = user.photoURL ?? ""
             isLoadingUser = false
-            print("❌ Failed to load user info: \(error)")
+        } else {
+            userLoadError = "User not found"
+            isLoadingUser = false
         }
     }
 

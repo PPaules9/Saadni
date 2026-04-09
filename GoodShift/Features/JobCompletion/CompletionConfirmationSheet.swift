@@ -1,4 +1,5 @@
 import SwiftUI
+import Kingfisher
 
 struct CompletionConfirmationSheet: View {
     @Environment(\.dismiss) private var dismiss
@@ -71,6 +72,26 @@ struct CompletionConfirmationSheet: View {
                     .padding(14)
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(12)
+
+                    // Proof photo
+                    if let photoURL = service.completionPhotoURL, let url = URL(string: photoURL) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Label("Proof Photo", systemImage: "camera.fill")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.secondary)
+
+                            KFImage(url)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 220)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .strokeBorder(Color(.systemGray4), lineWidth: 1)
+                                )
+                        }
+                    }
 
                     // Student's completion note
                     if let note = service.completionNote, !note.isEmpty {

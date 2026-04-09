@@ -22,12 +22,19 @@ struct LaunchScreen: View {
 		 
 		 
 		 VStack(spacing: 0) {
-		 KFAnimatedImage(source: .provider(
-			LocalFileImageDataProvider(fileURL: Bundle.main.url(forResource: "onBoarding", withExtension: "gif")!)
-		 ))
-		 .configure { view in view.repeatCount = .finite(count: 3) }
-		 .scaledToFit()
-		 .frame(width: 300, height: 300)
+		 // guard let prevents a startup crash if the GIF asset is missing from the bundle
+		 if let gifURL = Bundle.main.url(forResource: "onBoarding", withExtension: "gif") {
+		  KFAnimatedImage(source: .provider(LocalFileImageDataProvider(fileURL: gifURL)))
+		   .configure { view in view.repeatCount = .finite(count: 3) }
+		   .scaledToFit()
+		   .frame(width: 300, height: 300)
+		 } else {
+		  Image(systemName: "bolt.fill")
+		   .resizable()
+		   .scaledToFit()
+		   .frame(width: 100, height: 100)
+		   .foregroundStyle(Colors.swiftUIColor(.textMain))
+		 }
      
      // App Name
      Text("GoodShift")

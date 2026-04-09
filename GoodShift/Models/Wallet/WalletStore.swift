@@ -55,10 +55,20 @@ class WalletStore: ListenerManaging {
 
     // MARK: - Setup & Teardown
 
+    /// Guards against concurrent calls to setupListeners (e.g. two rapid logins).
+    @ObservationIgnored private var isSettingUp = false
+
     /// Sets up real-time listener for user transactions (earnings, withdrawals, top-ups)
     /// - Parameter userId: The user ID to listen for transactions
     /// - Throws: Firestore errors during listener setup
     func setupListeners(userId: String) async throws {
+        guard !isSettingUp else {
+            print("⚠️ [WalletStore] Setup already in progress — skipping duplicate call")
+            return
+        }
+        isSettingUp = true
+        defer { isSettingUp = false }
+
         removeAllListeners()
 
         currentUserId = userId
@@ -128,16 +138,19 @@ class WalletStore: ListenerManaging {
     // MARK: - Add Transaction
 
     func addTransaction(_ transaction: Transaction) async throws {
-        try await FirestoreService.shared.saveTransaction(transaction)
+        // Use a batch write so the transaction document and the wallet balance update
+        // are committed atomically. If either write fails, neither is applied — preventing
+        // the balance and transaction history from going out of sync.
+        let batch = db.batch()
 
-        // Also update User.walletBalance for redundancy
-        try await db.collection("users")
-            .document(transaction.userId)
-            .updateData([
-                "walletBalance": FieldValue.increment(transaction.amount)
-            ])
+        let txRef = db.collection("transactions").document(transaction.id)
+        batch.setData(transaction.toFirestore(), forDocument: txRef)
 
-        print("✅ Transaction added: \(transaction.id)")
+        let userRef = db.collection("users").document(transaction.userId)
+        batch.updateData(["walletBalance": FieldValue.increment(transaction.amount)], forDocument: userRef)
+
+        try await batch.commit()
+        print("✅ Transaction added atomically: \(transaction.id)")
     }
 
     // MARK: - Create Earning Transaction

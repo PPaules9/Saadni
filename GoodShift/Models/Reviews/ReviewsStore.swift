@@ -58,10 +58,20 @@ class ReviewsStore: ListenerManaging {
 
     // MARK: - Setup & Teardown
 
+    /// Guards against concurrent calls to setupListeners (e.g. two rapid logins).
+    @ObservationIgnored private var isSettingUp = false
+
     /// Sets up real-time listeners for user reviews (received and submitted)
     /// - Parameter userId: The user ID to listen for reviews
     /// - Throws: Firestore errors during listener setup
     func setupListeners(userId: String) async throws {
+        guard !isSettingUp else {
+            print("⚠️ [ReviewsStore] Setup already in progress — skipping duplicate call")
+            return
+        }
+        isSettingUp = true
+        defer { isSettingUp = false }
+
         removeAllListeners()
 
         currentUserId = userId

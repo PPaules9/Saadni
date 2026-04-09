@@ -53,6 +53,12 @@ struct ProfileView: View {
 						}
 					)
 
+					// Strike Status (job seekers only)
+					if let user = authManager.currentUser, user.isJobSeeker {
+						StrikeStatusCard(strikes: user.strikes)
+							.padding(.horizontal, 20)
+					}
+
 					// Role Switcher
 					RoleSwitcherView(
 						currentRoleLabel: currentUserTypeLabel,

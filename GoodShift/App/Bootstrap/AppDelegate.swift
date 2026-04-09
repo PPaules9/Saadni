@@ -7,7 +7,6 @@
 
 import UserNotifications
 import FirebaseMessaging
-import FirebaseFirestore
 import FirebaseAuth
 import UIKit
 
@@ -105,36 +104,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 	// Firebase Cloud Messaging token refresh for security
 	func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
 		guard let fcmToken = fcmToken else { return }
-		print("🔑 FCM Token: \(fcmToken)")
-		
-		guard let userId = Auth.auth().currentUser?.uid else {
-			print("⚠️ Cannot save FCM token: user not authenticated")
-			return
-		}
-		
-		Task {
-			let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-			
-			let tokenData: [String: Any] = [
-				"token": fcmToken,
-				"platform": "ios",
-				"deviceModel": UIDevice.current.model,
-				"osVersion": UIDevice.current.systemVersion,
-				"appVersion": appVersion,
-				"registeredAt": Timestamp(date: Date()),
-				"isActive": true
-			]
-			do {
-				try await Firestore.firestore()
-					.collection("users")
-					.document(userId)
-					.collection("fcmTokens")
-					.document(fcmToken)
-					.setData(tokenData, merge: true)
-				print("✅ FCM token saved to users/\(userId)/fcmTokens/")
-			} catch {
-				print("❌ Failed to save FCM token: \(error)")
-			}
-		}
+		print("🔑 FCM Token received — delegating to FCMService")
+		// Delegate token storage to FCMService — keeps all token logic in one place
+		Task { await FCMService.shared.registerToken(fcmToken) }
 	}
 }

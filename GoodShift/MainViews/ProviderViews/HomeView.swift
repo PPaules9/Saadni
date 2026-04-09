@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct HomeView: View {
+	@AppStorage("hasSeenProviderWelcome") private var hasSeenProviderWelcome = false
+	@State private var showWelcome = false
+
 	@State private var needHelpWith: String = ""
 	@FocusState private var isFocused: Bool
 
@@ -381,6 +384,23 @@ struct HomeView: View {
 
 			}
 
+			// First-time welcome overlay (provider)
+			if showWelcome {
+				WelcomeCardsOverlay(cards: WelcomeCard.providerCards) {
+					hasSeenProviderWelcome = true
+					showWelcome = false
+				}
+				.zIndex(1)
+			}
+		}
+		.onAppear {
+			if !hasSeenProviderWelcome {
+				DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+					withAnimation(.easeIn(duration: 0.3)) {
+						showWelcome = true
+					}
+				}
+			}
 		}
 	}
 }

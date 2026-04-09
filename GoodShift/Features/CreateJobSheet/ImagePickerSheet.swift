@@ -54,8 +54,11 @@ struct ImagePickerSheet: View {
                 Task {
                     if let data = try? await newValue?.loadTransferable(type: Data.self),
                        let uiImage = UIImage(data: data) {
+                        // Resize to max 1024px before storing — modern iPhone photos can be
+                        // 12MB+ which causes memory spikes before compression later in the upload flow.
+                        let resized = uiImage.resizedToMaxDimension(1024)
                         await MainActor.run {
-                            selectedImage = uiImage
+                            selectedImage = resized
                             dismiss()
                         }
                     }
@@ -70,4 +73,20 @@ struct ImagePickerSheet: View {
 
 #Preview {
     ImagePickerSheet(selectedImage: .constant(nil))
+}
+
+// MARK: - UIImage Resize Helper
+
+extension UIImage {
+    /// Scales the image down so its longest side is at most `maxDimension` points.
+    /// If the image is already smaller, it is returned unchanged.
+    func resizedToMaxDimension(_ maxDimension: CGFloat) -> UIImage {
+        let longestSide = max(size.width, size.height)
+        guard longestSide > maxDimension else { return self }
+        let scale = maxDimension / longestSide
+        let newSize = CGSize(width: size.width * scale, height: size.height * scale)
+        return UIGraphicsImageRenderer(size: newSize).image { _ in
+            draw(in: CGRect(origin: .zero, size: newSize))
+        }
+    }
 }

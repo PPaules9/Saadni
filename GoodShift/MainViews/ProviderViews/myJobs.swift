@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 // MARK: - State Holder (keeps FirestoreService out of the View)
 @Observable private final class ApplicantUsersCache {
@@ -52,6 +53,7 @@ struct MyJobsView: View {
     @Environment(JobSeekerCoordinator.self) var coordinator
     @State private var selectedCalendarDate: Date = Date()
     @State private var selectedCompletionService: JobService?
+    @State private var reviewItem: ApplicantReviewItem?
     @State private var actionError: String?
     @State private var showActionError = false
     @State private var loadError: String?
@@ -132,6 +134,10 @@ struct MyJobsView: View {
             }
         }
         .background(Colors.swiftUIColor(.appBackground))
+        .sheet(item: $reviewItem) { item in
+            ApplicantReviewSheet(application: item.application, service: item.service)
+                .environment(applicationsStore)
+        }
         .sheet(item: $selectedCompletionService) { service in
             if let application = applicationsStore.receivedApplications.first(where: {
                 $0.serviceId == service.id && $0.status == .accepted
@@ -190,23 +196,34 @@ struct MyJobsView: View {
                     ForEach(groupedEntries) { entry in
                         switch entry {
                         case .single(let service):
-                            NavigationLink(value: ServiceProviderDestination.serviceDetail(service)) {
-                                ServiceCard(service: service)
-                            }
-                        case .group(let groupId, let shifts):
-                            JobGroupCard(
-                                groupId: groupId,
-                                shifts: shifts,
-                                isExpanded: expandedGroups.contains(groupId),
-                                onToggle: {
-                                    if expandedGroups.contains(groupId) {
-                                        expandedGroups.remove(groupId)
-                                    } else {
-                                        expandedGroups.insert(groupId)
-                                    }
-                                },
-                                onSelectShift: { service in
+                            ProviderJobCard(
+                                service: service,
+                                allApplications: receivedApplications.filter { $0.serviceId == service.id },
+                                applicantUsers: applicantUsers,
+                                isGroup: false,
+                                shiftCount: nil,
+                                onTap: {
                                     coordinator.navigate(to: ServiceProviderDestination.serviceDetail(service))
+                                },
+                                onApplicantTap: { application in
+                                    reviewItem = ApplicantReviewItem(application: application, service: service)
+                                }
+                            )
+                        case .group(let groupId, let shifts):
+                            ProviderJobCard(
+                                service: shifts[0],
+                                allApplications: receivedApplications.filter { app in
+                                    shifts.contains { $0.id == app.serviceId }
+                                },
+                                applicantUsers: applicantUsers,
+                                isGroup: true,
+                                shiftCount: shifts.count,
+                                onTap: {
+                                    coordinator.navigate(to: ServiceProviderDestination.groupServiceDetail(groupId: groupId, shifts: shifts))
+                                },
+                                onApplicantTap: { application in
+                                    let matchingService = shifts.first(where: { $0.id == application.serviceId }) ?? shifts[0]
+                                    reviewItem = ApplicantReviewItem(application: application, service: matchingService)
                                 }
                             )
                         }
@@ -416,7 +433,255 @@ enum JobGroupEntry: Identifiable {
     }
 }
 
-// MARK: - Job Group Card
+// MARK: - Provider Job Card (My Jobs list item)
+
+struct ProviderJobCard: View {
+    let service: JobService
+    let allApplications: [JobApplication]
+    let applicantUsers: [String: User]
+    let isGroup: Bool
+    let shiftCount: Int?
+    let onTap: () -> Void
+    let onApplicantTap: (JobApplication) -> Void
+
+    private var statusLabel: String {
+        switch service.status {
+        case .published:         return "Live"
+        case .active:            return "Active"
+        case .pendingCompletion: return "Pending"
+        case .completed:         return "Done"
+        case .disputed:          return "Disputed"
+        case .cancelled:         return "Cancelled"
+        case .draft:             return "Draft"
+        }
+    }
+
+    private var statusColor: Color {
+        switch service.status {
+        case .published:         return Colors.swiftUIColor(.primary)
+        case .active:            return Colors.swiftUIColor(.successGreen)
+        case .pendingCompletion: return .orange
+        case .completed:         return Colors.swiftUIColor(.textSecondary)
+        case .disputed, .cancelled: return Colors.swiftUIColor(.borderError)
+        case .draft:             return Colors.swiftUIColor(.textSecondary)
+        }
+    }
+
+    private var formattedDate: String {
+        guard let date = service.serviceDate else { return "No date" }
+        let cal = Calendar.current
+        if cal.isDateInToday(date) { return "Today" }
+        if cal.isDateInTomorrow(date) { return "Tomorrow" }
+        return date.formatted(.dateTime.day().month(.abbreviated))
+    }
+
+    private var formattedTimeRange: String {
+        guard let date = service.serviceDate else { return "–" }
+        let start = date.formatted(.dateTime.hour().minute())
+        guard let hours = service.estimatedDurationHours else { return start }
+        let end = (date + hours * 3600).formatted(.dateTime.hour().minute())
+        return "\(start) – \(end)"
+    }
+
+    private var formattedDuration: String {
+        guard let h = service.estimatedDurationHours else { return "–" }
+        return h == 1 ? "1 hour" : String(format: "%.0f hours", h)
+    }
+
+    // Only applicants who have NOT been rejected/withdrawn
+    private var activeApplicants: [JobApplication] {
+        allApplications.filter { $0.status != .rejected && $0.status != .withdrawn }
+    }
+
+    var body: some View {
+        Button(action: onTap) {
+            VStack(spacing: 0) {
+                // ── Header ──────────────────────────────────────────────
+                HStack(spacing: 12) {
+                    // Category icon
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Colors.swiftUIColor(.primary).opacity(0.15))
+                            .frame(width: 48, height: 48)
+                        Image(systemName: service.category?.icon ?? "briefcase.fill")
+                            .font(.title3)
+                            .foregroundStyle(Colors.swiftUIColor(.primary))
+                    }
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(service.title)
+                            .font(.headline)
+                            .foregroundStyle(Colors.swiftUIColor(.textPrimary))
+                            .lineLimit(1)
+                        Text(service.branchName ?? service.location.name)
+                            .font(.caption)
+                            .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                            .lineLimit(1)
+                    }
+
+                    Spacer()
+
+                    // Status badge
+                    Text(statusLabel)
+                        .font(.caption.weight(.bold))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(statusColor.opacity(0.15))
+                        .foregroundStyle(statusColor)
+                        .clipShape(Capsule())
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 14)
+
+                Divider()
+                    .padding(.horizontal, 16)
+
+                // ── Details grid ────────────────────────────────────────
+                VStack(spacing: 10) {
+                    HStack(alignment: .top, spacing: 0) {
+                        ProviderDetailCell(icon: "banknote.fill", label: "Pay", value: service.formattedPrice)
+                        ProviderDetailCell(icon: "clock.fill", label: "Duration", value: formattedDuration)
+                    }
+                    HStack(alignment: .top, spacing: 0) {
+                        ProviderDetailCell(icon: "calendar", label: "Date", value: formattedDate)
+                        ProviderDetailCell(icon: "clock.arrow.circlepath", label: "Time", value: formattedTimeRange)
+                    }
+                    HStack(alignment: .top, spacing: 0) {
+                        ProviderDetailCell(icon: "mappin.and.ellipse", label: "Location", value: service.location.name)
+                        if isGroup, let count = shiftCount {
+                            ProviderDetailCell(icon: "rectangle.stack.fill", label: "Shifts", value: "\(count) shifts")
+                        } else {
+                            Spacer().frame(maxWidth: .infinity)
+                        }
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 14)
+
+                // ── Applicants section (only if any) ────────────────────
+                if !activeApplicants.isEmpty {
+                    Divider()
+                        .padding(.horizontal, 16)
+
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "person.2.fill")
+                                .font(.subheadline)
+                                .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                            Text("\(activeApplicants.count) applicant\(activeApplicants.count == 1 ? "" : "s") already matched")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(Colors.swiftUIColor(.textPrimary))
+                        }
+
+                        HStack(spacing: 16) {
+                            ForEach(activeApplicants.prefix(4)) { application in
+                                Button {
+                                    onApplicantTap(application)
+                                } label: {
+                                    ApplicantAvatarBubble(
+                                        application: application,
+                                        user: applicantUsers[application.applicantId]
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            Spacer()
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 14)
+                }
+            }
+            .background(Colors.swiftUIColor(.cardBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Provider Detail Cell
+
+private struct ProviderDetailCell: View {
+    let icon: String
+    let label: String
+    let value: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: icon)
+                .font(.subheadline)
+                .foregroundStyle(Colors.swiftUIColor(.primary))
+                .frame(width: 20)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label)
+                    .font(.caption)
+                    .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                Text(value)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Colors.swiftUIColor(.textPrimary))
+                    .lineLimit(2)
+            }
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+// MARK: - Applicant Avatar Bubble
+
+struct ApplicantAvatarBubble: View {
+    let application: JobApplication
+    let user: User?
+
+    private var initials: String {
+        let name = user?.displayName ?? application.applicantName
+        let parts = name.split(separator: " ")
+        let letters = parts.prefix(2).compactMap { $0.first }.map { String($0) }
+        return letters.joined().uppercased()
+    }
+
+    var body: some View {
+        VStack(spacing: 4) {
+            ZStack {
+                Circle()
+                    .fill(Colors.swiftUIColor(.primary))
+                    .frame(width: 52, height: 52)
+
+                if let photoURL = user?.photoURL ?? application.applicantPhotoURL,
+                   let url = URL(string: photoURL) {
+                    KFImage(url)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 52, height: 52)
+                        .clipShape(Circle())
+                } else {
+                    Text(initials)
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(.white)
+                }
+            }
+
+            // Star rating
+            HStack(spacing: 2) {
+                Image(systemName: "star.fill")
+                    .font(.system(size: 9))
+                    .foregroundStyle(.yellow)
+                if let rating = user?.rating {
+                    Text(String(format: "%.1f", rating))
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(Colors.swiftUIColor(.textPrimary))
+                } else {
+                    Text("–")
+                        .font(.caption2)
+                        .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Job Group Card (used inside GroupServiceDetailView)
 
 struct JobGroupCard: View {
     let groupId: String
@@ -424,8 +689,6 @@ struct JobGroupCard: View {
     let isExpanded: Bool
     let onToggle: () -> Void
     let onSelectShift: (JobService) -> Void
-
-    private var representative: JobService? { shifts.first }
 
     private var dateRangeText: String {
         let dates = shifts.compactMap { $0.serviceDate }.sorted()
@@ -440,12 +703,11 @@ struct JobGroupCard: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Group header — tap to expand/collapse
             Button(action: onToggle) {
                 HStack(spacing: 12) {
                     VStack(alignment: .leading, spacing: 4) {
                         HStack(spacing: 8) {
-                            Text(representative?.title ?? "Job")
+                            Text(shifts.first?.title ?? "Job")
                                 .font(.headline)
                                 .foregroundStyle(Colors.swiftUIColor(.textPrimary))
                             Text("\(shifts.count) shifts")
@@ -463,7 +725,7 @@ struct JobGroupCard: View {
                                 .font(.caption)
                         }
                         .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-                        if let price = representative?.formattedPrice {
+                        if let price = shifts.first?.formattedPrice {
                             Text(price)
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(Colors.swiftUIColor(.textPrimary))
@@ -481,7 +743,6 @@ struct JobGroupCard: View {
             }
             .buttonStyle(.plain)
 
-            // Expanded individual shift rows
             if isExpanded {
                 VStack(spacing: 8) {
                     ForEach(shifts) { shift in

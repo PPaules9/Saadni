@@ -19,7 +19,8 @@ protocol AuthProvider {
     func signUp(
         email: String,
         password: String,
-        fullName: String
+        fullName: String,
+        role: UserRole?
     ) async throws
 
     func signIn(

@@ -70,6 +70,22 @@ class StorageService: StorageProvider {
   return downloadURL.absoluteString
  }
 
+ /// Upload proof-of-completion photo to Firebase Storage
+ func uploadCompletionProof(_ image: UIImage, serviceId: String, workerId: String) async throws -> String {
+  guard let imageData = image.jpegData(compressionQuality: 0.75) else {
+   throw NSError(domain: "StorageService", code: 2,
+                 userInfo: [NSLocalizedDescriptionKey: "Could not convert proof image to JPEG"])
+  }
+  let path = "completions/\(serviceId)/\(workerId).jpg"
+  let ref = storage.reference().child(path)
+  let metadata = StorageMetadata()
+  metadata.contentType = "image/jpeg"
+  let _ = try await ref.putDataAsync(imageData, metadata: metadata)
+  let url = try await ref.downloadURL()
+  print("✅ Completion proof uploaded: \(url.absoluteString)")
+  return url.absoluteString
+ }
+
  /// Delete user profile image from Storage
  func deleteUserProfileImage(userId: String) async throws {
   let imagePath = "users/\(userId)/profile.jpg"

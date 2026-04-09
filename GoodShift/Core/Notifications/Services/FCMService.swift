@@ -42,6 +42,13 @@ final class FCMService: NSObject, MessagingDelegate {
 		}
 	}
 	
+	/// Public entry point for saving a token — called by AppDelegate so token-saving
+	/// logic lives in one place (here) rather than being duplicated across delegates.
+	func registerToken(_ token: String) async {
+		currentFCMToken = token
+		await saveTokenToFirestore(token: token)
+	}
+
 	private func saveTokenToFirestore(token: String) async {
 		guard let userId = FirebaseAuth.Auth.auth().currentUser?.uid else {
 			print("⚠️ Cannot save FCM token: user not authenticated")

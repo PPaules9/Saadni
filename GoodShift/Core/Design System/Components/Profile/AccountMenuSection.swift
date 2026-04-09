@@ -15,11 +15,15 @@ struct AccountMenuSection: View {
     @State private var navigateToAddresses = false
     @State private var navigateToLanguage = false
     @State private var navigateToCurrency = false
+    @State private var navigateToHelp = false
+    @State private var navigateToCommunityGuidelines = false
+    @State private var navigateToTerms = false
+    @State private var navigateToPrivacy = false
     @State private var showEditProfile = false
     @State private var showDeleteConfirmation = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 20) {
             Text("My Account")
                 .font(.headline)
                 .fontWeight(.semibold)
@@ -90,6 +94,63 @@ struct AccountMenuSection: View {
                     action: { showDeleteConfirmation = true },
                     isDestructive: true
                 )
+            }
+            .background(Color.gray.opacity(0.08))
+            .cornerRadius(12)
+            .padding(.horizontal, 20)
+
+            // MARK: - Legal & Support Section
+            Text("Legal & Support")
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundStyle(.accent)
+                .padding(.horizontal, 20)
+
+            VStack(spacing: 0) {
+                ProfileMenuRow(
+                    icon: "questionmark.circle.fill",
+                    title: "Help & FAQ",
+                    action: { navigateToHelp = true }
+                )
+                .navigationDestination(isPresented: $navigateToHelp) {
+                    HelpFAQView()
+                }
+
+                Divider()
+                    .padding(.vertical, 0)
+
+                ProfileMenuRow(
+                    icon: "person.2.fill",
+                    title: "Community Guidelines",
+                    action: { navigateToCommunityGuidelines = true }
+                )
+                .navigationDestination(isPresented: $navigateToCommunityGuidelines) {
+                    CommunityGuidelinesView()
+                }
+
+                Divider()
+                    .padding(.vertical, 0)
+
+                ProfileMenuRow(
+                    icon: "doc.text.fill",
+                    title: "Terms & Conditions",
+                    action: { navigateToTerms = true }
+                )
+                .navigationDestination(isPresented: $navigateToTerms) {
+                    TermsAndConditionsView()
+                }
+
+                Divider()
+                    .padding(.vertical, 0)
+
+                ProfileMenuRow(
+                    icon: "lock.shield.fill",
+                    title: "Privacy Policy",
+                    action: { navigateToPrivacy = true }
+                )
+                .navigationDestination(isPresented: $navigateToPrivacy) {
+                    PrivacyPolicyView()
+                }
             }
             .background(Color.gray.opacity(0.08))
             .cornerRadius(12)

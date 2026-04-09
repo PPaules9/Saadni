@@ -19,17 +19,25 @@ struct ServiceDetailView: View {
 	@Environment(ReviewsStore.self) var reviewsStore
 	
 	@Environment(AppCoordinator.self) var appCoordinator
+	@Environment(UserCache.self) var userCache
 
+	@State private var reviewItem: ApplicantReviewItem?
 	@State private var showingApplySheet = false
 	@State private var showingApplications = false
 	@State private var showingCompletionView = false
 	@State private var showingMarkDoneView = false
 	@State private var showingReviewSheet = false
+	@State private var showingPaySheet = false
+	@State private var isConfirmingArrival = false
+	@State private var isReportingNoShow = false
+	@State private var showNoShowConfirmation = false
 	@State private var isCreatingChat = false
 	@State private var showDeleteConfirmation = false
 	@State private var isBoostingJob = false
 	@State private var isBulkUpdating = false
-	@State private var showBulkUpdateConfirmation = false
+	@State private var showEditBlockAlert = false
+	@State private var showDeleteBlockAlert = false
+	@State private var showEditSheet = false
 	
 	var reviews: [Review] {
 		reviewsStore.serviceReviews[service.id] ?? []
@@ -61,9 +69,30 @@ struct ServiceDetailView: View {
 								.font(.system(size: 22, weight: .bold))
 								.fontDesign(.monospaced)
 								.foregroundStyle(.green)
-							
+
+							// Payment lock badge
+							if isOwnService {
+								if service.isPaid {
+									Label("Secured", systemImage: "lock.fill")
+										.font(.caption.weight(.semibold))
+										.foregroundStyle(.green)
+										.padding(.horizontal, 8)
+										.padding(.vertical, 4)
+										.background(Color.green.opacity(0.12))
+										.cornerRadius(8)
+								} else {
+									Label("Payment Required", systemImage: "lock.open.fill")
+										.font(.caption.weight(.semibold))
+										.foregroundStyle(.orange)
+										.padding(.horizontal, 8)
+										.padding(.vertical, 4)
+										.background(Color.orange.opacity(0.12))
+										.cornerRadius(8)
+								}
+							}
+
 							Divider().frame(height: 20)
-							
+
 							Text(service.categoryDisplayName)
 								.font(.caption)
 								.fontWeight(.semibold)
@@ -72,7 +101,7 @@ struct ServiceDetailView: View {
 								.background(Color.accent.opacity(0.15))
 								.cornerRadius(8)
 								.foregroundStyle(.accent)
-							
+
 							Spacer()
 							
 							// Application count badge (own service)
@@ -88,6 +117,22 @@ struct ServiceDetailView: View {
 								.padding(.vertical, 4)
 								.background(Color.orange.opacity(0.15))
 								.foregroundStyle(.orange)
+								.cornerRadius(8)
+							}
+
+							// Other applicants count (student view)
+							if !isOwnService && otherApplicantCount > 0 {
+								HStack(spacing: 4) {
+									Image(systemName: "person.2.fill")
+										.font(.caption2)
+									Text("\(otherApplicantCount) other\(otherApplicantCount == 1 ? "" : "s") applied")
+										.font(.caption)
+										.fontWeight(.semibold)
+								}
+								.padding(.horizontal, 8)
+								.padding(.vertical, 4)
+								.background(Color.blue.opacity(0.12))
+								.foregroundStyle(Color.blue)
 								.cornerRadius(8)
 							}
 						}
@@ -287,158 +332,16 @@ struct ServiceDetailView: View {
 						}
 					}
 					
+					// MARK: - Applicants Section (Provider only)
+					if isOwnService {
+						providerApplicantsSection
+					}
+
 					// MARK: - Action Buttons
 					VStack(spacing: 12) {
-
-						// --- Student (non-owner) actions ---
-						if !isOwnService {
-
-							// Student is the hired worker
-							if isHiredStudent {
-								switch service.status {
-								case .active:
-									BrandButton(
-										"I'm Done — Mark as Complete",
-										size: .large,
-										isDisabled: false,
-										hasIcon: true,
-										icon: "checkmark.circle.fill",
-										secondary: false
-									) {
-										showingMarkDoneView = true
-									}
-
-								case .pendingCompletion:
-									HStack(spacing: 10) {
-										Image(systemName: "clock.badge.checkmark.fill")
-											.foregroundStyle(.purple)
-										VStack(alignment: .leading, spacing: 2) {
-											Text("Awaiting Provider Confirmation")
-												.font(.subheadline)
-												.fontWeight(.semibold)
-												.foregroundStyle(Colors.swiftUIColor(.textMain))
-											if let requestedAt = service.completionRequestedAt {
-												Text("Submitted \(requestedAt, style: .relative)")
-													.font(.caption)
-													.foregroundStyle(Colors.swiftUIColor(.textSecondary))
-											}
-										}
-										Spacer()
-									}
-									.padding(14)
-									.background(Color.purple.opacity(0.08))
-									.cornerRadius(14)
-									.overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.purple.opacity(0.3), lineWidth: 1))
-
-								case .completed:
-									BrandButton(
-										"Leave a Review",
-										size: .large,
-										isDisabled: false,
-										hasIcon: true,
-										icon: "star.fill",
-										secondary: false
-									) {
-										showingReviewSheet = true
-									}
-
-								case .disputed:
-									HStack(spacing: 10) {
-										Image(systemName: "exclamationmark.triangle.fill")
-											.foregroundStyle(.red)
-										VStack(alignment: .leading, spacing: 2) {
-											Text("Provider Has a Concern")
-												.font(.subheadline)
-												.fontWeight(.semibold)
-												.foregroundStyle(Colors.swiftUIColor(.textMain))
-											if let reason = service.disputeReason, !reason.isEmpty {
-												Text(reason)
-													.font(.caption)
-													.foregroundStyle(Colors.swiftUIColor(.textSecondary))
-											}
-										}
-										Spacer()
-									}
-									.padding(14)
-									.background(Color.red.opacity(0.08))
-									.cornerRadius(14)
-									.overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.red.opacity(0.3), lineWidth: 1))
-
-									BrandButton(
-										"Resubmit Completion",
-										size: .large,
-										isDisabled: false,
-										hasIcon: true,
-										icon: "arrow.clockwise",
-										secondary: true
-									) {
-										showingMarkDoneView = true
-									}
-
-								default:
-									EmptyView()
-								}
-
-							} else {
-								// Regular student — apply or already applied
-								if hasAlreadyApplied {
-									HStack(spacing: 8) {
-										Image(systemName: "checkmark.circle.fill")
-										Text("Already Applied")
-											.fontWeight(.semibold)
-									}
-									.frame(maxWidth: .infinity)
-									.frame(height: 56)
-									.foregroundStyle(.accent)
-									.background(Color.accent.opacity(0.1))
-									.cornerRadius(14)
-									.overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.accent, lineWidth: 1))
-								} else if service.status == .published {
-									BrandButton(
-										"Apply Now",
-										size: .large,
-										isDisabled: false,
-										hasIcon: true,
-										icon: "hand.raised.fill",
-										secondary: false
-									) {
-										showingApplySheet = true
-									}
-								}
-							}
-						}
-
-						// --- Provider (own service) actions ---
-						if isOwnService && service.status == .active {
-							BrandButton(
-								"Mark as Completed",
-								size: .large,
-								isDisabled: false,
-								hasIcon: true,
-								icon: "checkmark.circle.fill",
-								secondary: false
-							) {
-								showingCompletionView = true
-							}
-						}
-
-						// View Applications / Contact Provider
-						if !isHiredStudent || isOwnService {
-							BrandButton(
-								isOwnService ? "View Applications" : "Contact Provider",
-								size: .large,
-								isDisabled: isCreatingChat,
-								hasIcon: true,
-								icon: isOwnService ? "person.3.fill" : "bubble.left.fill",
-								secondary: true
-							) {
-								if isOwnService {
-									showingApplications = true
-								} else {
-									startChatWithProvider()
-								}
-							}
-						}
+						if !isOwnService { workerActionsView }
+						if isOwnService  { providerActionsView }
+						secondaryActionView
 					}
 					.padding(.top, 8)
 					.padding(.bottom, 16)
@@ -453,6 +356,16 @@ struct ServiceDetailView: View {
 				if isOwnService {
 					Menu {
 						Button {
+							if service.applicationCount > 0 {
+								showEditBlockAlert = true
+							} else {
+								showEditSheet = true
+							}
+						} label: {
+							Label("Edit", systemImage: "pencil")
+						}
+
+						Button {
 							Task { await boostJob() }
 						} label: {
 							Label(
@@ -462,22 +375,14 @@ struct ServiceDetailView: View {
 						}
 						.disabled(service.isFeatured || isBoostingJob)
 
-						if service.jobGroupId != nil {
-							Button {
-								showBulkUpdateConfirmation = true
-							} label: {
-								Label(
-									isBulkUpdating ? "Updating..." : "Apply Changes to All Shifts",
-									systemImage: "arrow.triangle.2.circlepath"
-								)
-							}
-							.disabled(isBulkUpdating)
-						}
-
 						Button(role: .destructive) {
-							showDeleteConfirmation = true
+							if service.status == .active && service.hiredApplicantId != nil {
+								showDeleteBlockAlert = true
+							} else {
+								showDeleteConfirmation = true
+							}
 						} label: {
-							Label("Delete Job", systemImage: "trash.fill")
+							Label("Delete Service", systemImage: "trash.fill")
 						}
 					} label: {
 						Image(systemName: "ellipsis.circle")
@@ -503,17 +408,24 @@ struct ServiceDetailView: View {
 		} message: {
 			Text("This action cannot be undone.")
 		}
-		.confirmationDialog(
-			"Apply changes to all shifts?",
-			isPresented: $showBulkUpdateConfirmation,
-			titleVisibility: .visible
-		) {
-			Button("Update All Shifts") {
-				Task { await bulkUpdateAllShifts() }
-			}
-			Button("Cancel", role: .cancel) {}
+		.alert("Cannot Edit This Job", isPresented: $showEditBlockAlert) {
+			Button("OK", role: .cancel) {}
 		} message: {
-			Text("This will overwrite the title, pay, location, requirements, and description on every shift in this job.")
+			Text("A user has applied to this job. To make changes, delete this service and create a new one.")
+		}
+		.alert("Cannot Delete This Job", isPresented: $showDeleteBlockAlert) {
+			Button("OK", role: .cancel) {}
+		} message: {
+			Text("A user is currently working this job. You cannot delete it while it is active.")
+		}
+		.sheet(isPresented: $showEditSheet) {
+			if let providerId = authManager.currentUserId {
+				CreateJobSheet(editingService: service, editingGroupId: nil, providerId: providerId)
+					.environment(servicesStore)
+					.environment(authManager)
+					.environment(userCache)
+					.environment(JobSeekerCoordinator())
+			}
 		}
 		.sheet(isPresented: $showingCompletionView) {
 			ServiceCompletionView(service: service)
@@ -532,6 +444,26 @@ struct ServiceDetailView: View {
 			MarkJobDoneView(service: service)
 				.environment(applicationsStore)
 		}
+		.sheet(isPresented: $showingPaySheet) {
+			PayShiftSheet(service: service)
+				.environment(applicationsStore)
+		}
+		.sheet(item: $reviewItem) { item in
+			ApplicantReviewSheet(application: item.application, service: item.service)
+				.environment(applicationsStore)
+		}
+		.confirmationDialog(
+			"Report Worker No-Show?",
+			isPresented: $showNoShowConfirmation,
+			titleVisibility: .visible
+		) {
+			Button("Yes, Report No-Show", role: .destructive) {
+				Task { await reportNoShow() }
+			}
+			Button("Cancel", role: .cancel) {}
+		} message: {
+			Text("The worker's account will receive a strike. You'll get a full refund plus a free boost credit.")
+		}
 		.sheet(isPresented: $showingReviewSheet) {
 			PostJobReviewSheet(
 				service: service,
@@ -547,6 +479,201 @@ struct ServiceDetailView: View {
 		}
 	}
 	
+	// MARK: - Worker Actions
+
+	@ViewBuilder
+	private var workerActionsView: some View {
+		if isHiredStudent {
+			workerHiredActionsView
+		} else {
+			workerApplyActionsView
+		}
+	}
+
+	@ViewBuilder
+	private var workerHiredActionsView: some View {
+		switch service.status {
+		case .active:
+			if !service.workerConfirmedArrival {
+				BrandButton("I've Arrived", size: .large, isDisabled: isConfirmingArrival, hasIcon: true, icon: "figure.walk.arrival", secondary: false) {
+					Task { await confirmArrivalAsWorker() }
+				}
+			} else if !service.providerConfirmedWorkerArrival {
+				workerWaitingForProviderBanner
+			} else {
+				BrandButton("I'm Done — Mark as Complete", size: .large, isDisabled: false, hasIcon: true, icon: "checkmark.circle.fill", secondary: false) {
+					showingMarkDoneView = true
+				}
+			}
+		case .pendingCompletion:
+			pendingCompletionBanner
+		case .completed:
+			BrandButton("Leave a Review", size: .large, isDisabled: false, hasIcon: true, icon: "star.fill", secondary: false) {
+				showingReviewSheet = true
+			}
+		case .disputed:
+			disputedBanner
+			BrandButton("Resubmit Completion", size: .large, isDisabled: false, hasIcon: true, icon: "arrow.clockwise", secondary: true) {
+				showingMarkDoneView = true
+			}
+		default:
+			EmptyView()
+		}
+	}
+
+	@ViewBuilder
+	private var workerApplyActionsView: some View {
+		if hasAlreadyApplied {
+			HStack(spacing: 8) {
+				Image(systemName: "checkmark.circle.fill")
+				Text("Already Applied").fontWeight(.semibold)
+			}
+			.frame(maxWidth: .infinity).frame(height: 56)
+			.foregroundStyle(.accent)
+			.background(Color.accent.opacity(0.1))
+			.cornerRadius(14)
+			.overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.accent, lineWidth: 1))
+		} else if service.status == .published {
+			BrandButton("Apply Now", size: .large, isDisabled: false, hasIcon: true, icon: "hand.raised.fill", secondary: false) {
+				showingApplySheet = true
+			}
+		}
+	}
+
+	@ViewBuilder
+	private var workerWaitingForProviderBanner: some View {
+		HStack(spacing: 10) {
+			if isConfirmingArrival { ProgressView().tint(.accent) }
+			else { Image(systemName: "clock.badge.checkmark.fill").foregroundStyle(.accent) }
+			VStack(alignment: .leading, spacing: 2) {
+				Text("Arrival Confirmed — Waiting for Provider")
+					.font(.subheadline.weight(.semibold))
+					.foregroundStyle(Colors.swiftUIColor(.textMain))
+				Text("The provider needs to confirm you're on-site.")
+					.font(.caption).foregroundStyle(Colors.swiftUIColor(.textSecondary))
+			}
+			Spacer()
+		}
+		.padding(14)
+		.background(Color.accentColor.opacity(0.08)).cornerRadius(14)
+		.overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.accentColor.opacity(0.3), lineWidth: 1))
+	}
+
+	@ViewBuilder
+	private var pendingCompletionBanner: some View {
+		HStack(spacing: 10) {
+			Image(systemName: "clock.badge.checkmark.fill").foregroundStyle(.purple)
+			VStack(alignment: .leading, spacing: 2) {
+				Text("Awaiting Provider Confirmation")
+					.font(.subheadline.weight(.semibold)).foregroundStyle(Colors.swiftUIColor(.textMain))
+				if let requestedAt = service.completionRequestedAt {
+					Text("Submitted \(requestedAt, style: .relative)")
+						.font(.caption).foregroundStyle(Colors.swiftUIColor(.textSecondary))
+				}
+			}
+			Spacer()
+		}
+		.padding(14).background(Color.purple.opacity(0.08)).cornerRadius(14)
+		.overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.purple.opacity(0.3), lineWidth: 1))
+	}
+
+	@ViewBuilder
+	private var disputedBanner: some View {
+		HStack(spacing: 10) {
+			Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.red)
+			VStack(alignment: .leading, spacing: 2) {
+				Text("Provider Has a Concern")
+					.font(.subheadline.weight(.semibold)).foregroundStyle(Colors.swiftUIColor(.textMain))
+				if let reason = service.disputeReason, !reason.isEmpty {
+					Text(reason).font(.caption).foregroundStyle(Colors.swiftUIColor(.textSecondary))
+				}
+			}
+			Spacer()
+		}
+		.padding(14).background(Color.red.opacity(0.08)).cornerRadius(14)
+		.overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.red.opacity(0.3), lineWidth: 1))
+	}
+
+	// MARK: - Provider Actions
+
+	@ViewBuilder
+	private var providerActionsView: some View {
+		if service.status == .published && !service.isPaid {
+			BrandButton("Pay \(service.formattedPrice) & Secure Shift", size: .large, isDisabled: false, hasIcon: true, icon: "lock.shield.fill", secondary: false) {
+				showingPaySheet = true
+			}
+		} else if service.status == .active {
+			if service.workerConfirmedArrival && !service.providerConfirmedWorkerArrival {
+				BrandButton("Confirm Worker Arrived", size: .large, isDisabled: isConfirmingArrival, hasIcon: true, icon: "person.fill.checkmark", secondary: false) {
+					Task { await confirmWorkerPresenceAsProvider() }
+				}
+			}
+			if service.bothConfirmedArrival {
+				BrandButton("Mark as Completed", size: .large, isDisabled: false, hasIcon: true, icon: "checkmark.circle.fill", secondary: false) {
+					showingCompletionView = true
+				}
+			}
+			if !service.workerConfirmedArrival {
+				BrandButton("Worker Didn't Show Up", size: .large, isDisabled: isReportingNoShow, hasIcon: true, icon: "person.fill.xmark", secondary: true) {
+					showNoShowConfirmation = true
+				}
+			}
+		}
+	}
+
+	// MARK: - Secondary Action (View Applications / Contact)
+
+	@ViewBuilder
+	private var secondaryActionView: some View {
+		if !isHiredStudent || isOwnService {
+			BrandButton(
+				isOwnService ? "View Applications" : "Contact Provider",
+				size: .large,
+				isDisabled: isCreatingChat || (isOwnService && !service.isPaid),
+				hasIcon: true,
+				icon: isOwnService ? "person.3.fill" : "bubble.left.fill",
+				secondary: true
+			) {
+				if isOwnService {
+					if service.isPaid { showingApplications = true }
+					else { showingPaySheet = true }
+				} else {
+					startChatWithProvider()
+				}
+			}
+		}
+	}
+
+	// MARK: - Arrival Handlers
+
+	private func confirmArrivalAsWorker() async {
+		isConfirmingArrival = true
+		try? await applicationsStore.confirmWorkerArrival(serviceId: service.id)
+		isConfirmingArrival = false
+	}
+
+	private func confirmWorkerPresenceAsProvider() async {
+		isConfirmingArrival = true
+		try? await applicationsStore.confirmWorkerPresence(serviceId: service.id)
+		isConfirmingArrival = false
+	}
+
+	// MARK: - No-Show Handler
+
+	private func reportNoShow() async {
+		guard let workerId = service.hiredApplicantId,
+			  let providerId = authManager.currentUserId else { return }
+		isReportingNoShow = true
+		try? await applicationsStore.reportWorkerNoShow(
+			serviceId: service.id,
+			workerId: workerId,
+			providerId: providerId,
+			lockedAmount: service.lockedAmount ?? 0,
+			serviceTitle: service.title
+		)
+		isReportingNoShow = false
+	}
+
 	private var isOwnService: Bool {
 		guard let currentUserId = authManager.currentUserId else { return false }
 		return service.providerId == currentUserId
@@ -561,7 +688,50 @@ struct ServiceDetailView: View {
 	private var hasAlreadyApplied: Bool {
 		return applicationsStore.hasApplied(to: service.id)
 	}
-	
+
+	private var otherApplicantCount: Int {
+		let total = service.applicationCount
+		return hasAlreadyApplied ? max(0, total - 1) : total
+	}
+
+	@ViewBuilder
+	private var providerApplicantsSection: some View {
+		let applications = applicationsStore.receivedApplications
+			.filter { $0.serviceId == service.id && $0.status != .rejected && $0.status != .withdrawn }
+			.sorted { $0.appliedAt > $1.appliedAt }
+
+		if !applications.isEmpty {
+			VStack(alignment: .leading, spacing: 12) {
+				HStack(spacing: 6) {
+					Image(systemName: "person.2.fill")
+						.font(.subheadline)
+						.foregroundStyle(.accent)
+					Text("Applicants (\(applications.count))")
+						.font(.headline)
+						.fontDesign(.monospaced)
+						.foregroundStyle(Colors.swiftUIColor(.textMain))
+				}
+
+				ScrollView(.horizontal, showsIndicators: false) {
+					HStack(spacing: 14) {
+						ForEach(applications) { application in
+							Button {
+								reviewItem = ApplicantReviewItem(application: application, service: service)
+							} label: {
+								ApplicantAvatarBubble(application: application, user: nil)
+							}
+							.buttonStyle(.plain)
+						}
+					}
+					.padding(.horizontal, 2)
+				}
+			}
+			.padding(16)
+			.background(Colors.swiftUIColor(.cardBackground))
+			.cornerRadius(14)
+		}
+	}
+
 	private func startChatWithProvider() {
 		guard let currentUserId = authManager.currentUserId else { return }
 
@@ -1042,11 +1212,22 @@ struct ApplicantID: Identifiable {
 @Observable private final class ApplicantUsersLoader {
 	var users: [String: User] = [:]
 
+	/// Fetches all missing applicant profiles concurrently using TaskGroup.
+	/// Previously this was a sequential for-loop: 10 applicants = 10 round-trips one after another.
+	/// Now all fetches start at the same time — total time ≈ slowest single fetch.
 	func load(applications: [JobApplication]) async {
-		for application in applications {
-			guard users[application.applicantId] == nil else { continue }
-			if let user = try? await FirestoreService.shared.fetchUser(id: application.applicantId) {
-				users[application.applicantId] = user
+		let missingIds = applications.map(\.applicantId).filter { users[$0] == nil }
+		guard !missingIds.isEmpty else { return }
+
+		await withTaskGroup(of: (String, User?).self) { group in
+			for id in missingIds {
+				group.addTask {
+					let user = try? await FirestoreService.shared.fetchUser(id: id)
+					return (id, user)
+				}
+			}
+			for await (id, user) in group {
+				if let user { users[id] = user }
 			}
 		}
 	}
@@ -1257,6 +1438,451 @@ struct ServiceApplicationsSheet: View {
 			showError = true
 		}
 	}
+}
+
+// MARK: - Applicant Review Item (sheet identity wrapper)
+
+struct ApplicantReviewItem: Identifiable {
+    let application: JobApplication
+    let service: JobService
+    var id: String { application.id }
+}
+
+// MARK: - Applicant Review Sheet
+
+struct ApplicantReviewSheet: View {
+    let application: JobApplication
+    let service: JobService
+
+    @Environment(\.dismiss) var dismiss
+    @Environment(ApplicationsStore.self) var applicationsStore
+
+    @State private var loader = UserProfileLoader()
+    @State private var isAccepting = false
+    @State private var isRejecting = false
+    @State private var actionError: String?
+    @State private var showError = false
+
+    private var user: User? { loader.user }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    // MARK: - Avatar + Name + Rating
+                    VStack(spacing: 10) {
+                        if let photoURL = user?.photoURL ?? application.applicantPhotoURL,
+                           let url = URL(string: photoURL) {
+                            AsyncImage(url: url) { image in
+                                image.resizable().scaledToFill()
+                                    .frame(width: 90, height: 90).clipShape(Circle())
+                            } placeholder: {
+                                Circle().fill(Color(.systemGray5)).frame(width: 90, height: 90)
+                            }
+                        } else {
+                            ZStack {
+                                Circle().fill(Colors.swiftUIColor(.primary)).frame(width: 90, height: 90)
+                                Text(initials)
+                                    .font(.system(size: 28, weight: .bold)).foregroundStyle(.white)
+                            }
+                        }
+
+                        Text(user?.displayName ?? application.applicantName)
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundStyle(Colors.swiftUIColor(.textMain))
+
+                        if let rating = user?.rating {
+                            HStack(spacing: 4) {
+                                ForEach(0..<5, id: \.self) { i in
+                                    Image(systemName: i < Int(rating) ? "star.fill" : "star")
+                                        .font(.system(size: 12)).foregroundColor(.orange)
+                                }
+                                Text(String(format: "%.1f", rating))
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(Colors.swiftUIColor(.textPrimary))
+                                if let total = user?.totalReviews, total > 0 {
+                                    Text("(\(total) reviews)")
+                                        .font(.caption).foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                                }
+                            }
+                        }
+                    }
+                    .padding(.top, 8)
+
+                    // MARK: - Stats Row
+                    HStack(spacing: 0) {
+                        statCell(
+                            icon: "checkmark.circle.fill",
+                            value: "\(user?.totalJobsCompleted ?? 0)",
+                            label: "Jobs Done"
+                        )
+                        Divider().frame(height: 40)
+                        statCell(
+                            icon: "banknote.fill",
+                            value: user?.totalEarnings.map { String(format: "%.0f EGP", $0) } ?? "–",
+                            label: "Earned"
+                        )
+                        Divider().frame(height: 40)
+                        statCell(
+                            icon: "star.fill",
+                            value: user.map { "\($0.totalReviews)" } ?? "–",
+                            label: "Reviews"
+                        )
+                    }
+                    .padding(.vertical, 12)
+                    .background(Colors.swiftUIColor(.cardBackground))
+                    .cornerRadius(14)
+
+                    // MARK: - Bio
+                    if let bio = user?.bio, !bio.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Label("About", systemImage: "person.fill")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                            Text(bio)
+                                .font(.body)
+                                .foregroundStyle(Colors.swiftUIColor(.textMain))
+                                .lineSpacing(4)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(14)
+                        .background(Colors.swiftUIColor(.cardBackground))
+                        .cornerRadius(14)
+                    }
+
+                    // MARK: - Cover Message
+                    if let message = application.coverMessage, !message.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Label("Cover Message", systemImage: "text.quote")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                            Text(message)
+                                .font(.body)
+                                .foregroundStyle(Colors.swiftUIColor(.textMain))
+                                .lineSpacing(4)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(14)
+                        .background(Colors.swiftUIColor(.cardBackground))
+                        .cornerRadius(14)
+                    }
+
+                    // MARK: - Applied At
+                    HStack(spacing: 8) {
+                        Image(systemName: "clock").foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                        Text("Applied \(application.appliedAt, style: .relative) ago")
+                            .font(.caption)
+                            .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                        Spacer()
+                    }
+
+                    // MARK: - Accept / Decline
+                    if application.status == .pending {
+                        VStack(spacing: 10) {
+                            Button {
+                                Task { await accept() }
+                            } label: {
+                                Label(isAccepting ? "Accepting…" : "Accept Applicant", systemImage: "checkmark.circle.fill")
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 14)
+                                    .background(isAccepting ? Color.green.opacity(0.5) : Color.green)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(14)
+                            }
+                            .buttonStyle(.plain)
+                            .disabled(isAccepting || isRejecting)
+
+                            Button {
+                                Task { await decline() }
+                            } label: {
+                                Label(isRejecting ? "Declining…" : "Decline", systemImage: "xmark.circle.fill")
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 14)
+                                    .background(isRejecting ? Color.red.opacity(0.3) : Color.red.opacity(0.12))
+                                    .foregroundColor(isRejecting ? .white : .red)
+                                    .cornerRadius(14)
+                                    .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.red.opacity(0.4), lineWidth: 1))
+                            }
+                            .buttonStyle(.plain)
+                            .disabled(isAccepting || isRejecting)
+                        }
+                        .padding(.top, 4)
+                    } else {
+                        // Status badge for non-pending
+                        HStack {
+                            Spacer()
+                            Text(application.status.rawValue.capitalized)
+                                .font(.subheadline.weight(.semibold))
+                                .padding(.horizontal, 16).padding(.vertical, 8)
+                                .background(statusColor.opacity(0.15))
+                                .foregroundStyle(statusColor)
+                                .clipShape(Capsule())
+                            Spacer()
+                        }
+                    }
+                }
+                .padding(20)
+            }
+            .background(Colors.swiftUIColor(.appBackground))
+            .navigationTitle("Applicant Profile")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }
+                }
+            }
+            .alert("Error", isPresented: $showError) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(actionError ?? "An error occurred")
+            }
+        }
+        .task {
+            await loader.load(userId: application.applicantId)
+        }
+    }
+
+    // MARK: - Helpers
+
+    private var initials: String {
+        let parts = application.applicantName.split(separator: " ")
+        return parts.prefix(2).compactMap { $0.first }.map { String($0) }.joined().uppercased()
+    }
+
+    private var statusColor: Color {
+        switch application.status {
+        case .accepted: return .green
+        case .rejected: return .red
+        case .withdrawn: return .gray
+        case .completed: return .purple
+        case .pending: return .orange
+        }
+    }
+
+    private func accept() async {
+        isAccepting = true
+        do {
+            try await applicationsStore.acceptApplication(
+                applicationId: application.id,
+                serviceId: service.id
+            )
+            dismiss()
+        } catch {
+            actionError = error.localizedDescription
+            showError = true
+        }
+        isAccepting = false
+    }
+
+    private func decline() async {
+        isRejecting = true
+        do {
+            try await applicationsStore.updateApplicationStatus(
+                applicationId: application.id,
+                newStatus: .rejected
+            )
+            AnalyticsService.shared.track(.applicationRejected(jobId: application.serviceId))
+            dismiss()
+        } catch {
+            actionError = error.localizedDescription
+            showError = true
+        }
+        isRejecting = false
+    }
+
+    @ViewBuilder
+    private func statCell(icon: String, value: String, label: String) -> some View {
+        VStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.subheadline)
+                .foregroundStyle(Colors.swiftUIColor(.primary))
+            Text(value)
+                .font(.system(size: 15, weight: .bold))
+                .foregroundStyle(Colors.swiftUIColor(.textMain))
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+// MARK: - Group Service Detail View
+
+struct GroupServiceDetailView: View {
+    let groupId: String
+    let shifts: [JobService]
+
+    @Environment(\.dismiss) var dismiss
+    @Environment(AuthenticationManager.self) var authManager
+    @Environment(ServicesStore.self) var servicesStore
+    @Environment(ApplicationsStore.self) var applicationsStore
+    @Environment(AppCoordinator.self) var appCoordinator
+    @Environment(UserCache.self) var userCache
+
+    @State private var isExpanded: Bool = false
+    @State private var showDeleteConfirmation = false
+    @State private var showEditBlockAlert = false
+    @State private var showDeleteBlockAlert = false
+    @State private var isDeleting = false
+    @State private var showEditSheet = false
+
+    private var representative: JobService { shifts[0] }
+
+    // Any shift in the group has an active hired worker
+    private var hasActiveWorker: Bool {
+        shifts.contains { $0.status == .active && $0.hiredApplicantId != nil }
+    }
+
+    // Any shift in the group has at least one application
+    private var hasApplicants: Bool {
+        shifts.contains { $0.applicationCount > 0 }
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                // Header image from first shift
+                ServiceImageSection(service: representative)
+                    .frame(height: 280)
+
+                VStack(alignment: .leading, spacing: 24) {
+                    // Title
+                    Text(representative.title)
+                        .font(.system(size: 26, weight: .bold))
+                        .fontDesign(.monospaced)
+                        .foregroundStyle(Colors.swiftUIColor(.textMain))
+
+                    // Price & Category
+                    HStack(spacing: 10) {
+                        Text(representative.formattedPrice)
+                            .font(.system(size: 22, weight: .bold))
+                            .fontDesign(.monospaced)
+                            .foregroundStyle(.green)
+
+                        Divider().frame(height: 20)
+
+                        Text(representative.categoryDisplayName)
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(Color.accent.opacity(0.15))
+                            .cornerRadius(8)
+                            .foregroundStyle(.accent)
+
+                        Spacer()
+
+                        // Total shift count badge
+                        HStack(spacing: 4) {
+                            Image(systemName: "rectangle.stack.fill")
+                                .font(.caption2)
+                            Text("\(shifts.count) shifts")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.accent.opacity(0.15))
+                        .foregroundStyle(.accent)
+                        .cornerRadius(8)
+                    }
+
+                    // Shifts toggle card
+                    JobGroupCard(
+                        groupId: groupId,
+                        shifts: shifts,
+                        isExpanded: isExpanded,
+                        onToggle: { withAnimation { isExpanded.toggle() } },
+                        onSelectShift: { shift in
+                            appCoordinator.serviceProviderCoordinator?.navigate(
+                                to: ServiceProviderDestination.serviceDetail(shift)
+                            )
+                        }
+                    )
+                }
+                .padding(20)
+            }
+        }
+        .background(Colors.swiftUIColor(.appBackground))
+        .navigationTitle("Shift Group")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button {
+                        if hasApplicants {
+                            showEditBlockAlert = true
+                        } else {
+                            showEditSheet = true
+                        }
+                    } label: {
+                        Label("Edit", systemImage: "pencil")
+                    }
+
+                    Button {
+                        // Boost — placeholder, same as single service boost
+                    } label: {
+                        Label("Boost Job", systemImage: "bolt.fill")
+                    }
+
+                    Button(role: .destructive) {
+                        if hasActiveWorker {
+                            showDeleteBlockAlert = true
+                        } else {
+                            showDeleteConfirmation = true
+                        }
+                    } label: {
+                        Label("Delete Service", systemImage: "trash.fill")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                        .foregroundStyle(.accent)
+                }
+            }
+        }
+        .confirmationDialog(
+            "Delete all \(shifts.count) shifts?",
+            isPresented: $showDeleteConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Delete All Shifts", role: .destructive) {
+                Task { await deleteGroup() }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This will permanently delete all shifts in this group. This cannot be undone.")
+        }
+        .alert("Cannot Edit This Job", isPresented: $showEditBlockAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("A user has applied to one or more shifts. To make changes, delete this service and create a new one.")
+        }
+        .alert("Cannot Delete This Job", isPresented: $showDeleteBlockAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("A user is currently working one of these shifts. You cannot delete it while it is active.")
+        }
+        .sheet(isPresented: $showEditSheet) {
+            if let providerId = authManager.currentUserId {
+                CreateJobSheet(editingService: representative, editingGroupId: groupId, providerId: providerId)
+                    .environment(servicesStore)
+                    .environment(authManager)
+                    .environment(userCache)
+                    .environment(JobSeekerCoordinator())
+            }
+        }
+    }
+
+    private func deleteGroup() async {
+        guard let providerId = authManager.currentUserId else { return }
+        isDeleting = true
+        try? await servicesStore.bulkDeleteGroup(groupId: groupId, providerId: providerId)
+        isDeleting = false
+        dismiss()
+    }
 }
 
 #Preview {

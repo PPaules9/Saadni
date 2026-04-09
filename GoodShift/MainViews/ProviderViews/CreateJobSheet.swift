@@ -22,11 +22,27 @@ struct CreateJobSheet: View {
  @State private var selectedCategory: String
  let initialJobName: String?
  let initialServiceImageName: String?
+ // Edit mode params
+ let editingService: JobService?
+ let editingGroupId: String?
+ let editingProviderId: String?
 
  init(selectedCategory: String, initialJobName: String?, initialServiceImageName: String?) {
   _selectedCategory = State(initialValue: selectedCategory)
   self.initialJobName = initialJobName
   self.initialServiceImageName = initialServiceImageName
+  self.editingService = nil
+  self.editingGroupId = nil
+  self.editingProviderId = nil
+ }
+
+ init(editingService: JobService, editingGroupId: String? = nil, providerId: String) {
+  _selectedCategory = State(initialValue: editingService.category?.rawValue ?? "Food & Beverage")
+  self.initialJobName = nil
+  self.initialServiceImageName = nil
+  self.editingService = editingService
+  self.editingGroupId = editingGroupId
+  self.editingProviderId = providerId
  }
  
  var tabNames = ["Basic", "Location", "Pay", "Reqs", "Info"]
@@ -142,7 +158,7 @@ struct CreateJobSheet: View {
       }
      } else {
       BrandButton(
-       "Review Shift(s)",
+       viewModel.isEditMode ? "Review Update" : "Review Shift(s)",
        hasIcon: true,
        icon: "checkmark",
        secondary: false
@@ -209,25 +225,31 @@ struct CreateJobSheet: View {
    Text(viewModel.publishError ?? "An unknown error occurred")
   }
   .onAppear {
-   AnalyticsService.shared.track(.jobCreationStarted(category: selectedCategory))
-   if let initialName = initialJobName {
-    viewModel.jobName = initialName
-    // Pre-select matching service tag if it matches a known option
-    if let matchedTag = ServiceTagOption(rawValue: initialName) {
-     viewModel.serviceTag = matchedTag.rawValue
-     selectedCategory = matchedTag.derivedCategory.rawValue
-    }
-   }
-   if viewModel.selectedImage == nil, let imageName = initialServiceImageName {
-    viewModel.selectedImage = UIImage(named: imageName)
-    viewModel.selectedAssetName = imageName  // Mark as bundled asset — will skip upload
-   }
    viewModel.currentUserId = authManager.currentUserId
 
-   if let currentUser = authManager.currentUser,
-      let defaultId = currentUser.defaultAddressId,
-      let defaultAddress = currentUser.savedAddresses?.first(where: { $0.id == defaultId }) {
-       viewModel.applyDefaultAddress(defaultAddress)
+   if let service = editingService {
+    // Edit mode — pre-fill all fields from existing service
+    viewModel.prefill(from: service, groupId: editingGroupId)
+    selectedCategory = service.category?.rawValue ?? selectedCategory
+   } else {
+    // Create mode
+    AnalyticsService.shared.track(.jobCreationStarted(category: selectedCategory))
+    if let initialName = initialJobName {
+     viewModel.jobName = initialName
+     if let matchedTag = ServiceTagOption(rawValue: initialName) {
+      viewModel.serviceTag = matchedTag.rawValue
+      selectedCategory = matchedTag.derivedCategory.rawValue
+     }
+    }
+    if viewModel.selectedImage == nil, let imageName = initialServiceImageName {
+     viewModel.selectedImage = UIImage(named: imageName)
+     viewModel.selectedAssetName = imageName
+    }
+    if let currentUser = authManager.currentUser,
+       let defaultId = currentUser.defaultAddressId,
+       let defaultAddress = currentUser.savedAddresses?.first(where: { $0.id == defaultId }) {
+        viewModel.applyDefaultAddress(defaultAddress)
+    }
    }
   }
  }
@@ -305,10 +327,89 @@ struct CreateJobSheet: View {
    viewModel.uploadState = .saving
 
   } else {
-   resolvedImage = ServiceImage()
+   // No image picked — in edit mode keep the original, otherwise empty
+   if viewModel.isEditMode, let original = viewModel.editingOriginalImage {
+    resolvedImage = original
+   } else {
+    resolvedImage = ServiceImage()
+   }
    viewModel.uploadState = .saving
   }
 
+  // MARK: Edit mode — update instead of create
+  if viewModel.isEditMode {
+   do {
+    if let groupId = viewModel.editingGroupId, let providerId = editingProviderId {
+     // Group edit: build a representative service and bulk-update all shifts
+     guard let original = editingService else { return }
+     var updated = original
+     updated.title = viewModel.jobName
+     updated.price = Double(viewModel.price) ?? original.price
+     updated.location = ServiceLocation(name: viewModel.city.isEmpty ? original.location.name : viewModel.city, coordinate: viewModel.selectedLocation)
+     updated.description = viewModel.otherDetails
+     updated.image = resolvedImage
+     updated.address = viewModel.address
+     updated.branchName = viewModel.branchName.isEmpty ? nil : viewModel.branchName
+     updated.nearestLandmark = viewModel.nearestLandmark.isEmpty ? nil : viewModel.nearestLandmark
+     updated.paymentMethod = viewModel.paymentMethod
+     updated.paymentTiming = viewModel.paymentTiming
+     updated.dressCode = viewModel.dressCode.isEmpty ? nil : viewModel.dressCode
+     updated.minimumAge = viewModel.minimumAge.isEmpty ? nil : viewModel.minimumAge
+     updated.genderPreference = viewModel.genderPreference
+     updated.physicalRequirements = viewModel.physicalRequirements.isEmpty ? nil : viewModel.physicalRequirements
+     updated.languageNeeded = viewModel.languageNeeded.isEmpty ? nil : viewModel.languageNeeded
+     updated.whatToBring = viewModel.whatToBring.isEmpty ? nil : viewModel.whatToBring
+     updated.breakDuration = viewModel.breakDuration.isEmpty ? nil : viewModel.breakDuration
+     updated.serviceTag = viewModel.serviceTag.isEmpty ? nil : viewModel.serviceTag
+     updated.providerId = providerId
+     try await servicesStore.bulkUpdateSharedFields(groupId: groupId, from: updated)
+    } else if let original = editingService {
+     // Single service edit
+     var updated = original
+     updated.title = viewModel.jobName
+     updated.price = Double(viewModel.price) ?? original.price
+     updated.location = ServiceLocation(name: viewModel.city.isEmpty ? original.location.name : viewModel.city, coordinate: viewModel.selectedLocation)
+     updated.description = viewModel.otherDetails
+     updated.image = resolvedImage
+     updated.address = viewModel.address
+     updated.branchName = viewModel.branchName.isEmpty ? nil : viewModel.branchName
+     updated.nearestLandmark = viewModel.nearestLandmark.isEmpty ? nil : viewModel.nearestLandmark
+     updated.paymentMethod = viewModel.paymentMethod
+     updated.paymentTiming = viewModel.paymentTiming
+     updated.dressCode = viewModel.dressCode.isEmpty ? nil : viewModel.dressCode
+     updated.minimumAge = viewModel.minimumAge.isEmpty ? nil : viewModel.minimumAge
+     updated.genderPreference = viewModel.genderPreference
+     updated.physicalRequirements = viewModel.physicalRequirements.isEmpty ? nil : viewModel.physicalRequirements
+     updated.languageNeeded = viewModel.languageNeeded.isEmpty ? nil : viewModel.languageNeeded
+     updated.whatToBring = viewModel.whatToBring.isEmpty ? nil : viewModel.whatToBring
+     updated.breakDuration = viewModel.breakDuration.isEmpty ? nil : viewModel.breakDuration
+     updated.serviceTag = viewModel.serviceTag.isEmpty ? nil : viewModel.serviceTag
+     // Update time fields
+     var estDuration = viewModel.endTime.timeIntervalSince(viewModel.startTime) / 3600.0
+     if estDuration < 0 { estDuration += 24.0 }
+     let cal = Calendar.current
+     if let originalDate = original.serviceDate {
+      var comps = cal.dateComponents([.year, .month, .day], from: originalDate)
+      comps.hour = cal.component(.hour, from: viewModel.startTime)
+      comps.minute = cal.component(.minute, from: viewModel.startTime)
+      updated.serviceDate = cal.date(from: comps) ?? originalDate
+     }
+     updated.estimatedDurationHours = estDuration > 0 ? estDuration : 1.0
+     try await servicesStore.updateService(updated)
+    }
+    viewModel.uploadState = .completed
+    viewModel.showSummary = false
+    withAnimation { viewModel.showSuccessModal = true }
+   } catch {
+    viewModel.publishError = error.localizedDescription
+    viewModel.uploadState = .idle
+    showErrorAlert = true
+   }
+   viewModel.isPublishing = false
+   return
+  }
+
+  // MARK: Create mode — original publish flow
   let services = viewModel.createServices(category: category, user: user, serviceImage: resolvedImage)
   guard !services.isEmpty else {
    viewModel.publishError = "Could not generate any shifts. Please check the dates."

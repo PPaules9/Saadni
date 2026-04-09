@@ -97,7 +97,6 @@ class AuthenticationManager: AuthProvider {
  func signIn(email: String, password: String) async throws {
   isAuthFlowActive = true
   defer { isAuthFlowActive = false }
-  authState = .authenticating
   errorMessage = nil
 
   do {
@@ -128,10 +127,9 @@ class AuthenticationManager: AuthProvider {
  }
 
  /// Create account with email and password
- func signUp(email: String, password: String, fullName: String) async throws {
+ func signUp(email: String, password: String, fullName: String, role: UserRole? = nil) async throws {
   isAuthFlowActive = true
   defer { isAuthFlowActive = false }
-  authState = .authenticating
   errorMessage = nil
 
   do {
@@ -145,6 +143,16 @@ class AuthenticationManager: AuthProvider {
    // Create user object
    var user = User(from: authResult.user)
    user.displayName = fullName
+
+   // Apply the role chosen during onboarding
+   switch role {
+   case .jobSeeker:
+    user.isJobSeeker = true
+   case .provider:
+    user.isServiceProvider = true
+   case nil:
+    break
+   }
 
    // Update cache and auth state
    await userCache.updateUser(user)
@@ -166,7 +174,6 @@ class AuthenticationManager: AuthProvider {
  func signInAnonymously() async throws {
   isAuthFlowActive = true
   defer { isAuthFlowActive = false }
-  authState = .authenticating
   errorMessage = nil
 
   do {

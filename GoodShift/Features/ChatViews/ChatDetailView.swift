@@ -13,6 +13,7 @@ struct ChatDetailView: View {
 	@Environment(ConversationsStore.self) var conversationsStore
 	@Environment(AuthenticationManager.self) var authManager
 	@Environment(UserCache.self) var userCache
+	@Environment(UserFetchCache.self) var userFetchCache
 	@State private var viewModel = ChatDetailViewModel()
 	@State private var messageText = ""
 	@State private var isTyping = false
@@ -277,6 +278,8 @@ struct ChatDetailView: View {
 			setupMessagesListener()
 		}
 		.task {
+			// Wire the cache into the ViewModel before fetching
+			viewModel.userFetchCache = userFetchCache
 			// Load participant name through the ViewModel — not directly from Firestore
 			guard let otherUserId = conversation.otherParticipantId(currentUserId: currentUserId) else { return }
 			await viewModel.loadOtherUserInfo(userId: otherUserId)

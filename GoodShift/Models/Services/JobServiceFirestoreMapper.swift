@@ -81,7 +81,16 @@ struct JobServiceFirestoreMapper {
         if let completedAt = service.completedAt { dict["completedAt"] = Timestamp(date: completedAt) }
         if let completionRequestedAt = service.completionRequestedAt { dict["completionRequestedAt"] = Timestamp(date: completionRequestedAt) }
         if let completionNote = service.completionNote { dict["completionNote"] = completionNote }
+        if let completionPhotoURL = service.completionPhotoURL { dict["completionPhotoURL"] = completionPhotoURL }
         if let disputeReason = service.disputeReason { dict["disputeReason"] = disputeReason }
+
+        // Payment / escrow
+        dict["isPaid"] = service.isPaid
+        if let lockedAmount = service.lockedAmount { dict["lockedAmount"] = lockedAmount }
+
+        // Arrival confirmation
+        dict["workerConfirmedArrival"] = service.workerConfirmedArrival
+        dict["providerConfirmedWorkerArrival"] = service.providerConfirmedWorkerArrival
 
         // Job group
         if let jobGroupId = service.jobGroupId { dict["jobGroupId"] = jobGroupId }
@@ -133,7 +142,16 @@ struct JobServiceFirestoreMapper {
         let isArchived = data["isArchived"] as? Bool ?? false
         let completionRequestedAt = (data["completionRequestedAt"] as? Timestamp)?.dateValue()
         let completionNote = data["completionNote"] as? String
+        let completionPhotoURL = data["completionPhotoURL"] as? String
         let disputeReason = data["disputeReason"] as? String
+
+        // Payment / escrow
+        let isPaid = data["isPaid"] as? Bool ?? false
+        let lockedAmount = data["lockedAmount"] as? Double
+
+        // Arrival confirmation
+        let workerConfirmedArrival = data["workerConfirmedArrival"] as? Bool ?? false
+        let providerConfirmedWorkerArrival = data["providerConfirmedWorkerArrival"] as? Bool ?? false
 
         let address = data["address"] as? String ?? ""
         let floor = data["floor"] as? String ?? ""
@@ -187,7 +205,12 @@ struct JobServiceFirestoreMapper {
             isArchived: isArchived,
             completionRequestedAt: completionRequestedAt,
             completionNote: completionNote,
+            completionPhotoURL: completionPhotoURL,
             disputeReason: disputeReason,
+            isPaid: isPaid,
+            lockedAmount: lockedAmount,
+            workerConfirmedArrival: workerConfirmedArrival,
+            providerConfirmedWorkerArrival: providerConfirmedWorkerArrival,
             jobGroupId: data["jobGroupId"] as? String,
             serviceTag: data["serviceTag"] as? String
         )

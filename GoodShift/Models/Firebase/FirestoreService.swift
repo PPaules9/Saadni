@@ -46,80 +46,79 @@ class FirestoreService: FirestoreProvider {
   // 1. Delete all applications submitted TO the user's services
   //    (other users applied to jobs this user posted — clean those up before
   //    the service documents themselves are removed, avoiding orphaned applications)
-  let appsToMyServicesSnapshot = try await applicationsCollection
-   .whereField("providerId", isEqualTo: userId)
-   .getDocuments()
-  for doc in appsToMyServicesSnapshot.documents {
-   try await doc.reference.delete()
-  }
+  try await deleteInBatches(
+   query: applicationsCollection.whereField("providerId", isEqualTo: userId)
+  )
 
   // 2. Reset services where this user was the hired applicant back to published
   //    so the provider's job re-enters the open market instead of freezing forever.
   //    Only touch in-progress statuses; completed jobs are left as historical records.
-  let hiredServicesSnapshot = try await servicesCollection
-   .whereField("hiredApplicantId", isEqualTo: userId)
-   .getDocuments()
+  //    Uses paginated reads because a popular worker could be hired on many services.
   let inProgressStatuses: Set<String> = ["active", "pending_completion", "disputed"]
-  for doc in hiredServicesSnapshot.documents {
-   let status = doc.data()["status"] as? String ?? ""
-   if inProgressStatuses.contains(status) {
-    try await doc.reference.updateData([
-     "status": "published",
-     "hiredApplicantId": FieldValue.delete()
-    ])
+  let hiredQuery = servicesCollection.whereField("hiredApplicantId", isEqualTo: userId)
+  var hasMore = true
+  while hasMore {
+   let snapshot = try await hiredQuery.limit(to: 500).getDocuments()
+   guard !snapshot.documents.isEmpty else { break }
+   let batch = db.batch()
+   for doc in snapshot.documents {
+    let status = doc.data()["status"] as? String ?? ""
+    if inProgressStatuses.contains(status) {
+     batch.updateData([
+      "status": "published",
+      "hiredApplicantId": FieldValue.delete()
+     ], forDocument: doc.reference)
+    }
    }
+   try await batch.commit()
+   hasMore = snapshot.documents.count == 500
   }
 
   // 3. Delete user's own posted services
-  let servicesSnapshot = try await servicesCollection
-   .whereField("providerId", isEqualTo: userId)
-   .getDocuments()
-  for doc in servicesSnapshot.documents {
-   try await doc.reference.delete()
-  }
+  try await deleteInBatches(
+   query: servicesCollection.whereField("providerId", isEqualTo: userId)
+  )
 
   // 4. Delete applications the user submitted as a worker
-  let applicationsSnapshot = try await applicationsCollection
-   .whereField("applicantId", isEqualTo: userId)
-   .getDocuments()
-  for doc in applicationsSnapshot.documents {
-   try await doc.reference.delete()
-  }
+  try await deleteInBatches(
+   query: applicationsCollection.whereField("applicantId", isEqualTo: userId)
+  )
 
   // 5. Delete reviews received by and submitted by the user
-  let receivedReviewsSnapshot = try await reviewsCollection
-   .whereField("revieweeId", isEqualTo: userId)
-   .getDocuments()
-  for doc in receivedReviewsSnapshot.documents {
-   try await doc.reference.delete()
-  }
-
-  let submittedReviewsSnapshot = try await reviewsCollection
-   .whereField("reviewerId", isEqualTo: userId)
-   .getDocuments()
-  for doc in submittedReviewsSnapshot.documents {
-   try await doc.reference.delete()
-  }
+  try await deleteInBatches(
+   query: reviewsCollection.whereField("revieweeId", isEqualTo: userId)
+  )
+  try await deleteInBatches(
+   query: reviewsCollection.whereField("reviewerId", isEqualTo: userId)
+  )
 
   // 6. Delete user's transactions
-  let transactionsSnapshot = try await transactionsCollection
-   .whereField("userId", isEqualTo: userId)
-   .getDocuments()
-  for doc in transactionsSnapshot.documents {
-   try await doc.reference.delete()
-  }
+  try await deleteInBatches(
+   query: transactionsCollection.whereField("userId", isEqualTo: userId)
+  )
 
   // 7. Delete conversations the user participated in
-  let conversationsSnapshot = try await db.collection("conversations")
-   .whereField("participantIds", arrayContains: userId)
-   .getDocuments()
-  for doc in conversationsSnapshot.documents {
-   try await doc.reference.delete()
-  }
+  try await deleteInBatches(
+   query: db.collection("conversations").whereField("participantIds", arrayContains: userId)
+  )
 
   // 8. Delete user document
   try await usersCollection.document(userId).delete()
   print("✅ All user data deleted from Firestore for: \(userId)")
+ }
+
+ /// Deletes all documents matching a query in batches of 500.
+ /// Prevents loading thousands of document references into memory at once.
+ private func deleteInBatches(query: Query) async throws {
+  var hasMore = true
+  while hasMore {
+   let snapshot = try await query.limit(to: 500).getDocuments()
+   guard !snapshot.documents.isEmpty else { break }
+   let batch = db.batch()
+   snapshot.documents.forEach { batch.deleteDocument($0.reference) }
+   try await batch.commit()
+   hasMore = snapshot.documents.count == 500
+  }
  }
  
  func saveUser(_ user: User) async throws {

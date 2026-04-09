@@ -97,7 +97,8 @@ struct CreateJobTab1: View {
 					)
 				}
 				
-				// Dates Selection
+				// Dates Selection — hidden in edit mode (dates are fixed)
+				if !viewModel.isEditMode {
 				VStack(alignment: .leading, spacing: 0) {
 					Button(action: { withAnimation(.easeInOut(duration: 0.25)) { showCalendar.toggle() } }) {
 						HStack {
@@ -146,7 +147,8 @@ struct CreateJobTab1: View {
 							)
 					}
 				}
-				
+				} // end if !isEditMode
+
 				// Times
 				VStack(alignment: .leading, spacing: 8) {
 					Text("Shift Timing")

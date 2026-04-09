@@ -196,10 +196,12 @@ struct CreateJobSummaryModal: View {
 				}
 
 				BrandButton(
-					viewModel.isPublishing ? "Publishing..." : "Publish",
+					viewModel.isPublishing
+						? (viewModel.isEditMode ? "Updating..." : "Publishing...")
+						: (viewModel.isEditMode ? "Update" : "Publish"),
 					isDisabled: viewModel.isPublishing,
 					hasIcon: true,
-					icon: "paperplane.fill",
+					icon: viewModel.isEditMode ? "checkmark.circle.fill" : "paperplane.fill",
 					secondary: false
 				) {
 					onPublish()

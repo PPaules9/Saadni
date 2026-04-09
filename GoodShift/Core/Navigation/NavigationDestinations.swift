@@ -26,38 +26,49 @@ enum ServiceTimeFilter: Hashable {
         }
     }
 
-    /// The date range this filter covers, nil means no date filter (show all / tag only)
+    /// The date range this filter covers, nil means no date filter (show all / tag only).
+    /// Uses guard let instead of force unwraps — Calendar.date(byAdding:) can theoretically
+    /// return nil on unusual locale/timezone edge cases, which would otherwise crash the app.
     var dateRange: ClosedRange<Date>? {
         let cal = Calendar.current
         let now = Date()
         switch self {
         case .tomorrow:
-            let start = cal.startOfDay(for: cal.date(byAdding: .day, value: 1, to: now)!)
-            let end   = cal.date(byAdding: .day, value: 1, to: start)!
-            return start...end
+            guard let tomorrow = cal.date(byAdding: .day, value: 1, to: now),
+                  let end = cal.date(byAdding: .day, value: 1, to: cal.startOfDay(for: tomorrow))
+            else { return nil }
+            return cal.startOfDay(for: tomorrow)...end
+
         case .thisWeek:
             let start = cal.startOfDay(for: now)
-            let end   = cal.date(byAdding: .day, value: 7, to: start)!
+            guard let end = cal.date(byAdding: .day, value: 7, to: start) else { return nil }
             return start...end
+
         case .nextTwoWeeks:
             let start = cal.startOfDay(for: now)
-            let end   = cal.date(byAdding: .day, value: 14, to: start)!
+            guard let end = cal.date(byAdding: .day, value: 14, to: start) else { return nil }
             return start...end
+
         case .thisMonth:
             let comps = cal.dateComponents([.year, .month], from: now)
-            let start = cal.date(from: comps)!
-            let end   = cal.date(byAdding: .month, value: 1, to: start)!
+            guard let start = cal.date(from: comps),
+                  let end = cal.date(byAdding: .month, value: 1, to: start)
+            else { return nil }
             return start...end
+
         case .nextMonth:
             let comps = cal.dateComponents([.year, .month], from: now)
-            let thisMonthStart = cal.date(from: comps)!
-            let start = cal.date(byAdding: .month, value: 1, to: thisMonthStart)!
-            let end   = cal.date(byAdding: .month, value: 1, to: start)!
+            guard let thisMonthStart = cal.date(from: comps),
+                  let start = cal.date(byAdding: .month, value: 1, to: thisMonthStart),
+                  let end = cal.date(byAdding: .month, value: 1, to: start)
+            else { return nil }
             return start...end
+
         case .byDate(let d):
             let start = cal.startOfDay(for: d)
-            let end   = cal.date(byAdding: .day, value: 1, to: start)!
+            guard let end = cal.date(byAdding: .day, value: 1, to: start) else { return nil }
             return start...end
+
         case .byTag, .all:
             return nil
         }
@@ -133,6 +144,7 @@ enum JobSeekerDestination: Hashable {
 
 enum ServiceProviderDestination: Hashable {
     case serviceDetail(JobService)
+    case groupServiceDetail(groupId: String, shifts: [JobService])
     case applicationsList(serviceId: String, serviceTitle: String)
     case categoryDetail(ServiceCategoryType)
     case chatDetail(conversationId: String)

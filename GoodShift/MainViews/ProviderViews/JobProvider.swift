@@ -83,6 +83,8 @@ struct JobSeekerRootView: View {
   switch destination {
   case .serviceDetail(let service):
    ServiceDetailView(service: service)
+  case .groupServiceDetail(let groupId, let shifts):
+   GroupServiceDetailView(groupId: groupId, shifts: shifts)
   case .applicationsList(let serviceId, _):
    if let service = servicesStore.services.first(where: { $0.id == serviceId }) {
     ServiceApplicationsSheet(service: service)
