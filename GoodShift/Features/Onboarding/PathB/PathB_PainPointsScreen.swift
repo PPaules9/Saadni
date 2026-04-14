@@ -47,7 +47,7 @@ struct PathB_PainPointsScreen: View {
 
             Spacer()
 
-            BrandButton("Continue", size: .large, hasIcon: false, icon: "", secondary: false) {
+            BrandButton("Continue", size: .large, isDisabled: selected.isEmpty, hasIcon: false, icon: "", secondary: false) {
                 onNext()
             }
             .padding(.horizontal, 24)

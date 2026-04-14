@@ -42,7 +42,7 @@ struct PathB_GoalScreen: View {
 
             Spacer()
 
-            BrandButton("Continue", size: .large, hasIcon: false, icon: "", secondary: false) {
+            BrandButton("Continue", size: .large, isDisabled: selected.isEmpty, hasIcon: false, icon: "", secondary: false) {
                 AnalyticsService.shared.track(.onboardingCategoriesSelected(
                     categories: selected.map(\.rawValue),
                     role: "provider"

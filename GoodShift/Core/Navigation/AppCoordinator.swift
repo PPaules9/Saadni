@@ -70,9 +70,12 @@ final class AppCoordinator {
 
     func navigateToPerformance() {
         if let c = jobSeekerCoordinator {
-            c.navigate(to: ServiceProviderDestination.performance)
+            c.selectTab(.profile)
+            Task { @MainActor in
+                c.navigate(to: ServiceProviderDestination.performance)
+            }
         } else if let c = serviceProviderCoordinator {
-            c.navigate(to: ServiceProviderDestination.performance)
+            c.selectTabAndNavigate(to: .profile, destination: .performance)
         }
     }
 
@@ -119,6 +122,9 @@ final class AppCoordinator {
             coordinator.selectTab(.myJobs)
         case .reviewPostedByProvider:
             coordinator.selectTab(.profile)
+            Task { @MainActor in
+                coordinator.navigate(to: ServiceProviderDestination.performance)
+            }
         case .earningReceived, .topupSuccess, .withdrawalProcessed, .matchingJob:
             coordinator.selectTab(.dashboard)
         default:
@@ -147,7 +153,7 @@ final class AppCoordinator {
         case .paymentReceived, .withdrawalPending:
             coordinator.selectTab(.home)
         case .reviewPostedBySeeker, .lowRatingAlert:
-            coordinator.selectTab(.profile)
+            coordinator.selectTabAndNavigate(to: .profile, destination: .performance)
         default:
             break
         }

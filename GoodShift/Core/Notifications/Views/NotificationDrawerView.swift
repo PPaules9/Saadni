@@ -196,10 +196,14 @@ struct NotificationDrawerView: View {
 		if !notification.read {
 			Task { await notificationsStore.markAsRead(notification) }
 		}
+		// Capture the coordinator reference BEFORE dismiss — the @Environment
+		// becomes invalid once the view is removed from the hierarchy, so any
+		// access inside the Task after dismiss() would silently do nothing.
+		let coordinator = appCoordinator
 		dismiss()
 		Task { @MainActor in
-			try? await Task.sleep(for: .milliseconds(350))
-			appCoordinator.handleNotificationNavigation(notification)
+			try? await Task.sleep(for: .milliseconds(400))
+			coordinator.handleNotificationNavigation(notification)
 		}
 	}
 	

@@ -53,8 +53,8 @@ struct ProfileView: View {
 						}
 					)
 
-					// Strike Status (job seekers only)
-					if let user = authManager.currentUser, user.isJobSeeker {
+					// Strike Status (workers only)
+					if let user = authManager.currentUser, !user.isServiceProvider {
 						StrikeStatusCard(strikes: user.strikes)
 							.padding(.horizontal, 20)
 					}
