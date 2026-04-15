@@ -85,7 +85,7 @@ class ApplicationsStore: ListenerManaging {
     return
   }
 
-  let listener = db.collection("applications")
+  let listener = db.collection(AppConstants.Firestore.applications)
    .whereField("applicantId", isEqualTo: userId)
    .order(by: "appliedAt", descending: true)
    .limit(to: 50)
@@ -135,7 +135,7 @@ class ApplicationsStore: ListenerManaging {
   }
 
   // Single query using denormalized providerId field — no chunking needed
-  let listener = db.collection("applications")
+  let listener = db.collection(AppConstants.Firestore.applications)
    .whereField("providerId", isEqualTo: userId)
    .order(by: "appliedAt", descending: true)
    .limit(to: 50)
@@ -201,7 +201,7 @@ class ApplicationsStore: ListenerManaging {
   try await FirestoreService.shared.saveApplication(application)
 
   // Increment application count on service
-  try await db.collection("services").document(serviceId).updateData([
+  try await db.collection(AppConstants.Firestore.services).document(serviceId).updateData([
    "applicationCount": FieldValue.increment(Int64(1))
   ])
 
@@ -224,7 +224,7 @@ class ApplicationsStore: ListenerManaging {
    updateData["responseMessage"] = responseMessage
   }
 
-  try await db.collection("applications").document(applicationId).updateData(updateData)
+  try await db.collection(AppConstants.Firestore.applications).document(applicationId).updateData(updateData)
   print("✅ Application status updated: \(applicationId) -> \(newStatus.rawValue)")
  }
 
@@ -249,7 +249,7 @@ class ApplicationsStore: ListenerManaging {
   )
 
   // Mark service as active with hired applicant
-  try await db.collection("services").document(serviceId).updateData([
+  try await db.collection(AppConstants.Firestore.services).document(serviceId).updateData([
    "status": ServiceStatus.active.rawValue,
    "hiredApplicantId": acceptedApplication.applicantId
   ])
@@ -283,7 +283,7 @@ class ApplicationsStore: ListenerManaging {
  /// Marks the shift as paid and locks the amount in GoodShift escrow.
  /// TODO: Replace with real payment gateway deduction when integrated.
  func lockPayment(serviceId: String, amount: Double) async throws {
-  try await db.collection("services").document(serviceId).updateData([
+  try await db.collection(AppConstants.Firestore.services).document(serviceId).updateData([
    "isPaid": true,
    "lockedAmount": amount
   ])
@@ -294,7 +294,7 @@ class ApplicationsStore: ListenerManaging {
 
  /// Worker confirms they have arrived at the job site
  func confirmWorkerArrival(serviceId: String) async throws {
-  try await db.collection("services").document(serviceId).updateData([
+  try await db.collection(AppConstants.Firestore.services).document(serviceId).updateData([
    "workerConfirmedArrival": true
   ])
   print("✅ Worker confirmed arrival for service: \(serviceId)")
@@ -302,7 +302,7 @@ class ApplicationsStore: ListenerManaging {
 
  /// Provider confirms they see the worker on-site
  func confirmWorkerPresence(serviceId: String) async throws {
-  try await db.collection("services").document(serviceId).updateData([
+  try await db.collection(AppConstants.Firestore.services).document(serviceId).updateData([
    "providerConfirmedWorkerArrival": true
   ])
   print("✅ Provider confirmed worker presence for service: \(serviceId)")
@@ -321,7 +321,7 @@ class ApplicationsStore: ListenerManaging {
   if let photoURL = photoURL {
    updateData["completionPhotoURL"] = photoURL
   }
-  try await db.collection("services").document(serviceId).updateData(updateData)
+  try await db.collection(AppConstants.Firestore.services).document(serviceId).updateData(updateData)
   print("✅ Completion requested for service: \(serviceId)")
  }
 
@@ -329,13 +329,13 @@ class ApplicationsStore: ListenerManaging {
 
  func confirmCompletion(serviceId: String, applicationId: String) async throws {
   // Mark service as completed
-  try await db.collection("services").document(serviceId).updateData([
+  try await db.collection(AppConstants.Firestore.services).document(serviceId).updateData([
    "status": ServiceStatus.completed.rawValue,
    "completedAt": Timestamp(date: Date())
   ])
 
   // Mark application as completed
-  try await db.collection("applications").document(applicationId).updateData([
+  try await db.collection(AppConstants.Firestore.applications).document(applicationId).updateData([
    "status": JobApplicationStatus.completed.rawValue,
    "respondedAt": Timestamp(date: Date())
   ])
@@ -354,7 +354,7 @@ class ApplicationsStore: ListenerManaging {
   if let reason = reason, !reason.isEmpty {
    updateData["disputeReason"] = reason
   }
-  try await db.collection("services").document(serviceId).updateData(updateData)
+  try await db.collection(AppConstants.Firestore.services).document(serviceId).updateData(updateData)
   print("✅ Completion disputed, job reverted to active: \(serviceId)")
  }
 
@@ -371,7 +371,7 @@ class ApplicationsStore: ListenerManaging {
   try await updateApplicationStatus(applicationId: applicationId, newStatus: .withdrawn)
 
   // Decrement application count
-  try await db.collection("services").document(application.serviceId).updateData([
+  try await db.collection(AppConstants.Firestore.services).document(application.serviceId).updateData([
    "applicationCount": FieldValue.increment(Int64(-1))
   ])
  }
@@ -422,7 +422,7 @@ class ApplicationsStore: ListenerManaging {
   let batch = db.batch()
 
   // 1. Add strike to worker + set pending notification
-  let workerRef = db.collection("users").document(workerId)
+  let workerRef = db.collection(AppConstants.Firestore.users).document(workerId)
   batch.updateData([
    "strikes": FieldValue.increment(Int64(1)),
    "pendingStrikeNotification": true,
@@ -430,13 +430,13 @@ class ApplicationsStore: ListenerManaging {
   ], forDocument: workerRef)
 
   // 2. Give provider a boost credit
-  let providerRef = db.collection("users").document(providerId)
+  let providerRef = db.collection(AppConstants.Firestore.users).document(providerId)
   batch.updateData([
    "boostCredits": FieldValue.increment(Int64(1))
   ], forDocument: providerRef)
 
   // 3. Re-publish the service (clear hire data + payment lock so provider pays again for a new hire)
-  let serviceRef = db.collection("services").document(serviceId)
+  let serviceRef = db.collection(AppConstants.Firestore.services).document(serviceId)
   batch.updateData([
    "status": ServiceStatus.published.rawValue,
    "hiredApplicantId": NSNull(),
@@ -461,7 +461,7 @@ class ApplicationsStore: ListenerManaging {
    )
    try await db.batch().commit() // flush
    let txBatch = db.batch()
-   let txRef = db.collection("transactions").document(refundTx.id)
+   let txRef = db.collection(AppConstants.Firestore.transactions).document(refundTx.id)
    txBatch.setData(refundTx.toFirestore(), forDocument: txRef)
    txBatch.updateData(["walletBalance": FieldValue.increment(lockedAmount)], forDocument: providerRef)
    try await txBatch.commit()
@@ -477,7 +477,7 @@ class ApplicationsStore: ListenerManaging {
  // MARK: - Dismiss Strike Notification (Worker)
 
  func dismissStrikeNotification(userId: String) async throws {
-  try await db.collection("users").document(userId).updateData([
+  try await db.collection(AppConstants.Firestore.users).document(userId).updateData([
    "pendingStrikeNotification": false
   ])
  }

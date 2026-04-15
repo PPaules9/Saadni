@@ -55,3 +55,9 @@ struct PathA_PainPointsScreen: View {
         }
     }
 }
+
+#Preview {
+    @Previewable @State var selected: Set<String> = []
+    PathA_PainPointsScreen(selected: $selected) {}
+        .background(Colors.swiftUIColor(.appBackground))
+}

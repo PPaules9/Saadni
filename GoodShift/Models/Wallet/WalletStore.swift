@@ -81,7 +81,7 @@ class WalletStore: ListenerManaging {
             return
         }
 
-        let listener = db.collection("transactions")
+        let listener = db.collection(AppConstants.Firestore.transactions)
             .whereField("userId", isEqualTo: userId)
             .order(by: "createdAt", descending: true)
             .limit(to: 50)
@@ -120,7 +120,7 @@ class WalletStore: ListenerManaging {
         // Listen to the authoritative walletBalance on the User document.
         // This is kept accurate by FieldValue.increment in addTransaction().
         let balanceListenerId = "balance"
-        let balanceListener = db.collection("users").document(userId)
+        let balanceListener = db.collection(AppConstants.Firestore.users).document(userId)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self, let data = snapshot?.data() else { return }
                 let balance = data["walletBalance"] as? Double ?? 0.0
@@ -143,10 +143,10 @@ class WalletStore: ListenerManaging {
         // the balance and transaction history from going out of sync.
         let batch = db.batch()
 
-        let txRef = db.collection("transactions").document(transaction.id)
+        let txRef = db.collection(AppConstants.Firestore.transactions).document(transaction.id)
         batch.setData(transaction.toFirestore(), forDocument: txRef)
 
-        let userRef = db.collection("users").document(transaction.userId)
+        let userRef = db.collection(AppConstants.Firestore.users).document(transaction.userId)
         batch.updateData(["walletBalance": FieldValue.increment(transaction.amount)], forDocument: userRef)
 
         try await batch.commit()

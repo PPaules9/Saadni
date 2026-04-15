@@ -95,6 +95,12 @@ struct HomeView: View {
 										.font(.system(size: 18, weight: .semibold))
 										.foregroundStyle(.white)
 								}
+								.frame(minWidth: 44, minHeight: 44)
+								.accessibilityLabel(
+									notificationsStore.unreadCount(for: .provider) > 0
+									? "Notifications, \(notificationsStore.unreadCount(for: .provider)) unread"
+									: "Notifications"
+								)
 
 								if notificationsStore.unreadCount(for: .provider) > 0 {
 									ZStack {

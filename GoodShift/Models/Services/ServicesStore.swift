@@ -44,13 +44,13 @@ class ServicesStore: ListenerManaging {
   isLoadingServices = true
   servicesError = nil
 
-  var query: Query = db.collection("services")
+  var query: Query = db.collection(AppConstants.Firestore.services)
    .whereField("status", in: ["published", "active"])
    .order(by: "createdAt", descending: true)
    .limit(to: pageSize)
 
   if let category {
-   query = db.collection("services")
+   query = db.collection(AppConstants.Firestore.services)
     .whereField("status", in: ["published", "active"])
     .whereField("category", isEqualTo: category.rawValue)
     .order(by: "createdAt", descending: true)
@@ -108,7 +108,7 @@ class ServicesStore: ListenerManaging {
   isLoadingServices = true
   servicesError = nil
 
-  var query: Query = db.collection("services")
+  var query: Query = db.collection(AppConstants.Firestore.services)
    .whereField("status", in: ["published", "active"])
 
   if let tag {
@@ -149,7 +149,7 @@ class ServicesStore: ListenerManaging {
   let lower = searchQuery
   let upper = searchQuery + "\u{f8ff}"
   do {
-   let snapshot = try await db.collection("services")
+   let snapshot = try await db.collection(AppConstants.Firestore.services)
     .whereField("status", in: ["published", "active"])
     .whereField("title", isGreaterThanOrEqualTo: lower)
     .whereField("title", isLessThan: upper)
@@ -195,7 +195,7 @@ class ServicesStore: ListenerManaging {
 
   do {
    for chunk in chunks {
-    let snapshot = try await db.collection("services")
+    let snapshot = try await db.collection(AppConstants.Firestore.services)
      .whereField(FieldPath.documentID(), in: chunk)
      .getDocuments()
     let decoded = snapshot.documents.compactMap { doc -> JobService? in
@@ -245,7 +245,7 @@ class ServicesStore: ListenerManaging {
   var userServices: [JobService] = []
 
   do {
-   let snapshot = try await db.collection("services")
+   let snapshot = try await db.collection(AppConstants.Firestore.services)
     .whereField("providerId", isEqualTo: userId)
     .order(by: "createdAt", descending: true)
     .getDocuments()
@@ -271,7 +271,7 @@ class ServicesStore: ListenerManaging {
  // MARK: - Service Status Transitions
 
  func markServiceAsActive(serviceId: String, hiredApplicantId: String) async throws {
-  try await db.collection("services").document(serviceId).updateData([
+  try await db.collection(AppConstants.Firestore.services).document(serviceId).updateData([
    "status": ServiceStatus.active.rawValue,
    "hiredApplicantId": hiredApplicantId
   ])
@@ -290,7 +290,7 @@ class ServicesStore: ListenerManaging {
 
   try ServiceValidator.canMarkAsCompleted(service)
 
-  try await db.collection("services").document(serviceId).updateData([
+  try await db.collection(AppConstants.Firestore.services).document(serviceId).updateData([
    "status": ServiceStatus.completed.rawValue,
    "completedAt": Timestamp(date: Date())
   ])
@@ -302,14 +302,14 @@ class ServicesStore: ListenerManaging {
  }
 
  func archiveService(serviceId: String) async throws {
-  try await db.collection("services").document(serviceId).updateData([
+  try await db.collection(AppConstants.Firestore.services).document(serviceId).updateData([
    "isArchived": true
   ])
   print("✅ Service archived: \(serviceId)")
  }
 
  func unarchiveService(serviceId: String) async throws {
-  try await db.collection("services").document(serviceId).updateData([
+  try await db.collection(AppConstants.Firestore.services).document(serviceId).updateData([
    "isArchived": false
   ])
   print("✅ Service unarchived: \(serviceId)")
@@ -318,7 +318,7 @@ class ServicesStore: ListenerManaging {
  // MARK: - Provider Statistics
 
  private func incrementProviderJobsCompleted(providerId: String) async throws {
-  try await db.collection("users").document(providerId).updateData([
+  try await db.collection(AppConstants.Firestore.users).document(providerId).updateData([
    "totalJobsCompleted": FieldValue.increment(Int64(1))
   ])
   print("✅ Provider jobs completed incremented for: \(providerId)")
@@ -329,7 +329,7 @@ class ServicesStore: ListenerManaging {
  func fetchCompletedServices(userId: String) async -> [JobService] {
   do {
    // Services where I was the provider
-   let providerSnapshot = try await db.collection("services")
+   let providerSnapshot = try await db.collection(AppConstants.Firestore.services)
     .whereField("providerId", isEqualTo: userId)
     .whereField("status", isEqualTo: ServiceStatus.completed.rawValue)
     .whereField("isArchived", isEqualTo: false)
@@ -346,7 +346,7 @@ class ServicesStore: ListenerManaging {
    }
 
    // Services where I was the hired applicant
-   let applicantSnapshot = try await db.collection("services")
+   let applicantSnapshot = try await db.collection(AppConstants.Firestore.services)
     .whereField("hiredApplicantId", isEqualTo: userId)
     .whereField("status", isEqualTo: ServiceStatus.completed.rawValue)
     .order(by: "completedAt", descending: true)
@@ -379,7 +379,7 @@ class ServicesStore: ListenerManaging {
 
  func fetchArchivedServices(userId: String) async -> [JobService] {
   do {
-   let snapshot = try await db.collection("services")
+   let snapshot = try await db.collection(AppConstants.Firestore.services)
     .whereField("providerId", isEqualTo: userId)
     .whereField("isArchived", isEqualTo: true)
     .order(by: "completedAt", descending: true)
@@ -410,7 +410,7 @@ class ServicesStore: ListenerManaging {
  /// `providerId` must be supplied so the Firestore rules engine can verify
  /// `resource.data.providerId == uid()` on the collection query.
  func fetchServicesByGroupId(_ groupId: String, providerId: String) async throws -> [JobService] {
-  let snapshot = try await db.collection("services")
+  let snapshot = try await db.collection(AppConstants.Firestore.services)
    .whereField("jobGroupId", isEqualTo: groupId)
    .whereField("providerId", isEqualTo: providerId)
    .order(by: "serviceDate", descending: false)
@@ -464,7 +464,7 @@ class ServicesStore: ListenerManaging {
   ]
 
   for sibling in siblings {
-   let ref = db.collection("services").document(sibling.id)
+   let ref = db.collection(AppConstants.Firestore.services).document(sibling.id)
    batch.updateData(sharedFields, forDocument: ref)
   }
 

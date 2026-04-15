@@ -51,9 +51,9 @@ final class NotificationsStore: ListenerManaging {
 		print("📍 Setting up notifications listener for user: \(userId)")
 		
 		let listener = db
-			.collection("notifications")
+			.collection(AppConstants.Firestore.notifications)
 			.document(userId)
-			.collection("messages")
+			.collection(AppConstants.Firestore.messages)
 			.order(by: "timestamp", descending: true)
 			.limit(to: 50)
 			.addSnapshotListener { [weak self] snapshot, error in
@@ -104,9 +104,9 @@ final class NotificationsStore: ListenerManaging {
 		}
 
 		let listener = db
-			.collection("users")
+			.collection(AppConstants.Firestore.users)
 			.document(userId)
-			.collection("notificationPreferences")
+			.collection(AppConstants.Firestore.notificationPreferences)
 			.document("settings")
 			.addSnapshotListener { [weak self] snapshot, error in
 				Task { @MainActor [weak self] in

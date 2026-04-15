@@ -16,11 +16,11 @@ struct OnboardingState {
     // MARK: - Path A (Job Seeker)
     var pathA_goal: String = ""
     var pathA_painPoints: Set<String> = []
-    var pathA_categories: Set<ServiceCategoryType> = []
+    var pathA_categories: Set<OnboardingJobCategory> = []
     var pathA_savedShiftIds: Set<String> = []
 
     // MARK: - Path B (Service Provider)
-    var pathB_categories: Set<ServiceCategoryType> = []
+    var pathB_categories: Set<OnboardingStaffCategory> = []
     var pathB_painPoints: Set<String> = []
 
     // Derived: shifts saved in demo, for display on result screen
@@ -63,7 +63,6 @@ enum OnboardingScreen: Hashable {
     case b_processing
     case b_demo
     case b_notifPerm
-    case b_paywall
     case b_account
 }
 
@@ -92,7 +91,6 @@ extension OnboardingScreen {
         case .b_processing:     return "b_processing"
         case .b_demo:           return "b_demo"
         case .b_notifPerm:      return "b_notif_perm"
-        case .b_paywall:        return "b_paywall"
         case .b_account:        return "b_account"
         }
     }
@@ -128,7 +126,6 @@ extension OnboardingScreen {
         case .a_processing:   return 8 / total
         case .a_demo:         return 9 / total
         case .a_notifPerm:    return 10 / total
-        case .a_paywall:      return 11 / total
         case .a_account:      return 12 / total
         default: return 0
         }
@@ -145,7 +142,6 @@ extension OnboardingScreen {
         case .b_processing:  return 6 / total
         case .b_demo:        return 7 / total
         case .b_notifPerm:   return 8 / total
-        case .b_paywall:     return 9 / total
         case .b_account:     return 10 / total
         default: return 0
         }

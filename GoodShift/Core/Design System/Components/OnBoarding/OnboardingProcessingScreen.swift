@@ -87,3 +87,8 @@ struct OnboardingProcessingScreen: View {
         }
     }
 }
+
+#Preview {
+    OnboardingProcessingScreen(message: "Building your shift feed…") {}
+        .background(Colors.swiftUIColor(.appBackground))
+}

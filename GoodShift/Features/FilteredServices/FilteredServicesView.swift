@@ -92,6 +92,7 @@ struct FilteredServicesView: View {
                     Image(systemName: viewMode == .grid ? "list.bullet" : "square.grid.2x2.fill")
                         .font(.system(size: 16))
                 }
+                .accessibilityLabel(viewMode == .grid ? "Switch to List View" : "Switch to Grid View")
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
@@ -108,6 +109,7 @@ struct FilteredServicesView: View {
                     Image(systemName: "line.3.horizontal.decrease.circle.fill")
                         .font(.system(size: 16))
                 }
+                .accessibilityLabel("Sort Options")
             }
         }
     }
@@ -123,6 +125,7 @@ struct FilteredServicesView: View {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundStyle(Colors.swiftUIColor(.textSecondary))
                 }
+                .accessibilityLabel("Clear Search")
             }
         }
         .padding(.horizontal, 12)

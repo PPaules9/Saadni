@@ -55,7 +55,7 @@ class ConversationsStore: ListenerManaging {
 
         isLoading = true
 
-        let listener = db.collection("conversations")
+        let listener = db.collection(AppConstants.Firestore.conversations)
             .whereField("participantIds", arrayContains: userId)
             .order(by: "lastMessageTime", descending: true)
             .limit(to: 30)
@@ -139,7 +139,7 @@ class ConversationsStore: ListenerManaging {
         )
 
         do {
-            try await db.collection("conversations").document(conversationId).setData(conversation.toFirestore())
+            try await db.collection(AppConstants.Firestore.conversations).document(conversationId).setData(conversation.toFirestore())
             print("✅ Conversation created: \(conversationId)")
             return conversationId
         } catch {
@@ -157,7 +157,7 @@ class ConversationsStore: ListenerManaging {
         senderId: String
     ) async throws {
         do {
-            try await db.collection("conversations").document(conversationId).updateData([
+            try await db.collection(AppConstants.Firestore.conversations).document(conversationId).updateData([
                 "lastMessage": message,
                 "lastMessageTime": Timestamp(date: timestamp),
                 "lastMessageSenderId": senderId
@@ -176,7 +176,7 @@ class ConversationsStore: ListenerManaging {
             // 1. Delete all messages for this conversation (batch in chunks of 500)
             var lastSnapshot: QuerySnapshot? = nil
             repeat {
-                var query = db.collection("messages")
+                var query = db.collection(AppConstants.Firestore.messages)
                     .whereField("conversationId", isEqualTo: conversationId)
                     .limit(to: 500)
                 if let last = lastSnapshot?.documents.last {
@@ -193,7 +193,7 @@ class ConversationsStore: ListenerManaging {
             } while lastSnapshot?.documents.count == 500
 
             // 2. Delete typing indicators subcollection
-            let typingDocs = try await db.collection("conversations")
+            let typingDocs = try await db.collection(AppConstants.Firestore.conversations)
                 .document(conversationId)
                 .collection("typingIndicators")
                 .getDocuments()
@@ -204,7 +204,7 @@ class ConversationsStore: ListenerManaging {
             }
 
             // 3. Delete the conversation document itself
-            try await db.collection("conversations").document(conversationId).delete()
+            try await db.collection(AppConstants.Firestore.conversations).document(conversationId).delete()
 
             // 4. Remove from local cache immediately
             conversations.removeAll { $0.id == conversationId }
@@ -221,7 +221,7 @@ class ConversationsStore: ListenerManaging {
     /// Pin or unpin a conversation — pinned conversations appear at the top of the list.
     func pinConversation(_ conversationId: String, isPinned: Bool) async throws {
         do {
-            try await db.collection("conversations").document(conversationId).updateData([
+            try await db.collection(AppConstants.Firestore.conversations).document(conversationId).updateData([
                 "isPinned": isPinned
             ])
             // Update local cache optimistically

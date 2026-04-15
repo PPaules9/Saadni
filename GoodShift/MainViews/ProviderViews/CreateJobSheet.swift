@@ -64,6 +64,8 @@ struct CreateJobSheet: View {
 					 .font(.system(size: 18, weight: .semibold))
 					 .foregroundStyle(Colors.swiftUIColor(.textMain))
 			 }
+			 .frame(minWidth: 44, minHeight: 44)
+			 .accessibilityLabel("Back")
 			 .padding(.trailing, 4)
       ForEach(0..<5, id: \.self) { index in
        RoundedRectangle(cornerRadius: 2)

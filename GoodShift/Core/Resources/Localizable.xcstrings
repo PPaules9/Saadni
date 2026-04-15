@@ -168,6 +168,16 @@
     "%lld shifts" : {
 
     },
+    "%lld star%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld star%2$@"
+          }
+        }
+      }
+    },
     "%lld/%lld" : {
       "localizations" : {
         "en" : {
@@ -224,9 +234,6 @@
 
     },
     "99+" : {
-
-    },
-    "250 EGP · 6h" : {
 
     },
     "299 EGP / month" : {
@@ -543,9 +550,6 @@
     "Applied %@ ago" : {
 
     },
-    "Apply" : {
-
-    },
     "Apply for Job" : {
       "localizations" : {
         "ar" : {
@@ -673,9 +677,6 @@
           }
         }
       }
-    },
-    "Barista · CFC Branch" : {
-
     },
     "Barista Shift — Evening Rush" : {
 
@@ -983,8 +984,10 @@
         }
       }
     },
+    "Clear Search" : {
+
+    },
     "Close" : {
-      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -993,6 +996,9 @@
           }
         }
       }
+    },
+    "Close Notifications" : {
+
     },
     "Color Tokens" : {
       "localizations" : {
@@ -1788,9 +1794,6 @@
     "Find quick answers to the most common questions below." : {
 
     },
-    "Find work that fits your life, or find the right people for the job — in minutes." : {
-
-    },
     "Find your next Job" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2110,6 +2113,9 @@
           }
         }
       }
+    },
+    "I agree to GoodShift's [Terms & Conditions](goodshift://terms) and acknowledge the [Privacy Policy](goodshift://privacy)." : {
+
     },
     "I Need Help Hire" : {
       "extractionState" : "stale",
@@ -2660,6 +2666,9 @@
     "More options" : {
 
     },
+    "More Options" : {
+
+    },
     "Moving" : {
       "localizations" : {
         "ar" : {
@@ -2755,6 +2764,9 @@
       }
     },
     "Next" : {
+
+    },
+    "Next Month" : {
 
     },
     "No activity yet" : {
@@ -3155,6 +3167,9 @@
         }
       }
     },
+    "Pick up shifts in your free time. Or hire people who get it done" : {
+
+    },
     "Pin" : {
       "localizations" : {
         "ar" : {
@@ -3238,6 +3253,9 @@
           }
         }
       }
+    },
+    "Previous Month" : {
+
     },
     "Price" : {
       "localizations" : {
@@ -3374,6 +3392,9 @@
         }
       }
     },
+    "Remove Image" : {
+
+    },
     "Repairs & Maintenance" : {
       "localizations" : {
         "ar" : {
@@ -3443,6 +3464,9 @@
           }
         }
       }
+    },
+    "Retry Loading User" : {
+
     },
     "Review" : {
       "localizations" : {
@@ -3568,6 +3592,9 @@
           }
         }
       }
+    },
+    "Save" : {
+
     },
     "Save your shifts —\ncreate your free account" : {
 
@@ -3889,6 +3916,9 @@
         }
       }
     },
+    "Sort Options" : {
+
+    },
     "Stand out from other applicants and get to the top of every employer's list." : {
 
     },
@@ -4056,6 +4086,12 @@
           }
         }
       }
+    },
+    "Switch to Grid View" : {
+
+    },
+    "Switch to List View" : {
+
     },
     "Tab" : {
       "localizations" : {
@@ -4357,6 +4393,9 @@
         }
       }
     },
+    "View All This Week's Services" : {
+
+    },
     "View finished services" : {
       "localizations" : {
         "ar" : {
@@ -4445,9 +4484,6 @@
     "We use your data to:\n\n• Verify your identity and prevent fraud\n• Match workers with suitable shifts and providers with suitable workers\n• Process payments through the GoodShift wallet\n• Send you shift alerts, application updates, and important account notifications\n• Calculate your ratings, strikes, and trust score\n• Improve app features and fix bugs\n• Comply with Egyptian law and respond to lawful requests" : {
 
     },
-    "We'll set things up for you." : {
-
-    },
     "Welcome back" : {
       "localizations" : {
         "ar" : {
@@ -4457,6 +4493,9 @@
           }
         }
       }
+    },
+    "Welcome to GoodShift" : {
+
     },
     "What brings you\nto GoodShift?" : {
 
@@ -4713,9 +4752,6 @@
 
     },
     "Your national ID and face selfie are collected solely for the purpose of verifying that you are a real person. This data is stored securely and is never displayed publicly. It is not used for advertising or shared with third parties beyond our verification process.\n\nIf you delete your account, this data is permanently erased within 30 days." : {
-
-    },
-    "Your next shift\nstarts here." : {
 
     },
     "Your Review (Optional)" : {

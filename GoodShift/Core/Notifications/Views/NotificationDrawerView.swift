@@ -44,6 +44,8 @@ struct NotificationDrawerView: View {
 								.font(.system(size: 20))
 								.foregroundColor(.accentColor)
 						}
+						.frame(minWidth: 44, minHeight: 44)
+						.accessibilityLabel("Close Notifications")
 					}
 					.padding()
 					

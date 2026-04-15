@@ -85,7 +85,7 @@ class ReviewsStore: ListenerManaging {
             return
         }
 
-        let receivedListener = db.collection("reviews")
+        let receivedListener = db.collection(AppConstants.Firestore.reviews)
             .whereField("revieweeId", isEqualTo: userId)
             .order(by: "createdAt", descending: true)
             .limit(to: 50)
@@ -125,7 +125,7 @@ class ReviewsStore: ListenerManaging {
             return
         }
 
-        let submittedListener = db.collection("reviews")
+        let submittedListener = db.collection(AppConstants.Firestore.reviews)
             .whereField("reviewerId", isEqualTo: userId)
             .order(by: "createdAt", descending: true)
             .limit(to: 50)
@@ -209,7 +209,7 @@ class ReviewsStore: ListenerManaging {
     // MARK: - Fetch Reviews for Service
 
     func fetchReviewsForService(_ serviceId: String) async throws -> [Review] {
-        let snapshot = try await db.collection("reviews")
+        let snapshot = try await db.collection(AppConstants.Firestore.reviews)
             .whereField("serviceId", isEqualTo: serviceId)
             .getDocuments()
 

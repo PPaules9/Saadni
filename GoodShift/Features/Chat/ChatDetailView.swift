@@ -122,6 +122,8 @@ struct ChatDetailView: View {
 									.foregroundStyle(.orange)
 									.font(.caption)
 							}
+							.frame(minWidth: 44, minHeight: 44)
+							.accessibilityLabel("Retry Loading User")
 						}
 						.padding(12)
 						.background(Color.orange.opacity(0.1))

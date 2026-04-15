@@ -50,6 +50,8 @@ struct ProfileSetupView: View {
                                 .font(.body.weight(.semibold))
                                 .foregroundStyle(Colors.swiftUIColor(.textMain))
                         }
+                        .frame(minWidth: 44, minHeight: 44)
+                        .accessibilityLabel("Back")
                     } else {
                         Spacer().frame(width: 24)
                     }

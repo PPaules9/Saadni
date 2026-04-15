@@ -27,19 +27,29 @@ enum AppConstants {
         static let hasSeenOnboarding = "hasSeenOnboarding"
     }
 
+    // MARK: Image Cache Configuration
+    enum Cache {
+        static let memoryLimitBytes: Int = 100 * 1024 * 1024  // 100 MB
+        static let diskLimitBytes: UInt  = 500 * 1024 * 1024  // 500 MB
+        static let expirationDays: Int   = 7
+    }
+
     // MARK: Firestore Collection Names
     // Always reference collections through these constants — never inline "users", "services", etc.
     // A typo here is a build error; a typo inline is a silent runtime failure.
     enum Firestore {
-        static let users          = "users"
-        static let services       = "services"
-        static let applications   = "applications"
-        static let reviews        = "reviews"
-        static let transactions   = "transactions"
-        static let messages       = "messages"
-        static let conversations  = "conversations"
-        static let notifications  = "notifications"
-        static let typing         = "typing"
+        static let users                   = "users"
+        static let services                = "services"
+        static let applications            = "applications"
+        static let reviews                 = "reviews"
+        static let transactions            = "transactions"
+        static let messages                = "messages"
+        static let conversations           = "conversations"
+        static let notifications           = "notifications"
+        static let typing                  = "typing"
+        static let deviceTokens            = "deviceTokens"
+        static let fcmTokens               = "fcmTokens"
+        static let notificationPreferences = "notificationPreferences"
     }
 }
 

@@ -23,20 +23,24 @@ struct CustomCalendarWithJobIndicators: View {
 						.font(.system(size: 16, weight: .semibold))
 						.foregroundStyle(.primary)
 				}
-				
+				.frame(minWidth: 44, minHeight: 44)
+				.accessibilityLabel("Previous Month")
+
 				Spacer()
-				
+
 				Text(monthYearString(currentMonth))
 					.font(.headline)
 					.foregroundStyle(.primary)
-				
+
 				Spacer()
-				
+
 				Button(action: { nextMonth() }) {
 					Image(systemName: "chevron.right")
 						.font(.system(size: 16, weight: .semibold))
 						.foregroundStyle(.primary)
 				}
+				.frame(minWidth: 44, minHeight: 44)
+				.accessibilityLabel("Next Month")
 			}
 			.padding(.horizontal, 20)
 			

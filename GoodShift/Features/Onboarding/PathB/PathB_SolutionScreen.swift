@@ -68,6 +68,14 @@ struct PathB_SolutionScreen: View {
     }
 }
 
+#Preview {
+    PathB_SolutionScreen(
+        painPoints: ["Finding people last minute is a nightmare", "Workers show up late or don't show up at all"],
+        onNext: {}
+    )
+    .background(Colors.swiftUIColor(.appBackground))
+}
+
 // MARK: - Solution Row
 
 private struct ProviderSolutionRow: View {

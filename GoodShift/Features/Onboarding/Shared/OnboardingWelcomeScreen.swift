@@ -2,100 +2,129 @@
 //  OnboardingWelcomeScreen.swift
 //  GoodShift
 //
+//  Created by Pavly Paules on 06/03/2026.
+//
 
 import SwiftUI
 
+enum LegalSheet: Identifiable {
+	case terms
+	case privacy
+	
+	var id: Self { self }
+}
+
 struct OnboardingWelcomeScreen: View {
-    let onGetStarted: () -> Void
-
-    var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
-
-            // Hero illustration
-            ZStack {
-                Circle()
-                    .fill(Color.accentColor.opacity(0.08))
-                    .frame(width: 260, height: 260)
-
-                Circle()
-                    .fill(Color.accentColor.opacity(0.14))
-                    .frame(width: 200, height: 200)
-
-                VStack(spacing: 8) {
-                    Image(systemName: "hands.and.sparkles.fill")
-                        .font(.system(size: 70))
-                        .foregroundStyle(Color.accentColor)
-
-                    // Mini shift card preview
-                    HStack(spacing: 8) {
-                        Image(systemName: "cup.and.saucer.fill")
-                            .font(.system(size: 13))
-                            .foregroundStyle(Color.accentColor)
-
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Barista · CFC Branch")
-                                .font(.system(size: 12, weight: .semibold))
-                                .foregroundStyle(Colors.swiftUIColor(.textMain))
-                            Text("250 EGP · 6h")
-                                .font(.system(size: 11))
-                                .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-                        }
-
-                        Spacer()
-
-                        Text("Apply")
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 5)
-                            .background(Capsule().fill(Color.accentColor))
-                    }
-                    .padding(12)
-                    .background(
-                        RoundedRectangle(cornerRadius: 14)
-                            .fill(Colors.swiftUIColor(.cardBackground))
-                            .shadow(color: .black.opacity(0.08), radius: 10, x: 0, y: 4)
-                    )
-                    .padding(.horizontal, 24)
-                }
-            }
-
-            Spacer().frame(height: 48)
-
-            // Headline block
-            VStack(spacing: 14) {
-                Text("Your next shift\nstarts here.")
-                    .font(.system(size: 36, weight: .bold))
-                    .foregroundStyle(Colors.swiftUIColor(.textMain))
-                    .multilineTextAlignment(.center)
-                    .lineSpacing(2)
-
-                Text("Find work that fits your life, or find the right people for the job — in minutes.")
-                    .font(.system(size: 16))
-                    .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-                    .multilineTextAlignment(.center)
-                    .lineSpacing(4)
-                    .padding(.horizontal, 32)
-            }
-
-            Spacer()
-
-            // CTAs
-            VStack(spacing: 12) {
-                BrandButton("Get Started", size: .large, hasIcon: false, icon: "", secondary: false) {
-                    onGetStarted()
-                }
-                .padding(.horizontal, 24)
-
-                // Sign in handled after onboarding is complete
-            }
-            .padding(.bottom, 48)
-        }
-    }
+	let onGetStarted: () -> Void
+	@State private var isAnimating = false
+	@State private var isAgreed = false
+	@State private var activeSheet: LegalSheet?
+	
+	var body: some View {
+		ScrollView(showsIndicators: false) {
+			VStack(spacing: 0) {
+				// Hero illustration
+				GeometryReader { proxy in
+					Image("brandImage1")
+						.resizable()
+						.scaledToFit() // Scale perfectly without trimming
+						.frame(width: UIScreen.main.bounds.width * 0.85, height: proxy.size.height)
+						.opacity(isAnimating ? 1 : 0)
+						.position(x: proxy.size.width / 2, y: proxy.size.height / 2)
+				}
+				.frame(height: UIScreen.main.bounds.height * 0.43)
+				.padding(.top, 52)
+				// Content block
+				VStack(spacing: 32) {
+					VStack(spacing: 12) {
+						Text("Welcome to GoodShift")
+							.font(.system(size: 32, weight: .bold, design: .default))
+							.foregroundStyle(Colors.swiftUIColor(.textMain))
+							.multilineTextAlignment(.center)
+							.tracking(-0.5)
+						
+						Text("Pick up shifts in your free time. Or hire people who get it done")
+							.font(.system(size: 18))
+							.foregroundStyle(Colors.swiftUIColor(.textSecondary))
+							.multilineTextAlignment(.center)
+					}
+					.padding(.top, 32)
+					
+					Spacer()
+					
+					// Terms Checkbox
+					HStack(alignment: .top, spacing: 14) {
+						// Custom Checkbox UI
+						Button {
+							withAnimation(.easeInOut(duration: 0.15)) {
+								isAgreed.toggle()
+							}
+						} label: {
+							ZStack {
+								RoundedRectangle(cornerRadius: 6)
+									.stroke(isAgreed ? Color.accentColor : Colors.swiftUIColor(.textSecondary).opacity(0.4), lineWidth: 2)
+									.frame(width: 24, height: 24)
+									.background(
+										RoundedRectangle(cornerRadius: 6)
+											.fill(isAgreed ? Color.accentColor.opacity(0.1) : Color.clear)
+									)
+								if isAgreed {
+									Image(systemName: "checkmark")
+										.font(.system(size: 12, weight: .bold))
+										.foregroundStyle(Color.accentColor)
+								}
+							}
+						}
+						.buttonStyle(.plain)
+						.padding(.top, 2)
+						
+						Text("I agree to GoodShift's [Terms & Conditions](goodshift://terms) and acknowledge the [Privacy Policy](goodshift://privacy).")
+							.foregroundStyle(Colors.swiftUIColor(.textSecondary))
+							.tint(Color.accentColor)
+							.font(.system(size: 14))
+							.multilineTextAlignment(.leading)
+							.environment(\.openURL, OpenURLAction { url in
+								if url.absoluteString == "goodshift://terms" {
+									activeSheet = .terms
+									return .handled
+								} else if url.absoluteString == "goodshift://privacy" {
+									activeSheet = .privacy
+									return .handled
+								}
+								return .systemAction
+							})
+					}
+					.padding(.horizontal, 8)
+					.padding(.top, 52)
+					// CTA
+					BrandButton("Create an account", size: .large, hasIcon: false, icon: "", secondary: false) {
+						onGetStarted()
+					}
+					.opacity(isAgreed ? 1.0 : 0.6)
+					.disabled(!isAgreed)
+				}
+				.padding(.horizontal, 24)
+			}
+		}
+		.background(Colors.swiftUIColor(.appBackground))
+		.onAppear {
+			withAnimation(.spring(response: 0.8, dampingFraction: 0.8).delay(0.1)) {
+				isAnimating = true
+			}
+		}
+		.sheet(item: $activeSheet) { sheet in
+			NavigationStack {
+				switch sheet {
+				case .terms:
+					TermsAndConditionsView()
+				case .privacy:
+					PrivacyPolicyView()
+				}
+			}
+		}
+	}
 }
 
 #Preview {
-    OnboardingWelcomeScreen {}
-        .background(Colors.swiftUIColor(.appBackground))
+	OnboardingWelcomeScreen {}
 }

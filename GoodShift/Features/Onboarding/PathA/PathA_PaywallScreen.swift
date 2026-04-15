@@ -133,3 +133,8 @@ struct PathA_PaywallScreen: View {
         }
     }
 }
+
+#Preview {
+    PathA_PaywallScreen {}
+        .background(Colors.swiftUIColor(.appBackground))
+}

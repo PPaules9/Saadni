@@ -40,7 +40,7 @@ class NotificationService {
         ]
 
         do {
-            try await db.collection("deviceTokens").document(userId).setData(tokenData)
+            try await db.collection(AppConstants.Firestore.deviceTokens).document(userId).setData(tokenData)
             print("✅ Device token registered for user \(userId)")
         } catch {
             print("❌ Failed to register device token: \(error.localizedDescription)")
@@ -51,7 +51,7 @@ class NotificationService {
     /// Get device token for a user
     func getDeviceToken(for userId: String) async throws -> String? {
         do {
-            let document = try await db.collection("deviceTokens").document(userId).getDocument()
+            let document = try await db.collection(AppConstants.Firestore.deviceTokens).document(userId).getDocument()
 
             guard let data = document.data(),
                   let token = data["token"] as? String
@@ -157,7 +157,7 @@ class NotificationService {
         ]
 
         do {
-            try await db.collection("users").document(userId).updateData([
+            try await db.collection(AppConstants.Firestore.users).document(userId).updateData([
                 "notificationPreferences": preferences
             ])
             print("✅ Notification preferences updated")

@@ -53,3 +53,8 @@ struct PathB_SocialProofScreen: View {
         }
     }
 }
+
+#Preview {
+    PathB_SocialProofScreen {}
+        .background(Colors.swiftUIColor(.appBackground))
+}

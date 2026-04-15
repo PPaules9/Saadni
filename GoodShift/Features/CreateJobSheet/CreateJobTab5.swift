@@ -66,6 +66,8 @@ struct CreateJobTab5: View {
 											.padding(8)
 									}
 									.buttonStyle(.plain)
+									.frame(minWidth: 44, minHeight: 44)
+									.accessibilityLabel("Remove Image")
 								}
 								Spacer()
 							}

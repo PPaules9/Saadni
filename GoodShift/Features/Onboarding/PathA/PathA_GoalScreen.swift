@@ -2,6 +2,9 @@
 //  PathA_GoalScreen.swift
 //  GoodShift
 //
+//
+//  Created by Pavly Paules on 14/04/2026.
+//
 
 import SwiftUI
 
@@ -49,4 +52,10 @@ struct PathA_GoalScreen: View {
             .padding(.bottom, 40)
         }
     }
+}
+
+#Preview {
+    @Previewable @State var goal = ""
+    PathA_GoalScreen(selectedGoal: $goal) {}
+        .background(Colors.swiftUIColor(.appBackground))
 }

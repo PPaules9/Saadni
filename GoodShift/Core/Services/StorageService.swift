@@ -93,4 +93,41 @@ class StorageService: StorageProvider {
   try await storageRef.delete()
   print("✅ User profile image deleted for user: \(userId)")
  }
+
+ /// Delete all Storage files belonging to a user.
+ /// Called during account deletion — errors are logged but never thrown, so a
+ /// Storage hiccup cannot block the auth-account deletion that already succeeded.
+ func deleteUserFiles(userId: String, serviceImageURLs: [String], hiredServiceIds: [String]) async {
+  // Profile photo
+  let profilePath = "users/\(userId)/profile.jpg"
+  do {
+   try await storage.reference().child(profilePath).delete()
+   print("✅ Deleted profile image for: \(userId)")
+  } catch {
+   print("⚠️ Could not delete profile image (may not exist): \(error.localizedDescription)")
+  }
+
+  // Service images this user posted
+  for url in serviceImageURLs {
+   do {
+    try await storage.reference(forURL: url).delete()
+    print("✅ Deleted service image: \(url)")
+   } catch {
+    print("⚠️ Could not delete service image \(url): \(error.localizedDescription)")
+   }
+  }
+
+  // Completion proof photos for services where this user was the hired worker
+  for serviceId in hiredServiceIds {
+   let proofPath = "completions/\(serviceId)/\(userId).jpg"
+   do {
+    try await storage.reference().child(proofPath).delete()
+    print("✅ Deleted completion proof: \(proofPath)")
+   } catch {
+    print("⚠️ Could not delete completion proof \(proofPath) (may not exist): \(error.localizedDescription)")
+   }
+  }
+
+  print("✅ Storage cleanup complete for: \(userId)")
+ }
 }

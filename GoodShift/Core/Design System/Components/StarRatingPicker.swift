@@ -22,6 +22,9 @@ struct StarRatingPicker: View {
                         .font(.system(size: size))
                         .foregroundStyle(star <= rating ? .yellow : .gray)
                 }
+                .frame(minWidth: 44, minHeight: 44)
+                .accessibilityLabel("\(star) star\(star == 1 ? "" : "s")")
+                .accessibilityAddTraits(star == rating ? .isSelected : [])
             }
         }
     }

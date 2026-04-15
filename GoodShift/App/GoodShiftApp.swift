@@ -25,9 +25,9 @@ struct GoodShiftApp: App {
 		
 		// Configure Kingfisher image cache, the actual loading happens wherever you use something like KFImage(URL(string: ...)) in your views.
 		let cache = ImageCache.default
-		cache.memoryStorage.config.totalCostLimit = 100 * 1024 * 1024  // 100 MB memory
-		cache.diskStorage.config.sizeLimit = 500 * 1024 * 1024         // 500 MB disk
-		cache.diskStorage.config.expiration = .days(7)                 // 7 days expiration
+		cache.memoryStorage.config.totalCostLimit = AppConstants.Cache.memoryLimitBytes
+		cache.diskStorage.config.sizeLimit = AppConstants.Cache.diskLimitBytes
+		cache.diskStorage.config.expiration = .days(AppConstants.Cache.expirationDays)
 		
 		// Initialize container after Firebase is configured
 		_container = State(initialValue: AppContainer())

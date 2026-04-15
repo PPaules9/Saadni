@@ -76,6 +76,14 @@ struct PathA_SolutionScreen: View {
     }
 }
 
+#Preview {
+    PathA_SolutionScreen(
+        painPoints: ["I never know if the job is real", "I got paid late, or not at all"],
+        onNext: {}
+    )
+    .background(Colors.swiftUIColor(.appBackground))
+}
+
 // MARK: - Solution Row
 
 private struct SolutionRow: View {

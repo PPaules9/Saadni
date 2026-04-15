@@ -28,6 +28,8 @@ struct ImagePickerSheet: View {
                         .font(.title2)
                         .foregroundStyle(.gray)
                 }
+                .frame(minWidth: 44, minHeight: 44)
+                .accessibilityLabel("Close")
             }
             .padding()
 

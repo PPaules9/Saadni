@@ -21,44 +21,75 @@ class FirestoreService: FirestoreProvider {
  
  // MARK: - Collections
  private var usersCollection: CollectionReference {
-  db.collection("users")
+  db.collection(AppConstants.Firestore.users)
  }
  
  private var servicesCollection: CollectionReference {
-  db.collection("services")
+  db.collection(AppConstants.Firestore.services)
  }
  
  private var applicationsCollection: CollectionReference {
-  db.collection("applications")
+  db.collection(AppConstants.Firestore.applications)
  }
 
  private var reviewsCollection: CollectionReference {
-  db.collection("reviews")
+  db.collection(AppConstants.Firestore.reviews)
  }
 
  private var transactionsCollection: CollectionReference {
-  db.collection("transactions")
+  db.collection(AppConstants.Firestore.transactions)
  }
 
  // MARK: - User Operations
  
  func deleteUserData(userId: String) async throws {
-  // 1. Delete all applications submitted TO the user's services
-  //    (other users applied to jobs this user posted — clean those up before
-  //    the service documents themselves are removed, avoiding orphaned applications)
+  // ── Phase A: Collect Storage paths BEFORE Firestore docs are removed ──────
+
+  // A1. Gather image URLs from services this user posted
+  var serviceImageURLs: [String] = []
+  var postedServiceQuery: Query = servicesCollection.whereField("providerId", isEqualTo: userId)
+  var collectingMore = true
+  while collectingMore {
+   let snap = try await postedServiceQuery.limit(to: 500).getDocuments()
+   guard !snap.documents.isEmpty else { break }
+   for doc in snap.documents {
+    if let imageMap = doc.data()["image"] as? [String: Any],
+       let url = imageMap["remoteURL"] as? String {
+     serviceImageURLs.append(url)
+    }
+   }
+   collectingMore = snap.documents.count == 500
+  }
+
+  // A2. Gather serviceIds where this user was hired (for completion proof photos)
+  var hiredServiceIds: [String] = []
+  var hiredQuery: Query = servicesCollection.whereField("hiredApplicantId", isEqualTo: userId)
+  var collectingHired = true
+  while collectingHired {
+   let snap = try await hiredQuery.limit(to: 500).getDocuments()
+   guard !snap.documents.isEmpty else { break }
+   hiredServiceIds.append(contentsOf: snap.documents.map { $0.documentID })
+   collectingHired = snap.documents.count == 500
+  }
+
+  // ── Phase B: Firestore cleanup ────────────────────────────────────────────
+
+  // B1. Delete all applications submitted TO the user's services
+  //     (other users applied to jobs this user posted — clean those up before
+  //     the service documents themselves are removed, avoiding orphaned applications)
   try await deleteInBatches(
    query: applicationsCollection.whereField("providerId", isEqualTo: userId)
   )
 
-  // 2. Reset services where this user was the hired applicant back to published
-  //    so the provider's job re-enters the open market instead of freezing forever.
-  //    Only touch in-progress statuses; completed jobs are left as historical records.
-  //    Uses paginated reads because a popular worker could be hired on many services.
+  // B2. Reset services where this user was the hired applicant back to published
+  //     so the provider's job re-enters the open market instead of freezing forever.
+  //     Only touch in-progress statuses; completed jobs are left as historical records.
   let inProgressStatuses: Set<String> = ["active", "pending_completion", "disputed"]
-  let hiredQuery = servicesCollection.whereField("hiredApplicantId", isEqualTo: userId)
   var hasMore = true
   while hasMore {
-   let snapshot = try await hiredQuery.limit(to: 500).getDocuments()
+   let snapshot = try await servicesCollection
+    .whereField("hiredApplicantId", isEqualTo: userId)
+    .limit(to: 500).getDocuments()
    guard !snapshot.documents.isEmpty else { break }
    let batch = db.batch()
    for doc in snapshot.documents {
@@ -74,17 +105,17 @@ class FirestoreService: FirestoreProvider {
    hasMore = snapshot.documents.count == 500
   }
 
-  // 3. Delete user's own posted services
+  // B3. Delete user's own posted services
   try await deleteInBatches(
    query: servicesCollection.whereField("providerId", isEqualTo: userId)
   )
 
-  // 4. Delete applications the user submitted as a worker
+  // B4. Delete applications the user submitted as a worker
   try await deleteInBatches(
    query: applicationsCollection.whereField("applicantId", isEqualTo: userId)
   )
 
-  // 5. Delete reviews received by and submitted by the user
+  // B5. Delete reviews received by and submitted by the user
   try await deleteInBatches(
    query: reviewsCollection.whereField("revieweeId", isEqualTo: userId)
   )
@@ -92,19 +123,26 @@ class FirestoreService: FirestoreProvider {
    query: reviewsCollection.whereField("reviewerId", isEqualTo: userId)
   )
 
-  // 6. Delete user's transactions
+  // B6. Delete user's transactions
   try await deleteInBatches(
    query: transactionsCollection.whereField("userId", isEqualTo: userId)
   )
 
-  // 7. Delete conversations the user participated in
+  // B7. Delete conversations the user participated in
   try await deleteInBatches(
-   query: db.collection("conversations").whereField("participantIds", arrayContains: userId)
+   query: db.collection(AppConstants.Firestore.conversations).whereField("participantIds", arrayContains: userId)
   )
 
-  // 8. Delete user document
+  // B8. Delete user document
   try await usersCollection.document(userId).delete()
-  print("✅ All user data deleted from Firestore for: \(userId)")
+  print("✅ All Firestore data deleted for: \(userId)")
+
+  // ── Phase C: Storage cleanup ──────────────────────────────────────────────
+  await StorageService.shared.deleteUserFiles(
+   userId: userId,
+   serviceImageURLs: serviceImageURLs,
+   hiredServiceIds: hiredServiceIds
+  )
  }
 
  /// Deletes all documents matching a query in batches of 500.

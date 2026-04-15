@@ -148,12 +148,9 @@ struct OnboardingView: View {
 
         case .b_notifPerm:
             PathB_NotifPermScreen(
-                onEnable: { navigate(to: .b_paywall) },
-                onSkip:   { navigate(to: .b_paywall) }
+                onEnable: { navigate(to: .b_account) },
+                onSkip:   { navigate(to: .b_account) }
             )
-
-        case .b_paywall:
-            PathB_PaywallScreen { navigate(to: .b_account) }
 
         case .b_account:
             PathB_AccountScreen()

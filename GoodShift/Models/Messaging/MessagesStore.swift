@@ -81,7 +81,7 @@ class MessagesStore: ListenerManaging {
 		
 		// Fetch newest messages first, then reverse so oldest appears at top of chat.
 		// Limit prevents loading entire history on open.
-		let listener = db.collection("messages")
+		let listener = db.collection(AppConstants.Firestore.messages)
 			.whereField("conversationId", isEqualTo: conversationId)
 			.order(by: "createdAt", descending: true)
 			.limit(to: initialPageSize)
@@ -123,7 +123,7 @@ class MessagesStore: ListenerManaging {
 			return
 		}
 		
-		let listener = db.collection("conversations")
+		let listener = db.collection(AppConstants.Firestore.conversations)
 			.document(conversationId)
 			.collection("typingIndicators")
 			.addSnapshotListener { [weak self] snapshot, error in
@@ -188,7 +188,7 @@ class MessagesStore: ListenerManaging {
 		)
 		
 		do {
-			try await db.collection("messages").document(message.id).setData(message.toFirestore())
+			try await db.collection(AppConstants.Firestore.messages).document(message.id).setData(message.toFirestore())
 			print("✅ Message sent successfully")
 		} catch {
 			self.error = AppError.from(error)
@@ -200,7 +200,7 @@ class MessagesStore: ListenerManaging {
 	/// Mark message as read
 	func markAsRead(messageId: String, conversationId: String) async throws {
 		do {
-			try await db.collection("messages").document(messageId).updateData([
+			try await db.collection(AppConstants.Firestore.messages).document(messageId).updateData([
 				"isRead": true
 			])
 			print("✅ Message marked as read")
@@ -226,7 +226,7 @@ class MessagesStore: ListenerManaging {
 		)
 		
 		do {
-			try await db.collection("conversations")
+			try await db.collection(AppConstants.Firestore.conversations)
 				.document(conversationId)
 				.collection("typingIndicators")
 				.document(userId)
@@ -246,7 +246,7 @@ class MessagesStore: ListenerManaging {
 					let oldestTimestamp = oldest.createdAt as Date? else { return }
 		
 		do {
-			let snapshot = try await db.collection("messages")
+			let snapshot = try await db.collection(AppConstants.Firestore.messages)
 				.whereField("conversationId", isEqualTo: conversationId)
 				.order(by: "createdAt", descending: true)
 				.whereField("createdAt", isLessThan: Timestamp(date: oldestTimestamp))

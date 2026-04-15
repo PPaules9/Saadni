@@ -18,7 +18,7 @@ class AppStateManager {
 	}
 	
 	private func loadState() {
-		hasSeenOnboarding = UserDefaults.standard.bool(forKey: StateKeys.hasSeenOnboarding.key)
+		hasSeenOnboarding = UserDefaults.standard.bool(forKey: AppConstants.Storage.hasSeenOnboarding)
 //		print("📂 [AppStateManager] LOADED from UserDefaults:")
 //		print("   • hasSeenOnboarding: \(hasSeenOnboarding)")
 	}
@@ -37,7 +37,7 @@ class AppStateManager {
 	}
 	
 	private func saveState() async throws {
-		UserDefaults.standard.set(hasSeenOnboarding, forKey: StateKeys.hasSeenOnboarding.key)
+		UserDefaults.standard.set(hasSeenOnboarding, forKey: AppConstants.Storage.hasSeenOnboarding)
 //		print("💾 AppState persisted")
 	}
 }

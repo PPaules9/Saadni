@@ -125,6 +125,8 @@ struct BrowseJobsView: View {
 								.font(.system(size: 14, weight: .semibold))
 								.foregroundStyle(.accent)
 						}
+						.frame(minWidth: 44, minHeight: 44)
+						.accessibilityLabel("View All This Week's Services")
 					}
 					.padding(.horizontal)
 					

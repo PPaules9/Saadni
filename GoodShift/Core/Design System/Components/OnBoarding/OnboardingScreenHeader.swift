@@ -9,7 +9,7 @@ import SwiftUI
 
 struct OnboardingScreenHeader: View {
     let headline: String
-    let subheadline: String
+    var subheadline: String? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -19,11 +19,13 @@ struct OnboardingScreenHeader: View {
                 .lineSpacing(2)
                 .fixedSize(horizontal: false, vertical: true)
 
-            Text(subheadline)
-                .font(.system(size: 15))
-                .foregroundStyle(Colors.swiftUIColor(.textSecondary))
-                .lineSpacing(3)
-                .fixedSize(horizontal: false, vertical: true)
+            if let subheadline = subheadline {
+                Text(subheadline)
+                    .font(.system(size: 15))
+                    .foregroundStyle(Colors.swiftUIColor(.textSecondary))
+                    .lineSpacing(3)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 24)

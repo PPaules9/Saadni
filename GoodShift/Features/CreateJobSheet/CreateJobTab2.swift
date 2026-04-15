@@ -172,6 +172,7 @@ struct MapSelectionView: View {
 						Image(systemName: "xmark")
 							.foregroundStyle(Colors.swiftUIColor(.textSecondary))
 					}
+					.accessibilityLabel("Close")
 				}
 			}
 			.animation(.easeInOut(duration: 0.2), value: isSearching)
@@ -287,6 +288,8 @@ struct MapSelectionView: View {
 					Image(systemName: "xmark.circle.fill")
 						.foregroundStyle(Colors.swiftUIColor(.textSecondary))
 				}
+				.frame(minWidth: 44, minHeight: 44)
+				.accessibilityLabel("Clear Search")
 			}
 			Button("Cancel") {
 				searchText = ""

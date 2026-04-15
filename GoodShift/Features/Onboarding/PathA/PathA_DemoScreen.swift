@@ -2,8 +2,8 @@
 //  PathA_DemoScreen.swift
 //  GoodShift
 //
-//  The "aha moment" — user browses real sample shifts and saves 2.
-//  Then sees their personalised shift list with total potential earnings.
+//
+//  Created by Pavly Paules on 14/04/2026.
 //
 
 import SwiftUI
@@ -272,4 +272,21 @@ private struct ShiftListResultView: View {
         let titles = state.pathA_savedShifts.map { "• \($0.title) — \($0.price) EGP" }.joined(separator: "\n")
         return "I found these shifts on GoodShift:\n\(titles)\nTotal: \(state.pathA_totalEarnings) EGP"
     }
+}
+
+#Preview("Shift Picker") {
+    @Previewable @State var state = OnboardingState()
+    PathA_DemoScreen(state: $state) {}
+        .background(Colors.swiftUIColor(.appBackground))
+}
+
+#Preview("Result (2 saved)") {
+    @Previewable @State var state: OnboardingState = {
+        var s = OnboardingState()
+        let ids = Array(JobService.sampleData.prefix(2)).map(\.id)
+        s.pathA_savedShiftIds = Set(ids)
+        return s
+    }()
+    PathA_DemoScreen(state: $state) {}
+        .background(Colors.swiftUIColor(.appBackground))
 }

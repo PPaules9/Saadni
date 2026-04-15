@@ -93,6 +93,7 @@ struct PathA_TinderCardsScreen: View {
     }
 
     private func advance() {
+
         swipedCount += 1
         if currentIndex + 1 < statements.count {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
@@ -105,4 +106,9 @@ struct PathA_TinderCardsScreen: View {
             }
         }
     }
+}
+
+#Preview {
+    PathA_TinderCardsScreen {}
+        .background(Colors.swiftUIColor(.appBackground))
 }

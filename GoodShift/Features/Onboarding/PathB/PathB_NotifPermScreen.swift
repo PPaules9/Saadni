@@ -27,3 +27,8 @@ struct PathB_NotifPermScreen: View {
         )
     }
 }
+
+#Preview {
+    PathB_NotifPermScreen(onEnable: {}, onSkip: {})
+        .background(Colors.swiftUIColor(.appBackground))
+}

@@ -30,6 +30,7 @@ struct AllActivitiesView: View {
                         Image(systemName: "clock.arrow.circlepath")
                             .font(.system(size: 44))
                             .foregroundStyle(.secondary)
+                            .accessibilityHidden(true)
                         Text("No activity yet")
                             .font(.headline)
                             .fontDesign(.monospaced)

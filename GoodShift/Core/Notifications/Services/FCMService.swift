@@ -67,9 +67,9 @@ final class FCMService: NSObject, MessagingDelegate {
 		
 		do {
 			try await Firestore.firestore()
-				.collection("users")
+				.collection(AppConstants.Firestore.users)
 				.document(userId)
-				.collection("fcmTokens")
+				.collection(AppConstants.Firestore.fcmTokens)
 				.document(token)
 				.setData(tokenData, merge: true)
 			

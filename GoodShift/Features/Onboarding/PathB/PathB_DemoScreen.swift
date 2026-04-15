@@ -152,3 +152,8 @@ struct PathB_DemoScreen: View {
         }
     }
 }
+
+#Preview {
+    PathB_DemoScreen {}
+        .background(Colors.swiftUIColor(.appBackground))
+}

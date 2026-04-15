@@ -121,3 +121,8 @@ struct PathB_ComparisonScreen: View {
         }
     }
 }
+
+#Preview {
+    PathB_ComparisonScreen {}
+        .background(Colors.swiftUIColor(.appBackground))
+}

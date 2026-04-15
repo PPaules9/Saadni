@@ -388,11 +388,14 @@ struct ServiceDetailView: View {
 						Image(systemName: "ellipsis.circle")
 							.foregroundStyle(.accent)
 					}
+					.accessibilityLabel("More Options")
 				} else {
 					Button(action: {}) {
 						Image(systemName: "heart")
 							.foregroundStyle(.red)
 					}
+					.frame(minWidth: 44, minHeight: 44)
+					.accessibilityLabel("Save")
 				}
 			}
 		}
@@ -1841,6 +1844,7 @@ struct GroupServiceDetailView: View {
                     Image(systemName: "ellipsis.circle")
                         .foregroundStyle(.accent)
                 }
+                .accessibilityLabel("More Options")
             }
         }
         .confirmationDialog(

@@ -72,9 +72,9 @@ struct BrandButton: View {
 						Spacer()
 					}
 					.frame(maxWidth: .infinity)
-					.disabled(isDisabled)
-					.opacity(isDisabled ? 0.5 : 1.0)
 				}
+				.disabled(isDisabled)
+				.opacity(isDisabled ? 0.5 : 1.0)
 				.overlay(
 					RoundedRectangle(cornerRadius: 35)
 						.strokeBorder(.accent, lineWidth: 1)
@@ -98,9 +98,9 @@ struct BrandButton: View {
 						Spacer()
 					}
 					.frame(maxWidth: .infinity)
-					.disabled(isDisabled)
-					.opacity(isDisabled ? 0.5 : 1.0)
 				}
+				.disabled(isDisabled)
+				.opacity(isDisabled ? 0.5 : 1.0)
 				.overlay(
 					RoundedRectangle(cornerRadius: 35)
 						.strokeBorder(.accent, lineWidth: 1)
@@ -126,10 +126,10 @@ struct BrandButton: View {
 						Spacer()
 					}
 					.frame(maxWidth: .infinity)
-					.disabled(isDisabled)
-					.opacity(isDisabled ? 0.5 : 1.0)
 					
 				}
+				.disabled(isDisabled)
+				.opacity(isDisabled ? 0.5 : 1.0)
 				.glassEffect(.regular.tint(.accent))
 			} else {
 				// Fallback on earlier versions
@@ -150,13 +150,13 @@ struct BrandButton: View {
 						Spacer()
 					}
 					.frame(maxWidth: .infinity)
-					.disabled(isDisabled)
-					.opacity(isDisabled ? 0.5 : 1.0)
-					.background(
-						RoundedRectangle(cornerRadius: 28)
-							.fill(.accent)
-					)
 				}
+				.disabled(isDisabled)
+				.opacity(isDisabled ? 0.5 : 1.0)
+				.background(
+					RoundedRectangle(cornerRadius: 28)
+						.fill(.accent)
+				)
 			}
 		}
 	}

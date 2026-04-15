@@ -44,6 +44,8 @@ struct WalletSheet: View {
        .font(.system(size: 24))
        .foregroundStyle(.white)
      }
+     .frame(minWidth: 44, minHeight: 44)
+     .accessibilityLabel("Help")
     }
     .padding(.horizontal, 20)
 
