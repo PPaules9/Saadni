@@ -1,0 +1,272 @@
+//
+//  ReviewsStore.swift
+//  GoodShift
+//
+//  Created by Pavly Paules on 12/03/2026.
+//
+
+import Foundation
+import FirebaseFirestore
+
+@Observable
+class ReviewsStore: ListenerManaging {
+    // MARK: - State
+
+    var reviewsIReceived: [Review] = []      // Reviews about me
+    var reviewsISubmitted: [Review] = []     // Reviews I wrote
+    var serviceReviews: [String: [Review]] = [:]  // Reviews by service ID
+
+    // MARK: - Error States
+    var isLoadingReviews: Bool = false
+    var reviewsError: AppError? = nil
+
+    // MARK: - Listener Management (from ListenerManaging protocol)
+    var activeListeners: [String: ListenerRegistration] = [:]
+    var listenerSetupState: [String: Bool] = [:]
+
+    private var currentUserId: String?
+
+    private var db: Firestore {
+        Firestore.firestore()
+    }
+
+    deinit {
+        removeAllListeners()
+    }
+
+    // MARK: - Listener Management Implementation
+
+    /// Clear all listeners and reset local data
+    func removeAllListeners() {
+        print("🧹 [ReviewsStore] Clearing all listeners and resetting state...")
+        
+        // Remove Firestore listeners
+        activeListeners.values.forEach { $0.remove() }
+        activeListeners.removeAll()
+        listenerSetupState.removeAll()
+        
+        // Clear local data for next session
+        reviewsIReceived = []
+        reviewsISubmitted = []
+        serviceReviews = [:]
+        isLoadingReviews = false
+        reviewsError = nil
+        currentUserId = nil
+        
+        print("🧹 [ReviewsStore] State cleared")
+    }
+
+    // MARK: - Setup & Teardown
+
+    /// Guards against concurrent calls to setupListeners (e.g. two rapid logins).
+    @ObservationIgnored private var isSettingUp = false
+
+    /// Sets up real-time listeners for user reviews (received and submitted)
+    /// - Parameter userId: The user ID to listen for reviews
+    /// - Throws: Firestore errors during listener setup
+    func setupListeners(userId: String) async throws {
+        guard !isSettingUp else {
+            print("⚠️ [ReviewsStore] Setup already in progress — skipping duplicate call")
+            return
+        }
+        isSettingUp = true
+        defer { isSettingUp = false }
+
+        removeAllListeners()
+
+        currentUserId = userId
+        isLoadingReviews = true
+        reviewsError = nil
+
+        // Setup received reviews listener
+        let receivedListenerId = "receivedReviews"
+        guard !isListenerActive(id: receivedListenerId) else {
+            print("⚠️ Listener already active for received reviews")
+            return
+        }
+
+        let receivedListener = db.collection(AppConstants.Firestore.reviews)
+            .whereField("revieweeId", isEqualTo: userId)
+            .order(by: "createdAt", descending: true)
+            .limit(to: 50)
+            .addSnapshotListener { [weak self] snapshot, error in
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+
+                    if let error = error {
+                        self.reviewsError = AppError.from(error)
+                        self.isLoadingReviews = false
+                        print("❌ Error fetching received reviews: \(error)")
+                        return
+                    }
+
+                    guard let documents = snapshot?.documents else { return }
+
+                    let decoded = documents.compactMap { doc in
+                        do {
+                            return try Review.fromFirestore(id: doc.documentID, data: doc.data())
+                        } catch {
+                            print("⚠️ Failed to decode received review \(doc.documentID): \(error)")
+                            return nil
+                        }
+                    }
+
+                    self.reviewsIReceived = decoded
+                    print("✅ Loaded \(self.reviewsIReceived.count) reviews received")
+                }
+            }
+
+        addListener(id: receivedListenerId, listener: receivedListener)
+
+        // Setup submitted reviews listener
+        let submittedListenerId = "submittedReviews"
+        guard !isListenerActive(id: submittedListenerId) else {
+            print("⚠️ Listener already active for submitted reviews")
+            return
+        }
+
+        let submittedListener = db.collection(AppConstants.Firestore.reviews)
+            .whereField("reviewerId", isEqualTo: userId)
+            .order(by: "createdAt", descending: true)
+            .limit(to: 50)
+            .addSnapshotListener { [weak self] snapshot, error in
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+
+                    if let error = error {
+                        self.reviewsError = AppError.from(error)
+                        self.isLoadingReviews = false
+                        print("❌ Error fetching submitted reviews: \(error)")
+                        return
+                    }
+
+                    guard let documents = snapshot?.documents else { return }
+
+                    let decoded = documents.compactMap { doc in
+                        do {
+                            return try Review.fromFirestore(id: doc.documentID, data: doc.data())
+                        } catch {
+                            print("⚠️ Failed to decode submitted review \(doc.documentID): \(error)")
+                            return nil
+                        }
+                    }
+
+                    self.reviewsISubmitted = decoded
+                    self.reviewsError = nil
+                    self.isLoadingReviews = false
+                    print("✅ Loaded \(self.reviewsISubmitted.count) reviews submitted")
+                }
+            }
+
+        addListener(id: submittedListenerId, listener: submittedListener)
+
+        print("🔄 [ReviewsStore] Listeners setup for user: \(userId)")
+    }
+
+    // MARK: - Submit Review
+
+    func submitReview(_ review: Review) async throws {
+        // Save to Firestore. The onReviewCreated Cloud Function will
+        // atomically update the reviewee's rating in the background.
+        try await FirestoreService.shared.saveReview(review)
+        print("✅ Review submitted")
+    }
+
+    // MARK: - Review Eligibility
+
+    func canReviewService(_ service: JobService, userId: String) -> Bool {
+        // Must be completed
+        guard service.status == .completed else {
+            print("❌ Cannot review: service not completed")
+            return false
+        }
+
+        // Must be provider or hired applicant
+        let isProvider = service.providerId == userId
+        let isHiredApplicant = service.hiredApplicantId == userId
+        guard isProvider || isHiredApplicant else {
+            print("❌ Cannot review: user not involved in this service")
+            return false
+        }
+
+        // Must not have already reviewed
+        let existingReview = reviewsISubmitted.first {
+            $0.serviceId == service.id
+        }
+
+        if existingReview != nil {
+            print("❌ Cannot review: already reviewed this service")
+            return false
+        }
+
+        return true
+    }
+
+    func hasReviewedService(_ serviceId: String) -> Bool {
+        return reviewsISubmitted.contains { $0.serviceId == serviceId }
+    }
+
+    // MARK: - Fetch Reviews for Service
+
+    func fetchReviewsForService(_ serviceId: String) async throws -> [Review] {
+        let snapshot = try await db.collection(AppConstants.Firestore.reviews)
+            .whereField("serviceId", isEqualTo: serviceId)
+            .getDocuments()
+
+        let reviews = snapshot.documents.compactMap { doc -> Review? in
+            do {
+                return try Review.fromFirestore(id: doc.documentID, data: doc.data())
+            } catch {
+                print("⚠️ Failed to decode review for service \(doc.documentID): \(error)")
+                return nil
+            }
+        }
+
+        print("✅ Fetched \(reviews.count) reviews for service: \(serviceId)")
+        return reviews
+    }
+
+    // MARK: - Get Reviews for User
+
+    func getReviewsReceivedBy(userId: String) -> [Review] {
+        return reviewsIReceived.filter { $0.revieweeId == userId }
+    }
+
+    func getReviewsSubmittedBy(userId: String) -> [Review] {
+        return reviewsISubmitted.filter { $0.reviewerId == userId }
+    }
+
+    // MARK: - Calculate User Statistics
+
+    func getAverageRatingForUser(userId: String) -> Double? {
+        let reviews = getReviewsReceivedBy(userId: userId)
+        guard !reviews.isEmpty else { return nil }
+
+        let sum = reviews.reduce(0) { $0 + Double($1.rating) }
+        return sum / Double(reviews.count)
+    }
+
+    func getTotalReviewsForUser(userId: String) -> Int {
+        return getReviewsReceivedBy(userId: userId).count
+    }
+
+    // MARK: - Delete Review
+
+    func deleteReview(_ reviewId: String) async throws {
+        try await FirestoreService.shared.deleteReview(id: reviewId)
+        print("✅ Review deleted: \(reviewId)")
+    }
+
+    // MARK: - Retry Logic
+
+    func retryLoadingReviews() async {
+        guard let userId = currentUserId else { return }
+        do {
+            try await setupListeners(userId: userId)
+            print("✅ Reviews retry succeeded")
+        } catch {
+            reviewsError = AppError.from(error)
+            print("❌ Reviews retry failed: \(error)")
+        }
+    }
+}
